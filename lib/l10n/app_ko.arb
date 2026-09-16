@@ -60,7 +60,7 @@
   "shuffle": "셔플",
   "search_tracks": "곡 검색하기",
   "released": "공개일",
-  "error": "에러",
+  "error": "에러 {error}",
   "title": "타이틀",
   "time": "길이",
   "more_actions": "다른 작업",
