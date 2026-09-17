@@ -121,7 +121,7 @@ dependencies:
       ref: 4e5310e14af74bdbb51e2a4766e66d6c6a2562a8
   flutter_new_pipe_extractor:
     git:
-      url: https://github.com/KRTirtho/flutter_new_pipe_extractor
+      url: https://github.com/wuqqers/flutter_new_pipe_extractor
   http_parser: ^4.1.2
   collection: any
   archive: ^4.0.7
