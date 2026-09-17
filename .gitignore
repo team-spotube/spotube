@@ -84,3 +84,7 @@ tm.json
 
 android/build
 android/app/.cxx
+
+# Agent files
+agent.md
+.omo/
