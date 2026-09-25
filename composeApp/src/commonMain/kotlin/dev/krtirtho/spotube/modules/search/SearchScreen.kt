@@ -39,18 +39,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -84,11 +85,10 @@ import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.user.MetadataUser
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
-import dev.krtirtho.spotube.core.navigation.NavigationCommands
-import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.jam.JamRole
 import dev.krtirtho.spotube.core.jam.JamRoomService
-import org.koin.compose.koinInject
+import dev.krtirtho.spotube.core.navigation.NavigationCommands
+import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.remote.RemotePlaybackController
 import dev.krtirtho.spotube.core.share.ShareService
 import dev.krtirtho.spotube.core.ui.base.AutocompleteTextField
@@ -103,6 +103,7 @@ import dev.krtirtho.spotube.core.ui.component.TrackOptionsAction
 import dev.krtirtho.spotube.core.ui.component.TrackOptionsState
 import dev.krtirtho.spotube.core.ui.component.UserCard
 import dev.krtirtho.spotube.core.ui.component.cards.PlayableCard
+import dev.krtirtho.spotube.core.ui.component.dragScrollable
 import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
 import dev.krtirtho.spotube.modules.blacklist.BlacklistRepository
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
@@ -624,8 +625,10 @@ private fun SearchTabs(
     selectedType: MetadataSupportedSearchType?,
     onTabSelected: (MetadataSupportedSearchType) -> Unit,
 ) {
+    val listState = rememberLazyListState()
     LazyRow(
-        modifier = Modifier.fillMaxWidth(),
+        state = listState,
+        modifier = Modifier.fillMaxWidth().dragScrollable(listState),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
