@@ -21,6 +21,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
+import dev.krtirtho.spotube.core.jam.JamParticipant
+import dev.krtirtho.spotube.core.jam.JamRole
+import dev.krtirtho.spotube.core.jam.JamRoomService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -38,16 +41,23 @@ data class QueueItemUi(
     val isCurrent: Boolean,
     val imageUrl: String?,
     val originalIndex: Int,
+    /** Participant who added this item to the jam queue, if any. */
+    val addedByParticipant: JamParticipant? = null,
 )
 
 data class QueueContentUiState(
     val filterQuery: String = "",
     val displayItems: List<QueueItemUi> = emptyList(),
     val isFiltered: Boolean = false,
+    /** Guests cannot reorder/remove/clear the shared jam queue. */
+    val isReadOnly: Boolean = false,
+    val isJamHost: Boolean = false,
+    val participants: List<JamParticipant> = emptyList(),
 )
 
 class PlayerQueueContentViewModel(
     private val audioPlayerQueue: AudioPlayerQueue,
+    private val jamRoomService: JamRoomService,
 ) : ViewModel() {
     private val queueVisibilityFlow = MutableStateFlow(false)
     private val queueFilterFlow = MutableStateFlow("")
@@ -60,7 +70,8 @@ class PlayerQueueContentViewModel(
     private val computedItems: StateFlow<List<QueueItemUi>> = combine(
         audioPlayerQueue.queueFlow,
         audioPlayerQueue.currentQueueEntryFlow,
-    ) { queue, currentEntry ->
+        jamRoomService.participants,
+    ) { queue, currentEntry, participants ->
         val currentIndex = if (currentEntry != null) {
             queue.indexOfFirst { it.matchesCurrent(currentEntry) }
         } else {
@@ -68,7 +79,7 @@ class PlayerQueueContentViewModel(
         }
         queue.mapIndexed { index, entry ->
             val title: String
-            val subtitle: String
+            var subtitle: String
             val durationMs: Long
             val imageUrl: String?
 
@@ -89,6 +100,11 @@ class PlayerQueueContentViewModel(
                 }
             }
 
+            val addedByParticipant = participants.firstOrNull { it.id == entry.addedBy }
+            if (addedByParticipant != null) {
+                subtitle = "$subtitle • Added by ${addedByParticipant.displayName}"
+            }
+
             QueueItemUi(
                 id = "${entry.url}@$index",
                 title = title,
@@ -97,6 +113,7 @@ class PlayerQueueContentViewModel(
                 isCurrent = index == currentIndex,
                 imageUrl = imageUrl,
                 originalIndex = index,
+                addedByParticipant = addedByParticipant,
             )
         }
     }.stateIn(
@@ -109,7 +126,9 @@ class PlayerQueueContentViewModel(
         computedItems,
         reorderBuffer,
         queueFilterFlow,
-    ) { items, buffer, filterQuery ->
+        jamRoomService.role,
+        jamRoomService.participants,
+    ) { items, buffer, filterQuery, role, participants ->
         val normalizedFilter = filterQuery.trim().lowercase()
         val isFiltered = normalizedFilter.isNotBlank()
         val filtered = if (isFiltered) {
@@ -124,6 +143,9 @@ class PlayerQueueContentViewModel(
             filterQuery = filterQuery,
             displayItems = buffer ?: filtered,
             isFiltered = isFiltered,
+            isReadOnly = role == JamRole.Guest,
+            isJamHost = role == JamRole.Host,
+            participants = participants,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -144,14 +166,14 @@ class PlayerQueueContentViewModel(
     }
 
     fun playQueueItem(index: Int) {
-        if (index < 0) return
+        if (index < 0 || queueContentUiState.value.isReadOnly) return
         viewModelScope.launch {
             audioPlayerQueue.jumpTo(index)
         }
     }
 
     fun removeQueueItem(index: Int) {
-        if (index < 0) return
+        if (index < 0 || queueContentUiState.value.isReadOnly) return
         viewModelScope.launch {
             val currentQueue = audioPlayerQueue.queueFlow.value
             if (index < currentQueue.size) {
@@ -162,24 +184,49 @@ class PlayerQueueContentViewModel(
 
     fun moveQueueItem(fromIndex: Int, toIndex: Int) {
         if (fromIndex == toIndex || fromIndex < 0 || toIndex < 0) return
+        if (queueContentUiState.value.isReadOnly) return
         viewModelScope.launch {
             audioPlayerQueue.move(fromIndex, toIndex)
         }
     }
 
     fun clearQueue() {
+        if (queueContentUiState.value.isReadOnly) return
         viewModelScope.launch {
             audioPlayerQueue.clear()
         }
     }
 
+    // ---------- Jam participant moderation (host only) ----------
+
+    fun kickParticipant(participantId: String) {
+        if (!queueContentUiState.value.isJamHost) return
+        viewModelScope.launch { jamRoomService.kickParticipant(participantId) }
+    }
+
+    fun banParticipant(participantId: String) {
+        if (!queueContentUiState.value.isJamHost) return
+        viewModelScope.launch { jamRoomService.banParticipant(participantId) }
+    }
+
+    /** Removes every queue item that the given participant suggested. */
+    fun removeParticipantTracks(participantId: String) {
+        if (!queueContentUiState.value.isJamHost) return
+        viewModelScope.launch {
+            val entries = audioPlayerQueue.queueFlow.value.filter { it.addedBy == participantId }
+            entries.forEach { audioPlayerQueue.removeFromQueue(it) }
+        }
+    }
+
     fun onDragStart() {
         if (reorderBuffer.value != null) return
+        if (queueContentUiState.value.isReadOnly) return
         val currentItems = queueContentUiState.value.displayItems
         reorderBuffer.value = currentItems.toList()
     }
 
     fun onMove(from: Int, to: Int) {
+        if (queueContentUiState.value.isReadOnly) return
         val buffer = reorderBuffer.value ?: return
         if (from == to || from < 0 || to < 0 || from >= buffer.size || to >= buffer.size) return
         val item = buffer[from]

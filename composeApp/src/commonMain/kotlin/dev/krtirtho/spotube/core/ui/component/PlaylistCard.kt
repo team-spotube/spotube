@@ -27,6 +27,8 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.playback.CollectionPlaybackHelper
+import dev.krtirtho.spotube.core.remote.RemoteCollectionType
+import dev.krtirtho.spotube.core.remote.RemotePlaybackController
 import dev.krtirtho.spotube.core.ui.component.cards.PlayableCard
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -37,7 +39,8 @@ fun PlaylistCard(
     modifier: Modifier = Modifier,
     audioPlayerQueue: AudioPlayerQueue = koinInject(),
     playbackHelper: CollectionPlaybackHelper = koinInject(),
-    navigationCommands: NavigationCommands = koinInject()
+    navigationCommands: NavigationCommands = koinInject(),
+    remotePlaybackController: RemotePlaybackController = koinInject(),
 ) {
     val scope = rememberCoroutineScope()
     val currentCollectionEntry by audioPlayerQueue.currentCollectionEntryFlow.collectAsStateWithLifecycle()
@@ -52,10 +55,18 @@ fun PlaylistCard(
         },
         onPlay = {
             if (audioPlayerQueue.isPlaylistPlaying(playlist.id)) return@PlayableCard
-            scope.launch { playbackHelper.playPlaylist(playlist.id) }
+            remotePlaybackController.requestCollectionPlay(
+                RemoteCollectionType.Playlist,
+                playlist.id,
+                playlist.title,
+            )
         },
         onAddToQueue = {
-            scope.launch { playbackHelper.addPlaylistToQueue(playlist.id) }
+            remotePlaybackController.requestCollectionAddToQueue(
+                RemoteCollectionType.Playlist,
+                playlist.id,
+                playlist.title,
+            )
         },
         modifier = modifier,
         sharedElementKey = "playlist_art_${playlist.id}",

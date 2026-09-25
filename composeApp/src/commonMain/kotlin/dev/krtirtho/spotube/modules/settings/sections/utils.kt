@@ -146,7 +146,7 @@ internal fun availableAudioQualities(format: AudioFormat, current: AudioQuality)
 }
 
 internal fun AudioFormat.displayLabel(): String {
-    return "${codec.uppercase()} in ${container.uppercase()} • ${preferredQuality().displayLabel()}"
+    return "${codec.uppercase()} in ${container.uppercase()}"
 }
 
 internal fun AudioFormat.preferredQuality(): AudioQuality {

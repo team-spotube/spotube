@@ -29,6 +29,7 @@ import androidx.compose.ui.window.rememberWindowState
 import com.sun.jna.Library
 import com.sun.jna.Native
 import dev.krtirtho.spotube.core.di.initKoin
+import dev.krtirtho.spotube.core.deeplink.ExternalUriHandler
 import dev.krtirtho.spotube.core.newpipe.NewPipeDownloader
 import dev.krtirtho.spotube.core.paths.Paths
 import dev.krtirtho.spotube.core.systemtray.SystemTray
@@ -81,9 +82,28 @@ private fun disableWebKitGpuCompositing() {
     LibC.INSTANCE.setenv("WEBKIT_DISABLE_DMABUF_RENDERER", "1", 1)
 }
 
+/**
+ * Routes `spotube://` deep links into [ExternalUriHandler].
+ * macOS delivers them through the open-URI handler; on Linux/Windows they arrive
+ * as command line arguments (scheme registration is handled by the distribution
+ * packaging, e.g. the `.desktop` file's `Exec %u`).
+ */
+private fun handleStartupDeepLinks(args: Array<String>) {
+    runCatching {
+        if (java.awt.Desktop.isDesktopSupported()) {
+            java.awt.Desktop.getDesktop().setOpenURIHandler { event ->
+                ExternalUriHandler.onNewUri(event.uri.toString())
+            }
+        }
+    }
+    args.firstOrNull { it.startsWith("spotube:", ignoreCase = true) }
+        ?.let(ExternalUriHandler::onNewUri)
+}
+
 @OptIn(ExperimentalComposeUiApi::class)
-fun main() {
+fun main(args: Array<String>) {
     disableWebKitGpuCompositing()
+    handleStartupDeepLinks(args)
     FileKit.init(appId = "dev.krtirtho.spotube")
     initKoin()
     NewPipeDownloader.init(KoinPathsProvider.paths)

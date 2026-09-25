@@ -4,9 +4,13 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-uniffi = "0.29.4"
+uniffi = { version = "0.29.4", features = ["tokio"] }
 lofty = "0.24.0"
 discord-rich-presence = "1.1.0"
+thiserror = "2.0"
+parking_lot = "0.12"
+log = "0.4"
+tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros"] }
 
 [lib]
 crate-type = ["cdylib", "staticlib"]

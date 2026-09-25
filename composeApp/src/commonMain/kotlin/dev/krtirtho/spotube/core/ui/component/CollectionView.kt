@@ -87,6 +87,10 @@ fun CollectionView(
     onBulkAddToQueue: (List<MetadataTrack>) -> Unit = {},
     onBulkPlayNext: (List<MetadataTrack>) -> Unit = {},
     onBulkAddToPlaylist: (List<MetadataTrack>) -> Unit = {},
+    onBulkAddToJam: (List<MetadataTrack>) -> Unit = {},
+    isInJam: Boolean = false,
+    isJamGuest: Boolean = false,
+    onAddToJam: (List<MetadataTrack>) -> Unit = {},
     trackOptionsState: (MetadataTrack) -> TrackOptionsState = { TrackOptionsState() },
     footerContent: (@Composable () -> Unit)? = null,
     trailingContent: @Composable () -> Unit = {},
@@ -114,7 +118,7 @@ fun CollectionView(
                 } else {
                     {}
                 },
-                actions = if (isCollapsed) {
+                actions = if (isCollapsed && !isJamGuest) {
                     {
                         IconButton(onClick = onPlay) {
                             Icon(
@@ -159,6 +163,8 @@ fun CollectionView(
                                 showFollowButton = showFollowButton,
                                 onEdit = onEdit,
                                 sharedElementKey = sharedElementKey,
+                                isJamGuest = isJamGuest,
+                                onAddToJam = { onAddToJam(tracks) },
                             )
                         }
                     } else {
@@ -179,6 +185,8 @@ fun CollectionView(
                             showFollowButton = showFollowButton,
                             onEdit = onEdit,
                             sharedElementKey = sharedElementKey,
+                            isJamGuest = isJamGuest,
+                            onAddToJam = { onAddToJam(tracks) },
                         )
                     }
                 },
@@ -200,6 +208,9 @@ fun CollectionView(
                 onBulkAddToQueue = onBulkAddToQueue,
                 onBulkPlayNext = onBulkPlayNext,
                 onBulkAddToPlaylist = onBulkAddToPlaylist,
+                onBulkAddToJam = onBulkAddToJam,
+                isInJam = isInJam,
+                isJamGuest = isJamGuest,
                 trackOptionsState = trackOptionsState,
             )
         }

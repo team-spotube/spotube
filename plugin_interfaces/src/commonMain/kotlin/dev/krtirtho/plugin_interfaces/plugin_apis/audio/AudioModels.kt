@@ -28,6 +28,7 @@ data class AudioFormat(
     val qualities: List<AudioQuality>
 )
 
+@Serializable
 sealed interface AudioQuality {
     @Serializable
     @SerialName("lossy")

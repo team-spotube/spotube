@@ -221,6 +221,67 @@ jobs:
         with:
           limit-access-to-actor: true
 
+  build-linux-arm64:
+    name: Linux Desktop (aarch64)
+    needs: prepare-deps
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download maven local
+        uses: actions/download-artifact@v4
+        with:
+          name: maven-local
+          path: ~/.m2/repository/
+
+      - name: Install packaging tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rpm fuse
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Package Linux
+        run: ./gradlew :composeApp:packageReleaseDeb :composeApp:packageReleaseRpm
+
+      - name: Rename Linux artifacts
+        run: |
+          DEB_FILE=$(find composeApp/build -name "*.deb" -type f | head -1)
+          RPM_FILE=$(find composeApp/build -name "*.rpm" -type f | head -1)
+          cp "$DEB_FILE" Spotube-linux-aarch64.deb
+          cp "$RPM_FILE" Spotube-linux-aarch64.rpm
+
+      - name: Upload DEB
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-deb-arm64
+          path: Spotube-linux-aarch64.deb
+
+      - name: Upload RPM
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-rpm-arm64
+          path: Spotube-linux-aarch64.rpm
+
+      - name: Setup tmate session on failure
+        if: ${{ inputs.debug_ssh && failure() }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+
   build-windows:
     name: Windows Desktop
     needs: prepare-deps
@@ -321,6 +382,7 @@ jobs:
     needs:
       - build-android
       - build-linux
+      - build-linux-arm64
       - build-windows
       - build-macos
     runs-on: ubuntu-latest
@@ -352,7 +414,7 @@ jobs:
         run: |
           echo "## Downloads" > release-notes.md
           echo "" >> release-notes.md
-          for dir in android-apk android-aab linux-deb linux-rpm linux-appimage windows-msi windows-exe macos-dmg; do
+          for dir in android-apk android-aab linux-deb linux-rpm linux-appimage linux-deb-arm64 linux-rpm-arm64 windows-msi windows-exe macos-dmg; do
             if [ -d "$dir" ]; then
               echo "### $dir" >> release-notes.md
               for f in "$dir"/*; do
@@ -376,6 +438,8 @@ jobs:
             linux-deb/*.deb
             linux-rpm/*.rpm
             linux-appimage/*.AppImage
+            linux-deb-arm64/*.deb
+            linux-rpm-arm64/*.rpm
             windows-msi/*.msi
             windows-exe/*.exe
             macos-dmg/*.dmg

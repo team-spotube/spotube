@@ -78,6 +78,9 @@ fun CollectionDetails(
     onShufflePlay: () -> Unit,
     onAddToQueue: () -> Unit,
     isPlaying: Boolean = false,
+    /** Guest in a jam session: play/shuffle are replaced by Add to Jam. */
+    isJamGuest: Boolean = false,
+    onAddToJam: (() -> Unit)? = null,
     isFollowing: Boolean = false,
     onFollowClick: () -> Unit = { },
     showFollowButton: Boolean = true,
@@ -91,39 +94,61 @@ fun CollectionDetails(
         val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
 
         val playPauseButton = @Composable {
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-            ) {
-                val modifier = if (isCompact) {
-                    Modifier.weight(1f)
-                } else {
-                    Modifier
+            if (isJamGuest) {
+                if (onAddToJam != null) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    ) {
+                        PrimaryButton(
+                            modifier = if (isCompact) Modifier.weight(1f) else Modifier,
+                            onClick = onAddToJam!!,
+                        ) {
+                            Icon(
+                                imageVector = Iconsax.IconsaxAddSquare,
+                                contentDescription = "Add to Jam",
+                            )
+                            TextWithShimmer(
+                                text = "Add to Jam",
+                                modifier = Modifier.padding(start = 6.dp),
+                            )
+                        }
+                    }
                 }
+            } else {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    val modifier = if (isCompact) {
+                        Modifier.weight(1f)
+                    } else {
+                        Modifier
+                    }
 
-                PrimaryButton(
-                    modifier = modifier,
-                    onClick = onPlay,
-                ) {
-                    Icon(
-                        imageVector = if (isPlaying) Iconsax.IconsaxPauseCircle else Iconsax.IconsaxPlayCircle2,
-                        contentDescription = if (isPlaying) "Pause" else "Play",
-                    )
-                    TextWithShimmer(
-                        text = if (isPlaying) "Pause" else "Play",
-                        modifier = Modifier.padding(start = 6.dp),
-                    )
-                }
-                OutlineButton(
-                    modifier = modifier,
-                    onClick = onShufflePlay
-                ) {
-                    Icon(imageVector = Iconsax.IconsaxShuffle, contentDescription = "Shuffle play")
-                    TextWithShimmer(
-                        text = "Shuffle",
-                        modifier = Modifier.padding(start = 6.dp),
-                    )
+                    PrimaryButton(
+                        modifier = modifier,
+                        onClick = onPlay,
+                    ) {
+                        Icon(
+                            imageVector = if (isPlaying) Iconsax.IconsaxPauseCircle else Iconsax.IconsaxPlayCircle2,
+                            contentDescription = if (isPlaying) "Pause" else "Play",
+                        )
+                        TextWithShimmer(
+                            text = if (isPlaying) "Pause" else "Play",
+                            modifier = Modifier.padding(start = 6.dp),
+                        )
+                    }
+                    OutlineButton(
+                        modifier = modifier,
+                        onClick = onShufflePlay
+                    ) {
+                        Icon(imageVector = Iconsax.IconsaxShuffle, contentDescription = "Shuffle play")
+                        TextWithShimmer(
+                            text = "Shuffle",
+                            modifier = Modifier.padding(start = 6.dp),
+                        )
+                    }
                 }
             }
         }

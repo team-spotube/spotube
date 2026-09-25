@@ -21,10 +21,38 @@ import dev.krtirtho.plugin_interfaces.plugin_apis.audio.StreamProtocol
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.Duration
+
+data class MediaItem(
+    val title: String,
+    val artist: String,
+    val album: String,
+    val duration: Duration,
+    val coverURL: String,
+    val url: String,
+    val protocol: StreamProtocol = StreamProtocol.PROGRESSIVE,
+)
+
+enum class LoopState {
+    NONE, ONE, ALL;
+
+    fun next(): LoopState {
+        return when (this) {
+            NONE -> ONE
+            ONE -> ALL
+            ALL -> NONE
+        }
+    }
+}
+
+enum class PlayerState {
+    IDLE, BUFFERING, READY, PLAYING, PAUSED, COMPLETED
+}
 
 @Serializable
 sealed interface QueueEntry {
     val url: String
+    val addedBy: String
 
     @Serializable
     @SerialName("streaming")
@@ -32,6 +60,7 @@ sealed interface QueueEntry {
         val track: MetadataTrack,
         override val url: String,
         val protocol: StreamProtocol = StreamProtocol.PROGRESSIVE,
+        override val addedBy: String = "",
     ) : QueueEntry
 
     @Serializable
@@ -42,7 +71,8 @@ sealed interface QueueEntry {
         val duration: Long,
         val album: String?,
         val coverBytes: ByteArray?,
-        override val url: String
+        override val url: String,
+        override val addedBy: String = "",
     ) : QueueEntry {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -56,6 +86,7 @@ sealed interface QueueEntry {
             if (album != other.album) return false
             if (!coverBytes.contentEquals(other.coverBytes)) return false
             if (url != other.url) return false
+            if (addedBy != other.addedBy) return false
 
             return true
         }
@@ -67,6 +98,7 @@ sealed interface QueueEntry {
             result = 31 * result + (album?.hashCode() ?: 0)
             result = 31 * result + (coverBytes?.contentHashCode() ?: 0)
             result = 31 * result + url.hashCode()
+            result = 31 * result + addedBy.hashCode()
             return result
         }
     }

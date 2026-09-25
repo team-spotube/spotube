@@ -29,7 +29,7 @@ import dev.krtirtho.spotube.modules.library.local_tracks.media.LocalMediaDiscove
 import org.koin.dsl.module
 
 actual val platformModules = module {
-    single { Paths(get()) }
+    single { Paths() }
     single<AudioPlayerInterface> { AudioPlayer(get<Context>()) }
     single<LocalMediaDiscoveryService> { AndroidLocalMediaDiscoveryService(get()) }
     single<ShareService> { AndroidShareService(get()) }

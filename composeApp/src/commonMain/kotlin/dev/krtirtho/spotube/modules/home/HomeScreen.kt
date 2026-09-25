@@ -31,6 +31,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -66,8 +68,14 @@ import dev.krtirtho.spotube.core.ui.component.VerticalScrollbar
 import dev.krtirtho.spotube.core.ui.component.cards.PlayableCard
 import dev.krtirtho.spotube.core.ui.component.dragScrollable
 import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
+import dev.krtirtho.spotube.core.navigation.NavigationCommands
+import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.getPlatform
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
+import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxMirroringScreen
+import dev.krtirtho.spotube.resources.iconsax.User
+import org.koin.compose.koinInject
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
@@ -75,6 +83,7 @@ import kotlinx.coroutines.flow.map
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(viewModel: HomeScreenViewModel) {
+    val navigationCommands = koinInject<NavigationCommands>()
     val platform = getPlatform()
     val isDesktop = platform.type == PlatformType.Windows ||
             platform.type == PlatformType.Linux ||
@@ -117,7 +126,23 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                 backButton = false,
                 title = {
                     Text("Browse")
-                }
+                },
+                actions = {
+                    if (!isDesktop) {
+                        IconButton(onClick = { navigationCommands.navigateTo(Routes.Devices) }) {
+                            Icon(
+                                imageVector = Iconsax.IconsaxMirroringScreen,
+                                contentDescription = "Devices",
+                            )
+                        }
+                        IconButton(onClick = { navigationCommands.navigateTo(Routes.Jam) }) {
+                            Icon(
+                                imageVector = Iconsax.User,
+                                contentDescription = "Group Jam",
+                            )
+                        }
+                    }
+                },
             )
         },
     ) { innerPadding ->
@@ -332,7 +357,7 @@ private fun HomeSection(
         if (!subtitle.isNullOrEmpty()) Text(
             text = subtitle,
             style = MaterialTheme.typography.labelMedium.copy(
-                color =  MaterialTheme.colorScheme.secondary,
+                color = MaterialTheme.colorScheme.secondary,
                 fontWeight = FontWeight.Medium,
             ),
             modifier = Modifier.padding(horizontal = 16.dp),

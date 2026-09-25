@@ -53,6 +53,7 @@ import okio.SYSTEM
 import okio.buffer
 import okio.use
 import org.koin.core.component.KoinComponent
+import kotlin.time.Duration.Companion.milliseconds
 
 internal class StreamProxy(
     private val httpClient: HttpClient,
@@ -114,7 +115,7 @@ internal class StreamProxy(
                 logger.d { "Track $trackId is being cached, waiting for cache" }
                 var waited = 0
                 while (waited < 30) {
-                    delay(200)
+                    delay(200.milliseconds)
                     waited++
                     val entry = cacheManager.findCachedEntry(trackId)
                     if (entry != null) {
@@ -245,7 +246,7 @@ internal class StreamProxy(
         call.respond(object : OutgoingContent.WriteChannelContent() {
             override val status: HttpStatusCode = HttpStatusCode.OK
             override val contentType: ContentType = contentType
-            override val contentLength: Long? = rewrittenManifest.encodeToByteArray().size.toLong()
+            override val contentLength: Long = rewrittenManifest.encodeToByteArray().size.toLong()
 
             override suspend fun writeTo(channel: io.ktor.utils.io.ByteWriteChannel) {
                 channel.writeFully(rewrittenManifest.encodeToByteArray())
@@ -305,7 +306,7 @@ internal class StreamProxy(
 
         var currentUrl = streamUrl
         var attemptedRefresh = false
-        var upstream: HttpResponse? = null
+        var upstream: HttpResponse?
 
         while (true) {
             val response = runCatching {

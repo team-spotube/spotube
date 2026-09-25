@@ -22,7 +22,7 @@ androidx-activity = "1.13.0"
 androidx-appcompat = "1.7.1"
 androidx-core = "1.19.0"
 androidx-espresso = "3.7.0"
-androidx-lifecycle = "2.11.0"
+androidx-lifecycle = "2.10.0"
 androidx-testExt = "1.3.0"
 appdirs = "1.5.0"
 cache4k = "0.14.0"
@@ -44,6 +44,8 @@ kotlinx-io = "0.9.1"
 material3 = "1.10.0-alpha05"
 kotlinx-serialization-json = "1.11.0"
 materialKolor = "4.1.1"
+mqttClient = "2.1.1"
+mqttBuffer = "6.30.8"
 murmurhash = "0.4.2"
 newpipeextractor = "v0.26.2"
 newpipeExtractorKmp = "1.3.0"
@@ -53,6 +55,7 @@ vlcj = "4.12.1"
 vlcjNative = "4.12.0"
 ziplineVersion = "1.27.0"
 ktor = "3.5.1"
+dnssdkt = "1.1.0"
 kotlinStdlib = "2.4.10"
 runner = "1.7.0"
 core = "1.7.0"
@@ -61,8 +64,8 @@ compose-webview = "1.0.1"
 composeNativeTray = "2.0.3"
 koin = "4.2.2"
 multiplatform-nav3-ui = "1.1.1"
-compose-multiplatform-adaptive = "1.3.0-beta02"
-compose-multiplatform-lifecycle = "2.11.0"
+compose-multiplatform-adaptive = "1.3.0-alpha05"
+compose-multiplatform-lifecycle = "2.10.0"
 feather-icons = "1.1.1"
 material3-window-size = "1.9.0"
 kotlinx-datetime = "0.8.0"
@@ -85,6 +88,7 @@ androidx-car-app = { module = "androidx.car.app:app", version.ref = "carApp" }
 compose-placeholder-material3 = { module = "com.eygraber:compose-placeholder-material3", version.ref = "composePlaceholderMaterial3" }
 compose-shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "composeShimmer" }
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
+dns-sd-kt = { module = "com.appstractive:dns-sd-kt", version.ref = "dnssdkt" }
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 haze-materials = { module = "dev.chrisbanes.haze:haze-blur-materials", version.ref = "haze" }
 haze-blur = { module = "dev.chrisbanes.haze:haze-blur", version.ref = "haze" }
@@ -117,7 +121,13 @@ kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-s
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 ktor-server-cio = { module = "io.ktor:ktor-server-cio", version.ref = "ktor" }
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+ktor-server-websockets = { module = "io.ktor:ktor-server-websockets", version.ref = "ktor" }
+ktor-client-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "ktor" }
 material-kolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
+mqtt-x-models = { module = "com.ditchoom:mqtt-5-models", version.ref = "mqttClient" }
+mqtt-client = { module = "com.ditchoom:mqtt-client", version.ref = "mqttClient" }
+mqtt-buffer = { module = "com.ditchoom:buffer", version.ref = "mqttBuffer" }
+mqtt-buffer-codec = { module = "com.ditchoom:buffer-codec", version.ref = "mqttBuffer" }
 murmurhash = { module = "com.goncalossilva:murmurhash", version.ref = "murmurhash" }
 newpipe-extractor-kmp = { module = "io.github.yushosei:newpipe-extractor-kmp", version.ref = "newpipeExtractorKmp" }
 newpipeextractor = { module = "com.github.teamnewpipe:NewPipeExtractor", version.ref = "newpipeextractor" }

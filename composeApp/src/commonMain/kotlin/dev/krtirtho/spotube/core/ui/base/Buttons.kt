@@ -27,6 +27,7 @@ import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -48,6 +49,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.shadow
@@ -71,6 +73,8 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxShare
 import dev.krtirtho.spotube.resources.iconsax.User
 
 private val BadgeShape = RoundedCornerShape(11.dp)
+private const val DisabledContentAlpha = 0.38f
+
 private val ButtonMinHeight = 40.dp
 private val SquareButtonSize = 40.dp
 
@@ -178,6 +182,7 @@ fun OutlineButton(
         contentAlignment = Alignment.Center,
     ) {
         Row(
+            modifier = Modifier.alpha(if (enabled) 1f else DisabledContentAlpha),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             content = {
@@ -226,6 +231,7 @@ fun PrimaryButton(
     ) {
         CompositionLocalProvider(LocalContentColor provides state.colors.foreground) {
             Row(
+                modifier = Modifier.alpha(if (enabled) 1f else DisabledContentAlpha),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 content = content,
@@ -271,6 +277,7 @@ fun SecondaryButton(
     ) {
         CompositionLocalProvider(LocalContentColor provides state.colors.foreground) {
             Row(
+                modifier = Modifier.alpha(if (enabled) 1f else DisabledContentAlpha),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 content = content,
@@ -488,7 +495,14 @@ fun GroupIconButton(
             ),
         contentAlignment = Alignment.Center,
     ) {
-        content()
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .alpha(if (enabled) 1f else DisabledContentAlpha),
+            contentAlignment = Alignment.Center,
+        ) {
+            content()
+        }
     }
 }
 

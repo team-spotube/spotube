@@ -19,10 +19,13 @@ package dev.krtirtho.spotube.core.server
 
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.di.injectLogger
+import dev.krtirtho.spotube.core.remote.RemoteControlHandler
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.http.HttpMethod
 import io.ktor.server.application.Application
+import io.ktor.server.application.install
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.EmbeddedServer
 import io.ktor.server.engine.embeddedServer
@@ -30,6 +33,8 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.head
 import io.ktor.server.routing.routing
+import io.ktor.server.websocket.WebSockets
+import io.ktor.server.websocket.webSocket
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -55,10 +60,18 @@ class LocalServer(
     private val streamingUrlRepository: StreamingUrlRepository,
     private val audioPlayerQueue: AudioPlayerQueue,
     private val cacheManager: CacheManager,
+    private val remoteControlHandler: RemoteControlHandler,
 ) : KoinComponent {
 
     val logger by injectLogger<LocalServer>()
-    private val httpClient = HttpClient()
+    private val httpClient = HttpClient {
+        // A stalled upstream connection must not wedge the CIO dispatcher thread
+        // forever. Only the connect phase is bounded — the proxy streams long
+        // audio bodies, so request/socket timeouts would cut playback short.
+        install(HttpTimeout) {
+            connectTimeoutMillis = 10_000
+        }
+    }
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val serverMutex = Mutex()
@@ -70,8 +83,10 @@ class LocalServer(
     private val activePort = MutableStateFlow<Int?>(null)
     val port = activePort.asStateFlow()
 
+    private val activeHost = MutableStateFlow<String?>(null)
+
     val baseUrl = activePort.map { port ->
-        port?.let { "http://$HOST:$it" }
+        port?.let { "http://$HOST_LOCAL:$it" }
     }.stateIn(scope, SharingStarted.WhileSubscribed(5_000), null)
 
     private val cachedCacheEnabled = MutableStateFlow(false)
@@ -89,18 +104,19 @@ class LocalServer(
     }
 
     companion object {
-        private const val HOST = "127.0.0.1"
+        private const val HOST_LOCAL = "127.0.0.1"
+        private const val HOST_LAN = "0.0.0.0"
     }
 
     init {
         logger.d { "Starting playback proxy port watcher" }
         portWatcher = scope.launch {
             settingsViewModel.settingsState
-                .mapNotNull { it?.playbackProxyServerPort }
+                .mapNotNull { it?.let { s -> s.playbackProxyServerPort to s.allowRemoteControl } }
                 .distinctUntilChanged()
-                .collectLatest { port ->
-                    logger.d { "Observed playback proxy port change to $port" }
-                    restartServer(port)
+                .collectLatest { (port, allowRemoteControl) ->
+                    logger.d { "Observed server config change: port=$port, allowRemoteControl=$allowRemoteControl" }
+                    restartServer(port, allowRemoteControl)
                 }
         }
         scope.launch {
@@ -129,26 +145,28 @@ class LocalServer(
         logger.d { "Playback proxy server stopped" }
     }
 
-    private suspend fun restartServer(port: Int) {
+    private suspend fun restartServer(port: Int, allowRemoteControl: Boolean) {
+        val host = if (allowRemoteControl) HOST_LAN else HOST_LOCAL
         serverMutex.withLock {
-            if (serverState.value != null && activePort.value == port) {
-                logger.v { "Playback proxy server already running on port $port; skipping restart" }
+            if (serverState.value != null && activePort.value == port && activeHost.value == host) {
+                logger.v { "Playback proxy server already running on $host:$port; skipping restart" }
                 return
             }
 
-            logger.d { "Restarting playback proxy server on port $port" }
+            logger.d { "Restarting playback proxy server on $host:$port (remoteControl=$allowRemoteControl)" }
             stopServerLocked()
 
             serverState.value = embeddedServer(
                 factory = CIO,
-                host = HOST,
+                host = host,
                 port = port,
                 module = { configureRoutes() }
             ).also { engine ->
                 engine.start(wait = false)
             }
             activePort.value = port
-            logger.i { "Playback proxy server started at ${baseUrl.value ?: "http://$HOST:$port"}" }
+            activeHost.value = host
+            logger.i { "Playback proxy server started at ${baseUrl.value ?: "http://$host:$port"}" }
         }
     }
 
@@ -165,9 +183,16 @@ class LocalServer(
         }
         serverState.value = null
         activePort.value = null
+        activeHost.value = null
     }
 
     private fun Application.configureRoutes() {
+        install(WebSockets) {
+            pingPeriodMillis = 30_000L
+            timeoutMillis = 60_000L
+            maxFrameSize = 10L * 1024 * 1024
+            masking = false
+        }
         routing {
             get("/health") {
                 call.respondText("ok")
@@ -187,6 +212,10 @@ class LocalServer(
 
             get("/segment/{trackId}") {
                 streamProxy.handleSegmentRequest(call)
+            }
+
+            webSocket("/control") {
+                remoteControlHandler.handleConnection(this)
             }
         }
     }

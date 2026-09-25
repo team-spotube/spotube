@@ -56,6 +56,7 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxNext
 import dev.krtirtho.spotube.resources.iconsax.IconsaxShare
 
 sealed interface TrackOptionsAction {
+    data object AddToJam : TrackOptionsAction
     data object StartRadio : TrackOptionsAction
     data object PlayNext : TrackOptionsAction
     data object AddToQueue : TrackOptionsAction
@@ -98,6 +99,8 @@ fun TrackOptions(
     onAction: (TrackOptionsAction) -> Unit,
     onAlbumClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isInJam: Boolean = false,
+    isJamGuest: Boolean = false,
 ) {
     AdaptiveDropdownBottomSheet(
         items = buildTrackMenuItems(
@@ -105,6 +108,8 @@ fun TrackOptions(
             state = state,
             onAction = onAction,
             onAlbumClick = onAlbumClick,
+            isInJam = isInJam,
+            isJamGuest = isJamGuest,
         ),
         trigger = { onClick ->
             GhostIconButton(onClick = onClick) {
@@ -129,6 +134,8 @@ fun TrackOptionsBottomSheet(
     onDismiss: () -> Unit,
     onAction: (TrackOptionsAction) -> Unit,
     onAlbumClick: () -> Unit,
+    isInJam: Boolean = false,
+    isJamGuest: Boolean = false,
 ) {
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(modifier = Modifier.fillMaxWidth()) {
@@ -151,6 +158,8 @@ fun TrackOptionsBottomSheet(
                         onAlbumClick()
                         onDismiss()
                     },
+                    isInJam = isInJam,
+                    isJamGuest = isJamGuest,
                 ).forEach { item ->
                     Row(
                         modifier = Modifier
@@ -241,7 +250,19 @@ private fun buildTrackMenuItems(
     state: TrackOptionsState,
     onAction: (TrackOptionsAction) -> Unit,
     onAlbumClick: () -> Unit,
+    isInJam: Boolean = false,
+    isJamGuest: Boolean = false,
 ): List<AdaptiveMenuItem> = buildList {
+    if (isInJam) {
+        add(
+            AdaptiveMenuItem(
+                icon = Iconsax.IconsaxAddSquare,
+                label = "Add to Jam",
+                onClick = { onAction(TrackOptionsAction.AddToJam) },
+            ),
+        )
+    }
+
     add(
         AdaptiveMenuItem(
             icon = Iconsax.IconsaxMusicCircle,
@@ -250,40 +271,44 @@ private fun buildTrackMenuItems(
         ),
     )
 
-    if (!state.isInQueue && !state.isCurrentlyPlaying) {
-        add(
-            AdaptiveMenuItem(
-                icon = Iconsax.IconsaxNext,
-                label = "Play next",
-                onClick = { onAction(TrackOptionsAction.PlayNext) },
-            ),
-        )
-    } else if (state.isInQueue && !state.isCurrentlyPlaying) {
-        add(
-            AdaptiveMenuItem(
-                icon = Iconsax.IconsaxNext,
-                label = "Move to next",
-                onClick = { onAction(TrackOptionsAction.PlayNext) },
-            ),
-        )
-    }
+    // A guest's queue is the shared jam queue — mutating it locally is not
+    // allowed, so queue actions are replaced by "Add to Jam".
+    if (!isJamGuest) {
+        if (!state.isInQueue && !state.isCurrentlyPlaying) {
+            add(
+                AdaptiveMenuItem(
+                    icon = Iconsax.IconsaxNext,
+                    label = "Play next",
+                    onClick = { onAction(TrackOptionsAction.PlayNext) },
+                ),
+            )
+        } else if (state.isInQueue && !state.isCurrentlyPlaying) {
+            add(
+                AdaptiveMenuItem(
+                    icon = Iconsax.IconsaxNext,
+                    label = "Move to next",
+                    onClick = { onAction(TrackOptionsAction.PlayNext) },
+                ),
+            )
+        }
 
-    if (!state.isInQueue) {
-        add(
-            AdaptiveMenuItem(
-                icon = Iconsax.IconsaxAddSquare,
-                label = "Add to queue",
-                onClick = { onAction(TrackOptionsAction.AddToQueue) },
-            ),
-        )
-    } else {
-        add(
-            AdaptiveMenuItem(
-                icon = Iconsax.IconsaxMusicSquareRemove,
-                label = "Remove from queue",
-                onClick = { onAction(TrackOptionsAction.RemoveFromQueue) },
-            ),
-        )
+        if (!state.isInQueue) {
+            add(
+                AdaptiveMenuItem(
+                    icon = Iconsax.IconsaxAddSquare,
+                    label = "Add to queue",
+                    onClick = { onAction(TrackOptionsAction.AddToQueue) },
+                ),
+            )
+        } else {
+            add(
+                AdaptiveMenuItem(
+                    icon = Iconsax.IconsaxMusicSquareRemove,
+                    label = "Remove from queue",
+                    onClick = { onAction(TrackOptionsAction.RemoveFromQueue) },
+                ),
+            )
+        }
     }
 
     add(

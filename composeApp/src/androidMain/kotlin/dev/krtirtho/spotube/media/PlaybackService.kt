@@ -86,7 +86,16 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
             .setOngoing(true)
             .build()
 
-        startForeground(NOTIFICATION_ID, notification)
+        // On Android 15+ a service created from the background (e.g. by a jam
+        // sync or queue restoration) hits this in startForeground instead of at
+        // the startForegroundService call site. Don't crash: playback keeps
+        // running in-process, just without the notification until the app is
+        // foregrounded and the service can start properly.
+        try {
+            startForeground(NOTIFICATION_ID, notification)
+        } catch (e: Exception) {
+            Log.w(TAG, "startForeground not allowed; continuing without notification", e)
+        }
 
         librarySession =
             MediaLibrarySession.Builder(this, audioPlayer.player, LibrarySessionCallback())

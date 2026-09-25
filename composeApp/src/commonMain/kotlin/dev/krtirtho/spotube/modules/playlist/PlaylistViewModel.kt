@@ -26,6 +26,8 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.di.injectLogger
 import dev.krtirtho.spotube.core.playback.CollectionPlaybackHelper
+import dev.krtirtho.spotube.core.remote.RemoteCollectionType
+import dev.krtirtho.spotube.core.remote.RemotePlaybackController
 import dev.krtirtho.spotube.core.share.ShareService
 import dev.krtirtho.spotube.core.ui.component.TrackOptionsAction
 import dev.krtirtho.spotube.core.ui.component.TrackOptionsContext
@@ -98,6 +100,7 @@ class PlaylistViewModel(
     private val blacklistRepository: BlacklistRepository,
     private val shareService: ShareService,
     private val downloadManager: DownloadManager,
+    private val remotePlaybackController: RemotePlaybackController,
 ) : ViewModel(), KoinComponent {
     private val logger by injectLogger<PlaylistViewModel>()
 
@@ -223,15 +226,28 @@ class PlaylistViewModel(
     }
 
     fun playPlaylist() {
-        viewModelScope.launch { playbackHelper.playPlaylist(playlistId) }
+        val title = (_state.value as? PlaylistScreenState.Data)?.playlist?.title ?: "Playlist"
+        remotePlaybackController.requestCollectionPlay(RemoteCollectionType.Playlist, playlistId, title)
     }
 
     fun addPlaylistToQueue() {
-        viewModelScope.launch { playbackHelper.addPlaylistToQueue(playlistId) }
+        val title = (_state.value as? PlaylistScreenState.Data)?.playlist?.title ?: "Playlist"
+        remotePlaybackController.requestCollectionAddToQueue(RemoteCollectionType.Playlist, playlistId, title)
+    }
+
+    fun playPlaylistNext() {
+        val title = (_state.value as? PlaylistScreenState.Data)?.playlist?.title ?: "Playlist"
+        remotePlaybackController.requestCollectionPlayNext(RemoteCollectionType.Playlist, playlistId, title)
     }
 
     fun playPlaylistFromTrack(track: MetadataTrack) {
-        viewModelScope.launch { playbackHelper.playPlaylistFromTrack(playlistId, track) }
+        val title = (_state.value as? PlaylistScreenState.Data)?.playlist?.title ?: "Playlist"
+        remotePlaybackController.requestCollectionPlay(
+            type = RemoteCollectionType.Playlist,
+            id = playlistId,
+            title = title,
+            startTrack = track,
+        )
     }
 
     fun refresh() {
@@ -274,14 +290,24 @@ class PlaylistViewModel(
                 is TrackOptionsAction.StartRadio -> {}
                 is TrackOptionsAction.PlayNext -> {
                     val queue = audioPlayerQueue.getQueue()
-                    queue.find { entry ->
+                    val existing = queue.find { entry ->
                         (entry as? QueueEntry.StreamingTrack)?.track?.matchesTrack(track) == true
-                    }?.let { audioPlayerQueue.removeFromQueue(it) }
-                    audioPlayerQueue.addAllAfterCurrent(listOf(QueueEntry.StreamingTrack(track = track, url = "")))
+                    }
+                    if (existing != null) {
+                        // Already in the local queue: move it to the next position
+                        audioPlayerQueue.removeFromQueue(existing)
+                        audioPlayerQueue.addAllAfterCurrent(listOf(QueueEntry.StreamingTrack(track = track, url = "")))
+                    } else {
+                        remotePlaybackController.requestTrackPlayNext(track)
+                    }
                 }
 
                 is TrackOptionsAction.AddToQueue -> {
-                    audioPlayerQueue.addToQueue(QueueEntry.StreamingTrack(track = track, url = ""))
+                    remotePlaybackController.requestTrackAddToQueue(track)
+                }
+
+                is TrackOptionsAction.AddToJam -> {
+                    remotePlaybackController.addTrackToJam(track)
                 }
 
                 is TrackOptionsAction.RemoveFromQueue -> {
@@ -356,34 +382,18 @@ class PlaylistViewModel(
         }
     }
 
+    fun addTracksToJam(tracks: List<MetadataTrack>) {
+        remotePlaybackController.addTracksToJam(tracks)
+    }
+
     fun addTracksToQueue(tracks: List<MetadataTrack>) {
-        viewModelScope.launch {
-            val blacklistedTrackIds = blacklistRepository.getTracksSnapshot().map { it.id }.toSet()
-            val blacklistedArtistIds = blacklistRepository.getArtistsSnapshot().map { it.id }.toSet()
-            
-            val filteredTracks = tracks.filter { track ->
-                track.id !in blacklistedTrackIds && 
-                track.artists.none { it.id in blacklistedArtistIds }
-            }
-            
-            val entries = filteredTracks.map { QueueEntry.StreamingTrack(track = it, url = "") }
-            audioPlayerQueue.addAllToQueue(entries)
-        }
+        val title = (_state.value as? PlaylistScreenState.Data)?.playlist?.title ?: "Playlist"
+        remotePlaybackController.requestTracksAddToQueue(tracks, title)
     }
 
     fun playTracksNext(tracks: List<MetadataTrack>) {
-        viewModelScope.launch {
-            val blacklistedTrackIds = blacklistRepository.getTracksSnapshot().map { it.id }.toSet()
-            val blacklistedArtistIds = blacklistRepository.getArtistsSnapshot().map { it.id }.toSet()
-            
-            val filteredTracks = tracks.filter { track ->
-                track.id !in blacklistedTrackIds && 
-                track.artists.none { it.id in blacklistedArtistIds }
-            }
-            
-            val entries = filteredTracks.map { QueueEntry.StreamingTrack(track = it, url = "") }
-            audioPlayerQueue.addAllAfterCurrent(entries)
-        }
+        val title = (_state.value as? PlaylistScreenState.Data)?.playlist?.title ?: "Playlist"
+        remotePlaybackController.requestTracksPlayNext(tracks, title)
     }
 
     val savedTrackIds

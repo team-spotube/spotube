@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.krtirtho.spotube.PlatformType
 import dev.krtirtho.spotube.getPlatform
+import dev.krtirtho.spotube.core.discovery.rememberLocalNetworkPermissionRequester
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import spotube.composeapp.generated.resources.*
@@ -42,6 +43,7 @@ import dev.krtirtho.spotube.modules.settings.sections.appearanceSection
 import dev.krtirtho.spotube.modules.settings.sections.cacheSection
 import dev.krtirtho.spotube.modules.settings.sections.desktopSection
 import dev.krtirtho.spotube.modules.settings.sections.downloadsSection
+import dev.krtirtho.spotube.modules.settings.sections.jamSection
 import dev.krtirtho.spotube.modules.settings.sections.languageRegionSection
 import dev.krtirtho.spotube.modules.settings.sections.playbackSection
 import dev.krtirtho.spotube.modules.settings.sections.pluginsSection
@@ -62,6 +64,7 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
             platformType == PlatformType.MacOS
 
     val shellBottomInset = LocalAppShellBottomInset.current
+    val requestLocalNetworkPermission = rememberLocalNetworkPermissionRequester()
     val contentPadding = remember(shellBottomInset) {
         PaddingValues(top = 16.dp, bottom = 16.dp + shellBottomInset)
     }
@@ -106,6 +109,12 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
                         settings = settingsState!!,
                         settingsViewModel = settingsViewModel,
                         navigatorCommands = navigatorCommands,
+                        requestLocalNetworkPermission = requestLocalNetworkPermission,
+                    )
+                if (settingsState != null)
+                    jamSection(
+                        settings = settingsState!!,
+                        navigationCommands = navigatorCommands,
                     )
                 if (settingsState != null)
                     cacheSection(
@@ -133,4 +142,3 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
         }
     }
 }
-

@@ -38,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 
 private val SlidingSheetBreakpoint = 840.dp
 
@@ -68,7 +69,11 @@ private fun SlidingQueueSheet(
             visible = isVisible,
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(top = 12.dp, end = 12.dp, bottom = 12.dp),
+                .padding(
+                    top = 12.dp,
+                    end = 12.dp,
+                    bottom = 12.dp + LocalAppShellBottomInset.current,
+                ),
             enter = slideInHorizontally { fullWidth -> fullWidth / 2 } + fadeIn(),
             exit = slideOutHorizontally { fullWidth -> fullWidth / 2 } + fadeOut(),
         ) {

@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -33,8 +34,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -52,6 +57,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import dev.krtirtho.spotube.core.jam.JamParticipant
 import dev.krtirtho.spotube.core.ui.base.Card
 import dev.krtirtho.spotube.core.ui.base.GhostIconButton
 import dev.krtirtho.spotube.core.ui.base.IconButton
@@ -59,12 +65,15 @@ import dev.krtirtho.spotube.core.ui.base.ListRowTile
 import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
 import dev.krtirtho.spotube.core.ui.base.TextField
 import dev.krtirtho.spotube.core.ui.base.copyShape
+import dev.krtirtho.spotube.core.ui.component.AdaptiveDialogBottomSheet
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.Iconsax3DotsMore
 import dev.krtirtho.spotube.resources.iconsax.IconsaxDragHandle
 import dev.krtirtho.spotube.resources.iconsax.IconsaxFilterSearch
+import dev.krtirtho.spotube.resources.iconsax.IconsaxCloseSquare
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicSquareRemove
 import dev.krtirtho.spotube.resources.iconsax.IconsaxTrash
+import dev.krtirtho.spotube.resources.iconsax.IconsaxUserRemove
 import org.koin.compose.viewmodel.koinViewModel
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
@@ -78,12 +87,14 @@ fun PlayerQueueContent(
     val displayItems = state.displayItems
     val filterQuery = state.filterQuery
     val isFiltered = state.isFiltered
+    val isReadOnly = state.isReadOnly
+    var selectedParticipant by remember { mutableStateOf<JamParticipant?>(null) }
 
     val lazyListState = rememberLazyListState()
     val reorderableLazyListState = rememberReorderableLazyListState(
         lazyListState,
         onMove = { from, to ->
-            if (isFiltered) return@rememberReorderableLazyListState
+            if (isFiltered || isReadOnly) return@rememberReorderableLazyListState
             viewModel.onMove(from.index, to.index)
         },
     )
@@ -118,11 +129,13 @@ fun PlayerQueueContent(
                     singleLine = true,
                     modifier = Modifier.weight(1f),
                 )
-                IconButton(
-                    onClick = viewModel::clearQueue,
-                    theme = LocalBaseUITheme.current.iconButtons.outline.copyShape(MaterialTheme.shapes.small),
-                ) {
-                    Icon(Iconsax.IconsaxTrash, contentDescription = "Clear Queue")
+                if (!isReadOnly) {
+                    IconButton(
+                        onClick = viewModel::clearQueue,
+                        theme = LocalBaseUITheme.current.iconButtons.outline.copyShape(MaterialTheme.shapes.small),
+                    ) {
+                        Icon(Iconsax.IconsaxTrash, contentDescription = "Clear Queue")
+                    }
                 }
             }
 
@@ -144,18 +157,138 @@ fun PlayerQueueContent(
                                 val elevation by animateDpAsState(if (isDragging) 8.dp else 0.dp)
                                 QueueItemRow(
                                     item = item,
-                                    reorderScope = if (isFiltered) null else this,
+                                    reorderScope = if (isFiltered || isReadOnly) null else this,
                                     onPlayClick = { viewModel.playQueueItem(item.originalIndex) },
                                     onRemoveClick = { viewModel.removeQueueItem(item.originalIndex) },
                                     onDragStarted = { viewModel.onDragStart() },
                                     onDragStopped = { viewModel.onDragStop() },
+                                    showOptions = !isReadOnly,
+                                    enabled = !isReadOnly,
+                                    onParticipantClick = { selectedParticipant = it },
                                 )
                             }
                         }
                     }
                 }
             }
+
+            selectedParticipant?.let { participant ->
+                ParticipantDialog(
+                    participant = participant,
+                    isJamHost = state.isJamHost,
+                    onDismiss = { selectedParticipant = null },
+                    onKick = { viewModel.kickParticipant(participant.id) },
+                    onBan = { viewModel.banParticipant(participant.id) },
+                    onRemoveSuggestions = { viewModel.removeParticipantTracks(participant.id) },
+                )
+            }
         }
+    }
+}
+
+@Composable
+private fun ParticipantDialog(
+    participant: JamParticipant,
+    isJamHost: Boolean,
+    onDismiss: () -> Unit,
+    onKick: () -> Unit,
+    onBan: () -> Unit,
+    onRemoveSuggestions: () -> Unit,
+) {
+    AdaptiveDialogBottomSheet(
+        onDismiss = onDismiss,
+        title = { Text(participant.displayName, style = MaterialTheme.typography.titleLarge) },
+    ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.padding(vertical = 8.dp),
+            ) {
+                ParticipantAvatar(participant, size = 40)
+                Text(
+                    text = participant.displayName,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                if (participant.isHost) {
+                    Text(
+                        text = "Host",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
+            }
+
+            if (isJamHost && !participant.isHost) {
+                HorizontalDivider(
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                )
+                ListRowTile(
+                    onClick = {
+                        onKick()
+                        onDismiss()
+                    },
+                    leading = {
+                        Icon(
+                            imageVector = Iconsax.IconsaxCloseSquare,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.error,
+                        )
+                    },
+                    title = { Text("Kick") },
+                    subtitle = { Text("Remove them from the session") },
+                )
+                ListRowTile(
+                    onClick = {
+                        onBan()
+                        onDismiss()
+                    },
+                    leading = {
+                        Icon(
+                            imageVector = Iconsax.IconsaxUserRemove,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.error,
+                        )
+                    },
+                    title = { Text("Ban") },
+                    subtitle = { Text("Kick and prevent them from rejoining") },
+                )
+                ListRowTile(
+                    onClick = {
+                        onRemoveSuggestions()
+                        onDismiss()
+                    },
+                    leading = {
+                        Icon(
+                            imageVector = Iconsax.IconsaxMusicSquareRemove,
+                            contentDescription = null,
+                        )
+                    },
+                    title = { Text("Remove suggestions") },
+                    subtitle = { Text("Remove every track they added to the queue") },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ParticipantAvatar(participant: JamParticipant, size: Int) {
+    Box(
+        modifier = Modifier
+            .size(size.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.primaryContainer),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = participant.displayName.firstOrNull()?.uppercase()?.take(1) ?: "?",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
+        )
     }
 }
 
@@ -167,11 +300,15 @@ private fun QueueItemRow(
     onRemoveClick: () -> Unit,
     onDragStarted: () -> Unit,
     onDragStopped: () -> Unit,
+    showOptions: Boolean = true,
+    enabled: Boolean = true,
+    onParticipantClick: (JamParticipant) -> Unit = {},
 ) {
     var showMenu by remember { mutableStateOf(false) }
 
     ListRowTile(
         onClick = onPlayClick,
+        enabled = enabled,
         selected = item.isCurrent,
         modifier = Modifier,
         leading = {
@@ -255,31 +392,51 @@ private fun QueueItemRow(
 
             Spacer(modifier = Modifier.width(4.dp))
 
-            Box {
-                GhostIconButton(
-                    onClick = { showMenu = true },
-                    modifier = Modifier.size(36.dp),
+            item.addedByParticipant?.let { participant ->
+                Box(
+                    modifier = Modifier
+                        .size(28.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .clickable { onParticipantClick(participant) },
+                    contentAlignment = Alignment.Center,
                 ) {
-                    Icon(
-                        Iconsax.Iconsax3DotsMore,
-                        contentDescription = "More options",
-                        modifier = Modifier.size(18.dp),
+                    Text(
+                        text = participant.displayName.firstOrNull()?.uppercase()?.take(1) ?: "?",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                DropdownMenu(
-                    expanded = showMenu,
-                    onDismissRequest = { showMenu = false },
-                ) {
-                    DropdownMenuItem(
-                        text = { Text("Remove from queue") },
-                        onClick = {
-                            onRemoveClick()
-                            showMenu = false
-                        },
-                        leadingIcon = {
-                            Icon(Iconsax.IconsaxMusicSquareRemove, contentDescription = null)
-                        },
-                    )
+                Spacer(modifier = Modifier.width(4.dp))
+            }
+
+            if (showOptions) {
+                Box {
+                    GhostIconButton(
+                        onClick = { showMenu = true },
+                        modifier = Modifier.size(36.dp),
+                    ) {
+                        Icon(
+                            Iconsax.Iconsax3DotsMore,
+                            contentDescription = "More options",
+                            modifier = Modifier.size(18.dp),
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false },
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Remove from queue") },
+                            onClick = {
+                                onRemoveClick()
+                                showMenu = false
+                            },
+                            leadingIcon = {
+                                Icon(Iconsax.IconsaxMusicSquareRemove, contentDescription = null)
+                            },
+                        )
+                    }
                 }
             }
         }

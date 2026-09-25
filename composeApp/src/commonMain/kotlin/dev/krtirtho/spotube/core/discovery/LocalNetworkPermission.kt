@@ -15,12 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.krtirtho.spotube
+package dev.krtirtho.spotube.core.discovery
 
-class Greeting {
-    private val platform = getPlatform()
+import androidx.compose.runtime.Composable
 
-    fun greet(): String {
-        return "Hello, ${platform.name}!"
-    }
-}
+/**
+ * Returns a lambda that requests the OS permission needed for local network
+ * discovery (mDNS/NSD). No-op on platforms where such a permission doesn't
+ * exist or is granted implicitly.
+ */
+@Composable
+expect fun rememberLocalNetworkPermissionRequester(): () -> Unit

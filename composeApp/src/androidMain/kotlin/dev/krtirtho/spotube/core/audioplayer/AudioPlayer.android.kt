@@ -20,6 +20,7 @@ package dev.krtirtho.spotube.core.audioplayer
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaMetadata
@@ -51,11 +52,19 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
     private val appContext: Context = (context as Context).applicationContext
 
     private fun ensureServiceStarted() {
-        val intent = Intent(appContext, PlaybackService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            appContext.startForegroundService(intent)
-        } else {
-            appContext.startService(intent)
+        // On Android 12+ starting a foreground service from the background throws
+        // (ForegroundServiceStartNotAllowedException) — e.g. when a jam session or
+        // remote control applies playback while the app is backgrounded. Never let
+        // that crash the app; playback itself runs in-process without the service.
+        try {
+            val intent = Intent(appContext, PlaybackService::class.java)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                appContext.startForegroundService(intent)
+            } else {
+                appContext.startService(intent)
+            }
+        } catch (e: Exception) {
+            Log.w("AudioPlayer", "Failed to start playback service", e)
         }
     }
 
@@ -226,7 +235,12 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
 
     actual override suspend fun seekTo(position: Duration) {
         withContext(Dispatchers.Main) {
-            val targetMs = position.inWholeMilliseconds.coerceIn(0, exoPlayer.duration)
+            val duration = exoPlayer.duration
+            val targetMs = if (duration > 0) {
+                position.inWholeMilliseconds.coerceIn(0, duration)
+            } else {
+                position.inWholeMilliseconds.coerceAtLeast(0)
+            }
             exoPlayer.seekTo(targetMs)
             _position.tryEmit(exoPlayer.currentPosition.milliseconds)
         }

@@ -20,7 +20,6 @@ package dev.krtirtho.spotube.core.ui.component
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -29,8 +28,9 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.playback.CollectionPlaybackHelper
+import dev.krtirtho.spotube.core.remote.RemoteCollectionType
+import dev.krtirtho.spotube.core.remote.RemotePlaybackController
 import dev.krtirtho.spotube.core.ui.component.cards.PlayableCard
-import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 @Composable
@@ -39,9 +39,9 @@ fun AlbumCard(
     modifier: Modifier = Modifier,
     audioPlayerQueue: AudioPlayerQueue = koinInject(),
     playbackHelper: CollectionPlaybackHelper = koinInject(),
-    navigationCommands: NavigationCommands = koinInject()
+    navigationCommands: NavigationCommands = koinInject(),
+    remotePlaybackController: RemotePlaybackController = koinInject(),
 ) {
-    val scope = rememberCoroutineScope()
     val currentCollectionEntry by audioPlayerQueue.currentCollectionEntryFlow.collectAsStateWithLifecycle()
 
     PlayableCard(
@@ -54,10 +54,18 @@ fun AlbumCard(
         },
         onPlay = {
             if (currentCollectionEntry?.id == album.id) return@PlayableCard
-            scope.launch { playbackHelper.playAlbum(album.id) }
+            remotePlaybackController.requestCollectionPlay(
+                RemoteCollectionType.Album,
+                album.id,
+                album.title,
+            )
         },
         onAddToQueue = {
-            scope.launch { playbackHelper.addAlbumToQueue(album.id) }
+            remotePlaybackController.requestCollectionAddToQueue(
+                RemoteCollectionType.Album,
+                album.id,
+                album.title,
+            )
         },
         modifier = modifier.width(160.dp),
         sharedElementKey = "album_art_${album.id}",

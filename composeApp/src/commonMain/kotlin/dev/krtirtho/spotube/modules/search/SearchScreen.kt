@@ -86,6 +86,10 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
+import dev.krtirtho.spotube.core.jam.JamRole
+import dev.krtirtho.spotube.core.jam.JamRoomService
+import org.koin.compose.koinInject
+import dev.krtirtho.spotube.core.remote.RemotePlaybackController
 import dev.krtirtho.spotube.core.share.ShareService
 import dev.krtirtho.spotube.core.ui.base.AutocompleteTextField
 import dev.krtirtho.spotube.core.ui.base.ChipTab
@@ -121,11 +125,17 @@ private val GridMinCellSize = 180.dp
 fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
     val audioPlayerQueue: AudioPlayerQueue = koinInject()
     val shareService: ShareService = koinInject()
+    val remotePlaybackController: RemotePlaybackController = koinInject()
     val downloadsViewModel: DownloadsViewModel = koinViewModel()
     val libraryRepository: LibraryRepository = koinInject()
     val blacklistRepository: BlacklistRepository = koinInject()
     val navigationCommands: NavigationCommands = koinInject()
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val jamRoomService: JamRoomService = koinInject()
+    val jamActive by jamRoomService.role.map { it != null }
+        .collectAsStateWithLifecycle(initialValue = false)
+    val isJamGuest by jamRoomService.role.map { it == JamRole.Guest }
+        .collectAsStateWithLifecycle(initialValue = false)
     val selectedType = state.selectedSearchType
     val scope = rememberCoroutineScope()
     val savedTrackIds by viewModel.savedTrackIds.collectAsStateWithLifecycle()
@@ -171,14 +181,23 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                 is TrackOptionsAction.StartRadio -> {}
                 is TrackOptionsAction.PlayNext -> {
                     val queue = audioPlayerQueue.getQueue()
-                    queue.find { entry ->
+                    val existing = queue.find { entry ->
                         (entry as? QueueEntry.StreamingTrack)?.track?.id == track.id
-                    }?.let { audioPlayerQueue.removeFromQueue(it) }
-                    audioPlayerQueue.addAllAfterCurrent(listOf(QueueEntry.StreamingTrack(track = track, url = "")))
+                    }
+                    if (existing != null) {
+                        // Already in the local queue: move it to the next position
+                        audioPlayerQueue.removeFromQueue(existing)
+                        audioPlayerQueue.addAllAfterCurrent(listOf(QueueEntry.StreamingTrack(track = track, url = "")))
+                    } else {
+                        remotePlaybackController.requestTrackPlayNext(track)
+                    }
                 }
 
                 is TrackOptionsAction.AddToQueue -> {
-                    audioPlayerQueue.addToQueue(QueueEntry.StreamingTrack(track = track, url = ""))
+                    remotePlaybackController.requestTrackAddToQueue(track)
+                }
+                is TrackOptionsAction.AddToJam -> {
+                    remotePlaybackController.addTrackToJam(track)
                 }
 
                 is TrackOptionsAction.RemoveFromQueue -> {
@@ -237,33 +256,15 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
     }
 
     fun bulkAddToQueue(tracks: List<MetadataTrack>) {
-        scope.launch {
-            val blacklistedTrackIds = blacklistRepository.getTracksSnapshot().map { it.id }.toSet()
-            val blacklistedArtistIds = blacklistRepository.getArtistsSnapshot().map { it.id }.toSet()
-            
-            val filteredTracks = tracks.filter { track ->
-                track.id !in blacklistedTrackIds && 
-                track.artists.none { it.id in blacklistedArtistIds }
-            }
-            
-            val entries = filteredTracks.map { QueueEntry.StreamingTrack(track = it, url = "") }
-            audioPlayerQueue.addAllToQueue(entries)
-        }
+        remotePlaybackController.requestTracksAddToQueue(tracks, "Search results")
+    }
+
+    fun bulkAddToJam(tracks: List<MetadataTrack>) {
+        remotePlaybackController.addTracksToJam(tracks)
     }
 
     fun bulkPlayNext(tracks: List<MetadataTrack>) {
-        scope.launch {
-            val blacklistedTrackIds = blacklistRepository.getTracksSnapshot().map { it.id }.toSet()
-            val blacklistedArtistIds = blacklistRepository.getArtistsSnapshot().map { it.id }.toSet()
-            
-            val filteredTracks = tracks.filter { track ->
-                track.id !in blacklistedTrackIds && 
-                track.artists.none { it.id in blacklistedArtistIds }
-            }
-            
-            val entries = filteredTracks.map { QueueEntry.StreamingTrack(track = it, url = "") }
-            audioPlayerQueue.addAllAfterCurrent(entries)
-        }
+        remotePlaybackController.requestTracksPlayNext(tracks, "Search results")
     }
 
     Scaffold(
@@ -341,6 +342,9 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                             tracksToAddToPlaylist = tracks
                             showAddToPlaylistPicker = true
                         },
+                        onBulkAddToJam = ::bulkAddToJam,
+                        isInJam = jamActive,
+                        isJamGuest = isJamGuest,
                         onArtistClick = { artist ->
                             navigationCommands.navigateTo(Routes.Artist(artist.id))
                         },
@@ -370,6 +374,9 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                             tracksToAddToPlaylist = tracks
                             showAddToPlaylistPicker = true
                         },
+                        onBulkAddToJam = ::bulkAddToJam,
+                        isInJam = jamActive,
+                        isJamGuest = isJamGuest,
                         onArtistClick = { artist ->
                             navigationCommands.navigateTo(Routes.Artist(artist.id))
                         },
@@ -651,6 +658,9 @@ private fun SearchAllTab(
     onBulkAddToQueue: (List<MetadataTrack>) -> Unit,
     onBulkPlayNext: (List<MetadataTrack>) -> Unit,
     onBulkAddToPlaylist: (List<MetadataTrack>) -> Unit,
+    onBulkAddToJam: (List<MetadataTrack>) -> Unit,
+    isInJam: Boolean,
+    isJamGuest: Boolean,
     onArtistClick: (MetadataArtist.Basic) -> Unit,
     onAlbumClick: (MetadataAlbum.Detailed) -> Unit,
     onArtistsOverflowClick: (MetadataTrack) -> Unit,
@@ -708,6 +718,9 @@ private fun SearchAllTab(
         onBulkAddToQueue = onBulkAddToQueue,
         onBulkPlayNext = onBulkPlayNext,
         onBulkAddToPlaylist = onBulkAddToPlaylist,
+        onBulkAddToJam = onBulkAddToJam,
+        isInJam = isInJam,
+        isJamGuest = isJamGuest,
         onArtistClick = onArtistClick,
         onAlbumClick = onAlbumClick,
         onArtistsOverflowClick = onArtistsOverflowClick,
@@ -795,6 +808,9 @@ private fun SearchTracksTab(
     onBulkAddToQueue: (List<MetadataTrack>) -> Unit,
     onBulkPlayNext: (List<MetadataTrack>) -> Unit,
     onBulkAddToPlaylist: (List<MetadataTrack>) -> Unit,
+    onBulkAddToJam: (List<MetadataTrack>) -> Unit,
+    isInJam: Boolean,
+    isJamGuest: Boolean,
     onArtistClick: (MetadataArtist.Basic) -> Unit,
     onAlbumClick: (MetadataAlbum.Detailed) -> Unit,
     onArtistsOverflowClick: (MetadataTrack) -> Unit,
@@ -824,6 +840,9 @@ private fun SearchTracksTab(
         onBulkAddToQueue = onBulkAddToQueue,
         onBulkPlayNext = onBulkPlayNext,
         onBulkAddToPlaylist = onBulkAddToPlaylist,
+        onBulkAddToJam = onBulkAddToJam,
+        isInJam = isInJam,
+        isJamGuest = isJamGuest,
         onArtistClick = onArtistClick,
         onAlbumClick = onAlbumClick,
         onArtistsOverflowClick = onArtistsOverflowClick,

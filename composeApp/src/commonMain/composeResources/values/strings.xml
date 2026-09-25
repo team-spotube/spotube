@@ -96,6 +96,13 @@
     <string name="settings_enable_connect_title">Enable Connect</string>
     <string name="settings_enable_connect_subtitle">Expose remote playback controls through the Spotube Connect feature.</string>
     <string name="settings_playback_port_title">Playback proxy server port</string>
+    <string name="settings_allow_remote_control_title">Allow remote control</string>
+    <string name="settings_allow_remote_control_subtitle">Let other devices on the same network control playback when they connect.</string>
+    <string name="settings_remote_device_name_title">Remote control device name</string>
+    <string name="settings_remote_device_name_subtitle">The name other devices see when discovering this one. Current: %1$s</string>
+    <string name="settings_remote_device_name_description">Choose a friendly name to show to other devices on your network when they discover this Spotube instance.</string>
+    <string name="settings_remote_device_name_placeholder">e.g. Living Room Spotube</string>
+    <string name="settings_remote_device_name_default">device hostname</string>
     <string name="settings_playback_port_subtitle_current">Port used by the playback proxy server. Current: %1$d</string>
     <string name="settings_playback_port_description">Choose a port between 1 and 65535.</string>
     <string name="settings_playback_port_placeholder">14769</string>
@@ -166,5 +173,29 @@
     <string name="plugin_permissions_capability_network_desc">Send and receive data over the internet</string>
     <string name="plugin_permissions_capability_webview_title">WebView</string>
     <string name="plugin_permissions_capability_webview_desc">Display web content inside the app</string>
-</resources>
+    <string name="settings_section_jam">Group Jam</string>
+    <string name="settings_jam_broker_title">MQTT Broker</string>
+    <string name="settings_jam_broker_host">Broker host</string>
+    <string name="settings_jam_broker_host_subtitle">%1$s:%2$d</string>
+    <string name="settings_jam_broker_port">Broker port</string>
+    <string name="settings_jam_broker_tls">Use TLS</string>
+    <string name="settings_jam_broker_username">Username (optional)</string>
+    <string name="settings_jam_broker_password">Password (optional)</string>
+    <string name="settings_jam_broker_client_id">Client ID prefix</string>
+    <string name="settings_jam_broker_client_id_subtitle">Used to identify this Spotube instance</string>
+    <string name="settings_jam_broker_tls_subtitle">Encrypt the broker connection</string>
+    <string name="settings_jam_broker_diagnostics_subtitle">Check the current broker settings before starting a room.</string>
+    <string name="settings_jam_broker_test">Test connection</string>
+    <string name="settings_jam_broker_testing">Testing…</string>
+    <string name="settings_jam_broker_test_ok">Connected in %1$d ms</string>
+    <string name="settings_jam_broker_test_fail">Failed: %1$s</string>
+    <string name="settings_jam_broker_placeholder_note">Placeholder broker — configure your own to self-host</string>
+    <string name="settings_jam_section_connection">Connection</string>
+    <string name="settings_jam_section_credentials">Credentials</string>
+    <string name="settings_jam_section_identity">Identity</string>
+    <string name="settings_jam_section_diagnostics">Diagnostics</string>
 
+    <string name="player_go_to_album">Go to album</string>
+    <string name="player_sleep_timer">Sleep timer</string>
+    <string name="player_track_details">Track details</string>
+</resources>

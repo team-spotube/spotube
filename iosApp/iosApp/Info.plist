@@ -4,5 +4,23 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>dev.krtirtho.spotube</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>spotube</string>
+			</array>
+		</dict>
+	</array>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>Required to discover local network devices</string>
+    <key>NSBonjourServices</key>
+    <array>
+    <string>_http._tcp</string>
+    <string>_spotube-ctrl._tcp</string>
+    </array>
 </dict>
 </plist>

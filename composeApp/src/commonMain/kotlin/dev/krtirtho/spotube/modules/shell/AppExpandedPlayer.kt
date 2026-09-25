@@ -66,9 +66,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -77,14 +74,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.LoopState
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
+import dev.krtirtho.spotube.core.jam.JamRole
+import dev.krtirtho.spotube.core.jam.JamRoomService
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
-import dev.krtirtho.spotube.core.ui.base.BaseUITheme
 import dev.krtirtho.spotube.core.ui.base.GhostIconButton
 import dev.krtirtho.spotube.core.ui.base.IconButton
 import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
@@ -117,6 +114,7 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxRepeateOne
 import dev.krtirtho.spotube.resources.iconsax.IconsaxShuffle
 import dev.krtirtho.spotube.resources.iconsax.InconsaxClock
 import dev.krtirtho.spotube.resources.iconsax.SwapHorizontal2
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -152,16 +150,22 @@ fun AppExpandedPlayer(
     onSleepTimer: () -> Unit = {},
     audioPlayer: AudioPlayerInterface = koinInject(),
     audioPlayerQueue: AudioPlayerQueue = koinInject(),
+    playerOptionsViewModel: PlayerOptionsViewModel = koinViewModel(),
     savedTracksViewModel: SavedTracksViewModel = koinViewModel<SavedTracksViewModel>(
         key = SAVED_TRACKS_COLLECTION_ID,
         parameters = { parametersOf() }
     ),
 ) {
     val playerUiState = rememberPlayerUiState(audioPlayer, audioPlayerQueue)
+    val jamRoomService: JamRoomService = koinInject()
+    val isJamGuest by jamRoomService.role
+        .map { it == JamRole.Guest }
+        .collectAsStateWithLifecycle(initialValue = false)
     val scope = rememberCoroutineScope()
     val downloadsViewModel: DownloadsViewModel = koinViewModel()
     val navigationCommands: NavigationCommands = koinInject()
     val currentEntry by audioPlayerQueue.currentQueueEntryFlow.collectAsStateWithLifecycle()
+    val playerOptionsUiState by playerOptionsViewModel.uiState.collectAsStateWithLifecycle()
     val currentTrack = remember(currentEntry) {
         (currentEntry as? QueueEntry.StreamingTrack)?.track
     }
@@ -177,8 +181,9 @@ fun AppExpandedPlayer(
     val coverModel = playerUiState.coverUrl.takeIf { it.isNotBlank() }
     var isSeeking by remember { mutableStateOf(false) }
     var seekProgress by remember { mutableFloatStateOf(playerUiState.progress) }
-    var showMoreOptionsSheet by remember { mutableStateOf(false) }
     val moreOptionsSheetState = rememberModalBottomSheetState()
+
+    PlayerOptionDialogs(viewModel = playerOptionsViewModel)
 
 
     LaunchedEffect(playerUiState.progress, isSeeking) {
@@ -198,18 +203,22 @@ fun AppExpandedPlayer(
     }
 
     fun onSkipPrevious() {
+        if (isJamGuest) return
         scope.launch { audioPlayer.skipToPrevious() }
     }
 
     fun onSkipNext() {
+        if (isJamGuest) return
         scope.launch { audioPlayer.skipToNext() }
     }
 
     fun onShuffleToggle() {
+        if (isJamGuest) return
         scope.launch { audioPlayer.shuffle(!playerUiState.isShuffling) }
     }
 
     fun onLoopToggle() {
+        if (isJamGuest) return
         scope.launch { audioPlayer.loop(playerUiState.loopState.next()) }
     }
 
@@ -230,10 +239,10 @@ fun AppExpandedPlayer(
         modifier = modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) { innerPadding ->
-        if (showMoreOptionsSheet) {
+        if (playerOptionsUiState.isMoreOptionsSheetOpen) {
             ModalBottomSheet(
                 onDismissRequest = {
-                    showMoreOptionsSheet = false
+                    playerOptionsViewModel.dismissMoreOptionsSheet()
                 },
                 sheetState = moreOptionsSheetState
             ) {
@@ -250,7 +259,7 @@ fun AppExpandedPlayer(
                             icon = Iconsax.SwapHorizontal2,
                             label = "Alternative Source",
                             onClick = {
-                                showMoreOptionsSheet = false
+                                playerOptionsViewModel.dismissMoreOptionsSheet()
                                 onAlternativeSource()
                             },
                         )
@@ -276,7 +285,7 @@ fun AppExpandedPlayer(
                             modifier = Modifier
                                 .aspectRatio(1f)
                                 .clickable {
-                                    showMoreOptionsSheet = false
+                                    playerOptionsViewModel.dismissMoreOptionsSheet()
                                     when (status) {
                                         is DownloadStatus.Completed -> {
                                             scope.launch {
@@ -364,7 +373,8 @@ fun AppExpandedPlayer(
                             icon = Iconsax.InconsaxClock,
                             label = "Sleep Timer",
                             onClick = {
-                                showMoreOptionsSheet = false
+                                playerOptionsViewModel.dismissMoreOptionsSheet()
+                                playerOptionsViewModel.showSleepTimerDialog()
                                 onSleepTimer()
                             },
                         )
@@ -374,12 +384,22 @@ fun AppExpandedPlayer(
                             icon = Iconsax.IconsaxCd,
                             label = "Go to Album",
                             onClick = {
-                                showMoreOptionsSheet = false
+                                playerOptionsViewModel.dismissMoreOptionsSheet()
                                 val albumId = currentTrack?.album?.id
                                 if (albumId != null) {
                                     navigationCommands.navigateTo(Routes.Album(albumId))
                                 }
                                 onGoToAlbum()
+                            },
+                        )
+                    }
+                    item {
+                        OptionTile(
+                            icon = Iconsax.Iconsax3DotsMore,
+                            label = "Track Details",
+                            onClick = {
+                                playerOptionsViewModel.dismissMoreOptionsSheet()
+                                playerOptionsViewModel.showTrackDetails()
                             },
                         )
                     }
@@ -411,7 +431,7 @@ fun AppExpandedPlayer(
                     textAlign = TextAlign.Center,
                     maxLines = 1,
                 )
-                GhostIconButton(onClick = { showMoreOptionsSheet = true }) {
+                GhostIconButton(onClick = playerOptionsViewModel::showMoreOptionsSheet) {
                     Icon(Iconsax.Iconsax3DotsMore, contentDescription = "Player options")
                 }
             }
@@ -517,7 +537,7 @@ fun AppExpandedPlayer(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    GhostIconButton(onClick = ::onShuffleToggle) {
+                    GhostIconButton(onClick = ::onShuffleToggle, enabled = !isJamGuest) {
                         Icon(
                             Iconsax.IconsaxShuffle,
                             contentDescription = if (playerUiState.isShuffling) "Disable shuffle" else "Enable shuffle",
@@ -528,7 +548,7 @@ fun AppExpandedPlayer(
                             }
                         )
                     }
-                    GhostIconButton(onClick = ::onSkipPrevious) {
+                    GhostIconButton(onClick = ::onSkipPrevious, enabled = !isJamGuest) {
                         Icon(Iconsax.IconsaxPrevious, contentDescription = "Previous")
                     }
                     IconButton(
@@ -543,10 +563,10 @@ fun AppExpandedPlayer(
                             modifier = Modifier.size(30.dp),
                         )
                     }
-                    GhostIconButton(onClick = ::onSkipNext) {
+                    GhostIconButton(onClick = ::onSkipNext, enabled = !isJamGuest) {
                         Icon(Iconsax.IconsaxNext, contentDescription = "Next")
                     }
-                    GhostIconButton(onClick = ::onLoopToggle) {
+                    GhostIconButton(onClick = ::onLoopToggle, enabled = !isJamGuest) {
                         Icon(
                             imageVector = when (playerUiState.loopState) {
                                 LoopState.NONE -> Iconsax.IconsaxRepeateMusic

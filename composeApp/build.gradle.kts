@@ -86,6 +86,7 @@ kotlin {
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.kotlinx.datetime)
+                implementation(libs.dns.sd.kt)
 
                 // Navigation
                 implementation(libs.jetbrains.navigation3.ui)
@@ -104,8 +105,10 @@ kotlin {
                 implementation(libs.ktor.client.content.negotiation)
                 implementation(libs.ktor.client.serialization.kotlinx.json)
                 implementation(libs.ktor.client.cio)
+                implementation(libs.ktor.client.websockets)
                 implementation(libs.ktor.server.core)
                 implementation(libs.ktor.server.cio)
+                implementation(libs.ktor.server.websockets)
                 // Zipline
                 api(libs.zipline.core)
                 implementation(libs.zipline.loader)
@@ -160,6 +163,15 @@ kotlin {
                 // Shimmer effect
                 implementation(libs.compose.shimmer)
                 implementation(libs.compose.placeholder.material3)
+
+                // DLNA
+                implementation(libs.dns.sd.kt)
+
+                // mqtt client for jam-session
+                implementation(libs.mqtt.client)
+                implementation(libs.mqtt.x.models)
+                implementation(libs.mqtt.buffer)
+                implementation(libs.mqtt.buffer.codec)
             }
         }
         commonTest.dependencies {

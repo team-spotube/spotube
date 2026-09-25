@@ -143,6 +143,9 @@ fun TrackList(
     onBulkAddToQueue: (List<MetadataTrack>) -> Unit = {},
     onBulkPlayNext: (List<MetadataTrack>) -> Unit = {},
     onBulkAddToPlaylist: (List<MetadataTrack>) -> Unit = {},
+    onBulkAddToJam: (List<MetadataTrack>) -> Unit = {},
+    isInJam: Boolean = false,
+    isJamGuest: Boolean = false,
     currentTrackId: String? = null,
     isCurrentTrackPlaying: Boolean = false,
     trackOptionsState: (MetadataTrack) -> TrackOptionsState = { TrackOptionsState() },
@@ -247,6 +250,8 @@ fun TrackList(
                                     } else {
                                         selectedTrackIds + track.id
                                     }
+                            } else if (isJamGuest) {
+                                onTrackOptionsAction(track, TrackOptionsAction.AddToJam)
                             } else {
                                 onTrackClick(track)
                             }
@@ -274,6 +279,8 @@ fun TrackList(
                             )
                         },
                         trackOptionsState = trackOptionsState(track),
+                        isInJam = isInJam,
+                        isJamGuest = isJamGuest,
                         onShowOptionsClick = { selectedTrackForOptions = track },
                         onArtistClick = onArtistClick,
                         onAlbumClick = onAlbumClick,
@@ -421,28 +428,48 @@ fun TrackList(
                     val isAll =
                         selectedTrackIds.isEmpty() || trackCount == visibleTracks.size
                     AdaptiveDropdownBottomSheet(
-                        items = listOf(
-                            AdaptiveMenuItem(
-                                icon = Iconsax.IconsaxDirectboxReceive,
-                                label = if (isAll) "Download All" else "Download $trackCount",
-                                onClick = { onBulkDownload(targetTracks) },
-                            ),
-                            AdaptiveMenuItem(
-                                icon = Iconsax.IconsaxAddSquare,
-                                label = if (isAll) "Add All to Queue" else "Add $trackCount to Queue",
-                                onClick = { onBulkAddToQueue(targetTracks) },
-                            ),
-                            AdaptiveMenuItem(
-                                icon = Iconsax.IconsaxNext,
-                                label = if (isAll) "Play All Next" else "Play $trackCount Next",
-                                onClick = { onBulkPlayNext(targetTracks) },
-                            ),
-                            AdaptiveMenuItem(
-                                icon = Iconsax.IconsaxMusicPlaylist,
-                                label = if (isAll) "Add All to Playlist" else "Add $trackCount to Playlist",
-                                onClick = { onBulkAddToPlaylist(targetTracks) },
-                            ),
-                        ),
+                        items = buildList {
+                            add(
+                                AdaptiveMenuItem(
+                                    icon = Iconsax.IconsaxDirectboxReceive,
+                                    label = if (isAll) "Download All" else "Download $trackCount",
+                                    onClick = { onBulkDownload(targetTracks) },
+                                ),
+                            )
+                            if (!isJamGuest) {
+                                add(
+                                    AdaptiveMenuItem(
+                                        icon = Iconsax.IconsaxAddSquare,
+                                        label = if (isAll) "Add All to Queue" else "Add $trackCount to Queue",
+                                        onClick = { onBulkAddToQueue(targetTracks) },
+                                    ),
+                                )
+                                add(
+                                    AdaptiveMenuItem(
+                                        icon = Iconsax.IconsaxNext,
+                                        label = if (isAll) "Play All Next" else "Play $trackCount Next",
+                                        onClick = { onBulkPlayNext(targetTracks) },
+                                    ),
+                                )
+                            }
+                            add(
+                                AdaptiveMenuItem(
+                                    icon = Iconsax.IconsaxMusicPlaylist,
+                                    label = if (isAll) "Add All to Playlist" else "Add $trackCount to Playlist",
+                                    onClick = { onBulkAddToPlaylist(targetTracks) },
+                                ),
+                            )
+                        } + if (isInJam) {
+                            listOf(
+                                AdaptiveMenuItem(
+                                    icon = Iconsax.IconsaxAddSquare,
+                                    label = if (isAll) "Add All to Jam" else "Add $trackCount to Jam",
+                                    onClick = { onBulkAddToJam(targetTracks) },
+                                ),
+                            )
+                        } else {
+                            emptyList()
+                        },
                         trigger = { onClick ->
                             GroupIconButton(
                                 onClick = onClick,
@@ -497,6 +524,8 @@ fun TrackList(
                             selectedTrackForOptions = null
                         },
                         onAlbumClick = { track.album?.let { onAlbumClick(it) } },
+                        isInJam = isInJam,
+                        isJamGuest = isJamGuest,
                     )
                 }
             }
@@ -555,6 +584,8 @@ private fun TrackListRow(
     onSelectionToggle: (Boolean) -> Unit,
     onTrackOptionsAction: (TrackOptionsAction) -> Unit,
     trackOptionsState: TrackOptionsState,
+    isInJam: Boolean,
+    isJamGuest: Boolean,
     onShowOptionsClick: () -> Unit,
     onArtistClick: (MetadataArtist.Basic) -> Unit,
     onAlbumClick: (MetadataAlbum.Detailed) -> Unit,
@@ -750,6 +781,8 @@ private fun TrackListRow(
                 state = trackOptionsState,
                 onAction = onTrackOptionsAction,
                 onAlbumClick = { track.album?.let { onAlbumClick(it) } },
+                isInJam = isInJam,
+                isJamGuest = isJamGuest,
             )
         } else {
             GhostIconButton(onClick = onShowOptionsClick) {
@@ -843,6 +876,8 @@ private fun ShimmerTrackListRow(
             onSelectionToggle = {},
             onTrackOptionsAction = {},
             trackOptionsState = TrackOptionsState(),
+            isInJam = false,
+            isJamGuest = false,
             onShowOptionsClick = {},
             onArtistClick = {},
             onAlbumClick = {},

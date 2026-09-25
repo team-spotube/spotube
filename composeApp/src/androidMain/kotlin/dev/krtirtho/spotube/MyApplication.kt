@@ -18,10 +18,8 @@
 package dev.krtirtho.spotube
 
 import android.app.Application
-import android.content.Intent
-import android.os.Build
 import dev.krtirtho.spotube.core.di.initKoin
-import dev.krtirtho.spotube.media.PlaybackService
+import dev.krtirtho.spotube.core.paths.Paths
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -34,14 +32,9 @@ class MyApplication : Application(), KoinComponent {
 
     override fun onCreate() {
         super.onCreate()
+        Paths.init(this)
         initKoin {
             androidContext(this@MyApplication)
-        }
-        val intent = Intent(this, PlaybackService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(intent)
-        } else {
-            startService(intent)
         }
     }
 

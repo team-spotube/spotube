@@ -57,3 +57,18 @@
 - **Nightly**: builds with `-PversionName=nightly`, tag = `nightly` (updates existing), prerelease.
 - **Android signing**: decodes `secrets.KEYSTORE` (base64) → `composeApp/upload-keystore.jks`, writes signing config into `local.properties` from secrets.
 - `create-release` job (depends on all builds) uses `softprops/action-gh-release@v2` to create the GitHub release with all artifacts attached.
+
+## OpenCode Agent MCP Execution Directives
+
+### 1. Code Discovery & Context Search
+- Use `android-studio-mcp` search/symbol tools to locate declarations before making edits across `:composeApp`, `:plugin_interfaces`, or `:js_plugin_example`[cite: 1, 2].
+- Keep `gradle/libs.versions.toml` as the single source of truth for dependencies and version updates.
+
+### 2. UI Architecture Constraints
+- **Strict ViewModel Separation:** UI composables in `commonMain` must only collect `StateFlow<UiState>` and emit event callbacks. Do NOT write business logic, filtering, or `mutableStateListOf` directly inside `@Composable` functions.
+- **Adaptive Components:** Use `AdaptiveDropdownBottomSheet` or `AdaptiveDialogBottomSheet` inside `commonMain` for adaptive layouts[cite: 2]. Do NOT create platform-specific `expect/actual` variants unless platform-native APIs (like windowing or native scrollbars) are explicitly required[cite: 2].
+
+### 3. Verification & Diagnostic Loops
+- **Post-Edit Verification:** After editing Kotlin code, validate compilation by running `./gradlew :composeApp:check` or `./gradlew :composeApp:assembleDebug` via MCP[cite: 2].
+- **Dispatcher Integrity:** Never remove or bypass `SwingMainDispatcherFactory` in `composeApp/src/jvmMain/.../core/coroutines/`[cite: 2]. It is required to prevent `compose-webview` from hijacking `Dispatchers.Main` away from the Swing EDT[cite: 2].
+- **Live Preview Iteration:** Use `compose-hot-reload` to evaluate UI layout changes headlessly without forcing full Gradle rebuilds.

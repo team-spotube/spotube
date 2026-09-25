@@ -68,8 +68,10 @@ import dev.krtirtho.spotube.modules.downloads.DownloadBadgeIndicator
 import dev.krtirtho.spotube.modules.library.LibraryState
 import dev.krtirtho.spotube.modules.library.LibraryTab
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxMirroringScreen
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSidebarLeftBroken
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSidebarRightBroken
+import dev.krtirtho.spotube.resources.iconsax.User
 import dev.krtirtho.spotube.tabs
 import org.jetbrains.compose.resources.Font
 import org.koin.compose.koinInject
@@ -103,6 +105,7 @@ fun AppSidebar(
             },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Column(modifier = Modifier.weight(1f)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -175,6 +178,24 @@ fun AppSidebar(
                 )
             }
         }
+        }
+
+        SidebarItem(
+            label = "Devices",
+            activeIcon = Iconsax.IconsaxMirroringScreen,
+            onClick = { navigator.navigate(Routes.Devices) },
+            selected = false,
+            expanded = expanded,
+        )
+        SidebarItem(
+            label = "Group Jam",
+            activeIcon = Iconsax.User,
+            onClick = { navigator.navigate(Routes.Jam) },
+            selected = false,
+            expanded = expanded,
+        )
+
+        Spacer(modifier = Modifier.height(120.dp))
     }
 }
 
