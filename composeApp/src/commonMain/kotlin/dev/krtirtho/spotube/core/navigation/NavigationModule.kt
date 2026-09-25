@@ -33,6 +33,7 @@ import dev.krtirtho.spotube.modules.saved_tracks.SAVED_TRACKS_COLLECTION_ID
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksScreen
 import dev.krtirtho.spotube.modules.search.SearchScreen
 import dev.krtirtho.spotube.modules.settings.SettingsScreen
+import dev.krtirtho.spotube.modules.settings.JamSettingsScreen
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -87,6 +88,9 @@ sealed interface Routes : NavKey {
 
     @Serializable
     data object Jam : Routes
+
+    @Serializable
+    data object JamSettings : Routes
 }
 
 @OptIn(KoinExperimentalAPI::class)
@@ -171,5 +175,7 @@ val navigationModule = module {
     navigation<Routes.Jam> {
         JamScreen(navigationCommands = get())
     }
+    navigation<Routes.JamSettings> {
+        JamSettingsScreen(viewModel = koinViewModel())
+    }
 }
-

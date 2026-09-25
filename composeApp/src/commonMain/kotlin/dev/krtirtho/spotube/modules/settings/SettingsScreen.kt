@@ -114,7 +114,7 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
                 if (settingsState != null)
                     jamSection(
                         settings = settingsState!!,
-                        settingsViewModel = settingsViewModel,
+                        navigationCommands = navigatorCommands,
                     )
                 if (settingsState != null)
                     cacheSection(
@@ -142,4 +142,3 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
         }
     }
 }
-

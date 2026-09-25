@@ -74,6 +74,7 @@ import dev.krtirtho.spotube.modules.search.SearchScreenViewModel
 import dev.krtirtho.spotube.modules.settings.SettingsProvider
 import dev.krtirtho.spotube.modules.settings.SettingsRepository
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
+import dev.krtirtho.spotube.modules.settings.JamSettingsViewModel
 import dev.krtirtho.spotube.modules.shell.AppShellViewModel
 import dev.krtirtho.spotube.modules.shell.PlayerOptionsViewModel
 import dev.krtirtho.spotube.modules.shell.alternative_track.AlternativeTrackContentViewModel
@@ -127,6 +128,7 @@ val sharedModules = module {
     // Settings
     singleOf(::SettingsRepository)
     viewModelOf(::SettingsViewModel) { bind<SettingsProvider>() }
+    viewModelOf(::JamSettingsViewModel)
 
     // Downloads
     singleOf(::DownloadManager)

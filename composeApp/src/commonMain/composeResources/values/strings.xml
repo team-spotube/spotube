@@ -182,14 +182,20 @@
     <string name="settings_jam_broker_username">Username (optional)</string>
     <string name="settings_jam_broker_password">Password (optional)</string>
     <string name="settings_jam_broker_client_id">Client ID prefix</string>
+    <string name="settings_jam_broker_client_id_subtitle">Used to identify this Spotube instance</string>
+    <string name="settings_jam_broker_tls_subtitle">Encrypt the broker connection</string>
+    <string name="settings_jam_broker_diagnostics_subtitle">Check the current broker settings before starting a room.</string>
     <string name="settings_jam_broker_test">Test connection</string>
     <string name="settings_jam_broker_testing">Testing…</string>
     <string name="settings_jam_broker_test_ok">Connected in %1$d ms</string>
     <string name="settings_jam_broker_test_fail">Failed: %1$s</string>
     <string name="settings_jam_broker_placeholder_note">Placeholder broker — configure your own to self-host</string>
+    <string name="settings_jam_section_connection">Connection</string>
+    <string name="settings_jam_section_credentials">Credentials</string>
+    <string name="settings_jam_section_identity">Identity</string>
+    <string name="settings_jam_section_diagnostics">Diagnostics</string>
 
     <string name="player_go_to_album">Go to album</string>
     <string name="player_sleep_timer">Sleep timer</string>
     <string name="player_track_details">Track details</string>
 </resources>
-
