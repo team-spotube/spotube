@@ -21,6 +21,33 @@ import dev.krtirtho.plugin_interfaces.plugin_apis.audio.StreamProtocol
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.Duration
+
+data class MediaItem(
+    val title: String,
+    val artist: String,
+    val album: String,
+    val duration: Duration,
+    val coverURL: String,
+    val url: String,
+    val protocol: StreamProtocol = StreamProtocol.PROGRESSIVE,
+)
+
+enum class LoopState {
+    NONE, ONE, ALL;
+
+    fun next(): LoopState {
+        return when (this) {
+            NONE -> ONE
+            ONE -> ALL
+            ALL -> NONE
+        }
+    }
+}
+
+enum class PlayerState {
+    IDLE, BUFFERING, READY, PLAYING, PAUSED, COMPLETED
+}
 
 @Serializable
 sealed interface QueueEntry {

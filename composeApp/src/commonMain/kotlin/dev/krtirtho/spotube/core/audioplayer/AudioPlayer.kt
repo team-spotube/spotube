@@ -17,40 +17,10 @@
 
 package dev.krtirtho.spotube.core.audioplayer
 
-import dev.krtirtho.plugin_interfaces.plugin_apis.audio.StreamProtocol
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlin.time.Duration
 
-data class MediaItem(
-    val title: String,
-    val artist: String,
-    val album: String,
-    val duration: Duration,
-    val coverURL: String,
-    val url: String,
-    val protocol: StreamProtocol = StreamProtocol.PROGRESSIVE,
-) {
-    fun toDebugString(): String {
-        return "MediaItem(title='$title', artist='$artist', album='$album', duration=$duration, coverURL='$coverURL', url='$url', protocol=$protocol)"
-    }
-}
-
-enum class LoopState {
-    NONE, ONE, ALL;
-
-    fun next(): LoopState {
-        return when (this) {
-            NONE -> ONE
-            ONE -> ALL
-            ALL -> NONE
-        }
-    }
-}
-
-enum class PlayerState {
-    IDLE, BUFFERING, READY, PLAYING, PAUSED, COMPLETED
-}
 
 interface AudioPlayerInterface {
     //    // Playback

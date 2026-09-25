@@ -75,6 +75,7 @@ import dev.krtirtho.spotube.modules.settings.SettingsProvider
 import dev.krtirtho.spotube.modules.settings.SettingsRepository
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import dev.krtirtho.spotube.modules.shell.AppShellViewModel
+import dev.krtirtho.spotube.modules.shell.PlayerOptionsViewModel
 import dev.krtirtho.spotube.modules.shell.alternative_track.AlternativeTrackContentViewModel
 import dev.krtirtho.spotube.modules.shell.player_queue.PlayerQueueContentViewModel
 import org.koin.core.module.Module
@@ -96,6 +97,7 @@ val sharedModules = module {
 
     // Shell
     viewModelOf(::AppShellViewModel)
+    viewModelOf(::PlayerOptionsViewModel)
     viewModelOf(::PlayerQueueContentViewModel)
     viewModelOf(::AlternativeTrackContentViewModel)
 

@@ -18,7 +18,6 @@
 package dev.krtirtho.spotube.modules.shell
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +33,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -54,19 +55,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.blur.HazeColorEffect
 import dev.chrisbanes.haze.blur.blurEffect
 import dev.chrisbanes.haze.hazeEffect
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
-import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.LoopState
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.jam.JamRole
 import dev.krtirtho.spotube.core.jam.JamRoomService
+import dev.krtirtho.spotube.core.navigation.NavigationCommands
+import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.ui.base.GhostIconButton
 import dev.krtirtho.spotube.core.ui.base.IconButton
 import dev.krtirtho.spotube.core.ui.base.Slider
@@ -122,6 +124,7 @@ fun AppLargePlayer(
     audioPlayer: AudioPlayerInterface = koinInject(),
     audioPlayerQueue: AudioPlayerQueue = koinInject(),
     downloadsViewModel: DownloadsViewModel = koinViewModel(),
+    playerOptionsViewModel: PlayerOptionsViewModel = koinViewModel(),
     savedTracksViewModel: SavedTracksViewModel = koinViewModel<SavedTracksViewModel>(
         key = SAVED_TRACKS_COLLECTION_ID,
         parameters = { parametersOf() }
@@ -134,10 +137,15 @@ fun AppLargePlayer(
         .collectAsStateWithLifecycle(initialValue = false)
     val scope = rememberCoroutineScope()
     val currentEntry by audioPlayerQueue.currentQueueEntryFlow.collectAsStateWithLifecycle()
+    val currentTrack = (currentEntry as? QueueEntry.StreamingTrack)?.track
+    val playerOptionsUiState by playerOptionsViewModel.uiState.collectAsStateWithLifecycle()
+    val navigationCommands: NavigationCommands = koinInject()
     var isSeeking by remember { mutableStateOf(false) }
     var seekProgress by remember { mutableFloatStateOf(playerUiState.progress) }
     var lastNonZeroVolume by remember { mutableFloatStateOf(if (playerUiState.volume > 0f) playerUiState.volume else 0.6f) }
     val coverModel = playerUiState.coverUrl.takeIf { it.isNotBlank() }
+
+    PlayerOptionDialogs(viewModel = playerOptionsViewModel)
 
     LaunchedEffect(playerUiState.progress, isSeeking) {
         if (!isSeeking) {
@@ -383,8 +391,45 @@ fun AppLargePlayer(
                         GhostIconButton(onClick = onLyrics) {
                             Icon(Iconsax.IconsaxMusic, contentDescription = "Lyrics")
                         }
-                        GhostIconButton(onClick = onMoreOptions) {
-                            Icon(Iconsax.Iconsax3DotsMore, contentDescription = "More options")
+                        Box {
+                            GhostIconButton(
+                                onClick = {
+                                    playerOptionsViewModel.showMoreOptionsMenu()
+                                    onMoreOptions()
+                                }
+                            ) {
+                                Icon(Iconsax.Iconsax3DotsMore, contentDescription = "More options")
+                            }
+                            DropdownMenu(
+                                expanded = playerOptionsUiState.isMoreOptionsMenuOpen,
+                                onDismissRequest = playerOptionsViewModel::dismissMoreOptionsMenu,
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text("Go to album") },
+                                    enabled = currentTrack?.album?.id != null,
+                                    onClick = {
+                                        playerOptionsViewModel.dismissMoreOptionsMenu()
+                                        currentTrack?.album?.id?.let { albumId ->
+                                            navigationCommands.navigateTo(Routes.Album(albumId))
+                                        }
+                                    },
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Sleep timer") },
+                                    onClick = {
+                                        playerOptionsViewModel.dismissMoreOptionsMenu()
+                                        playerOptionsViewModel.showSleepTimerDialog()
+                                    },
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Track details") },
+                                    enabled = currentTrack != null,
+                                    onClick = {
+                                        playerOptionsViewModel.dismissMoreOptionsMenu()
+                                        playerOptionsViewModel.showTrackDetails()
+                                    },
+                                )
+                            }
                         }
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {

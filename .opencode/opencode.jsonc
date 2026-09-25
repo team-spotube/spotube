@@ -3,6 +3,7 @@
   "mcp": {
     "compose-hot-reload": {
       "enabled": true,
+      "disabled": false,
       "type": "local",
       "command": [
         "./gradlew",
@@ -10,6 +11,20 @@
         "--quiet",
         "--console=plain",
         "hotMcpServer"
+      ]
+    },
+    "android-studio-mcp": {
+      "type": "local",
+      "environment": {
+        "IJ_MCP_SERVER_PORT": "64342"
+      },
+      "enabled": true,
+      "disabled": false,
+      "command": [
+        "/opt/android-studio/jbr/bin/java",
+        "-classpath",
+        "/home/krtirtho/.local/share/Google/AndroidStudio2026.1.4/mcpserver/lib/mcpserver.jar:/home/krtirtho/.local/share/Google/AndroidStudio2026.1.4/mcpserver/lib/io.modelcontextprotocol.kotlin.sdk.jar:/home/krtirtho/.local/share/Google/AndroidStudio2026.1.4/mcpserver/lib/io.github.oshai.kotlin.logging.jvm.jar:/opt/android-studio/lib/util-8.jar:/opt/android-studio/lib/intellij.libraries.kotlinx.coroutines.core.jar:/opt/android-studio/lib/intellij.libraries.ktor.client.cio.jar:/opt/android-studio/lib/intellij.libraries.ktor.client.jar:/opt/android-studio/lib/intellij.libraries.ktor.network.tls.jar:/opt/android-studio/lib/intellij.libraries.ktor.io.jar:/opt/android-studio/lib/intellij.libraries.ktor.utils.jar:/opt/android-studio/lib/intellij.libraries.kotlinx.io.jar:/opt/android-studio/lib/intellij.libraries.kotlinx.serialization.core.jar:/opt/android-studio/lib/intellij.libraries.kotlinx.serialization.json.jar",
+        "com.intellij.mcpserver.stdio.McpStdioRunnerKt"
       ]
     }
   }

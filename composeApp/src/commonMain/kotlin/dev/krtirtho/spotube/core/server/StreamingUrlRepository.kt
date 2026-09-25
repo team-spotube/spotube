@@ -18,15 +18,20 @@
 package dev.krtirtho.spotube.core.server
 
 import dev.krtirtho.plugin_interfaces.plugin_apis.audio.AudioSource
+import dev.krtirtho.plugin_interfaces.plugin_apis.audio.AudioFormat
+import dev.krtirtho.plugin_interfaces.plugin_apis.audio.AudioQuality
+import dev.krtirtho.plugin_interfaces.plugin_apis.audio.AudioStream
 import dev.krtirtho.plugin_interfaces.plugin_apis.audio.StreamProtocol
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.di.injectLogger
 import dev.krtirtho.spotube.modules.plugin.PluginManager
+import dev.krtirtho.spotube.modules.settings.SettingsRepository
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.koin.core.component.KoinComponent
+import kotlin.math.abs
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.seconds
 
@@ -36,6 +41,10 @@ data class CachedStreamUrl(
     val expiresAtMs: Long,
     val container: String,
     val codec: String,
+    val source: AudioSource.Streamed? = null,
+    val selectedStream: AudioStream? = null,
+    val preferredFormat: AudioFormat,
+    val preferredQuality: AudioQuality,
 )
 
 data class StreamInfo(
@@ -45,11 +54,11 @@ data class StreamInfo(
     val container: String,
 )
 
-
 class StreamingUrlRepository(
     private val pluginManager: PluginManager,
     private val audioPlayerQueue: AudioPlayerQueue,
     private val matchedTracksRepository: MatchedTracksRepository,
+    private val settingsRepository: SettingsRepository,
 ) : KoinComponent {
 
     companion object {
@@ -61,15 +70,6 @@ class StreamingUrlRepository(
     private val streamUrlCache = mutableMapOf<String, CachedStreamUrl>()
     private val alternativesCacheMutex = Mutex()
     private val alternativesCache = mutableMapOf<String, List<AudioSource>>()
-
-    private fun normalizeManifestUrl(url: String, protocol: StreamProtocol): String {
-        if (url.startsWith("http")) return url
-        val base = when (protocol) {
-            StreamProtocol.DASH, StreamProtocol.HLS -> "https://www.youtube.com"
-            StreamProtocol.PROGRESSIVE -> return url
-        }
-        return "$base$url"
-    }
 
     suspend fun resolveStreamInfo(
         trackId: String,
@@ -91,13 +91,16 @@ class StreamingUrlRepository(
         forceRefresh: Boolean = false
     ): StreamInfo? {
         val trackId = track.id
+        val settings = settingsRepository.userSettings.value
+        val preferredFormat = settings.streamingMusicFormat
+        val preferredQuality = settings.streamingMusicQuality
+
         if (!forceRefresh) {
-            getCachedStreamUrl(trackId)?.let { cached ->
+            getCachedStreamUrl(trackId, preferredFormat, preferredQuality)?.let { cached ->
                 logger.v { "Using cached stream URL for track $trackId" }
                 return cached
             }
         }
-
         val audioPlugin = pluginManager.selectedAudioPlugin.value
         if (audioPlugin == null) {
             logger.w { "No audio plugin selected while resolving stream for track $trackId" }
@@ -120,16 +123,14 @@ class StreamingUrlRepository(
 
             if (stream != null) {
                 logger.d { "Resolved stream for track $trackId using cached source" }
-                val resolvedStream = stream.streams.firstOrNull()
+                val resolvedStream = selectPreferredAudioStream(
+                    stream.streams,
+                    preferredFormat,
+                    preferredQuality,
+                )
                 if (resolvedStream != null) {
-                    val url = normalizeManifestUrl(resolvedStream.url, resolvedStream.protocol)
-                    val info = StreamInfo(
-                        url,
-                        resolvedStream.protocol,
-                        resolvedStream.codec,
-                        resolvedStream.container
-                    )
-                    cacheStreamInfo(trackId, info)
+                    val info = resolvedStream.toStreamInfo()
+                    cacheStreamInfo(trackId, info, preferredFormat, preferredQuality, stream, resolvedStream)
                     return info
                 }
             }
@@ -182,45 +183,66 @@ class StreamingUrlRepository(
         }
 
         logger.d { "Resolved stream for track $trackId via track lookup" }
-        val resolvedStream = stream.streams.firstOrNull()
+        val resolvedStream = selectPreferredAudioStream(
+            stream.streams,
+            preferredFormat,
+            preferredQuality,
+        )
         if (resolvedStream != null) {
-            val url = normalizeManifestUrl(resolvedStream.url, resolvedStream.protocol)
-            val info = StreamInfo(
-                url,
-                resolvedStream.protocol,
-                resolvedStream.codec,
-                resolvedStream.container
-            )
-            cacheStreamInfo(trackId, info)
+            val info = resolvedStream.toStreamInfo()
+            cacheStreamInfo(trackId, info, preferredFormat, preferredQuality, stream, resolvedStream)
             return info
         }
         return null
     }
 
-    suspend fun getCachedStreamUrl(trackId: String): StreamInfo? {
+    private fun AudioStream.toStreamInfo() = StreamInfo(
+        url = normalizeManifestUrl(url, protocol),
+        protocol = protocol,
+        codec = codec,
+        container = container,
+    )
+
+    private suspend fun getCachedStreamUrl(
+        trackId: String,
+        preferredFormat: AudioFormat,
+        preferredQuality: AudioQuality,
+    ): StreamInfo? {
         val now = Clock.System.now().toEpochMilliseconds()
         return streamUrlCacheMutex.withLock {
             val cached = streamUrlCache[trackId] ?: return@withLock null
+            if (cached.preferredFormat != preferredFormat || cached.preferredQuality != preferredQuality) {
+                return@withLock null
+            }
             if (cached.expiresAtMs <= now) {
-                streamUrlCache.remove(trackId)
                 logger.v { "Cached stream URL expired for track $trackId" }
                 return@withLock null
             }
-            StreamInfo(cached.url, cached.protocol, cached.container, cached.codec)
+            StreamInfo(cached.url, cached.protocol, cached.codec, cached.container)
         }
     }
 
-    suspend fun cacheStreamInfo(trackId: String, info: StreamInfo) {
+    private suspend fun cacheStreamInfo(
+        trackId: String,
+        info: StreamInfo,
+        preferredFormat: AudioFormat,
+        preferredQuality: AudioQuality,
+        source: AudioSource.Streamed,
+        selectedStream: AudioStream,
+    ) {
         val expiresAtMs = Clock.System.now().toEpochMilliseconds() + STREAM_URL_CACHE_TTL_MS
         streamUrlCacheMutex.withLock {
-            streamUrlCache[trackId] =
-                CachedStreamUrl(
-                    url = info.url,
-                    protocol = info.protocol,
-                    expiresAtMs = expiresAtMs,
-                    container = info.container,
-                    codec = info.codec
-                )
+            streamUrlCache[trackId] = CachedStreamUrl(
+                url = info.url,
+                protocol = info.protocol,
+                expiresAtMs = expiresAtMs,
+                container = info.container,
+                codec = info.codec,
+                source = source,
+                selectedStream = selectedStream,
+                preferredFormat = preferredFormat,
+                preferredQuality = preferredQuality,
+            )
         }
     }
 
@@ -232,6 +254,7 @@ class StreamingUrlRepository(
                 logger.v { "Invalidated cached stream URL for track $trackId" }
             }
         }
+        // Stream metadata is part of the same URL-cache entry and is removed with it.
     }
 
     suspend fun getCachedAlternatives(trackId: String): List<AudioSource>? {
@@ -247,9 +270,77 @@ class StreamingUrlRepository(
         }
     }
 
+    /** Returns stream details from the existing playback URL cache; never fetches them. */
+    suspend fun getCachedStreamUrlEntry(trackId: String): CachedStreamUrl? {
+        val now = Clock.System.now().toEpochMilliseconds()
+        return streamUrlCacheMutex.withLock {
+            val entry = streamUrlCache[trackId] ?: return@withLock null
+            if (entry.expiresAtMs <= now) {
+                logger.v { "Returning expired stream details for track $trackId" }
+            }
+            entry
+        }
+    }
+
     suspend fun invalidateCachedAlternatives(trackId: String) {
         alternativesCacheMutex.withLock {
             alternativesCache.remove(trackId)
         }
     }
+
+}
+
+/**
+ * Resolves a stream URL to an absolute URL. Relative manifest paths (DASH/HLS) are
+ * resolved against the YouTube origin; progressive URLs are returned unchanged.
+ */
+internal fun normalizeManifestUrl(url: String, protocol: StreamProtocol): String {
+    if (url.startsWith("http")) return url
+    return when (protocol) {
+        StreamProtocol.DASH, StreamProtocol.HLS -> "https://www.youtube.com$url"
+        StreamProtocol.PROGRESSIVE -> url
+    }
+}
+
+/** Selects the available stream closest to the user's preferred format and quality. */
+internal fun selectPreferredAudioStream(
+    streams: List<AudioStream>,
+    preferredFormat: AudioFormat,
+    preferredQuality: AudioQuality,
+): AudioStream? = streams.minWithOrNull(
+    compareBy<AudioStream> { stream ->
+        formatMismatchCount(stream, preferredFormat)
+    }.thenBy { stream ->
+        if (stream.matchesQualityType(preferredQuality)) 0 else 1
+    }.thenBy { stream ->
+        stream.qualityDistance(preferredQuality)
+    }.thenBy { stream ->
+        stream.channelDistance(preferredQuality)
+    }
+)
+
+private fun formatMismatchCount(stream: AudioStream, preferredFormat: AudioFormat): Int =
+    (if (stream.codec.equals(preferredFormat.codec, ignoreCase = true)) 0 else 1) +
+        (if (stream.container.equals(preferredFormat.container, ignoreCase = true)) 0 else 1)
+
+private fun AudioStream.matchesQualityType(preferredQuality: AudioQuality): Boolean = when (this) {
+    is AudioStream.Lossy -> preferredQuality is AudioQuality.Lossy
+    is AudioStream.Lossless -> preferredQuality is AudioQuality.Lossless
+}
+
+private fun AudioStream.qualityDistance(preferredQuality: AudioQuality): Long = when {
+    this is AudioStream.Lossy && preferredQuality is AudioQuality.Lossy ->
+        abs(bitrate.toLong() - preferredQuality.bitrate.toLong())
+
+    this is AudioStream.Lossless && preferredQuality is AudioQuality.Lossless ->
+        abs(sampleRate.toLong() - preferredQuality.sampleRate.toLong())
+
+    else -> Long.MAX_VALUE
+}
+
+private fun AudioStream.channelDistance(preferredQuality: AudioQuality): Int = when {
+    this is AudioStream.Lossless && preferredQuality is AudioQuality.Lossless ->
+        abs(channels - preferredQuality.channels)
+
+    else -> 0
 }
