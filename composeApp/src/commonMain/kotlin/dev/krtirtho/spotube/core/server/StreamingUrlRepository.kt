@@ -26,8 +26,8 @@ import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.di.injectLogger
-import dev.krtirtho.spotube.modules.plugin.PluginManager
-import dev.krtirtho.spotube.modules.settings.SettingsRepository
+import dev.krtirtho.spotube.modules.plugin.AudioPluginSource
+import dev.krtirtho.spotube.modules.settings.UserSettingsSource
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.koin.core.component.KoinComponent
@@ -45,6 +45,15 @@ data class CachedStreamUrl(
     val selectedStream: AudioStream? = null,
     val preferredFormat: AudioFormat,
     val preferredQuality: AudioQuality,
+    // The id of the audio plugin that produced this entry. Guards against a stale entry
+    // (e.g. a YouTube video URL) being served after the user switches to a different
+    // audio plugin, which would otherwise play back completely unrelated content.
+    val pluginId: String,
+)
+
+private data class CachedAlternatives(
+    val pluginId: String,
+    val sources: List<AudioSource>,
 )
 
 data class StreamInfo(
@@ -55,21 +64,18 @@ data class StreamInfo(
 )
 
 class StreamingUrlRepository(
-    private val pluginManager: PluginManager,
+    private val pluginManager: AudioPluginSource,
     private val audioPlayerQueue: AudioPlayerQueue,
-    private val matchedTracksRepository: MatchedTracksRepository,
-    private val settingsRepository: SettingsRepository,
+    private val matchedTracksRepository: TrackSourceRepository,
+    private val settingsRepository: UserSettingsSource,
+    private val streamUrlCacheTtlMs: Long = 30.seconds.inWholeMilliseconds,
 ) : KoinComponent {
-
-    companion object {
-        private val STREAM_URL_CACHE_TTL_MS = 30.seconds.inWholeMilliseconds
-    }
 
     private val logger by injectLogger<StreamingUrlRepository>()
     private val streamUrlCacheMutex = Mutex()
     private val streamUrlCache = mutableMapOf<String, CachedStreamUrl>()
     private val alternativesCacheMutex = Mutex()
-    private val alternativesCache = mutableMapOf<String, List<AudioSource>>()
+    private val alternativesCache = mutableMapOf<String, CachedAlternatives>()
 
     suspend fun resolveStreamInfo(
         trackId: String,
@@ -95,19 +101,20 @@ class StreamingUrlRepository(
         val preferredFormat = settings.streamingMusicFormat
         val preferredQuality = settings.streamingMusicQuality
 
-        if (!forceRefresh) {
-            getCachedStreamUrl(trackId, preferredFormat, preferredQuality)?.let { cached ->
-                logger.v { "Using cached stream URL for track $trackId" }
-                return cached
-            }
-        }
         val audioPlugin = pluginManager.selectedAudioPlugin.value
         if (audioPlugin == null) {
             logger.w { "No audio plugin selected while resolving stream for track $trackId" }
             return null
         }
 
-        val source = matchedTracksRepository.getTrackSource(track)
+        if (!forceRefresh) {
+            getCachedStreamUrl(trackId, preferredFormat, preferredQuality, audioPlugin.pluginId)?.let { cached ->
+                logger.v { "Using cached stream URL for track $trackId" }
+                return cached
+            }
+        }
+
+        val source = matchedTracksRepository.getTrackSource(track, audioPlugin.pluginId)
 
         if (source != null) {
             logger.d { "Attempting stream resolution for track $trackId using cached source" }
@@ -130,7 +137,7 @@ class StreamingUrlRepository(
                 )
                 if (resolvedStream != null) {
                     val info = resolvedStream.toStreamInfo()
-                    cacheStreamInfo(trackId, info, preferredFormat, preferredQuality, stream, resolvedStream)
+                    cacheStreamInfo(trackId, info, preferredFormat, preferredQuality, stream, resolvedStream, audioPlugin.pluginId)
                     return info
                 }
             }
@@ -153,19 +160,19 @@ class StreamingUrlRepository(
             return null
         }
 
-        cacheAlternatives(trackId, sources)
+        cacheAlternatives(trackId, sources, audioPlugin.pluginId)
 
         val stream = runCatching {
             audioPlugin.use {
                 sources.firstNotNullOfOrNull { src ->
                     when (src) {
                         is AudioSource.Streamed -> {
-                            matchedTracksRepository.saveTrackSource(track, src.toBasic())
+                            matchedTracksRepository.saveTrackSource(track, src.toBasic(), audioPlugin.pluginId)
                             src
                         }
 
                         is AudioSource.Basic -> {
-                            matchedTracksRepository.saveTrackSource(track, src)
+                            matchedTracksRepository.saveTrackSource(track, src, audioPlugin.pluginId)
                             audioAPI.getStreamsOfAudioSource(src)
                                 .firstOrNull()
                         }
@@ -190,7 +197,7 @@ class StreamingUrlRepository(
         )
         if (resolvedStream != null) {
             val info = resolvedStream.toStreamInfo()
-            cacheStreamInfo(trackId, info, preferredFormat, preferredQuality, stream, resolvedStream)
+            cacheStreamInfo(trackId, info, preferredFormat, preferredQuality, stream, resolvedStream, audioPlugin.pluginId)
             return info
         }
         return null
@@ -207,10 +214,15 @@ class StreamingUrlRepository(
         trackId: String,
         preferredFormat: AudioFormat,
         preferredQuality: AudioQuality,
+        pluginId: String,
     ): StreamInfo? {
         val now = Clock.System.now().toEpochMilliseconds()
         return streamUrlCacheMutex.withLock {
             val cached = streamUrlCache[trackId] ?: return@withLock null
+            if (cached.pluginId != pluginId) {
+                logger.v { "Cached stream URL for track $trackId belongs to a different plugin; ignoring" }
+                return@withLock null
+            }
             if (cached.preferredFormat != preferredFormat || cached.preferredQuality != preferredQuality) {
                 return@withLock null
             }
@@ -229,8 +241,9 @@ class StreamingUrlRepository(
         preferredQuality: AudioQuality,
         source: AudioSource.Streamed,
         selectedStream: AudioStream,
+        pluginId: String,
     ) {
-        val expiresAtMs = Clock.System.now().toEpochMilliseconds() + STREAM_URL_CACHE_TTL_MS
+        val expiresAtMs = Clock.System.now().toEpochMilliseconds() + streamUrlCacheTtlMs
         streamUrlCacheMutex.withLock {
             streamUrlCache[trackId] = CachedStreamUrl(
                 url = info.url,
@@ -242,6 +255,7 @@ class StreamingUrlRepository(
                 selectedStream = selectedStream,
                 preferredFormat = preferredFormat,
                 preferredQuality = preferredQuality,
+                pluginId = pluginId,
             )
         }
     }
@@ -257,15 +271,21 @@ class StreamingUrlRepository(
         // Stream metadata is part of the same URL-cache entry and is removed with it.
     }
 
-    suspend fun getCachedAlternatives(trackId: String): List<AudioSource>? {
+    /** Returns cached alternatives only if they were produced by [pluginId]. */
+    suspend fun getCachedAlternatives(trackId: String, pluginId: String): List<AudioSource>? {
         return alternativesCacheMutex.withLock {
-            alternativesCache[trackId]
+            val cached = alternativesCache[trackId] ?: return@withLock null
+            if (cached.pluginId != pluginId) {
+                logger.v { "Cached alternatives for track $trackId belong to a different plugin; ignoring" }
+                return@withLock null
+            }
+            cached.sources
         }
     }
 
-    suspend fun cacheAlternatives(trackId: String, sources: List<AudioSource>) {
+    suspend fun cacheAlternatives(trackId: String, sources: List<AudioSource>, pluginId: String) {
         alternativesCacheMutex.withLock {
-            alternativesCache[trackId] = sources
+            alternativesCache[trackId] = CachedAlternatives(pluginId, sources)
             logger.v { "Cached ${sources.size} alternative sources for track $trackId" }
         }
     }

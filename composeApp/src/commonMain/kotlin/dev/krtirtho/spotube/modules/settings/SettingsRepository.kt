@@ -27,14 +27,21 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.*
 import kotlinx.serialization.json.Json
 
-class SettingsRepository(private val database: Database) {
+/** Narrow read-only view over the current [UserSettings], for consumers (like
+ * [dev.krtirtho.spotube.core.server.StreamingUrlRepository]) that only need to read the
+ * user's streaming preferences without depending on the full [SettingsRepository]. */
+interface UserSettingsSource {
+    val userSettings: StateFlow<UserSettings>
+}
+
+class SettingsRepository(private val database: Database) : UserSettingsSource {
     companion object {
         private val SETTINGS_KEY = stringPreferencesKey("user_settings")
     }
 
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    val userSettings: StateFlow<UserSettings> = database.settingsDataStore.data.map { prefs ->
+    override val userSettings: StateFlow<UserSettings> = database.settingsDataStore.data.map { prefs ->
         val json = prefs[SETTINGS_KEY]
         if (json != null) {
             Json.decodeFromString<UserSettings>(json as String)

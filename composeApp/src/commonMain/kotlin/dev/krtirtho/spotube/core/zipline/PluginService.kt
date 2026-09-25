@@ -52,6 +52,7 @@ class PluginServiceScope(private val registry: Map<KClass<*>, ZiplineService>) {
 }
 
 interface PluginService {
+    val pluginId: String
     val loggedInFlow: StateFlow<Boolean>
 
     suspend fun start()

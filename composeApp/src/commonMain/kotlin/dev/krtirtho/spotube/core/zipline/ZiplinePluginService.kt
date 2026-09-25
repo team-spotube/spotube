@@ -105,6 +105,8 @@ open class ZiplinePluginService(
     private val pluginInfo: PluginEntry,
 ) : PluginService, KoinComponent {
 
+    override val pluginId: String = pluginInfo.id
+
     // QuickJS compile() uses deep C-level recursion on the native thread stack.
     // Zipline.create() sets maxStackSize to only 6 MiB, but compiling large JS modules
     // (e.g. kotlin-stdlib at ~491 KB) can exceed that during AST parsing.

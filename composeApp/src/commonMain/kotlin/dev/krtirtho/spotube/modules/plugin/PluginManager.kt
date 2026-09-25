@@ -69,11 +69,18 @@ interface PluginProvider {
     val selectedMetadataPlugin: StateFlow<PluginService?>
 }
 
+/** Narrow read-only view of the active audio plugin, used by consumers that only need to
+ * key caches or make calls against the currently selected audio plugin without depending
+ * on the full [PluginManager] (which also owns plugin installation/lifecycle machinery). */
+interface AudioPluginSource {
+    val selectedAudioPlugin: StateFlow<PluginService?>
+}
+
 
 class PluginManager(
     val database: Database,
     val paths: Paths,
-) : KoinComponent, PluginProvider {
+) : KoinComponent, PluginProvider, AudioPluginSource {
     private val logger by injectLogger<PluginManager>()
     private val pluginExceptionHandler = CoroutineExceptionHandler { _, exception ->
         logger.e(exception) { "Plugin runtime threw an unhandled exception. Intercepted safely." }
@@ -245,7 +252,7 @@ class PluginManager(
 
     override val selectedMetadataPlugin =
         filterSelectedPluginByType(PluginAbility.METADATA)
-    val selectedAudioPlugin =
+    override val selectedAudioPlugin =
         filterSelectedPluginByType(PluginAbility.AUDIO)
     val selectedLyricsPlugin =
         filterSelectedPluginByType(PluginAbility.LYRICS)

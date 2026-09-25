@@ -41,6 +41,7 @@ class BuiltInPluginService(
     private val pluginInfo: PluginEntry,
 ) : PluginService, KoinComponent {
 
+    override val pluginId: String = pluginInfo.id
     private val loggedInStateFlow = MutableStateFlow(false)
     override val loggedInFlow = loggedInStateFlow.asStateFlow()
     val servicesRegistry = mutableMapOf<KClass<*>, ZiplineService>()

@@ -27,10 +27,11 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.server.CacheEntry
 import dev.krtirtho.spotube.core.server.CacheManager
-import dev.krtirtho.spotube.core.server.MatchedTracksRepository
 import dev.krtirtho.spotube.core.server.StreamingUrlRepository
+import dev.krtirtho.spotube.core.server.TrackSourceRepository
 import dev.krtirtho.spotube.core.server.normalizeManifestUrl
 import dev.krtirtho.spotube.core.server.selectPreferredAudioStream
+import dev.krtirtho.spotube.modules.plugin.AudioPluginSource
 import dev.krtirtho.spotube.modules.settings.SettingsRepository
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -72,10 +73,11 @@ data class PlayerOptionsUiState(
 class PlayerOptionsViewModel(
     private val audioPlayer: AudioPlayerInterface,
     private val audioPlayerQueue: AudioPlayerQueue,
-    private val matchedTracksRepository: MatchedTracksRepository,
+    private val matchedTracksRepository: TrackSourceRepository,
     private val streamingUrlRepository: StreamingUrlRepository,
     private val cacheManager: CacheManager,
     private val settingsRepository: SettingsRepository,
+    private val pluginManager: AudioPluginSource,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(PlayerOptionsUiState())
     val uiState: StateFlow<PlayerOptionsUiState> = _uiState.asStateFlow()
@@ -155,7 +157,8 @@ class PlayerOptionsViewModel(
             runCatching {
                 val settings = settingsRepository.userSettings.value
                 withContext(Dispatchers.IO) {
-                    val matchedSource = matchedTracksRepository.getTrackSource(track)
+                    val pluginId = pluginManager.selectedAudioPlugin.value?.pluginId
+                    val matchedSource = pluginId?.let { matchedTracksRepository.getTrackSource(track, it) }
                     val cachedStream = streamingUrlRepository.getCachedStreamUrlEntry(track.id)
                     val localCacheEntry = if (settings.enableMusicCaching) {
                         cacheManager.findCachedEntry(track.id)?.second

@@ -33,7 +33,8 @@ class FakeMetadataTrackAPI(
 }
 
 class FakePluginService(
-    private val metadataTrackAPI: MetadataTrackAPI = FakeMetadataTrackAPI()
+    private val metadataTrackAPI: MetadataTrackAPI = FakeMetadataTrackAPI(),
+    override val pluginId: String = "fake-plugin",
 ) : PluginService {
     override val loggedInFlow: StateFlow<Boolean> = MutableStateFlow(true)
 

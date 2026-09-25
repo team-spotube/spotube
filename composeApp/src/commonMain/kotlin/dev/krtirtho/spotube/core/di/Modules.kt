@@ -37,6 +37,7 @@ import dev.krtirtho.spotube.core.server.AlternativeTracksRepository
 import dev.krtirtho.spotube.core.server.CacheManager
 import dev.krtirtho.spotube.core.server.LocalServer
 import dev.krtirtho.spotube.core.server.MatchedTracksRepository
+import dev.krtirtho.spotube.core.server.TrackSourceRepository
 import dev.krtirtho.spotube.core.server.StreamingUrlRepository
 import dev.krtirtho.spotube.core.webview.WebViewController
 import dev.krtirtho.spotube.modules.album.AlbumRepository
@@ -64,6 +65,7 @@ import dev.krtirtho.spotube.modules.library.playlist.LibraryPlaylistsViewModel
 import dev.krtirtho.spotube.modules.lyrics.LyricsViewModel
 import dev.krtirtho.spotube.modules.playlist.PlaylistRepository
 import dev.krtirtho.spotube.modules.playlist.PlaylistViewModel
+import dev.krtirtho.spotube.modules.plugin.AudioPluginSource
 import dev.krtirtho.spotube.modules.plugin.PluginManager
 import dev.krtirtho.spotube.modules.plugin.PluginProvider
 import dev.krtirtho.spotube.modules.plugin.PluginViewModel
@@ -73,6 +75,7 @@ import dev.krtirtho.spotube.modules.search.SearchRepository
 import dev.krtirtho.spotube.modules.search.SearchScreenViewModel
 import dev.krtirtho.spotube.modules.settings.SettingsProvider
 import dev.krtirtho.spotube.modules.settings.SettingsRepository
+import dev.krtirtho.spotube.modules.settings.UserSettingsSource
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import dev.krtirtho.spotube.modules.settings.JamSettingsViewModel
 import dev.krtirtho.spotube.modules.shell.AppShellViewModel
@@ -122,11 +125,14 @@ val sharedModules = module {
     viewModelOf(::LibraryLocalTracksViewModel)
 
     // Plugin system
-    singleOf(::PluginManager) { bind<PluginProvider>() }
+    singleOf(::PluginManager) {
+        bind<PluginProvider>()
+        bind<AudioPluginSource>()
+    }
     viewModelOf(::PluginViewModel)
 
     // Settings
-    singleOf(::SettingsRepository)
+    singleOf(::SettingsRepository) { bind<UserSettingsSource>() }
     viewModelOf(::SettingsViewModel) { bind<SettingsProvider>() }
     viewModelOf(::JamSettingsViewModel)
 
@@ -226,8 +232,15 @@ val sharedModules = module {
             blacklistRepository = get(),
         )
     }
-    singleOf(::MatchedTracksRepository)
-    singleOf(::StreamingUrlRepository)
+    singleOf(::MatchedTracksRepository) { bind<TrackSourceRepository>() }
+    single {
+        StreamingUrlRepository(
+            pluginManager = get(),
+            audioPlayerQueue = get(),
+            matchedTracksRepository = get(),
+            settingsRepository = get(),
+        )
+    }
     singleOf(::CacheManager)
     singleOf(::AlternativeTracksRepository)
     singleOf(::LocalServer) withOptions {
