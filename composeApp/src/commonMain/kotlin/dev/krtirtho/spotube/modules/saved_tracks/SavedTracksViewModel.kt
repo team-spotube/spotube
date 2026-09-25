@@ -206,6 +206,15 @@ class SavedTracksViewModel(
         remotePlaybackController.requestCollectionPlay(RemoteCollectionType.SavedTracks, SAVED_TRACKS_COLLECTION_ID, "Saved Tracks")
     }
 
+    fun shufflePlaySavedTracks() {
+        remotePlaybackController.requestCollectionPlay(
+            RemoteCollectionType.SavedTracks,
+            SAVED_TRACKS_COLLECTION_ID,
+            "Saved Tracks",
+            shuffle = true,
+        )
+    }
+
     fun addSavedTracksToQueue() {
         remotePlaybackController.requestCollectionAddToQueue(RemoteCollectionType.SavedTracks, SAVED_TRACKS_COLLECTION_ID, "Saved Tracks")
     }

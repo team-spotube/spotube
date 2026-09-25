@@ -25,7 +25,7 @@ import kotlinx.serialization.Serializable
 sealed class RemoteControlCommand {
     @Serializable
     @SerialName("play")
-    data class Play(val source: String) : RemoteControlCommand()
+    data class Play(val source: String, val shuffle: Boolean = false) : RemoteControlCommand()
 
     @Serializable
     @SerialName("pause")

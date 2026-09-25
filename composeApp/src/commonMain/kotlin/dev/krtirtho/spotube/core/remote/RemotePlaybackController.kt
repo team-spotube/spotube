@@ -64,6 +64,7 @@ sealed interface PlaybackDestinationRequest {
         val type: RemoteCollectionType,
         val id: String,
         val startTrack: MetadataTrack? = null,
+        val shuffle: Boolean = false,
     ) : PlaybackDestinationRequest
 
     data class Track(
@@ -112,8 +113,9 @@ class RemotePlaybackController(
         id: String,
         title: String,
         startTrack: MetadataTrack? = null,
+        shuffle: Boolean = false,
     ) {
-        request(PlaybackDestinationRequest.Collection(title, PlaybackDestinationAction.Play, type, id, startTrack))
+        request(PlaybackDestinationRequest.Collection(title, PlaybackDestinationAction.Play, type, id, startTrack, shuffle))
     }
 
     fun requestCollectionAddToQueue(type: RemoteCollectionType, id: String, title: String) {
@@ -239,7 +241,7 @@ class RemotePlaybackController(
                                 if (startTrack != null) {
                                     collectionPlaybackHelper.playPlaylistFromTrack(request.id, startTrack)
                                 } else {
-                                    collectionPlaybackHelper.playPlaylist(request.id)
+                                    collectionPlaybackHelper.playPlaylist(request.id, request.shuffle)
                                 }
                             }
 
@@ -252,7 +254,7 @@ class RemotePlaybackController(
                                 if (startTrack != null) {
                                     collectionPlaybackHelper.playAlbumFromTrack(request.id, startTrack)
                                 } else {
-                                    collectionPlaybackHelper.playAlbum(request.id)
+                                    collectionPlaybackHelper.playAlbum(request.id, request.shuffle)
                                 }
                             }
 
@@ -271,7 +273,7 @@ class RemotePlaybackController(
                                 if (startTrack != null) {
                                     collectionPlaybackHelper.playSavedTracksFromTrack(startTrack)
                                 } else {
-                                    collectionPlaybackHelper.playSavedTracks()
+                                    collectionPlaybackHelper.playSavedTracks(request.shuffle)
                                 }
                             }
 
@@ -346,7 +348,7 @@ class RemotePlaybackController(
                             RemoteCollectionType.SavedTracks -> "spotube://saved_tracks"
                         }
                         when (request.action) {
-                            PlaybackDestinationAction.Play -> RemoteControlCommand.Play(source)
+                            PlaybackDestinationAction.Play -> RemoteControlCommand.Play(source, request.shuffle)
                             PlaybackDestinationAction.AddToQueue -> RemoteControlCommand.AddToQueue(source)
                             PlaybackDestinationAction.PlayNext -> RemoteControlCommand.PlayNext(source)
                         }

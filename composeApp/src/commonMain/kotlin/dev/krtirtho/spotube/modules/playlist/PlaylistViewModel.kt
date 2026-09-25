@@ -230,6 +230,11 @@ class PlaylistViewModel(
         remotePlaybackController.requestCollectionPlay(RemoteCollectionType.Playlist, playlistId, title)
     }
 
+    fun shufflePlayPlaylist() {
+        val title = (_state.value as? PlaylistScreenState.Data)?.playlist?.title ?: "Playlist"
+        remotePlaybackController.requestCollectionPlay(RemoteCollectionType.Playlist, playlistId, title, shuffle = true)
+    }
+
     fun addPlaylistToQueue() {
         val title = (_state.value as? PlaylistScreenState.Data)?.playlist?.title ?: "Playlist"
         remotePlaybackController.requestCollectionAddToQueue(RemoteCollectionType.Playlist, playlistId, title)

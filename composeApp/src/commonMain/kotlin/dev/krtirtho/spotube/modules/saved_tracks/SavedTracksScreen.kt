@@ -70,7 +70,7 @@ fun SavedTracksScreen(
         ownerImageURL = null,
         onOwnerClick = {},
         onPlay = viewModel::playSavedTracks,
-        onShufflePlay = {},
+        onShufflePlay = viewModel::shufflePlaySavedTracks,
         onAddToQueue = viewModel::addSavedTracksToQueue,
         isPlaying = isPlaying,
         isFollowing = false,

@@ -78,7 +78,7 @@ fun AlbumScreen(
             }
         },
         onPlay = viewModel::playAlbum,
-        onShufflePlay = {},
+        onShufflePlay = viewModel::shufflePlayAlbum,
         onAddToQueue = viewModel::addAlbumToQueue,
         isPlaying = isAlbumPlaying,
         isFollowing = savedAlbumIds.contains(albumId),

@@ -172,7 +172,7 @@ class RemoteControlHandler(
     private suspend fun handleCommand(session: WebSocketServerSession, envelope: CommandEnvelope) {
         when (val command = envelope.command) {
             is RemoteControlCommand.Play -> {
-                handleCollectionSource(command.source, RemoteCollectionAction.Play)
+                handleCollectionSource(command.source, RemoteCollectionAction.Play, command.shuffle)
             }
             is RemoteControlCommand.Pause -> {
                 audioPlayer.pause()
@@ -297,13 +297,17 @@ class RemoteControlHandler(
      * Resolves a `spotube://` collection source URI (playlist/album/artist top
      * tracks/saved tracks) and applies the requested action on the remote queue.
      */
-    private suspend fun handleCollectionSource(source: String, action: RemoteCollectionAction) {
+    private suspend fun handleCollectionSource(
+        source: String,
+        action: RemoteCollectionAction,
+        shuffle: Boolean = false,
+    ) {
         logger.d { "Remote collection $action for source: $source" }
         when {
             source.startsWith(COLLECTION_PLAYLIST_PREFIX) -> {
                 val id = source.removePrefix(COLLECTION_PLAYLIST_PREFIX)
                 when (action) {
-                    RemoteCollectionAction.Play -> collectionPlaybackHelper.playPlaylist(id)
+                    RemoteCollectionAction.Play -> collectionPlaybackHelper.playPlaylist(id, shuffle)
                     RemoteCollectionAction.AddToQueue -> collectionPlaybackHelper.addPlaylistToQueue(id)
                     RemoteCollectionAction.PlayNext -> collectionPlaybackHelper.playPlaylistNext(id)
                 }
@@ -312,7 +316,7 @@ class RemoteControlHandler(
             source.startsWith(COLLECTION_ALBUM_PREFIX) -> {
                 val id = source.removePrefix(COLLECTION_ALBUM_PREFIX)
                 when (action) {
-                    RemoteCollectionAction.Play -> collectionPlaybackHelper.playAlbum(id)
+                    RemoteCollectionAction.Play -> collectionPlaybackHelper.playAlbum(id, shuffle)
                     RemoteCollectionAction.AddToQueue -> collectionPlaybackHelper.addAlbumToQueue(id)
                     RemoteCollectionAction.PlayNext -> collectionPlaybackHelper.playAlbumNext(id)
                 }
@@ -329,7 +333,7 @@ class RemoteControlHandler(
 
             source == COLLECTION_SAVED_TRACKS -> {
                 when (action) {
-                    RemoteCollectionAction.Play -> collectionPlaybackHelper.playSavedTracks()
+                    RemoteCollectionAction.Play -> collectionPlaybackHelper.playSavedTracks(shuffle)
                     RemoteCollectionAction.AddToQueue -> collectionPlaybackHelper.addSavedTracksToQueue()
                     RemoteCollectionAction.PlayNext -> {
                         // Saved tracks "play next" is not supported; add to queue instead

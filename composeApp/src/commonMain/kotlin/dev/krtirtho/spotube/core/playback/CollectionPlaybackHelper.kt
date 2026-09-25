@@ -36,9 +36,9 @@ class CollectionPlaybackHelper(
     private val audioPlayerQueue: AudioPlayerQueue,
     private val blacklistRepository: BlacklistRepository,
 ) {
-    suspend fun playAlbum(albumId: String) {
-        if (audioPlayerQueue.isAlbumPlaying(albumId)) return
-        val entries = fetchAllAlbumTracks(albumId)
+    suspend fun playAlbum(albumId: String, shuffle: Boolean = false) {
+        if (!shuffle && audioPlayerQueue.isAlbumPlaying(albumId)) return
+        val entries = fetchAllAlbumTracks(albumId).let { if (shuffle) it.shuffled() else it }
         if (entries.isNotEmpty()) {
             audioPlayerQueue.load(
                 entries = entries,
@@ -91,9 +91,9 @@ class CollectionPlaybackHelper(
         )
     }
 
-    suspend fun playPlaylist(playlistId: String) {
-        if (audioPlayerQueue.isPlaylistPlaying(playlistId)) return
-        val entries = fetchAllPlaylistTracks(playlistId)
+    suspend fun playPlaylist(playlistId: String, shuffle: Boolean = false) {
+        if (!shuffle && audioPlayerQueue.isPlaylistPlaying(playlistId)) return
+        val entries = fetchAllPlaylistTracks(playlistId).let { if (shuffle) it.shuffled() else it }
         if (entries.isNotEmpty()) {
             audioPlayerQueue.load(
                 entries = entries,
@@ -146,9 +146,9 @@ class CollectionPlaybackHelper(
         )
     }
 
-    suspend fun playSavedTracks() {
-        if (audioPlayerQueue.isSavedTracksPlaying()) return
-        val entries = fetchAllSavedTracks()
+    suspend fun playSavedTracks(shuffle: Boolean = false) {
+        if (!shuffle && audioPlayerQueue.isSavedTracksPlaying()) return
+        val entries = fetchAllSavedTracks().let { if (shuffle) it.shuffled() else it }
         if (entries.isNotEmpty()) {
             audioPlayerQueue.load(
                 entries = entries,

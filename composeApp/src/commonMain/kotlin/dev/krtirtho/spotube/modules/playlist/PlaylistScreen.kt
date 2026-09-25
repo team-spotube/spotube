@@ -111,7 +111,7 @@ fun PlaylistScreen(
         ownerImageURL = ownerImageURL,
         onOwnerClick = {},
         onPlay = viewModel::playPlaylist,
-        onShufflePlay = {},
+        onShufflePlay = viewModel::shufflePlayPlaylist,
         onAddToQueue = viewModel::addPlaylistToQueue,
         isPlaying = isPlaying,
         isFollowing = savedPlaylistIds.contains(playlistId),

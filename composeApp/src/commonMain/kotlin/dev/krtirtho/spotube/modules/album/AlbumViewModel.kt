@@ -224,6 +224,11 @@ class AlbumViewModel(
         remotePlaybackController.requestCollectionPlay(RemoteCollectionType.Album, albumId, title)
     }
 
+    fun shufflePlayAlbum() {
+        val title = (_state.value as? AlbumScreenState.Data)?.album?.title ?: "Album"
+        remotePlaybackController.requestCollectionPlay(RemoteCollectionType.Album, albumId, title, shuffle = true)
+    }
+
     fun addAlbumToQueue() {
         val title = (_state.value as? AlbumScreenState.Data)?.album?.title ?: "Album"
         remotePlaybackController.requestCollectionAddToQueue(RemoteCollectionType.Album, albumId, title)
