@@ -29,12 +29,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
@@ -55,6 +59,7 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.blur.HazeColorEffect
 import dev.chrisbanes.haze.blur.blurEffect
 import dev.chrisbanes.haze.hazeEffect
+import dev.krtirtho.spotube.NavigationItem
 import dev.krtirtho.spotube.core.navigation.NavigationState
 import dev.krtirtho.spotube.core.navigation.Navigator
 import dev.krtirtho.spotube.core.navigation.Routes
@@ -64,15 +69,15 @@ import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.core.ui.base.SecondaryButton
 import dev.krtirtho.spotube.core.ui.base.copyPadding
 import dev.krtirtho.spotube.core.ui.base.copyShape
+import dev.krtirtho.spotube.core.ui.component.VerticalScrollbar
 import dev.krtirtho.spotube.modules.downloads.DownloadBadgeIndicator
 import dev.krtirtho.spotube.modules.library.LibraryState
 import dev.krtirtho.spotube.modules.library.LibraryTab
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
-import dev.krtirtho.spotube.resources.iconsax.IconsaxMirroringScreen
+import dev.krtirtho.spotube.resources.iconsax.IconsaxSetting2
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSidebarLeftBroken
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSidebarRightBroken
-import dev.krtirtho.spotube.resources.iconsax.User
-import dev.krtirtho.spotube.tabs
+import dev.krtirtho.spotube.sidebarTabs
 import org.jetbrains.compose.resources.Font
 import org.koin.compose.koinInject
 import spotube.composeapp.generated.resources.Res
@@ -90,6 +95,7 @@ fun AppSidebar(
     val width by animateDpAsState(targetValue = if (expanded) 236.dp else 86.dp)
     val currentLibraryTab by libraryState.currentTab.collectAsState()
     val surfaceTint = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f)
+    val listState = rememberLazyListState()
 
     Column(
         modifier = modifier
@@ -106,95 +112,107 @@ fun AppSidebar(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(modifier = Modifier.weight(1f)) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(14.dp),
-            horizontalArrangement = if (expanded) Arrangement.SpaceBetween else Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            AnimatedVisibility(visible = expanded, enter = fadeIn(), exit = fadeOut()) {
-                Text(
-                    text = "Spotube",
-                    style = MaterialTheme.typography.headlineLarge.copy(
-                        fontFamily = FontFamily(
-                            listOf(
-                                Font(Res.font.cookie_regular, weight = FontWeight.Normal)
-                            )
-                        )
-                    ),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
-            GhostIconButton(
-                onClick = { expanded = !expanded }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(14.dp),
+                horizontalArrangement = if (expanded) Arrangement.SpaceBetween else Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    imageVector = if (expanded) Iconsax.IconsaxSidebarLeftBroken else Iconsax.IconsaxSidebarRightBroken,
-                    contentDescription = if (expanded) "Collapse sidebar" else "Expand sidebar",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        tabs.forEach { (label, icon, activeIcon, screen) ->
-            val selected = navigationState.topLevelRoute == screen
-
-            if (screen == Routes.Library) {
-                AnimatedVisibility(visible = expanded) {
+                AnimatedVisibility(visible = expanded, enter = fadeIn(), exit = fadeOut()) {
                     Text(
-                        text = "LIBRARY",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(horizontal = 24.dp, vertical = 8.dp)
+                        text = "Spotube",
+                        style = MaterialTheme.typography.headlineLarge.copy(
+                            fontFamily = FontFamily(
+                                listOf(
+                                    Font(Res.font.cookie_regular, weight = FontWeight.Normal)
+                                )
+                            )
+                        ),
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
-
-                LibraryTab.entries.forEach { tab ->
-                    val isSubSelected = selected && currentLibraryTab == tab
-
-                    SidebarItem(
-                        label = tab.title,
-                        activeIcon = tab.icon,
-                        onClick = {
-                            libraryState.currentTab.value = tab
-                            navigator.navigate(screen)
-                        },
-                        selected = isSubSelected,
-                        expanded = expanded,
-                        showDownloadBadge = tab == LibraryTab.Downloads,
+                GhostIconButton(
+                    onClick = { expanded = !expanded }
+                ) {
+                    Icon(
+                        imageVector = if (expanded) Iconsax.IconsaxSidebarLeftBroken else Iconsax.IconsaxSidebarRightBroken,
+                        contentDescription = if (expanded) "Collapse sidebar" else "Expand sidebar",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-            } else {
-                SidebarItem(
-                    label = label,
-                    activeIcon = activeIcon,
-                    onClick = { navigator.navigate(screen) },
-                    selected = selected,
-                    expanded = expanded,
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Box(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(state = listState) {
+                    items(sidebarTabs.size) { index ->
+                        when (val tab = sidebarTabs[index]) {
+                            is NavigationItem.Group<*> -> {
+                                androidx.compose.animation.AnimatedVisibility(visible = expanded) {
+                                    Text(
+                                        text = tab.title.uppercase(),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.fillMaxWidth()
+                                            .padding(horizontal = 24.dp, vertical = 8.dp)
+                                    )
+                                }
+                                tab.items.forEach {
+                                    val selected = navigationState.topLevelRoute == it.route
+                                    SidebarItem(
+                                        label = it.title,
+                                        activeIcon = it.icon,
+                                        onClick = {
+                                            if (it.route == Routes.Library) {
+                                                libraryState.currentTab.value =
+                                                    it.data as LibraryTab
+                                            }
+                                            navigator.navigate(it.route)
+                                        },
+                                        selected = if (it.route == Routes.Library) selected && currentLibraryTab == it.data else selected,
+                                        expanded = expanded,
+                                        showDownloadBadge = it.route == Routes.Library
+                                                && it.data == LibraryTab.Downloads
+                                    )
+                                }
+
+                            }
+
+                            is NavigationItem.Tab<*> -> {
+                                val selected = navigationState.topLevelRoute == tab.route
+                                SidebarItem(
+                                    label = tab.title,
+                                    activeIcon = tab.icon,
+                                    onClick = {
+                                        navigator.navigate(tab.route)
+                                    },
+                                    selected = selected,
+                                    expanded = expanded,
+                                )
+                            }
+                        }
+                    }
+                }
+                VerticalScrollbar(
+                    listState = listState,
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .fillMaxHeight()
                 )
             }
         }
-        }
-
+        HorizontalDivider()
         SidebarItem(
-            label = "Devices",
-            activeIcon = Iconsax.IconsaxMirroringScreen,
-            onClick = { navigator.navigate(Routes.Devices) },
-            selected = false,
+            label = "Settings",
+            activeIcon = Iconsax.IconsaxSetting2,
+            onClick = {
+                navigator.navigate(Routes.Settings)
+            },
+            selected = navigationState.topLevelRoute == Routes.Settings,
             expanded = expanded,
         )
-        SidebarItem(
-            label = "Group Jam",
-            activeIcon = Iconsax.User,
-            onClick = { navigator.navigate(Routes.Jam) },
-            selected = false,
-            expanded = expanded,
-        )
-
         Spacer(modifier = Modifier.height(120.dp))
     }
 }
@@ -209,7 +227,7 @@ fun SidebarItem(
     showDownloadBadge: Boolean = false,
 ) {
     val itemContent: @Composable RowScope.() -> Unit = {
-        Box(modifier = Modifier.size(20.dp)) {
+        Box(modifier = Modifier.size(16.dp)) {
             Icon(
                 imageVector = activeIcon,
                 contentDescription = label,
@@ -231,7 +249,7 @@ fun SidebarItem(
                 maxLines = 1,
                 softWrap = false,
                 style = LocalTextStyle.current.copy(
-                    fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                    fontSize = MaterialTheme.typography.labelMedium.fontSize,
                     fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
                     color = if (selected) {
                         MaterialTheme.colorScheme.onSecondaryContainer
@@ -246,8 +264,8 @@ fun SidebarItem(
 
     val buttonModifier = Modifier
         .fillMaxWidth()
-        .padding(horizontal = 10.dp, vertical = 4.dp)
-    val contentPadding = PaddingValues(horizontal = 7.dp, vertical = 6.dp)
+        .padding(horizontal = 7.dp, vertical = 2.dp)
+    val contentPadding = PaddingValues(horizontal = 5.dp)
 
     if (selected) {
         SecondaryButton(
@@ -255,7 +273,7 @@ fun SidebarItem(
             modifier = buttonModifier,
             theme = LocalBaseUITheme.current.buttons.secondary
                 .copyPadding(contentPadding)
-                .copyShape(RoundedCornerShape(8.dp)),
+                .copyShape(RoundedCornerShape(5.dp)),
             content = itemContent,
         )
     } else {
@@ -264,7 +282,7 @@ fun SidebarItem(
             modifier = buttonModifier,
             theme = LocalBaseUITheme.current.buttons.outline
                 .copyPadding(contentPadding)
-                .copyShape(RoundedCornerShape(8.dp)),
+                .copyShape(RoundedCornerShape(5.dp)),
             hoverOnly = true,
             content = itemContent,
         )

@@ -38,10 +38,16 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TooltipAnchorPosition
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -81,6 +87,7 @@ import dev.krtirtho.spotube.core.ui.component.cards.PlayableCard
 import dev.krtirtho.spotube.core.ui.component.dragScrollable
 import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
 import dev.krtirtho.spotube.modules.library.playlist.AddToPlaylistPicker
+import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPlay
@@ -134,7 +141,8 @@ fun ArtistScreen(
                     state = listState,
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(innerPadding),
+                        .padding(innerPadding)
+                        .padding(bottom = LocalAppShellBottomInset.current + 24.dp),
                     verticalArrangement = Arrangement.spacedBy(24.dp),
                 ) {
                     item {
@@ -495,6 +503,7 @@ private fun ArtistMeta(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ArtistHeaderActions(
     isSaved: Boolean,
@@ -508,7 +517,12 @@ private fun ArtistHeaderActions(
     ) {
         if (isSaved) {
             SecondaryButton(onClick = onFollowClick) {
-                Text("Following", modifier = Modifier.width(65.dp), textAlign = TextAlign.Center)
+                Text(
+                    "Following",
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
             }
         } else {
             PrimaryButton(onClick = onFollowClick) {
@@ -516,20 +530,30 @@ private fun ArtistHeaderActions(
             }
         }
 
-        if (isBlacklisted) {
-            SecondaryIconButton(onClick = onBlacklistClick) {
-                Icon(
-                    imageVector = Iconsax.IconsaxUserRemove,
-                    contentDescription = "Remove from blacklist",
-                    tint = MaterialTheme.colorScheme.error,
-                )
-            }
-        } else {
-            SecondaryIconButton(onClick = onBlacklistClick) {
-                Icon(
-                    imageVector = Iconsax.IconsaxUserRemove,
-                    contentDescription = "Add to blacklist",
-                )
+        TooltipBox(
+            positionProvider = TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Above),
+            tooltip = {
+                PlainTooltip {
+                    Text(if (isBlacklisted) "Remove from blacklist" else "Add to blacklist")
+                }
+            },
+            state = rememberTooltipState()
+        ) {
+            if (isBlacklisted) {
+                SecondaryIconButton(onClick = onBlacklistClick) {
+                    Icon(
+                        imageVector = Iconsax.IconsaxUserRemove,
+                        contentDescription = "Remove from blacklist",
+                        tint = MaterialTheme.colorScheme.error,
+                    )
+                }
+            } else {
+                SecondaryIconButton(onClick = onBlacklistClick) {
+                    Icon(
+                        imageVector = Iconsax.IconsaxUserRemove,
+                        contentDescription = "Add to blacklist",
+                    )
+                }
             }
         }
     }

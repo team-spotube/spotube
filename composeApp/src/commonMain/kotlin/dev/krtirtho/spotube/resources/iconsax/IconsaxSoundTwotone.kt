@@ -8,13 +8,13 @@ import androidx.compose.ui.graphics.vector.group
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 
-val Iconsax.IconsaxSound: ImageVector
+val Iconsax.IconsaxSoundTwotone: ImageVector
     get() {
-        if (_IconsaxSound != null) {
-            return _IconsaxSound!!
+        if (_IconsaxSoundTwotone != null) {
+            return _IconsaxSoundTwotone!!
         }
-        _IconsaxSound = ImageVector.Builder(
-            name = "IconsaxSound",
+        _IconsaxSoundTwotone = ImageVector.Builder(
+            name = "IconsaxSoundTwotone",
             defaultWidth = 24.dp,
             defaultHeight = 24.dp,
             viewportWidth = 24f,
@@ -39,7 +39,11 @@ val Iconsax.IconsaxSound: ImageVector
                     curveTo(3.75f, 16.16f, 3.41f, 16.5f, 3f, 16.5f)
                     close()
                 }
-                path(fill = SolidColor(Color.White)) {
+                path(
+                    fill = SolidColor(Color.White),
+                    fillAlpha = 0.4f,
+                    strokeAlpha = 0.4f
+                ) {
                     moveTo(7.5f, 19f)
                     curveTo(7.09f, 19f, 6.75f, 18.66f, 6.75f, 18.25f)
                     verticalLineTo(5.75f)
@@ -59,7 +63,11 @@ val Iconsax.IconsaxSound: ImageVector
                     curveTo(12.75f, 21.16f, 12.41f, 21.5f, 12f, 21.5f)
                     close()
                 }
-                path(fill = SolidColor(Color.White)) {
+                path(
+                    fill = SolidColor(Color.White),
+                    fillAlpha = 0.4f,
+                    strokeAlpha = 0.4f
+                ) {
                     moveTo(16.5f, 19f)
                     curveTo(16.09f, 19f, 15.75f, 18.66f, 15.75f, 18.25f)
                     verticalLineTo(5.75f)
@@ -82,8 +90,8 @@ val Iconsax.IconsaxSound: ImageVector
             }
         }.build()
 
-        return _IconsaxSound!!
+        return _IconsaxSoundTwotone!!
     }
 
 @Suppress("ObjectPropertyName")
-private var _IconsaxSound: ImageVector? = null
+private var _IconsaxSoundTwotone: ImageVector? = null

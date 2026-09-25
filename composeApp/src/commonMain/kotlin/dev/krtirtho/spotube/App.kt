@@ -40,56 +40,91 @@ import dev.krtirtho.spotube.core.navigation.rememberNavigationState
 import dev.krtirtho.spotube.core.navigation.toEntries
 import dev.krtirtho.spotube.core.ui.component.LocalSharedTransitionScope
 import dev.krtirtho.spotube.core.ui.theming.SpotubeTheme
+import dev.krtirtho.spotube.modules.library.LibraryTab
 import dev.krtirtho.spotube.modules.settings.SettingsRepository
 import dev.krtirtho.spotube.modules.settings.UserSettings
 import dev.krtirtho.spotube.modules.shell.AppShell
 import dev.krtirtho.spotube.modules.webview.WebViewScreen
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxCd
+import dev.krtirtho.spotube.resources.iconsax.IconsaxDirectboxReceive
 import dev.krtirtho.spotube.resources.iconsax.IconsaxHome
 import dev.krtirtho.spotube.resources.iconsax.IconsaxHomeBroken
+import dev.krtirtho.spotube.resources.iconsax.IconsaxMirrorScreenRegular
+import dev.krtirtho.spotube.resources.iconsax.IconsaxMirroringScreen
+import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicDashboard
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicLibrary
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicLibraryOutline
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSearch
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSearchBroken
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSetting2
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSettingTwotone
+import dev.krtirtho.spotube.resources.iconsax.IconsaxSound
+import dev.krtirtho.spotube.resources.iconsax.IconsaxSoundTwotone
+import dev.krtirtho.spotube.resources.iconsax.User
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.compose.koinInject
 import org.koin.compose.navigation3.koinEntryProvider
 import org.koin.core.annotation.KoinExperimentalAPI
 
-data class TabItem(
-    val title: String,
-    val icon: ImageVector,
-    val activeIcon: ImageVector,
-    val route: Routes
+interface NavigationItem {
+    data class Tab<T : Any>(
+        val title: String, val icon: ImageVector, val route: Routes,
+        val data: T? = null
+    ) : NavigationItem
+
+    data class Group<T : Any>(
+        val title: String, val items: List<Tab<T>>
+    ) : NavigationItem
+}
+
+private val tabs = listOf<NavigationItem>(
+    NavigationItem.Tab<Any>("Home", Iconsax.IconsaxHome, Routes.Home),
+    NavigationItem.Tab<Any>("Search", Iconsax.IconsaxSearch, Routes.Search),
 )
 
-val tabs = listOf(
-    TabItem(
-        "Home",
-        Iconsax.IconsaxHomeBroken,
-        Iconsax.IconsaxHome,
-        Routes.Home
-    ),
-    TabItem(
-        "Search",
-        Iconsax.IconsaxSearchBroken,
-        Iconsax.IconsaxSearch,
-        Routes.Search
-    ),
-    TabItem(
+val sidebarTabs = tabs + listOf(
+    NavigationItem.Group(
         "Library",
-        Iconsax.IconsaxMusicLibraryOutline,
-        Iconsax.IconsaxMusicLibrary,
-        Routes.Library
+        items = listOf(
+            NavigationItem.Tab(
+                "Playlists",
+                Iconsax.IconsaxMusicDashboard,
+                Routes.Library,
+                LibraryTab.Playlists
+            ),
+            NavigationItem.Tab("Albums", Iconsax.IconsaxCd, Routes.Library, LibraryTab.Albums),
+            NavigationItem.Tab("Artists", Iconsax.User, Routes.Library, LibraryTab.Artists),
+        )
     ),
-    TabItem(
-        "Settings",
-        Iconsax.IconsaxSettingTwotone,
-        Iconsax.IconsaxSetting2,
-        Routes.Settings
-    )
+    NavigationItem.Group(
+        "On Device",
+        items = listOf(
+            NavigationItem.Tab(
+                "Local Tracks",
+                Iconsax.IconsaxMusicLibrary,
+                Routes.Library,
+                LibraryTab.LocalTracks
+            ),
+            NavigationItem.Tab(
+                "Downloads",
+                Iconsax.IconsaxDirectboxReceive,
+                Routes.Library,
+                LibraryTab.Downloads
+            ),
+        )
+    ),
+    NavigationItem.Group(
+        "Connect",
+        items = listOf(
+            NavigationItem.Tab("Devices", Iconsax.IconsaxMirrorScreenRegular, Routes.Devices),
+            NavigationItem.Tab("Group Jam", Iconsax.IconsaxSoundTwotone, Routes.Jam),
+        ),
+    ),
+)
+val bottombarTabs = tabs + listOf(
+    NavigationItem.Tab<Any>("Library", Iconsax.IconsaxMusicLibrary, Routes.Library),
+    NavigationItem.Tab("Settings", Iconsax.IconsaxSetting2, Routes.Settings)
 )
 
 @OptIn(
@@ -105,8 +140,7 @@ fun App(
     val userSettings by settingsRepository.userSettings.collectAsStateWithLifecycle(initialValue = UserSettings())
 
     val navigationState = rememberNavigationState(
-        startRoute = Routes.Home,
-        topLevelRoutes = TOP_LEVEL_ROUTES
+        startRoute = Routes.Home, topLevelRoutes = TOP_LEVEL_ROUTES
     )
     val navigator = remember {
         Navigator(navigationState)

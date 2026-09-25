@@ -54,6 +54,8 @@ import androidx.compose.ui.unit.sp
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.X
 import dev.krtirtho.plugin_interfaces.plugin_apis.lyrics.LyricsLine
+import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
+import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxArrowDown4
 import kotlinx.coroutines.launch
@@ -70,6 +72,47 @@ fun LyricsScreen(
     val scope = rememberCoroutineScope()
 
     Scaffold(
+        topBar = {
+            ApplicationMainBar(
+                backButton = onClose == null,
+                title = {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                    ) {
+                        if (onClose != null) {
+                            IconButton(
+                                onClick = onClose,
+                                modifier = Modifier.align(Alignment.CenterStart)
+                            ) {
+                                Icon(
+                                    imageVector = Iconsax.IconsaxArrowDown4,
+                                    contentDescription = "Close"
+                                )
+                            }
+                        }
+                        Row(
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .clip(RoundedCornerShape(50.dp))
+                                .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                                .padding(10.dp, 4.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            LyricsModeTab(
+                                label = "Synced",
+                                isSelected = uiState.mode == LyricType.SYNCED,
+                                onClick = { viewModel.setMode(LyricType.SYNCED) }
+                            )
+                            LyricsModeTab(
+                                label = "Plain",
+                                isSelected = uiState.mode == LyricType.STATIC,
+                                onClick = { viewModel.setMode(LyricType.STATIC) }
+                            )
+                        }
+                    }
+                }
+            )
+        },
         modifier = modifier,
     ) { innerPadding ->
         Column(
@@ -77,46 +120,9 @@ fun LyricsScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp)
+                .padding(bottom = LocalAppShellBottomInset.current + 24.dp)
         ) {
             Spacer(modifier = Modifier.height(16.dp))
-
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                if (onClose != null) {
-                    IconButton(
-                        onClick = onClose,
-                        modifier = Modifier.align(Alignment.CenterStart)
-                    ) {
-                        Icon(
-                            imageVector = Iconsax.IconsaxArrowDown4,
-                            contentDescription = "Close"
-                        )
-                    }
-                }
-                Row(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .clip(RoundedCornerShape(50.dp))
-                        .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-                        .padding(10.dp, 4.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    LyricsModeTab(
-                        label = "Synced",
-                        isSelected = uiState.mode == LyricType.SYNCED,
-                        onClick = { viewModel.setMode(LyricType.SYNCED) }
-                    )
-                    LyricsModeTab(
-                        label = "Plain",
-                        isSelected = uiState.mode == LyricType.STATIC,
-                        onClick = { viewModel.setMode(LyricType.STATIC) }
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
             when {
                 uiState.isLoading -> {
                     Box(

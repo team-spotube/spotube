@@ -42,11 +42,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.krtirtho.spotube.NavigationItem
+import dev.krtirtho.spotube.bottombarTabs
 import dev.krtirtho.spotube.core.navigation.NavigationState
 import dev.krtirtho.spotube.core.navigation.Navigator
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.modules.downloads.DownloadBadgeIndicator
-import dev.krtirtho.spotube.tabs
 
 @Composable
 fun AppBottombar(
@@ -68,46 +69,47 @@ fun AppBottombar(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            tabs.forEach { (label, icon, activeIcon, screen) ->
-                val selected = navigationState.topLevelRoute == screen
-                val labelColor = if (selected) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                }
-
-                Column(
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .clickable { navigator.navigate(screen) }
-                        .padding(8.dp)
-                        .size(56.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    Box {
-                        Icon(
-                            imageVector = activeIcon,
-                            contentDescription = label,
-                            tint = if (selected) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        if (screen == Routes.Library) {
-                            DownloadBadgeIndicator(
-                                modifier = Modifier.align(Alignment.TopEnd)
-                            )
-                        }
+            bottombarTabs.filterIsInstance<NavigationItem.Tab<*>>()
+                .forEach { tab ->
+                    val selected = navigationState.topLevelRoute == tab.route
+                    val labelColor = if (selected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
                     }
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = label,
-                        style = MaterialTheme.typography.labelSmall,
-                        fontWeight = if (selected) FontWeight.Medium else FontWeight.Normal,
-                        color = labelColor,
-                    )
+
+                    Column(
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .clickable { navigator.navigate(tab.route) }
+                            .padding(8.dp)
+                            .size(56.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        Box {
+                            Icon(
+                                imageVector = tab.icon,
+                                contentDescription = tab.title,
+                                tint = if (selected) MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            if (tab.route == Routes.Library) {
+                                DownloadBadgeIndicator(
+                                    modifier = Modifier.align(Alignment.TopEnd)
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = tab.title,
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = if (selected) FontWeight.Medium else FontWeight.Normal,
+                            color = labelColor,
+                        )
+                    }
                 }
-            }
         }
     }
 }
