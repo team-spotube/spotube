@@ -82,7 +82,9 @@ import dev.krtirtho.spotube.modules.saved_tracks.SAVED_TRACKS_COLLECTION_ID
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksViewModel
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.Iconsax3DotsMore
+import dev.krtirtho.spotube.resources.iconsax.IconsaxCd
 import dev.krtirtho.spotube.resources.iconsax.IconsaxDirectboxReceive
+import dev.krtirtho.spotube.resources.iconsax.IconsaxInformation
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusic
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicFilter
 import dev.krtirtho.spotube.resources.iconsax.IconsaxNext
@@ -96,12 +98,18 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxShuffle
 import dev.krtirtho.spotube.resources.iconsax.IconsaxVolumeCross
 import dev.krtirtho.spotube.resources.iconsax.IconsaxVolumeHigh
 import dev.krtirtho.spotube.resources.iconsax.IconsaxVolumeLow
+import dev.krtirtho.spotube.resources.iconsax.InconsaxClock
 import dev.krtirtho.spotube.resources.iconsax.SwapHorizontal2
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.player_go_to_album
+import spotube.composeapp.generated.resources.player_sleep_timer
+import spotube.composeapp.generated.resources.player_track_details
 import kotlin.time.Duration.Companion.milliseconds
 
 
@@ -405,7 +413,13 @@ fun AppLargePlayer(
                                 onDismissRequest = playerOptionsViewModel::dismissMoreOptionsMenu,
                             ) {
                                 DropdownMenuItem(
-                                    text = { Text("Go to album") },
+                                    text = { Text(stringResource(Res.string.player_go_to_album)) },
+                                    leadingIcon = {
+                                        Icon(
+                                            imageVector = Iconsax.IconsaxCd,
+                                            contentDescription = null,
+                                        )
+                                    },
                                     enabled = currentTrack?.album?.id != null,
                                     onClick = {
                                         playerOptionsViewModel.dismissMoreOptionsMenu()
@@ -415,14 +429,26 @@ fun AppLargePlayer(
                                     },
                                 )
                                 DropdownMenuItem(
-                                    text = { Text("Sleep timer") },
+                                    text = { Text(stringResource(Res.string.player_sleep_timer)) },
+                                    leadingIcon = {
+                                        Icon(
+                                            imageVector = Iconsax.InconsaxClock,
+                                            contentDescription = null,
+                                        )
+                                    },
                                     onClick = {
                                         playerOptionsViewModel.dismissMoreOptionsMenu()
                                         playerOptionsViewModel.showSleepTimerDialog()
                                     },
                                 )
                                 DropdownMenuItem(
-                                    text = { Text("Track details") },
+                                    text = { Text(stringResource(Res.string.player_track_details)) },
+                                    leadingIcon = {
+                                        Icon(
+                                            imageVector = Iconsax.IconsaxInformation,
+                                            contentDescription = null,
+                                        )
+                                    },
                                     enabled = currentTrack != null,
                                     onClick = {
                                         playerOptionsViewModel.dismissMoreOptionsMenu()

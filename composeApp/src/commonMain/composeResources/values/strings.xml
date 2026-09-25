@@ -187,5 +187,9 @@
     <string name="settings_jam_broker_test_ok">Connected in %1$d ms</string>
     <string name="settings_jam_broker_test_fail">Failed: %1$s</string>
     <string name="settings_jam_broker_placeholder_note">Placeholder broker — configure your own to self-host</string>
+
+    <string name="player_go_to_album">Go to album</string>
+    <string name="player_sleep_timer">Sleep timer</string>
+    <string name="player_track_details">Track details</string>
 </resources>
 
