@@ -20,6 +20,7 @@ import gobley.gradle.cargo.dsl.jvm
 import dev.nucleusframework.desktop.application.dsl.TargetFormat
 import org.jetbrains.compose.reload.gradle.ComposeHotRun
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.gradle.api.tasks.Copy
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -39,10 +40,52 @@ plugins {
     kotlin("plugin.atomicfu") version libs.versions.kotlin
 }
 
+val bundleId = "dev.krtirtho.spotube"
+val version = "6.0.0"
+val buildNumber = 46
+val targetName = "Spotube"
+val homePageUrl = "https://spotube.cc"
+val repositoryUrl = "https://github.com/team-spotube/spotube"
+val appVersionName = version
+val appBuildNumber = buildNumber
+val appRepositoryUrl = repositoryUrl
+val githubRepositoryPath = repositoryUrl.removePrefix("https://github.com/")
+val latestReleaseApiUrl = "https://api.github.com/repos/$githubRepositoryPath/releases/latest"
+val generatedAppInfoDir = layout.buildDirectory.dir("generated/appBuildInfo/commonMain/kotlin")
+val generateAppBuildInfo by tasks.registering(Copy::class) {
+    description = "Generate AppBuildInfo.kt"
+    from(layout.projectDirectory.file("src/commonMain/templates/AppBuildInfo.kt.template"))
+    into(layout.buildDirectory.dir("generated/appBuildInfo/commonMain/kotlin/dev/krtirtho/spotube"))
+    rename("AppBuildInfo.kt.template", "AppBuildInfo.kt")
+    expand(
+        mapOf(
+            "appVersion" to appVersionName,
+            "appBuildNumber" to appBuildNumber,
+            "repositoryUrl" to appRepositoryUrl,
+            "latestReleaseApiUrl" to latestReleaseApiUrl,
+        )
+    )
+    inputs.properties(
+        mapOf(
+            "appVersion" to appVersionName,
+            "appBuildNumber" to appBuildNumber,
+            "repositoryUrl" to appRepositoryUrl,
+            "latestReleaseApiUrl" to latestReleaseApiUrl,
+        )
+    )
+}
+
+tasks.configureEach {
+    if (name.startsWith("compile") && name.contains("Kotlin")) {
+        dependsOn(generateAppBuildInfo)
+    }
+}
+
 vlcjBundler {
-    packageName = "dev.krtirtho.spotube.core.generated"   // choose a different package
+    packageName = "$bundleId.core.generated"   // choose a different package
     objectName = "VLCBundleLoaderGenerated"               // or rename the object
 }
+
 
 kotlin {
     // Note: For Android application modules, androidTarget() is still required as of AGP 8.x.
@@ -68,6 +111,7 @@ kotlin {
 
     sourceSets {
         val commonMain by getting {
+            kotlin.srcDir(generatedAppInfoDir)
             dependencies {
                 // Project dependencies
                 implementation(project(":plugin_interfaces"))
@@ -172,6 +216,10 @@ kotlin {
                 implementation(libs.mqtt.x.models)
                 implementation(libs.mqtt.buffer)
                 implementation(libs.mqtt.buffer.codec)
+
+                // Markdown renderer
+                implementation(libs.multiplatform.markdown.renderer)
+                implementation(libs.multiplatform.markdown.renderer.m3)
             }
         }
         commonTest.dependencies {
@@ -249,11 +297,11 @@ android {
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "dev.krtirtho.spotube"
+        applicationId = bundleId
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = project.findProperty("versionName") as String? ?: "1.0"
+        versionCode = buildNumber
+        versionName = version
     }
     packaging {
         resources {
@@ -312,8 +360,8 @@ nucleus.application {
     )
 
     nativeDistributions {
-        packageName = "dev.krtirtho.spotube"
-        packageVersion = project.findProperty("versionName") as String? ?: "6.0.0"
+        packageName = bundleId
+        packageVersion = version
         licenseFile = project.file("../LICENSE")
 
         appResourcesRootDir.set(vlcjBundler.vlcNativesDirectory)
@@ -329,7 +377,7 @@ nucleus.application {
 
         modules("jdk.unsupported")
 
-        homepage = "https://spotube.cc"
+        homepage = homePageUrl
 
         linux {
             modules("jdk.security.auth")

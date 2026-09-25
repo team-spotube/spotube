@@ -87,6 +87,7 @@ data class UserSettings(
 
     // Updates
     val autoCheckForUpdates: Boolean = true,
+    val ignoredUpdateVersion: String? = null,
 )
 
 /**

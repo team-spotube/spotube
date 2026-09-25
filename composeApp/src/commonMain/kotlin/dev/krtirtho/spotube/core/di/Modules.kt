@@ -73,6 +73,7 @@ import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksRepository
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksViewModel
 import dev.krtirtho.spotube.modules.search.SearchRepository
 import dev.krtirtho.spotube.modules.search.SearchScreenViewModel
+import dev.krtirtho.spotube.modules.update.UpdateCheckerViewModel
 import dev.krtirtho.spotube.modules.settings.SettingsProvider
 import dev.krtirtho.spotube.modules.settings.SettingsRepository
 import dev.krtirtho.spotube.modules.settings.UserSettingsSource
@@ -135,6 +136,7 @@ val sharedModules = module {
     singleOf(::SettingsRepository) { bind<UserSettingsSource>() }
     viewModelOf(::SettingsViewModel) { bind<SettingsProvider>() }
     viewModelOf(::JamSettingsViewModel)
+    viewModelOf(::UpdateCheckerViewModel)
 
     // Downloads
     singleOf(::DownloadManager)

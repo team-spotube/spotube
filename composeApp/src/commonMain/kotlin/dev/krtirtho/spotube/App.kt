@@ -22,49 +22,54 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
-import dev.krtirtho.spotube.core.ui.base.rememberBaseUITheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.ui.NavDisplay
+import com.mikepenz.markdown.m3.Markdown
 import dev.krtirtho.spotube.core.navigation.Navigator
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.navigation.TOP_LEVEL_ROUTES
 import dev.krtirtho.spotube.core.navigation.rememberNavigationState
 import dev.krtirtho.spotube.core.navigation.toEntries
+import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
+import dev.krtirtho.spotube.core.ui.base.OutlineButton
+import dev.krtirtho.spotube.core.ui.base.PrimaryButton
+import dev.krtirtho.spotube.core.ui.base.ThemedDialog
+import dev.krtirtho.spotube.core.ui.base.rememberBaseUITheme
 import dev.krtirtho.spotube.core.ui.component.LocalSharedTransitionScope
 import dev.krtirtho.spotube.core.ui.theming.SpotubeTheme
 import dev.krtirtho.spotube.modules.library.LibraryTab
 import dev.krtirtho.spotube.modules.settings.SettingsRepository
 import dev.krtirtho.spotube.modules.settings.UserSettings
 import dev.krtirtho.spotube.modules.shell.AppShell
+import dev.krtirtho.spotube.modules.update.UpdateCheckerViewModel
 import dev.krtirtho.spotube.modules.webview.WebViewScreen
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxCd
 import dev.krtirtho.spotube.resources.iconsax.IconsaxDirectboxReceive
 import dev.krtirtho.spotube.resources.iconsax.IconsaxHome
-import dev.krtirtho.spotube.resources.iconsax.IconsaxHomeBroken
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMirrorScreenRegular
-import dev.krtirtho.spotube.resources.iconsax.IconsaxMirroringScreen
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicDashboard
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicLibrary
-import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicLibraryOutline
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSearch
-import dev.krtirtho.spotube.resources.iconsax.IconsaxSearchBroken
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSetting2
-import dev.krtirtho.spotube.resources.iconsax.IconsaxSettingTwotone
-import dev.krtirtho.spotube.resources.iconsax.IconsaxSound
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSoundTwotone
 import dev.krtirtho.spotube.resources.iconsax.User
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.compose.koinInject
 import org.koin.compose.navigation3.koinEntryProvider
+import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 
 interface NavigationItem {
@@ -138,6 +143,8 @@ fun App(
 ) {
     val settingsRepository: SettingsRepository = koinInject<SettingsRepository>()
     val userSettings by settingsRepository.userSettings.collectAsStateWithLifecycle(initialValue = UserSettings())
+    val updateCheckerViewModel: UpdateCheckerViewModel = koinViewModel()
+    val availableUpdate by updateCheckerViewModel.availableUpdate.collectAsStateWithLifecycle()
 
     val navigationState = rememberNavigationState(
         startRoute = Routes.Home, topLevelRoutes = TOP_LEVEL_ROUTES
@@ -175,6 +182,43 @@ fun App(
                 }
             }
             content()
+            if (availableUpdate != null) {
+                val update = availableUpdate!!
+                ThemedDialog(
+                    onDismissRequest = updateCheckerViewModel::dismissUpdate,
+                    title = {
+                        Text(
+                            text = "Spotube ${update.tag} is available",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    },
+                    actions = {
+                        OutlineButton(onClick = updateCheckerViewModel::ignoreUpdate) {
+                            Text("Ignore")
+                        }
+                        PrimaryButton(
+                            onClick = {
+                                runCatching { openUrlInBrowser("https://spotube.cc/downloads/") }
+                                updateCheckerViewModel.dismissUpdate()
+                            },
+                        ) {
+                            Text("Update")
+                        }
+                    },
+                ) {
+                    if (update.releaseNotesMarkdown.isNotBlank()) {
+                        SelectionContainer {
+                            Markdown(
+                                content = update.releaseNotesMarkdown,
+                                modifier = Modifier.padding(bottom = 8.dp),
+                            )
+                        }
+                    } else {
+                        Text("See what's new in this release on the Spotube downloads page.")
+                    }
+                }
+            }
         }
     }
 }

@@ -46,6 +46,7 @@ kotlinx-serialization-json = "1.11.0"
 materialKolor = "4.1.1"
 mqttClient = "2.1.1"
 mqttBuffer = "6.30.8"
+multiplatformMarkdownRenderer = "0.45.0"
 murmurhash = "0.4.2"
 newpipeextractor = "v0.26.5"
 newpipeExtractorKmp = "1.3.0"
@@ -128,6 +129,8 @@ mqtt-x-models = { module = "com.ditchoom:mqtt-5-models", version.ref = "mqttClie
 mqtt-client = { module = "com.ditchoom:mqtt-client", version.ref = "mqttClient" }
 mqtt-buffer = { module = "com.ditchoom:buffer", version.ref = "mqttBuffer" }
 mqtt-buffer-codec = { module = "com.ditchoom:buffer-codec", version.ref = "mqttBuffer" }
+multiplatform-markdown-renderer = { module = "com.mikepenz:multiplatform-markdown-renderer", version.ref = "multiplatformMarkdownRenderer" }
+multiplatform-markdown-renderer-m3 = { module = "com.mikepenz:multiplatform-markdown-renderer-m3", version.ref = "multiplatformMarkdownRenderer" }
 murmurhash = { module = "com.goncalossilva:murmurhash", version.ref = "murmurhash" }
 newpipe-extractor-kmp = { module = "io.github.yushosei:newpipe-extractor-kmp", version.ref = "newpipeExtractorKmp" }
 newpipeextractor = { module = "com.github.teamnewpipe:NewPipeExtractor", version.ref = "newpipeextractor" }

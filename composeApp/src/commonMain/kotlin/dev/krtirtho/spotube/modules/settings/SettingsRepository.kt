@@ -59,4 +59,10 @@ class SettingsRepository(private val database: Database) : UserSettingsSource {
             prefs[SETTINGS_KEY] = Json.encodeToString(newSettings)
         }
     }
+
+    suspend fun getCurrentSettings(): UserSettings {
+        val preferences = database.settingsDataStore.data.first()
+        val settingsJson = preferences[SETTINGS_KEY] ?: return UserSettings()
+        return Json.decodeFromString<UserSettings>(settingsJson)
+    }
 }
