@@ -41,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPlacement
 import dev.krtirtho.spotube.core.systemtray.SystemTrayService
+import dev.krtirtho.spotube.core.ui.base.LocalBaseUIColors
 import dev.krtirtho.spotube.modules.settings.SettingsProvider
 import dev.krtirtho.spotube.resources.iconsax.FluentDismiss
 import dev.krtirtho.spotube.resources.iconsax.FluentMaximize
@@ -63,6 +64,7 @@ actual fun ApplicationMainBar(
     backButton: Boolean,
     transparent: Boolean,
 ) {
+    val colors = LocalBaseUIColors.current
     Box(
         modifier = Modifier.fillMaxWidth()
             .windowDragArea(doubleClickAction = WindowDoubleClickAction.ToggleMaximize)
@@ -82,9 +84,19 @@ actual fun ApplicationMainBar(
                 TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.Transparent,
                     scrolledContainerColor = Color.Transparent,
+                    titleContentColor = colors.onSurface,
+                    actionIconContentColor = colors.onSurfaceVariant,
+                    navigationIconContentColor = colors.onSurfaceVariant,
                 )
             } else {
-                TopAppBarDefaults.topAppBarColors()
+                // The app bar follows the selected surface theme rather than Material's.
+                TopAppBarDefaults.topAppBarColors(
+                    containerColor = colors.surface,
+                    scrolledContainerColor = colors.surfaceContainer,
+                    titleContentColor = colors.onSurface,
+                    actionIconContentColor = colors.onSurfaceVariant,
+                    navigationIconContentColor = colors.onSurfaceVariant,
+                )
             },
             modifier = Modifier.padding(end = 125.dp) // To avoid overlap with window buttons
         )

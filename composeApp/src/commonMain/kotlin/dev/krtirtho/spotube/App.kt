@@ -35,6 +35,7 @@ import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.navigation.TOP_LEVEL_ROUTES
 import dev.krtirtho.spotube.core.navigation.rememberNavigationState
 import dev.krtirtho.spotube.core.navigation.toEntries
+import dev.krtirtho.spotube.core.ui.base.LocalBaseUIColors
 import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
 import dev.krtirtho.spotube.core.ui.base.rememberBaseUITheme
 import dev.krtirtho.spotube.core.ui.component.LocalSharedTransitionScope
@@ -156,8 +157,11 @@ fun App(
     }
 
     SpotubeTheme(settings = userSettings) {
-        val baseUITheme = rememberBaseUITheme()
-        CompositionLocalProvider(LocalBaseUITheme provides baseUITheme) {
+        val baseUITheme = rememberBaseUITheme(surfaceTheme = userSettings.surfaceTheme)
+        CompositionLocalProvider(
+            LocalBaseUITheme provides baseUITheme,
+            LocalBaseUIColors provides baseUITheme.colors,
+        ) {
             Box(modifier = Modifier.fillMaxSize()) {
                 val currentRoute =
                     navigationState.backStacks[navigationState.topLevelRoute]?.last()

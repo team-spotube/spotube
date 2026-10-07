@@ -38,7 +38,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import dev.krtirtho.spotube.core.ui.base.BaseScaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -189,7 +189,7 @@ fun PlayableCard(
 @PreviewLightDark
 @Composable
 private fun PlayableCardPreview() {
-    Scaffold {
+    BaseScaffold {
         PlayableCard(
             title = "Sample Title",
             subtitle = "Sample Subtitle",

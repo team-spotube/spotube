@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,6 +38,7 @@ import dev.krtirtho.spotube.getPlatform
 import dev.krtirtho.spotube.core.discovery.rememberLocalNetworkPermissionRequester
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
+import dev.krtirtho.spotube.core.ui.base.BaseScaffold
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import spotube.composeapp.generated.resources.*
 import dev.krtirtho.spotube.modules.settings.sections.appearanceSection
@@ -91,7 +91,7 @@ private fun CompactSettingsScreen(settingsViewModel: SettingsViewModel) {
         PaddingValues(top = 16.dp, bottom = 16.dp + shellBottomInset)
     }
 
-    Scaffold(
+    BaseScaffold(
         topBar = {
             ApplicationMainBar(
                 title = {

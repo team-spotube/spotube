@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -52,6 +53,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlin.random.Random
+import kotlinx.serialization.Serializable
 
 /**
  * The Frutiger-Aero material families available to [BaseSurface].
@@ -61,7 +63,10 @@ import kotlin.random.Random
  * - [Chrome]: brushed metal with a hard specular reflection.
  * - [Acrylic]: translucent tinted panel with fine grain.
  * - [Glass]: clear, glossy glass with a strong sheen.
+ *
+ * Each style doubles as a full app theme (see [BaseUIColorScheme]).
  */
+@Serializable
 enum class SurfaceStyle {
     Watery,
     Icy,
@@ -101,7 +106,7 @@ fun BaseSurface(
     val resolvedContentColor = contentColor ?: when (style) {
         SurfaceStyle.Watery -> Color.White
         SurfaceStyle.Icy -> if (isLight) Color(0xFF0B3A55) else Color(0xFFDCEBF7)
-        SurfaceStyle.Chrome -> Color(0xFF1B2733)
+        SurfaceStyle.Chrome -> if (isLight) Color(0xFF1B2733) else Color(0xFFE7ECF2)
         SurfaceStyle.Acrylic, SurfaceStyle.Glass -> onSurface
     }
     val ambient = when (style) {
@@ -167,11 +172,25 @@ fun BaseSurface(
     }
 }
 
+/**
+ * Paints the full-bleed material of [style] as a page background: the material body plus
+ * its own sheen and reflections, but no panel bevel (a backdrop has no edges).
+ */
+fun Modifier.baseSurfaceBackdrop(style: SurfaceStyle, isLight: Boolean): Modifier =
+    drawWithCache {
+        onDrawBehind { drawSurfaceBase(style, isLight) }
+    }
+
 private fun DrawScope.drawSurfaceMaterial(style: SurfaceStyle, isLight: Boolean) {
+    drawSurfaceBase(style, isLight)
+    drawInnerBevel(isLight)
+}
+
+private fun DrawScope.drawSurfaceBase(style: SurfaceStyle, isLight: Boolean) {
     when (style) {
         SurfaceStyle.Watery -> drawWatery(isLight)
         SurfaceStyle.Icy -> drawIcy(isLight)
-        SurfaceStyle.Chrome -> drawChrome()
+        SurfaceStyle.Chrome -> drawChrome(isLight)
         SurfaceStyle.Acrylic -> drawAcrylic(isLight)
         SurfaceStyle.Glass -> drawGlass(isLight)
     }
@@ -191,7 +210,6 @@ private fun DrawScope.drawGlass(isLight: Boolean) {
     )
     drawGloss(if (isLight) 0.55f else 0.16f)
     drawBottomReflection(if (isLight) 0.4f else 0.1f)
-    drawInnerBevel(isLight)
     drawBubbles(seed = 11, count = 3, alpha = if (isLight) 0.4f else 0.14f)
 }
 
@@ -222,28 +240,48 @@ private fun DrawScope.drawAcrylic(isLight: Boolean) {
         )
     }
     drawGloss(if (isLight) 0.4f else 0.12f, heightFraction = 0.45f)
-    drawInnerBevel(isLight)
 }
 
-private fun DrawScope.drawChrome() {
-    drawRect(
-        brush = Brush.verticalGradient(
-            0f to Color(0xFFF8FBFF),
-            0.16f to Color(0xFFD6DEE7),
-            0.4f to Color(0xFF8E99A8),
-            0.5f to Color(0xFFEDF2F7),
-            0.62f to Color(0xFF9AA5B4),
-            1f to Color(0xFF6C7787),
-        ),
-    )
-    // Hard specular reflection near the top.
-    drawRect(
-        brush = Brush.verticalGradient(
-            colors = listOf(Color.White.copy(alpha = 0.85f), Color.Transparent),
-            startY = size.height * 0.05f,
-            endY = size.height * 0.22f,
-        ),
-    )
+private fun DrawScope.drawChrome(isLight: Boolean) {
+    if (isLight) {
+        drawRect(
+            brush = Brush.verticalGradient(
+                0f to Color(0xFFF8FBFF),
+                0.16f to Color(0xFFD6DEE7),
+                0.4f to Color(0xFF8E99A8),
+                0.5f to Color(0xFFEDF2F7),
+                0.62f to Color(0xFF9AA5B4),
+                1f to Color(0xFF6C7787),
+            ),
+        )
+        // Hard specular reflection near the top.
+        drawRect(
+            brush = Brush.verticalGradient(
+                colors = listOf(Color.White.copy(alpha = 0.85f), Color.Transparent),
+                startY = size.height * 0.05f,
+                endY = size.height * 0.22f,
+            ),
+        )
+    } else {
+        // Dark gunmetal for the night variant.
+        drawRect(
+            brush = Brush.verticalGradient(
+                0f to Color(0xFF3B424C),
+                0.16f to Color(0xFF2A303A),
+                0.4f to Color(0xFF1B2028),
+                0.5f to Color(0xFF343B45),
+                0.62f to Color(0xFF232830),
+                1f to Color(0xFF141820),
+            ),
+        )
+        drawRect(
+            brush = Brush.verticalGradient(
+                colors = listOf(Color.White.copy(alpha = 0.18f), Color.Transparent),
+                startY = size.height * 0.05f,
+                endY = size.height * 0.22f,
+            ),
+        )
+    }
     // Darkened lower edge for the metal bevel.
     drawRect(
         brush = Brush.verticalGradient(
@@ -459,6 +497,39 @@ private fun BaseSurfaceGridPreview() {
                         androidx.compose.foundation.layout.Spacer(modifier = Modifier.weight(1f))
                     }
                 }
+            }
+        }
+    }
+}
+
+@BaseUIPhonePreview
+@BaseUIDesktopPreview
+@Composable
+private fun SurfaceThemeBackdropPreview() {
+    val isLight = LocalBaseUIColors.current.isLight
+    val onSurface = LocalBaseUIColors.current.onSurface
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        SurfaceStyle.entries.forEach { style ->
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(66.dp)
+                    .clip(RoundedCornerShape(14.dp))
+                    .baseSurfaceBackdrop(style, isLight),
+                contentAlignment = Alignment.CenterStart,
+            ) {
+                Text(
+                    text = style.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = if (style == SurfaceStyle.Watery) Color.White else onSurface,
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                )
             }
         }
     }

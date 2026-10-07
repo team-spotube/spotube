@@ -39,7 +39,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -62,6 +61,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import dev.krtirtho.spotube.PlatformType
 import dev.krtirtho.spotube.core.extras.kebabToTitleCase
+import dev.krtirtho.spotube.core.ui.base.BaseScaffold
 import dev.krtirtho.spotube.core.ui.base.Card
 import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.core.ui.base.PrimaryButton
@@ -145,13 +145,12 @@ fun PluginScreen(
     viewModel: PluginViewModel = koinViewModel(),
     onboarding: Boolean = false,
 ) {
-    Scaffold(
+    BaseScaffold(
         topBar = {
             if (!onboarding) {
                 ApplicationMainBar(title = { Text(stringResource(Res.string.plugin_screen_title)) })
             }
         },
-        containerColor = if (onboarding) Color.Transparent else MaterialTheme.colorScheme.surface,
     ) { innerPadding ->
         PluginScreenContent(
             viewModel = viewModel,
@@ -162,7 +161,7 @@ fun PluginScreen(
 }
 
 /**
- * The plugin management UI without its own [Scaffold] / app bar, so it can be embedded
+ * The plugin management UI without its own [BaseScaffold] / app bar, so it can be embedded
  * as a tab in the large-screen settings layout as well as hosted by [PluginScreen].
  */
 @Composable

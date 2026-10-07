@@ -52,6 +52,7 @@ import dev.krtirtho.spotube.core.ui.base.ThemedDialog
 import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.core.ui.base.PrimaryButton
 import dev.krtirtho.spotube.core.ui.base.Radio
+import dev.krtirtho.spotube.core.ui.base.SurfaceStyle
 import dev.krtirtho.spotube.modules.settings.AccentColors
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import dev.krtirtho.spotube.modules.settings.Theme
@@ -61,6 +62,7 @@ import dev.krtirtho.spotube.modules.settings.components.SettingCardItem
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxColorSwatch
 import dev.krtirtho.spotube.resources.iconsax.IconsaxColorsSquare
+import dev.krtirtho.spotube.resources.iconsax.IconsaxMagic
 import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.*
 
@@ -95,6 +97,29 @@ internal fun LazyListScope.appearanceSection(
                 )
             },
             {
+                SelectionSettingCard(
+                    title = stringResource(Res.string.settings_surface_theme_title),
+                    subtitle = stringResource(
+                        Res.string.settings_surface_theme_subtitle_current,
+                        settings.surfaceTheme.displayLabel()
+                    ),
+                    icon = {
+                        SettingsItemIcon(
+                            Iconsax.IconsaxMagic,
+                            stringResource(Res.string.settings_surface_theme_title)
+                        )
+                    },
+                    selectedOption = settings.surfaceTheme,
+                    options = SurfaceStyle.entries,
+                    optionLabel = { it.displayLabel() },
+                    onOptionSelected = { surfaceTheme ->
+                        settingsViewModel.updateSettings {
+                            copy(surfaceTheme = surfaceTheme)
+                        }
+                    }
+                )
+            },
+            {
                 AccentColorSettingCard(
                     selectedAccent = settings.accentColor,
                     icon = {
@@ -117,6 +142,17 @@ private fun Theme.displayLabel(): String {
         Theme.LIGHT -> stringResource(Res.string.settings_theme_light)
         Theme.DARK -> stringResource(Res.string.settings_theme_dark)
         Theme.SYSTEM -> stringResource(Res.string.settings_theme_system)
+    }
+}
+
+@Composable
+private fun SurfaceStyle.displayLabel(): String {
+    return when (this) {
+        SurfaceStyle.Watery -> stringResource(Res.string.settings_surface_watery)
+        SurfaceStyle.Icy -> stringResource(Res.string.settings_surface_icy)
+        SurfaceStyle.Chrome -> stringResource(Res.string.settings_surface_chrome)
+        SurfaceStyle.Acrylic -> stringResource(Res.string.settings_surface_acrylic)
+        SurfaceStyle.Glass -> stringResource(Res.string.settings_surface_glass)
     }
 }
 

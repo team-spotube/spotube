@@ -44,6 +44,14 @@
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_theme_system">System</string>
 
+    <string name="settings_surface_theme_title">Surface</string>
+    <string name="settings_surface_theme_subtitle_current">Background material of the app. Current: %1$s</string>
+    <string name="settings_surface_watery">Watery</string>
+    <string name="settings_surface_icy">Icy</string>
+    <string name="settings_surface_chrome">Chrome</string>
+    <string name="settings_surface_acrylic">Acrylic</string>
+    <string name="settings_surface_glass">Glass</string>
+
     <string name="settings_accent_title">Accent color</string>
     <string name="settings_accent_subtitle_current">Current palette: %1$s</string>
     <string name="settings_accent_dialog_title">Accent color</string>

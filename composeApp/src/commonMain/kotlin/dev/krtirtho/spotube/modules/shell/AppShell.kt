@@ -74,6 +74,8 @@ import dev.krtirtho.spotube.core.navigation.Navigator
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.remote.ConnectionRequestDialogHost
 import dev.krtirtho.spotube.core.remote.RemotePlaybackController
+import dev.krtirtho.spotube.core.ui.base.LocalBaseUIColors
+import dev.krtirtho.spotube.core.ui.base.baseSurfaceBackdrop
 import dev.krtirtho.spotube.modules.devices.PlayDestinationPickerHost
 import dev.krtirtho.spotube.modules.lyrics.LyricsScreen
 import dev.krtirtho.spotube.modules.shell.alternative_track.AlternativeTrackContent
@@ -100,6 +102,7 @@ fun AppShell(
 ) {
     val navigatorCommands: NavigationCommands = koinInject()
     val remotePlaybackController: RemotePlaybackController = koinInject()
+    val baseUIColors = LocalBaseUIColors.current
     val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(remotePlaybackController) {
         remotePlaybackController.events.collect { message ->
@@ -156,7 +159,7 @@ fun AppShell(
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .background(MaterialTheme.colorScheme.surface)
+                                .baseSurfaceBackdrop(baseUIColors.surfaceTheme, baseUIColors.isLight)
                                 .hazeSource(state = bgHazeState) // <-- Put it here!
                         )
                         Row(modifier = Modifier.fillMaxSize()) {
@@ -229,6 +232,11 @@ fun AppShell(
                 }
             } else {
                 BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .baseSurfaceBackdrop(baseUIColors.surfaceTheme, baseUIColors.isLight),
+                    )
                     CompactPlayerOverlay(
                         navigator = navigator,
                         navigationState = navigationState,

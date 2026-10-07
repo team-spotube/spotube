@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.Composable
@@ -16,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.krtirtho.spotube.core.ui.base.BaseScaffold
 import dev.krtirtho.spotube.core.ui.base.PrimaryButton
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import dev.krtirtho.spotube.modules.settings.components.SwitchSettingCard
@@ -59,7 +59,7 @@ import spotube.composeapp.generated.resources.settings_section_jam
 fun JamSettingsScreen(
     viewModel: JamSettingsViewModel = koinViewModel(),
 ) {
-    Scaffold(
+    BaseScaffold(
         topBar = {
             ApplicationMainBar(
                 title = { Text(stringResource(Res.string.settings_section_jam)) },
@@ -74,7 +74,7 @@ fun JamSettingsScreen(
 }
 
 /**
- * The Group Jam settings UI without its own [Scaffold] / app bar, so it can be embedded
+ * The Group Jam settings UI without its own [BaseScaffold] / app bar, so it can be embedded
  * as a tab in the large-screen settings layout as well as hosted by [JamSettingsScreen].
  */
 @Composable

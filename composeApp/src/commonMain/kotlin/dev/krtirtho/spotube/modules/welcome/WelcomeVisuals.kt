@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.TextUnit
+import dev.krtirtho.spotube.core.ui.base.LocalBaseUIColors
 import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
 import dev.krtirtho.spotube.core.ui.base.rememberBaseUITheme
 import org.jetbrains.compose.resources.Font
@@ -60,7 +61,11 @@ fun WelcomeTheme(content: @Composable () -> Unit) {
         outlineVariant = Color(0xFFD2D0CC),
     )
     MaterialTheme(colorScheme = scheme) {
-        CompositionLocalProvider(LocalBaseUITheme provides rememberBaseUITheme()) {
+        val baseTheme = rememberBaseUITheme()
+        CompositionLocalProvider(
+            LocalBaseUITheme provides baseTheme,
+            LocalBaseUIColors provides baseTheme.colors,
+        ) {
             content()
         }
     }

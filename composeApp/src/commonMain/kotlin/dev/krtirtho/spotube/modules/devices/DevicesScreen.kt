@@ -33,7 +33,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
+import dev.krtirtho.spotube.core.ui.base.BaseScaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -77,7 +77,7 @@ fun DevicesScreen(
         }
     }
 
-    Scaffold(
+    BaseScaffold(
         topBar = {
             ApplicationMainBar(
                 backButton = true,

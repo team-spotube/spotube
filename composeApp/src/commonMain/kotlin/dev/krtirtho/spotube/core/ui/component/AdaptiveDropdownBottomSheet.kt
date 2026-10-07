@@ -44,7 +44,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Scaffold
+import dev.krtirtho.spotube.core.ui.base.BaseScaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
@@ -327,7 +327,7 @@ private fun AdaptiveBottomSheetContent(
 @Preview
 @Composable
 private fun AdaptiveDropdownBottomSheetPreview() {
-    Scaffold {
+    BaseScaffold {
         AdaptiveDropdownBottomSheet(
             items = listOf(
                 AdaptiveMenuItem(

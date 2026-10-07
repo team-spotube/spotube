@@ -27,7 +27,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
+import dev.krtirtho.spotube.core.ui.base.BaseScaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -57,7 +57,7 @@ fun LibraryScreen(
     val searchMode by libraryState.searchMode.collectAsState()
     val isLargeScreen = appShellViewModel.useSidebar()
 
-    Scaffold(
+    BaseScaffold(
         topBar = {
             Column {
                 ApplicationMainBar(

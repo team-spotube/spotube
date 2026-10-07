@@ -19,6 +19,7 @@ package dev.krtirtho.spotube.modules.settings
 
 import dev.krtirtho.plugin_interfaces.plugin_apis.audio.AudioFormat
 import dev.krtirtho.plugin_interfaces.plugin_apis.audio.AudioQuality
+import dev.krtirtho.spotube.core.ui.base.SurfaceStyle
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -35,6 +36,7 @@ data class UserSettings(
     // Appearance
     val theme: Theme = Theme.SYSTEM,
     val accentColor: AccentColors = AccentColors.GREEN_GOBLIN,
+    val surfaceTheme: SurfaceStyle = SurfaceStyle.Glass,
 
     // Playback
     val streamingMusicFormat: AudioFormat = AudioFormat(

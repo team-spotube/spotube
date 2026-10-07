@@ -33,7 +33,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -51,6 +50,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.artist.MetadataArtist
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
+import dev.krtirtho.spotube.core.ui.base.BaseScaffold
 import dev.krtirtho.spotube.core.ui.base.GhostIconButton
 import dev.krtirtho.spotube.core.ui.base.TextField
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
@@ -67,7 +67,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun BlacklistScreen() {
     val viewModel = koinViewModel<BlacklistViewModel>()
-    Scaffold(
+    BaseScaffold(
         topBar = {
             ApplicationMainBar(
                 backButton = true,
@@ -83,7 +83,7 @@ fun BlacklistScreen() {
 }
 
 /**
- * The blacklist UI without its own [Scaffold] / app bar, so it can be embedded
+ * The blacklist UI without its own [BaseScaffold] / app bar, so it can be embedded
  * as a tab in the large-screen settings layout as well as hosted by [BlacklistScreen].
  */
 @Composable

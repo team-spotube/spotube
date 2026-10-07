@@ -35,7 +35,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import dev.krtirtho.spotube.core.ui.base.BaseScaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
@@ -120,7 +120,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
             }
     }
 
-    Scaffold(
+    BaseScaffold(
         topBar = {
             ApplicationMainBar(
                 backButton = false,

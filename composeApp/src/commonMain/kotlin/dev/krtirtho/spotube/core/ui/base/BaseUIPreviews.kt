@@ -48,15 +48,20 @@ import androidx.compose.ui.tooling.preview.Preview
 @Composable
 internal fun BaseUIPreview(
     modifier: Modifier = Modifier,
+    surfaceTheme: SurfaceStyle = SurfaceStyle.Glass,
     content: @Composable BoxScope.() -> Unit,
 ) {
     MaterialTheme(
         colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme(),
     ) {
-        CompositionLocalProvider(LocalBaseUITheme provides rememberBaseUITheme()) {
+        val theme = rememberBaseUITheme(surfaceTheme = surfaceTheme)
+        CompositionLocalProvider(
+            LocalBaseUITheme provides theme,
+            LocalBaseUIColors provides theme.colors,
+        ) {
             Surface(
                 modifier = modifier.fillMaxSize(),
-                color = MaterialTheme.colorScheme.background,
+                color = theme.colors.surface,
             ) {
                 Box(modifier = Modifier.fillMaxSize(), content = content)
             }

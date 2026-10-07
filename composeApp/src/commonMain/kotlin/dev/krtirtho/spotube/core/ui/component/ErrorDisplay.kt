@@ -37,7 +37,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import dev.krtirtho.spotube.core.ui.base.BaseScaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -278,7 +278,7 @@ private fun ErrorDisplayPreview() {
 @Preview
 @Composable
 private fun ErrorLogDialogPreview() {
-    Scaffold {
+    BaseScaffold {
         ErrorLogDialog(
             errorMessage = "This is an error message",
             onDismiss = {},
