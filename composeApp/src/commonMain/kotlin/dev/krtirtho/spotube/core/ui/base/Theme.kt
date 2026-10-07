@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -219,19 +220,51 @@ fun rememberBaseUITheme(): BaseUITheme {
     val scheme = MaterialTheme.colorScheme
     val isLight = scheme.surface.luminance() > 0.5f
 
-    val containerLighter = if (isLight) Color.White else scheme.surfaceContainerHigh
-    val containerDarker = if (isLight) Color(0xFFF2F2F4) else scheme.surfaceContainer
-    val containerPressed = if (isLight) Color(0xFFE0E0E3) else scheme.surfaceContainerHighest
-    val highlight = if (isLight) Color.White.copy(alpha = 0.9f) else Color.White.copy(alpha = 0.06f)
+    // ------------------------------------------------------------------
+    // Frutiger-Aero glass palette.
+    //
+    // Surfaces are glossy, top-lit gradients with a strong white specular
+    // highlight and translucent "glass" edges, lifted by soft, coloured
+    // shadows — the aqua/glass language of Frutiger-Aero.
+    // ------------------------------------------------------------------
+    val glassTop = if (isLight) {
+        Color.White
+    } else {
+        lerp(scheme.surfaceContainerHigh, Color.White, 0.10f)
+    }
+    val glassBottom = if (isLight) {
+        lerp(scheme.surface, Color.White, 0.04f)
+    } else {
+        scheme.surfaceContainer
+    }
+    val glassPressed = if (isLight) {
+        lerp(scheme.surfaceContainerHighest, Color.White, 0.06f)
+    } else {
+        lerp(scheme.surfaceContainerHighest, Color.Black, 0.08f)
+    }
+
+    val gloss = if (isLight) Color.White.copy(alpha = 0.75f) else Color.White.copy(alpha = 0.18f)
+    val glossSoft = if (isLight) Color.White.copy(alpha = 0.5f) else Color.White.copy(alpha = 0.12f)
+    val glassEdge = if (isLight) Color.White.copy(alpha = 0.95f) else Color.White.copy(alpha = 0.22f)
+    val glassBorder = if (isLight) {
+        lerp(scheme.outlineVariant, Color.White, 0.55f)
+    } else {
+        scheme.outlineVariant.copy(alpha = 0.5f)
+    }
     val shadowColor = scheme.onSurface
-    val border = scheme.outlineVariant
 
-    val secondaryContainer = scheme.secondaryContainer
-    val secondaryContainerPressed = secondaryContainer.copy(alpha = if (isLight) 0.85f else 0.92f)
-    val secondaryHighlight =
-        if (isLight) Color.White.copy(alpha = 0.5f) else Color.White.copy(alpha = 0.08f)
+    fun glassBrush(top: Color, bottom: Color): Brush =
+        Brush.verticalGradient(listOf(top, bottom))
 
-    val defaultShape = RoundedCornerShape(14.dp)
+    fun aqua(accent: Color): Brush = Brush.verticalGradient(
+        listOf(
+            lerp(accent, Color.White, 0.45f),
+            accent,
+            lerp(accent, Color.Black, 0.14f),
+        )
+    )
+
+    val defaultShape = RoundedCornerShape(16.dp)
     val defaultShapeState =
         BaseUITheme.InteractionState<Shape>(defaultShape, defaultShape, defaultShape, defaultShape)
     val noBorder = BaseUITheme.Border(Color.Transparent, 0.dp)
@@ -239,231 +272,208 @@ fun rememberBaseUITheme(): BaseUITheme {
     val noShadow = BaseUITheme.Shadow(0.dp, false, Color.Transparent, Color.Transparent)
     val noShadowState = BaseUITheme.InteractionState(noShadow, noShadow, noShadow, noShadow)
     val defaultButtonPadding = BaseUITheme.InteractionState(
-        PaddingValues(horizontal = 20.dp, vertical = 10.dp),
-        PaddingValues(horizontal = 20.dp, vertical = 10.dp),
-        PaddingValues(horizontal = 20.dp, vertical = 10.dp),
-        PaddingValues(horizontal = 20.dp, vertical = 10.dp),
+        PaddingValues(horizontal = 22.dp, vertical = 10.dp),
+        PaddingValues(horizontal = 22.dp, vertical = 10.dp),
+        PaddingValues(horizontal = 22.dp, vertical = 10.dp),
+        PaddingValues(horizontal = 22.dp, vertical = 10.dp),
     )
     val iconButtonPadding = BaseUITheme.InteractionState(
-        PaddingValues(8.dp),
-        PaddingValues(8.dp),
-        PaddingValues(8.dp),
-        PaddingValues(8.dp),
+        PaddingValues(9.dp),
+        PaddingValues(9.dp),
+        PaddingValues(9.dp),
+        PaddingValues(9.dp),
     )
 
+    // --- Glass (outline) -------------------------------------------------
     val outlineColors = BaseUITheme.InteractionState(
         normal = BaseUITheme.ButtonColors(
-            background = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
+            background = glassBrush(glassTop, glassBottom),
             foreground = scheme.onSurface,
-            highlight = highlight,
+            highlight = gloss,
         ),
         hovered = BaseUITheme.ButtonColors(
-            background = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
+            background = glassBrush(glassTop, glassBottom),
             foreground = scheme.onSurface,
-            highlight = highlight,
+            highlight = Color.White.copy(alpha = if (isLight) 0.9f else 0.26f),
         ),
         pressed = BaseUITheme.ButtonColors(
-            background = Brush.verticalGradient(listOf(containerPressed, containerPressed)),
+            background = glassBrush(glassPressed, glassPressed),
             foreground = scheme.onSurface,
-            highlight = highlight,
+            highlight = glossSoft,
         ),
         focused = BaseUITheme.ButtonColors(
-            background = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
+            background = glassBrush(glassTop, glassBottom),
             foreground = scheme.onSurface,
-            highlight = highlight,
+            highlight = gloss,
         ),
     )
-    val outlineShadow = BaseUITheme.InteractionState(
+    val glassShadow = BaseUITheme.InteractionState(
         normal = BaseUITheme.Shadow(
-            6.dp,
+            8.dp,
             true,
-            shadowColor.copy(alpha = 0.15f),
-            shadowColor.copy(alpha = 0.18f)
+            shadowColor.copy(alpha = 0.16f),
+            shadowColor.copy(alpha = 0.2f),
         ),
         hovered = BaseUITheme.Shadow(
-            9.dp,
+            14.dp,
             true,
             shadowColor.copy(alpha = 0.22f),
-            shadowColor.copy(alpha = 0.26f)
+            shadowColor.copy(alpha = 0.26f),
         ),
         pressed = BaseUITheme.Shadow(
-            1.dp,
+            2.dp,
             true,
-            shadowColor.copy(alpha = 0.08f),
-            shadowColor.copy(alpha = 0.1f)
+            shadowColor.copy(alpha = 0.1f),
+            shadowColor.copy(alpha = 0.12f),
         ),
         focused = BaseUITheme.Shadow(
-            6.dp,
+            8.dp,
             true,
-            shadowColor.copy(alpha = 0.15f),
-            shadowColor.copy(alpha = 0.18f)
+            shadowColor.copy(alpha = 0.16f),
+            shadowColor.copy(alpha = 0.2f),
         ),
     )
-    val outlineBorder = BaseUITheme.InteractionState(
-        normal = BaseUITheme.Border(border, 0.5.dp),
-        hovered = BaseUITheme.Border(border, 0.5.dp),
-        pressed = BaseUITheme.Border(border.copy(alpha = 0.7f), 0.5.dp),
-        focused = BaseUITheme.Border(border, 0.5.dp),
+    val glassBorderState = BaseUITheme.InteractionState(
+        normal = BaseUITheme.Border(glassBorder, 1.dp),
+        hovered = BaseUITheme.Border(glassEdge, 1.dp),
+        pressed = BaseUITheme.Border(glassBorder.copy(alpha = 0.7f), 1.dp),
+        focused = BaseUITheme.Border(glassEdge, 1.dp),
     )
 
+    // --- Aqua accent (primary) -------------------------------------------
+    val primaryEdge = lerp(scheme.primary, Color.White, 0.5f)
     val primaryColors = BaseUITheme.InteractionState(
-        normal = BaseUITheme.ButtonColors(
-            background = Brush.verticalGradient(listOf(scheme.primary, scheme.primary)),
-            foreground = scheme.onPrimary,
-            highlight = Color.White.copy(alpha = 0.25f),
-        ),
+        normal = BaseUITheme.ButtonColors(aqua(scheme.primary), scheme.onPrimary, gloss),
         hovered = BaseUITheme.ButtonColors(
-            background = Brush.verticalGradient(listOf(scheme.primary, scheme.primary)),
-            foreground = scheme.onPrimary,
-            highlight = Color.White.copy(alpha = 0.25f),
+            aqua(scheme.primary),
+            scheme.onPrimary,
+            Color.White.copy(alpha = if (isLight) 0.9f else 0.3f),
         ),
         pressed = BaseUITheme.ButtonColors(
-            background = Brush.verticalGradient(
-                listOf(
-                    scheme.primary.copy(alpha = 0.85f),
-                    scheme.primary
-                )
+            glassBrush(
+                lerp(scheme.primary, Color.Black, 0.16f),
+                lerp(scheme.primary, Color.Black, 0.24f),
             ),
-            foreground = scheme.onPrimary,
-            highlight = Color.White.copy(alpha = 0.25f),
+            scheme.onPrimary,
+            glossSoft,
         ),
-        focused = BaseUITheme.ButtonColors(
-            background = Brush.verticalGradient(listOf(scheme.primary, scheme.primary)),
-            foreground = scheme.onPrimary,
-            highlight = Color.White.copy(alpha = 0.25f),
-        ),
+        focused = BaseUITheme.ButtonColors(aqua(scheme.primary), scheme.onPrimary, gloss),
     )
     val primaryShadow = BaseUITheme.InteractionState(
         normal = BaseUITheme.Shadow(
-            6.dp,
+            10.dp,
             true,
             scheme.primary.copy(alpha = 0.35f),
-            scheme.primary.copy(alpha = 0.4f)
+            scheme.primary.copy(alpha = 0.42f),
         ),
         hovered = BaseUITheme.Shadow(
-            9.dp,
+            16.dp,
             true,
             scheme.primary.copy(alpha = 0.45f),
-            scheme.primary.copy(alpha = 0.5f)
+            scheme.primary.copy(alpha = 0.5f),
         ),
         pressed = BaseUITheme.Shadow(
-            1.dp,
+            3.dp,
             true,
-            scheme.primary.copy(alpha = 0.2f),
-            scheme.primary.copy(alpha = 0.25f)
+            scheme.primary.copy(alpha = 0.22f),
+            scheme.primary.copy(alpha = 0.28f),
         ),
         focused = BaseUITheme.Shadow(
-            6.dp,
+            10.dp,
             true,
             scheme.primary.copy(alpha = 0.35f),
-            scheme.primary.copy(alpha = 0.4f)
+            scheme.primary.copy(alpha = 0.42f),
         ),
     )
     val primaryBorder = BaseUITheme.InteractionState(
-        normal = BaseUITheme.Border(scheme.primary, 0.5.dp),
-        hovered = BaseUITheme.Border(scheme.primary, 0.5.dp),
-        pressed = BaseUITheme.Border(scheme.primary, 0.5.dp),
-        focused = BaseUITheme.Border(scheme.primary, 0.5.dp),
+        normal = BaseUITheme.Border(primaryEdge, 1.dp),
+        hovered = BaseUITheme.Border(primaryEdge, 1.dp),
+        pressed = BaseUITheme.Border(primaryEdge.copy(alpha = 0.8f), 1.dp),
+        focused = BaseUITheme.Border(primaryEdge, 1.dp),
     )
 
+    // --- Secondary (soft aqua glass) -------------------------------------
+    val secondaryBase = scheme.secondaryContainer
     val secondaryColors = BaseUITheme.InteractionState(
         normal = BaseUITheme.ButtonColors(
-            background = Brush.verticalGradient(
-                listOf(
-                    secondaryContainer,
-                    secondaryContainer.copy(alpha = if (secondaryContainer.luminance() > 0.5f) 0.92f else 1f)
-                )
-            ),
-            foreground = scheme.onSecondaryContainer,
-            highlight = secondaryHighlight,
+            glassBrush(lerp(secondaryBase, Color.White, 0.5f), secondaryBase),
+            scheme.onSecondaryContainer,
+            gloss,
         ),
         hovered = BaseUITheme.ButtonColors(
-            background = Brush.verticalGradient(
-                listOf(
-                    secondaryContainer,
-                    secondaryContainer.copy(alpha = if (secondaryContainer.luminance() > 0.5f) 0.92f else 1f)
-                )
-            ),
-            foreground = scheme.onSecondaryContainer,
-            highlight = secondaryHighlight,
+            glassBrush(lerp(secondaryBase, Color.White, 0.55f), secondaryBase),
+            scheme.onSecondaryContainer,
+            Color.White.copy(alpha = if (isLight) 0.85f else 0.24f),
         ),
         pressed = BaseUITheme.ButtonColors(
-            background = Brush.verticalGradient(
-                listOf(
-                    secondaryContainerPressed,
-                    secondaryContainerPressed
-                )
+            glassBrush(
+                lerp(secondaryBase, Color.Black, 0.08f),
+                lerp(secondaryBase, Color.Black, 0.14f),
             ),
-            foreground = scheme.onSecondaryContainer,
-            highlight = secondaryHighlight,
+            scheme.onSecondaryContainer,
+            glossSoft,
         ),
         focused = BaseUITheme.ButtonColors(
-            background = Brush.verticalGradient(
-                listOf(
-                    secondaryContainer,
-                    secondaryContainer.copy(alpha = if (secondaryContainer.luminance() > 0.5f) 0.92f else 1f)
-                )
-            ),
-            foreground = scheme.onSecondaryContainer,
-            highlight = secondaryHighlight,
+            glassBrush(lerp(secondaryBase, Color.White, 0.5f), secondaryBase),
+            scheme.onSecondaryContainer,
+            gloss,
         ),
     )
     val secondaryShadow = BaseUITheme.InteractionState(
         normal = BaseUITheme.Shadow(
-            6.dp,
+            8.dp,
             true,
-            shadowColor.copy(alpha = 0.15f),
-            shadowColor.copy(alpha = 0.18f)
+            secondaryBase.copy(alpha = 0.4f),
+            secondaryBase.copy(alpha = 0.5f),
         ),
         hovered = BaseUITheme.Shadow(
-            9.dp,
+            14.dp,
             true,
-            shadowColor.copy(alpha = 0.22f),
-            shadowColor.copy(alpha = 0.26f)
+            secondaryBase.copy(alpha = 0.5f),
+            secondaryBase.copy(alpha = 0.6f),
         ),
         pressed = BaseUITheme.Shadow(
-            1.dp,
+            2.dp,
             true,
-            shadowColor.copy(alpha = 0.08f),
-            shadowColor.copy(alpha = 0.1f)
+            secondaryBase.copy(alpha = 0.3f),
+            secondaryBase.copy(alpha = 0.35f),
         ),
         focused = BaseUITheme.Shadow(
-            6.dp,
+            8.dp,
             true,
-            shadowColor.copy(alpha = 0.15f),
-            shadowColor.copy(alpha = 0.18f)
+            secondaryBase.copy(alpha = 0.4f),
+            secondaryBase.copy(alpha = 0.5f),
         ),
     )
     val secondaryBorder = BaseUITheme.InteractionState(
-        normal = BaseUITheme.Border(secondaryContainer.copy(alpha = 0.5f), 0.5.dp),
-        hovered = BaseUITheme.Border(secondaryContainer.copy(alpha = 0.5f), 0.5.dp),
-        pressed = BaseUITheme.Border(secondaryContainer.copy(alpha = 0.5f), 0.5.dp),
-        focused = BaseUITheme.Border(secondaryContainer.copy(alpha = 0.5f), 0.5.dp),
+        normal = BaseUITheme.Border(lerp(secondaryBase, Color.White, 0.5f), 1.dp),
+        hovered = BaseUITheme.Border(lerp(secondaryBase, Color.White, 0.6f), 1.dp),
+        pressed = BaseUITheme.Border(lerp(secondaryBase, Color.White, 0.4f), 1.dp),
+        focused = BaseUITheme.Border(lerp(secondaryBase, Color.White, 0.5f), 1.dp),
     )
 
+    // --- Ghost -----------------------------------------------------------
     val ghostColors = BaseUITheme.InteractionState(
         normal = BaseUITheme.ButtonColors(
-            background = Brush.verticalGradient(listOf(Color.Transparent, Color.Transparent)),
+            background = glassBrush(Color.Transparent, Color.Transparent),
             foreground = scheme.onSurface,
             highlight = Color.Transparent,
         ),
         hovered = BaseUITheme.ButtonColors(
-            background = Brush.verticalGradient(
-                listOf(
-                    containerPressed.copy(alpha = 0.5f),
-                    containerPressed.copy(alpha = 0.5f)
-                )
+            background = glassBrush(
+                lerp(scheme.surfaceContainerHigh, Color.White, 0.1f),
+                scheme.surfaceContainer,
             ),
             foreground = scheme.onSurface,
-            highlight = Color.Transparent,
+            highlight = glossSoft,
         ),
         pressed = BaseUITheme.ButtonColors(
-            background = Brush.verticalGradient(listOf(containerPressed, containerPressed)),
+            background = glassBrush(glassPressed, glassPressed),
             foreground = scheme.onSurface,
             highlight = Color.Transparent,
         ),
         focused = BaseUITheme.ButtonColors(
-            background = Brush.verticalGradient(listOf(Color.Transparent, Color.Transparent)),
+            background = glassBrush(Color.Transparent, Color.Transparent),
             foreground = scheme.onSurface,
             highlight = Color.Transparent,
         ),
@@ -472,8 +482,8 @@ fun rememberBaseUITheme(): BaseUITheme {
     val outlineStyle = BaseUITheme.ButtonStyle(
         outlineColors,
         defaultShapeState,
-        outlineShadow,
-        outlineBorder,
+        glassShadow,
+        glassBorderState,
         defaultButtonPadding
     )
     val primaryStyle = BaseUITheme.ButtonStyle(
@@ -501,8 +511,8 @@ fun rememberBaseUITheme(): BaseUITheme {
     val outlineIconStyle = BaseUITheme.ButtonStyle(
         outlineColors,
         defaultShapeState,
-        outlineShadow,
-        outlineBorder,
+        glassShadow,
+        glassBorderState,
         iconButtonPadding
     )
     val primaryIconStyle = BaseUITheme.ButtonStyle(
@@ -534,20 +544,20 @@ fun rememberBaseUITheme(): BaseUITheme {
         focused = scheme.onSurface,
     )
 
-    val checkBoxShape = RoundedCornerShape(6.dp)
+    val checkBoxShape = RoundedCornerShape(7.dp)
     val checkBoxShapeState =
         BaseUITheme.InteractionState<Shape>(checkBoxShape, checkBoxShape, checkBoxShape, checkBoxShape)
     val noPadding =
         BaseUITheme.InteractionState(PaddingValues(0.dp), PaddingValues(0.dp), PaddingValues(0.dp), PaddingValues(0.dp))
 
-    val chipTabShape = RoundedCornerShape(10.dp)
+    val chipTabShape = RoundedCornerShape(999.dp)
     val chipTabShapeState =
         BaseUITheme.InteractionState<Shape>(chipTabShape, chipTabShape, chipTabShape, chipTabShape)
     val chipTabPadding = BaseUITheme.InteractionState(
-        PaddingValues(horizontal = 14.dp, vertical = 4.dp),
-        PaddingValues(horizontal = 14.dp, vertical = 4.dp),
-        PaddingValues(horizontal = 14.dp, vertical = 4.dp),
-        PaddingValues(horizontal = 14.dp, vertical = 4.dp),
+        PaddingValues(horizontal = 16.dp, vertical = 6.dp),
+        PaddingValues(horizontal = 16.dp, vertical = 6.dp),
+        PaddingValues(horizontal = 16.dp, vertical = 6.dp),
+        PaddingValues(horizontal = 16.dp, vertical = 6.dp),
     )
 
     val toggleShape = RoundedCornerShape(50)
@@ -575,16 +585,16 @@ fun rememberBaseUITheme(): BaseUITheme {
         ),
         textField = TextFieldTheme(
             background = BaseUITheme.InteractionState(
-                normal = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
-                hovered = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
-                pressed = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
-                focused = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
+                normal = glassBrush(glassTop, glassBottom),
+                hovered = glassBrush(glassTop, glassBottom),
+                pressed = glassBrush(glassPressed, glassPressed),
+                focused = glassBrush(glassTop, glassBottom),
             ),
             highlight = BaseUITheme.InteractionState(
-                normal = highlight,
-                hovered = highlight,
-                pressed = highlight,
-                focused = highlight,
+                normal = gloss,
+                hovered = gloss,
+                pressed = glossSoft,
+                focused = Color.White.copy(alpha = if (isLight) 0.85f else 0.22f),
             ),
             shape = BaseUITheme.InteractionState(
                 normal = defaultShape,
@@ -593,53 +603,48 @@ fun rememberBaseUITheme(): BaseUITheme {
                 focused = defaultShape,
             ),
             border = BaseUITheme.InteractionState(
-                normal = BaseUITheme.Border(border.copy(alpha = 0.85f), 0.5.dp),
-                hovered = BaseUITheme.Border(border.copy(alpha = 0.85f), 0.5.dp),
-                pressed = BaseUITheme.Border(border, 0.5.dp),
-                focused = BaseUITheme.Border(scheme.primary, 0.5.dp),
+                normal = BaseUITheme.Border(glassBorder, 1.dp),
+                hovered = BaseUITheme.Border(glassEdge, 1.dp),
+                pressed = BaseUITheme.Border(glassBorder.copy(alpha = 0.7f), 1.dp),
+                focused = BaseUITheme.Border(primaryEdge, 1.5.dp),
             ),
             shadow = BaseUITheme.InteractionState(
                 normal = BaseUITheme.Shadow(
-                    9.dp,
+                    8.dp,
                     true,
-                    shadowColor.copy(alpha = 0.22f),
-                    shadowColor.copy(alpha = 0.26f)
-                ),
-                hovered = BaseUITheme.Shadow(
-                    9.dp,
-                    true,
-                    shadowColor.copy(alpha = 0.22f),
-                    shadowColor.copy(alpha = 0.26f)
-                ),
-                pressed = BaseUITheme.Shadow(
-                    6.dp,
-                    true,
-                    shadowColor.copy(alpha = 0.15f),
+                    shadowColor.copy(alpha = 0.14f),
                     shadowColor.copy(alpha = 0.18f)
                 ),
-                focused = BaseUITheme.Shadow(
-                    9.dp,
+                hovered = BaseUITheme.Shadow(
+                    10.dp,
                     true,
-                    scheme.primary.copy(alpha = 0.2f),
-                    scheme.primary.copy(alpha = 0.25f)
+                    shadowColor.copy(alpha = 0.18f),
+                    shadowColor.copy(alpha = 0.22f)
+                ),
+                pressed = BaseUITheme.Shadow(
+                    4.dp,
+                    true,
+                    shadowColor.copy(alpha = 0.1f),
+                    shadowColor.copy(alpha = 0.12f)
+                ),
+                focused = BaseUITheme.Shadow(
+                    10.dp,
+                    true,
+                    scheme.primary.copy(alpha = 0.22f),
+                    scheme.primary.copy(alpha = 0.28f)
                 ),
             ),
-            padding = PaddingValues(horizontal = 14.dp, vertical = 10.dp),
+            padding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
             textStyle = TextStyle.Default,
             cursor = SolidColor(scheme.primary),
             foreground = textFieldForeground,
         ),
         autoCompleteMenuTheme = AutoCompleteMenuTheme(
-            background = Brush.verticalGradient(
-                listOf(
-                    scheme.surfaceContainerHigh,
-                    scheme.surfaceContainer
-                )
-            ),
-            shape = RoundedCornerShape(12.dp),
-            border = BaseUITheme.Border(border, 0.5.dp),
+            background = glassBrush(glassTop, glassBottom),
+            shape = RoundedCornerShape(16.dp),
+            border = BaseUITheme.Border(glassBorder, 1.dp),
             padding = PaddingValues(0.dp),
-            shadowElevation = 8.dp,
+            shadowElevation = 16.dp,
         ),
         slider = SliderTheme(
             trackActiveColor = BaseUITheme.InteractionState(
@@ -649,10 +654,10 @@ fun rememberBaseUITheme(): BaseUITheme {
                 focused = scheme.primary,
             ),
             trackInactiveColor = BaseUITheme.InteractionState(
-                normal = border.copy(alpha = 0.6f),
-                hovered = border.copy(alpha = 0.6f),
-                pressed = border.copy(alpha = 0.6f),
-                focused = border.copy(alpha = 0.6f),
+                normal = glassBorder,
+                hovered = glassBorder,
+                pressed = glassBorder,
+                focused = glassBorder,
             ),
             thumbColor = BaseUITheme.InteractionState(
                 normal = scheme.primary,
@@ -664,94 +669,44 @@ fun rememberBaseUITheme(): BaseUITheme {
                 normal = BaseUITheme.Shadow(
                     5.dp,
                     true,
-                    scheme.primary.copy(alpha = 0.35f),
-                    scheme.primary.copy(alpha = 0.4f)
+                    scheme.primary.copy(alpha = 0.4f),
+                    scheme.primary.copy(alpha = 0.45f)
                 ),
                 hovered = BaseUITheme.Shadow(
                     8.dp,
                     true,
-                    scheme.primary.copy(alpha = 0.4f),
+                    scheme.primary.copy(alpha = 0.45f),
                     scheme.primary.copy(alpha = 0.5f)
                 ),
                 pressed = BaseUITheme.Shadow(
                     2.dp,
                     true,
-                    scheme.primary.copy(alpha = 0.2f),
-                    scheme.primary.copy(alpha = 0.25f)
+                    scheme.primary.copy(alpha = 0.25f),
+                    scheme.primary.copy(alpha = 0.3f)
                 ),
                 focused = BaseUITheme.Shadow(
                     5.dp,
                     true,
-                    scheme.primary.copy(alpha = 0.35f),
-                    scheme.primary.copy(alpha = 0.4f)
+                    scheme.primary.copy(alpha = 0.4f),
+                    scheme.primary.copy(alpha = 0.45f)
                 ),
             ),
-            stepActiveColor = scheme.onPrimary.copy(alpha = 0.5f),
+            stepActiveColor = Color.White.copy(alpha = 0.7f),
             stepInactiveColor = scheme.onSurface.copy(alpha = 0.25f),
         ),
         checkBox = CheckBoxTheme(
             selected = BaseUITheme.ButtonStyle(
                 colors = primaryColors,
                 shape = checkBoxShapeState,
-                shadow = BaseUITheme.InteractionState(
-                    normal = BaseUITheme.Shadow(
-                        6.dp,
-                        true,
-                        scheme.primary.copy(alpha = 0.3f),
-                        scheme.primary.copy(alpha = 0.35f)
-                    ),
-                    hovered = BaseUITheme.Shadow(
-                        8.dp,
-                        true,
-                        scheme.primary.copy(alpha = 0.4f),
-                        scheme.primary.copy(alpha = 0.45f)
-                    ),
-                    pressed = BaseUITheme.Shadow(
-                        1.dp,
-                        true,
-                        scheme.primary.copy(alpha = 0.2f),
-                        scheme.primary.copy(alpha = 0.25f)
-                    ),
-                    focused = BaseUITheme.Shadow(
-                        6.dp,
-                        true,
-                        scheme.primary.copy(alpha = 0.3f),
-                        scheme.primary.copy(alpha = 0.35f)
-                    ),
-                ),
+                shadow = primaryShadow,
                 border = primaryBorder,
                 padding = noPadding,
             ),
             unselected = BaseUITheme.ButtonStyle(
                 colors = outlineColors,
                 shape = checkBoxShapeState,
-                shadow = BaseUITheme.InteractionState(
-                    normal = BaseUITheme.Shadow(
-                        3.dp,
-                        true,
-                        shadowColor.copy(alpha = 0.15f),
-                        shadowColor.copy(alpha = 0.18f)
-                    ),
-                    hovered = BaseUITheme.Shadow(
-                        5.dp,
-                        true,
-                        shadowColor.copy(alpha = 0.2f),
-                        shadowColor.copy(alpha = 0.24f)
-                    ),
-                    pressed = BaseUITheme.Shadow(
-                        1.dp,
-                        true,
-                        shadowColor.copy(alpha = 0.08f),
-                        shadowColor.copy(alpha = 0.1f)
-                    ),
-                    focused = BaseUITheme.Shadow(
-                        3.dp,
-                        true,
-                        shadowColor.copy(alpha = 0.15f),
-                        shadowColor.copy(alpha = 0.18f)
-                    ),
-                ),
-                border = outlineBorder,
+                shadow = glassShadow,
+                border = glassBorderState,
                 padding = noPadding,
             ),
             checkmarkColor = scheme.onPrimary,
@@ -767,131 +722,24 @@ fun rememberBaseUITheme(): BaseUITheme {
             unselected = BaseUITheme.ButtonStyle(
                 colors = outlineColors,
                 shape = chipTabShapeState,
-                shadow = outlineShadow,
-                border = outlineBorder,
+                shadow = glassShadow,
+                border = glassBorderState,
                 padding = chipTabPadding,
             ),
         ),
         toggle = BaseUITheme.ToggleTheme(
             checked = BaseUITheme.ButtonStyle(
-                colors = BaseUITheme.InteractionState(
-                    normal = BaseUITheme.ButtonColors(
-                        background = Brush.verticalGradient(listOf(scheme.primary, scheme.primary)),
-                        foreground = scheme.onPrimary,
-                        highlight = Color.White.copy(alpha = 0.25f),
-                    ),
-                    hovered = BaseUITheme.ButtonColors(
-                        background = Brush.verticalGradient(listOf(scheme.primary, scheme.primary)),
-                        foreground = scheme.onPrimary,
-                        highlight = Color.White.copy(alpha = 0.25f),
-                    ),
-                    pressed = BaseUITheme.ButtonColors(
-                        background = Brush.verticalGradient(
-                            listOf(
-                                scheme.primary.copy(alpha = 0.85f),
-                                scheme.primary
-                            )
-                        ),
-                        foreground = scheme.onPrimary,
-                        highlight = Color.White.copy(alpha = 0.25f),
-                    ),
-                    focused = BaseUITheme.ButtonColors(
-                        background = Brush.verticalGradient(listOf(scheme.primary, scheme.primary)),
-                        foreground = scheme.onPrimary,
-                        highlight = Color.White.copy(alpha = 0.25f),
-                    ),
-                ),
+                colors = primaryColors,
                 shape = toggleShapeState,
-                shadow = BaseUITheme.InteractionState(
-                    normal = BaseUITheme.Shadow(
-                        4.dp,
-                        true,
-                        scheme.primary.copy(alpha = 0.3f),
-                        scheme.primary.copy(alpha = 0.35f)
-                    ),
-                    hovered = BaseUITheme.Shadow(
-                        6.dp,
-                        true,
-                        scheme.primary.copy(alpha = 0.4f),
-                        scheme.primary.copy(alpha = 0.45f)
-                    ),
-                    pressed = BaseUITheme.Shadow(
-                        1.dp,
-                        true,
-                        scheme.primary.copy(alpha = 0.2f),
-                        scheme.primary.copy(alpha = 0.25f)
-                    ),
-                    focused = BaseUITheme.Shadow(
-                        4.dp,
-                        true,
-                        scheme.primary.copy(alpha = 0.3f),
-                        scheme.primary.copy(alpha = 0.35f)
-                    ),
-                ),
-                border = BaseUITheme.InteractionState(
-                    normal = BaseUITheme.Border(scheme.primary, 0.5.dp),
-                    hovered = BaseUITheme.Border(scheme.primary, 0.5.dp),
-                    pressed = BaseUITheme.Border(scheme.primary, 0.5.dp),
-                    focused = BaseUITheme.Border(scheme.primary, 0.5.dp),
-                ),
+                shadow = primaryShadow,
+                border = primaryBorder,
                 padding = togglePadding,
             ),
             unchecked = BaseUITheme.ButtonStyle(
-                colors = BaseUITheme.InteractionState(
-                    normal = BaseUITheme.ButtonColors(
-                        background = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
-                        foreground = scheme.onSurface,
-                        highlight = highlight,
-                    ),
-                    hovered = BaseUITheme.ButtonColors(
-                        background = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
-                        foreground = scheme.onSurface,
-                        highlight = highlight,
-                    ),
-                    pressed = BaseUITheme.ButtonColors(
-                        background = Brush.verticalGradient(listOf(containerPressed, containerPressed)),
-                        foreground = scheme.onSurface,
-                        highlight = highlight,
-                    ),
-                    focused = BaseUITheme.ButtonColors(
-                        background = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
-                        foreground = scheme.onSurface,
-                        highlight = highlight,
-                    ),
-                ),
+                colors = outlineColors,
                 shape = toggleShapeState,
-                shadow = BaseUITheme.InteractionState(
-                    normal = BaseUITheme.Shadow(
-                        4.dp,
-                        true,
-                        shadowColor.copy(alpha = 0.15f),
-                        shadowColor.copy(alpha = 0.18f)
-                    ),
-                    hovered = BaseUITheme.Shadow(
-                        6.dp,
-                        true,
-                        shadowColor.copy(alpha = 0.22f),
-                        shadowColor.copy(alpha = 0.26f)
-                    ),
-                    pressed = BaseUITheme.Shadow(
-                        1.dp,
-                        true,
-                        shadowColor.copy(alpha = 0.08f),
-                        shadowColor.copy(alpha = 0.1f)
-                    ),
-                    focused = BaseUITheme.Shadow(
-                        4.dp,
-                        true,
-                        shadowColor.copy(alpha = 0.15f),
-                        shadowColor.copy(alpha = 0.18f)
-                    ),
-                ),
-                border = BaseUITheme.InteractionState(
-                    normal = BaseUITheme.Border(border, 0.5.dp),
-                    hovered = BaseUITheme.Border(border, 0.5.dp),
-                    pressed = BaseUITheme.Border(border.copy(alpha = 0.7f), 0.5.dp),
-                    focused = BaseUITheme.Border(border, 0.5.dp),
-                ),
+                shadow = glassShadow,
+                border = glassBorderState,
                 padding = togglePadding,
             ),
             thumb = BaseUITheme.InteractionState(
@@ -928,61 +776,62 @@ fun rememberBaseUITheme(): BaseUITheme {
             ),
         ),
         card = BaseUITheme.CardTheme(
-            background = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
-            shape = RoundedCornerShape(16.dp),
-            border = BaseUITheme.Border(border, 0.5.dp),
+            background = glassBrush(glassTop, glassBottom),
+            shape = RoundedCornerShape(20.dp),
+            border = BaseUITheme.Border(glassBorder, 1.dp),
             padding = PaddingValues(0.dp),
             shadow = BaseUITheme.Shadow(
-                6.dp,
+                12.dp,
                 true,
-                shadowColor.copy(alpha = 0.15f),
-                shadowColor.copy(alpha = 0.18f)
+                shadowColor.copy(alpha = 0.16f),
+                shadowColor.copy(alpha = 0.2f)
             ),
         ),
         listRowTile = BaseUITheme.ListRowTheme(
             background = BaseUITheme.AdvancedInteractionState(
-                normal = Brush.verticalGradient(listOf(Color.Transparent, Color.Transparent)),
-                hovered = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
-                pressed = Brush.verticalGradient(listOf(containerPressed, containerPressed)),
-                focused = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
-                selected = Brush.verticalGradient(
-                    listOf(
-                        scheme.primaryContainer.copy(alpha = 0.3f),
-                        scheme.primaryContainer.copy(alpha = 0.3f)
-                    )
+                normal = glassBrush(Color.Transparent, Color.Transparent),
+                hovered = glassBrush(glassTop, glassBottom),
+                pressed = glassBrush(glassPressed, glassPressed),
+                focused = glassBrush(glassTop, glassBottom),
+                selected = glassBrush(
+                    lerp(scheme.primaryContainer, Color.White, 0.4f),
+                    scheme.primaryContainer,
                 ),
-                disabled = Brush.verticalGradient(
-                    listOf(
-                        containerLighter.copy(alpha = 0.5f),
-                        containerDarker.copy(alpha = 0.5f)
-                    )
+                disabled = glassBrush(
+                    glassTop.copy(alpha = 0.5f),
+                    glassBottom.copy(alpha = 0.5f),
                 ),
             ),
             shape = BaseUITheme.AdvancedInteractionState(
-                normal = RoundedCornerShape(8.dp),
-                hovered = RoundedCornerShape(8.dp),
-                pressed = RoundedCornerShape(8.dp),
-                focused = RoundedCornerShape(8.dp),
-                selected = RoundedCornerShape(8.dp),
-                disabled = RoundedCornerShape(8.dp),
+                normal = RoundedCornerShape(10.dp),
+                hovered = RoundedCornerShape(10.dp),
+                pressed = RoundedCornerShape(10.dp),
+                focused = RoundedCornerShape(10.dp),
+                selected = RoundedCornerShape(10.dp),
+                disabled = RoundedCornerShape(10.dp),
             ),
             border = BaseUITheme.AdvancedInteractionState(
                 normal = BaseUITheme.Border(Color.Transparent, 0.dp),
-                hovered = BaseUITheme.Border(Color.Transparent, 0.dp),
+                hovered = BaseUITheme.Border(glassBorder, 1.dp),
                 pressed = BaseUITheme.Border(Color.Transparent, 0.dp),
-                focused = BaseUITheme.Border(Color.Transparent, 0.dp),
+                focused = BaseUITheme.Border(glassBorder, 1.dp),
                 selected = BaseUITheme.Border(Color.Transparent, 0.dp),
                 disabled = BaseUITheme.Border(Color.Transparent, 0.dp),
             ),
             shadow = BaseUITheme.AdvancedInteractionState(
-                normal = BaseUITheme.Shadow(0.dp, false, Color.Transparent, Color.Transparent),
-                hovered = BaseUITheme.Shadow(0.dp, false, Color.Transparent, Color.Transparent),
-                pressed = BaseUITheme.Shadow(0.dp, false, Color.Transparent, Color.Transparent),
-                focused = BaseUITheme.Shadow(0.dp, false, Color.Transparent, Color.Transparent),
-                selected = BaseUITheme.Shadow(0.dp, false, Color.Transparent, Color.Transparent),
-                disabled = BaseUITheme.Shadow(0.dp, false, Color.Transparent, Color.Transparent),
+                normal = noShadow,
+                hovered = BaseUITheme.Shadow(
+                    6.dp,
+                    true,
+                    shadowColor.copy(alpha = 0.12f),
+                    shadowColor.copy(alpha = 0.16f)
+                ),
+                pressed = noShadow,
+                focused = noShadow,
+                selected = noShadow,
+                disabled = noShadow,
             ),
-            padding = PaddingValues(horizontal = 8.dp, vertical = 6.dp),
+            padding = PaddingValues(horizontal = 10.dp, vertical = 8.dp),
             textStyle = BaseUITheme.AdvancedInteractionState(
                 normal = TextStyle.Default,
                 hovered = TextStyle.Default,
@@ -1001,17 +850,12 @@ fun rememberBaseUITheme(): BaseUITheme {
             ),
         ),
         dialog = BaseUITheme.DialogTheme(
-            background = Brush.verticalGradient(
-                listOf(
-                    scheme.surface,
-                    scheme.surfaceContainerHigh,
-                )
-            ),
+            background = glassBrush(glassTop, glassBottom),
             scrim = Color.Black.copy(alpha = 0.42f),
-            shape = RoundedCornerShape(16.dp),
-            border = BaseUITheme.Border(border, 0.5.dp),
+            shape = RoundedCornerShape(24.dp),
+            border = BaseUITheme.Border(glassEdge, 1.dp),
             shadow = BaseUITheme.Shadow(
-                24.dp,
+                28.dp,
                 true,
                 shadowColor.copy(alpha = 0.3f),
                 shadowColor.copy(alpha = 0.4f)
@@ -1019,27 +863,20 @@ fun rememberBaseUITheme(): BaseUITheme {
             padding = PaddingValues(24.dp),
         ),
         dropdownMenu = BaseUITheme.DropdownMenuTheme(
-            background = Brush.verticalGradient(
-                listOf(
-                    scheme.surfaceContainerHigh,
-                    scheme.surfaceContainer,
-                )
-            ),
-            shape = RoundedCornerShape(12.dp),
-            border = BaseUITheme.Border(border, 0.5.dp),
+            background = glassBrush(glassTop, glassBottom),
+            shape = RoundedCornerShape(16.dp),
+            border = BaseUITheme.Border(glassBorder, 1.dp),
             shadow = BaseUITheme.Shadow(
-                12.dp,
+                16.dp,
                 true,
-                shadowColor.copy(alpha = 0.2f),
-                shadowColor.copy(alpha = 0.25f)
+                shadowColor.copy(alpha = 0.22f),
+                shadowColor.copy(alpha = 0.28f)
             ),
-            itemHoverBackground = Brush.verticalGradient(
-                listOf(containerLighter, containerDarker)
-            ),
+            itemHoverBackground = glassBrush(glassTop, glassBottom),
             itemForeground = scheme.onSurface,
-            itemHighlight = highlight,
-            padding = PaddingValues(4.dp),
-            itemPadding = PaddingValues(horizontal = 14.dp, vertical = 10.dp),
+            itemHighlight = gloss,
+            padding = PaddingValues(6.dp),
+            itemPadding = PaddingValues(horizontal = 14.dp, vertical = 11.dp),
         ),
     )
 }

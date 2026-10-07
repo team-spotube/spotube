@@ -24,15 +24,27 @@ import androidx.compose.ui.unit.dp
 
 fun Modifier.highlight(color: Color): Modifier =
     drawWithCache {
-        val highlightBrush = Brush.verticalGradient(
-            colors = listOf(color, Color.Transparent),
+        // Frutiger-Aero glass: a bright specular sheen across the top half plus a
+        // faint reflection rising from the bottom edge.
+        val topGloss = Brush.verticalGradient(
+            colors = listOf(color, color.copy(alpha = color.alpha * 0.25f), Color.Transparent),
             startY = 0f,
-            endY = size.height * 0.5f,
+            endY = size.height * 0.55f,
+        )
+        val bottomReflection = Brush.verticalGradient(
+            colors = listOf(Color.Transparent, color.copy(alpha = color.alpha * 0.3f)),
+            startY = size.height * 0.72f,
+            endY = size.height,
         )
         onDrawWithContent {
             drawContent()
             drawRect(
-                brush = highlightBrush,
+                brush = topGloss,
+                topLeft = androidx.compose.ui.geometry.Offset.Zero,
+                size = size,
+            )
+            drawRect(
+                brush = bottomReflection,
                 topLeft = androidx.compose.ui.geometry.Offset.Zero,
                 size = size,
             )

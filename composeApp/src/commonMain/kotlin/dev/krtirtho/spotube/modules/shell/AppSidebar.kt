@@ -50,9 +50,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.blur.HazeColorEffect
-import dev.chrisbanes.haze.blur.blurEffect
-import dev.chrisbanes.haze.hazeEffect
 import dev.krtirtho.spotube.NavigationItem
 import dev.krtirtho.spotube.core.navigation.NavigationState
 import dev.krtirtho.spotube.core.navigation.Navigator
@@ -85,21 +82,13 @@ fun AppSidebar(
     var expanded by rememberSaveable { mutableStateOf(true) }
     val width by animateDpAsState(targetValue = if (expanded) 236.dp else 86.dp)
     val currentLibraryTab by libraryState.currentTab.collectAsState()
-    val surfaceTint = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f)
     val listState = rememberLazyListState()
+
 
     Column(
         modifier = modifier
             .fillMaxHeight()
-            .width(width)
-            .hazeEffect(hazeState) {
-                blurEffect {
-                    blurRadius = 20.dp
-                    colorEffects = listOf(
-                        HazeColorEffect.tint(surfaceTint)
-                    )
-                }
-            },
+            .width(width),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(modifier = Modifier.weight(1f)) {
