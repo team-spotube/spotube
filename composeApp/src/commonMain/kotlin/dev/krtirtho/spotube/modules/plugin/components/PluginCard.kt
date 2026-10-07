@@ -39,10 +39,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
-import coil3.compose.LocalPlatformContext
-import coil3.request.ImageRequest
-import coil3.request.crossfade
 import okio.Path
 import dev.krtirtho.spotube.core.ui.base.GhostIconButton
 import dev.krtirtho.spotube.core.ui.base.OutlineButton
@@ -65,10 +61,6 @@ import spotube.composeapp.generated.resources.plugin_action_logout
 import spotube.composeapp.generated.resources.plugin_state_active
 import spotube.composeapp.generated.resources.plugin_state_builtin
 import spotube.composeapp.generated.resources.plugin_version_label
-import spotube.composeapp.generated.resources.settings_plugins_ability_audio
-import spotube.composeapp.generated.resources.settings_plugins_ability_lyrics
-import spotube.composeapp.generated.resources.settings_plugins_ability_metadata
-import spotube.composeapp.generated.resources.settings_plugins_ability_scrobble
 
 @Composable
 internal fun PluginCard(
@@ -96,26 +88,22 @@ internal fun PluginCard(
                     .clip(RoundedCornerShape(10.dp)),
                 color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
             ) {
-                if (logoPath != null) {
-                    val platformContext = LocalPlatformContext.current
-                    AsyncImage(
-                        model = ImageRequest.Builder(platformContext)
-                            .data(logoPath.toString())
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = plugin.name,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                } else {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            Iconsax.IconsaxBox,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(22.dp)
-                        )
-                    }
-                }
+                PluginLogo(
+                    plugin = plugin,
+                    logoPath = logoPath,
+                    contentDescription = plugin.name,
+                    modifier = Modifier.fillMaxSize(),
+                    fallback = {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                Iconsax.IconsaxBox,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(22.dp)
+                            )
+                        }
+                    },
+                )
             }
 
             // Text content
@@ -302,12 +290,3 @@ internal fun PluginCard(
     }
 }
 
-@Composable
-private fun PluginAbility.displayLabel(): String {
-    return when (this) {
-        PluginAbility.METADATA -> stringResource(Res.string.settings_plugins_ability_metadata)
-        PluginAbility.AUDIO -> stringResource(Res.string.settings_plugins_ability_audio)
-        PluginAbility.LYRICS -> stringResource(Res.string.settings_plugins_ability_lyrics)
-        PluginAbility.SCROBBLE -> stringResource(Res.string.settings_plugins_ability_scrobble)
-    }
-}

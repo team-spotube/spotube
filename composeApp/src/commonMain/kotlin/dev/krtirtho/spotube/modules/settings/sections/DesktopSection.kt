@@ -30,8 +30,11 @@ import org.jetbrains.compose.resources.stringResource
 internal fun LazyListScope.desktopSection(
     settings: UserSettings,
     settingsViewModel: SettingsViewModel,
+    includeHeader: Boolean = true,
 ) {
-    settingsSectionHeader(Res.string.settings_section_desktop)
+    if (includeHeader) {
+        settingsSectionHeader(Res.string.settings_section_desktop)
+    }
     settingsSectionCard(
         items = listOf(
             {

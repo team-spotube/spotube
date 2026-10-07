@@ -24,23 +24,18 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,7 +46,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -64,11 +58,8 @@ import dev.krtirtho.spotube.core.navigation.NavigationState
 import dev.krtirtho.spotube.core.navigation.Navigator
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.ui.base.GhostIconButton
-import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
-import dev.krtirtho.spotube.core.ui.base.OutlineButton
-import dev.krtirtho.spotube.core.ui.base.SecondaryButton
-import dev.krtirtho.spotube.core.ui.base.copyPadding
-import dev.krtirtho.spotube.core.ui.base.copyShape
+import dev.krtirtho.spotube.core.ui.component.SidebarItem
+import dev.krtirtho.spotube.core.ui.component.SidebarSectionLabel
 import dev.krtirtho.spotube.core.ui.component.VerticalScrollbar
 import dev.krtirtho.spotube.modules.downloads.DownloadBadgeIndicator
 import dev.krtirtho.spotube.modules.library.LibraryState
@@ -150,20 +141,12 @@ fun AppSidebar(
                     items(sidebarTabs.size) { index ->
                         when (val tab = sidebarTabs[index]) {
                             is NavigationItem.Group<*> -> {
-                                androidx.compose.animation.AnimatedVisibility(visible = expanded) {
-                                    Text(
-                                        text = tab.title.uppercase(),
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        modifier = Modifier.fillMaxWidth()
-                                            .padding(horizontal = 24.dp, vertical = 8.dp)
-                                    )
-                                }
+                                SidebarSectionLabel(text = tab.title, expanded = expanded)
                                 tab.items.forEach {
                                     val selected = navigationState.topLevelRoute == it.route
                                     SidebarItem(
                                         label = it.title,
-                                        activeIcon = it.icon,
+                                        icon = it.icon,
                                         onClick = {
                                             if (it.route == Routes.Library) {
                                                 libraryState.currentTab.value =
@@ -173,8 +156,17 @@ fun AppSidebar(
                                         },
                                         selected = if (it.route == Routes.Library) selected && currentLibraryTab == it.data else selected,
                                         expanded = expanded,
-                                        showDownloadBadge = it.route == Routes.Library
-                                                && it.data == LibraryTab.Downloads
+                                        badge = if (it.route == Routes.Library
+                                            && it.data == LibraryTab.Downloads
+                                        ) {
+                                            {
+                                                DownloadBadgeIndicator(
+                                                    modifier = Modifier.align(Alignment.TopEnd)
+                                                )
+                                            }
+                                        } else {
+                                            null
+                                        },
                                     )
                                 }
 
@@ -184,7 +176,7 @@ fun AppSidebar(
                                 val selected = navigationState.topLevelRoute == tab.route
                                 SidebarItem(
                                     label = tab.title,
-                                    activeIcon = tab.icon,
+                                    icon = tab.icon,
                                     onClick = {
                                         navigator.navigate(tab.route)
                                     },
@@ -206,7 +198,7 @@ fun AppSidebar(
         HorizontalDivider()
         SidebarItem(
             label = "Settings",
-            activeIcon = Iconsax.IconsaxSetting2,
+            icon = Iconsax.IconsaxSetting2,
             onClick = {
                 navigator.navigate(Routes.Settings)
             },
@@ -214,77 +206,5 @@ fun AppSidebar(
             expanded = expanded,
         )
         Spacer(modifier = Modifier.height(120.dp))
-    }
-}
-
-@Composable
-fun SidebarItem(
-    label: String,
-    activeIcon: ImageVector,
-    selected: Boolean,
-    expanded: Boolean,
-    onClick: () -> Unit,
-    showDownloadBadge: Boolean = false,
-) {
-    val itemContent: @Composable RowScope.() -> Unit = {
-        Box(modifier = Modifier.size(16.dp)) {
-            Icon(
-                imageVector = activeIcon,
-                contentDescription = label,
-                tint = if (selected) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                },
-            )
-            if (showDownloadBadge) {
-                DownloadBadgeIndicator(
-                    modifier = Modifier.align(Alignment.TopEnd)
-                )
-            }
-        }
-        AnimatedVisibility(visible = expanded, enter = fadeIn(), exit = fadeOut()) {
-            Text(
-                text = label,
-                maxLines = 1,
-                softWrap = false,
-                style = LocalTextStyle.current.copy(
-                    fontSize = MaterialTheme.typography.labelMedium.fontSize,
-                    fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
-                    color = if (selected) {
-                        MaterialTheme.colorScheme.onSecondaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    }
-                )
-            )
-        }
-        Spacer(modifier = if (expanded) Modifier.weight(1f) else Modifier)
-    }
-
-    val buttonModifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 7.dp, vertical = 2.dp)
-    val contentPadding = PaddingValues(horizontal = 5.dp)
-
-    if (selected) {
-        SecondaryButton(
-            onClick = onClick,
-            modifier = buttonModifier,
-            theme = LocalBaseUITheme.current.buttons.secondary
-                .copyPadding(contentPadding)
-                .copyShape(RoundedCornerShape(5.dp)),
-            content = itemContent,
-        )
-    } else {
-        OutlineButton(
-            onClick = onClick,
-            modifier = buttonModifier,
-            theme = LocalBaseUITheme.current.buttons.outline
-                .copyPadding(contentPadding)
-                .copyShape(RoundedCornerShape(5.dp)),
-            hoverOnly = true,
-            content = itemContent,
-        )
     }
 }

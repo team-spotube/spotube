@@ -63,6 +63,7 @@ data class AbilitySelection(
     val ability: PluginAbility,
     val plugins: List<PluginEntry>,
     val selectedPlugin: PluginEntry?,
+    val pluginLogoPaths: Map<String, Path?> = emptyMap(),
 )
 
 data class PluginDiscoverState(
@@ -254,22 +255,26 @@ class PluginViewModel(
                     AbilitySelection(
                         PluginAbility.METADATA,
                         snapshot.metadataPlugins,
-                        state.selectedPlugins[PluginAbility.METADATA]
+                        state.selectedPlugins[PluginAbility.METADATA],
+                        logoPaths,
                     ),
                     AbilitySelection(
                         PluginAbility.AUDIO,
                         snapshot.audioPlugins,
-                        state.selectedPlugins[PluginAbility.AUDIO]
+                        state.selectedPlugins[PluginAbility.AUDIO],
+                        logoPaths,
                     ),
                     AbilitySelection(
                         PluginAbility.LYRICS,
                         snapshot.lyricsPlugins,
-                        state.selectedPlugins[PluginAbility.LYRICS]
+                        state.selectedPlugins[PluginAbility.LYRICS],
+                        logoPaths,
                     ),
                     AbilitySelection(
                         PluginAbility.SCROBBLE,
                         snapshot.scrobblePlugins,
-                        state.selectedPlugins[PluginAbility.SCROBBLE]
+                        state.selectedPlugins[PluginAbility.SCROBBLE],
+                        logoPaths,
                     ),
                 ),
                 pendingPlugin = snapshot.pendingPlugin,

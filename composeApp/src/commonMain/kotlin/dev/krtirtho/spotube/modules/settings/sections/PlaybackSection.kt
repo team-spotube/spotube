@@ -20,6 +20,7 @@ package dev.krtirtho.spotube.modules.settings.sections
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.ChevronRight
 import compose.icons.feathericons.Cast
@@ -51,6 +52,8 @@ internal fun LazyListScope.playbackSection(
     settingsViewModel: SettingsViewModel,
     navigatorCommands: NavigationCommands,
     requestLocalNetworkPermission: () -> Unit,
+    includeBlacklist: Boolean = true,
+    includeHeader: Boolean = true,
 ) {
     val streamingFormats = availableAudioFormats(settings.streamingMusicFormat, streamingFormatPresets)
     val streamingQualities = availableAudioQualities(
@@ -58,163 +61,162 @@ internal fun LazyListScope.playbackSection(
         current = settings.streamingMusicQuality,
     )
 
-    settingsSectionHeader(Res.string.settings_section_playback)
-    settingsSectionCard(
-        items = listOf(
-            {
-                SelectionSettingCard(
-                    title = stringResource(Res.string.settings_streaming_format_title),
-                    subtitle = stringResource(
-                        Res.string.settings_streaming_format_subtitle_current,
-                        settings.streamingMusicFormat.displayLabel()
-                    ),
-                    icon = {
-                        SettingsItemIcon(Iconsax.IconsaxMusicPlay, stringResource(Res.string.settings_streaming_format_title))
-                    },
-                    selectedOption = settings.streamingMusicFormat,
-                    options = streamingFormats,
-                    optionLabel = { it.displayLabel() },
-                    onOptionSelected = { format ->
-                        settingsViewModel.updateSettings {
-                            copy(
-                                streamingMusicFormat = format,
-                                streamingMusicQuality = format.resolveQuality(streamingMusicQuality),
-                            )
-                        }
-                    }
-                )
-            },
-            {
-                SelectionSettingCard(
-                    title = stringResource(Res.string.settings_streaming_quality_title),
-                    subtitle = stringResource(
-                        Res.string.settings_subtitle_current,
-                        settings.streamingMusicQuality.displayLabel()
-                    ),
-                    icon = {
-                        SettingsItemIcon(Iconsax.IconsaxVerticalSetting, stringResource(Res.string.settings_streaming_quality_title))
-                    },
-                    selectedOption = settings.streamingMusicQuality,
-                    options = streamingQualities,
-                    optionLabel = { it.displayLabel() },
-                    onOptionSelected = { quality ->
-                        settingsViewModel.updateSettings {
-                            copy(streamingMusicQuality = quality)
-                        }
-                    }
-                )
-            },
-            {
-                SwitchSettingCard(
-                    title = stringResource(Res.string.settings_enable_endless_playback_title),
-                    subtitle = stringResource(Res.string.settings_enable_endless_playback_subtitle),
-                    icon = {
-                        SettingsItemIcon(
-                            Iconsax.IconsaxRepeatArrow,
-                            stringResource(Res.string.settings_enable_endless_playback_title)
+    val cards: List<@Composable () -> Unit> = buildList {
+        add {
+            SelectionSettingCard(
+                title = stringResource(Res.string.settings_streaming_format_title),
+                subtitle = stringResource(
+                    Res.string.settings_streaming_format_subtitle_current,
+                    settings.streamingMusicFormat.displayLabel()
+                ),
+                icon = {
+                    SettingsItemIcon(Iconsax.IconsaxMusicPlay, stringResource(Res.string.settings_streaming_format_title))
+                },
+                selectedOption = settings.streamingMusicFormat,
+                options = streamingFormats,
+                optionLabel = { it.displayLabel() },
+                onOptionSelected = { format ->
+                    settingsViewModel.updateSettings {
+                        copy(
+                            streamingMusicFormat = format,
+                            streamingMusicQuality = format.resolveQuality(streamingMusicQuality),
                         )
-                    },
-                    checked = settings.enableEndlessPlayback,
-                    onCheckedChange = { enabled ->
-                        settingsViewModel.updateSettings {
-                            copy(enableEndlessPlayback = enabled)
-                        }
                     }
-                )
-            },
-            {
-                SwitchSettingCard(
-                    title = stringResource(Res.string.settings_enable_connect_title),
-                    subtitle = stringResource(Res.string.settings_enable_connect_subtitle),
-                    icon = {
-                        SettingsItemIcon(Iconsax.IconsaxMirroringScreen, stringResource(Res.string.settings_enable_connect_title))
-                    },
-                    checked = settings.enableConnect,
-                    onCheckedChange = { enabled ->
-                        settingsViewModel.updateSettings {
-                            copy(enableConnect = enabled)
-                        }
+                }
+            )
+        }
+        add {
+            SelectionSettingCard(
+                title = stringResource(Res.string.settings_streaming_quality_title),
+                subtitle = stringResource(
+                    Res.string.settings_subtitle_current,
+                    settings.streamingMusicQuality.displayLabel()
+                ),
+                icon = {
+                    SettingsItemIcon(Iconsax.IconsaxVerticalSetting, stringResource(Res.string.settings_streaming_quality_title))
+                },
+                selectedOption = settings.streamingMusicQuality,
+                options = streamingQualities,
+                optionLabel = { it.displayLabel() },
+                onOptionSelected = { quality ->
+                    settingsViewModel.updateSettings {
+                        copy(streamingMusicQuality = quality)
                     }
-                )
-            },
-            {
-                SwitchSettingCard(
-                    title = stringResource(Res.string.settings_allow_remote_control_title),
-                    subtitle = stringResource(Res.string.settings_allow_remote_control_subtitle),
-                    icon = {
-                        SettingsItemIcon(
-                            Iconsax.IconsaxMirroringScreen,
-                            stringResource(Res.string.settings_allow_remote_control_title)
-                        )
-                    },
-                    checked = settings.allowRemoteControl,
-                    onCheckedChange = { enabled ->
-                        settingsViewModel.updateSettings {
-                            copy(allowRemoteControl = enabled)
-                        }
-                        // Request the local network permission when enabling remote control
-                        // so that DNS-SD registration can succeed on Android 16+
-                        if (enabled) {
-                            requestLocalNetworkPermission()
-                        }
+                }
+            )
+        }
+        add {
+            SwitchSettingCard(
+                title = stringResource(Res.string.settings_enable_endless_playback_title),
+                subtitle = stringResource(Res.string.settings_enable_endless_playback_subtitle),
+                icon = {
+                    SettingsItemIcon(
+                        Iconsax.IconsaxRepeatArrow,
+                        stringResource(Res.string.settings_enable_endless_playback_title)
+                    )
+                },
+                checked = settings.enableEndlessPlayback,
+                onCheckedChange = { enabled ->
+                    settingsViewModel.updateSettings {
+                        copy(enableEndlessPlayback = enabled)
                     }
-                )
-            },
-            {
-                TextInputSettingCard(
-                    title = stringResource(Res.string.settings_remote_device_name_title),
-                    subtitle = stringResource(
-                        Res.string.settings_remote_device_name_subtitle,
-                        settings.remoteControlDeviceName.ifBlank { stringResource(Res.string.settings_remote_device_name_default) }
-                    ),
-                    icon = {
-                        SettingsItemIcon(Iconsax.IconsaxEdit, stringResource(Res.string.settings_remote_device_name_title))
-                    },
-                    value = settings.remoteControlDeviceName,
-                    dialogDescription = stringResource(Res.string.settings_remote_device_name_description),
-                    placeholder = stringResource(Res.string.settings_remote_device_name_placeholder),
-                    normalize = { it.trim() },
-                    validate = { _ -> null },
-                    onValueSaved = { value ->
-                        settingsViewModel.updateSettings {
-                            copy(remoteControlDeviceName = value)
-                        }
+                }
+            )
+        }
+        add {
+            SwitchSettingCard(
+                title = stringResource(Res.string.settings_enable_connect_title),
+                subtitle = stringResource(Res.string.settings_enable_connect_subtitle),
+                icon = {
+                    SettingsItemIcon(Iconsax.IconsaxMirroringScreen, stringResource(Res.string.settings_enable_connect_title))
+                },
+                checked = settings.enableConnect,
+                onCheckedChange = { enabled ->
+                    settingsViewModel.updateSettings {
+                        copy(enableConnect = enabled)
                     }
-                )
-            },
-            {
-                val error_whole_number = stringResource(Res.string.settings_error_whole_number)
-                val error_port_range = stringResource(Res.string.settings_error_port_range)
+                }
+            )
+        }
+        add {
+            SwitchSettingCard(
+                title = stringResource(Res.string.settings_allow_remote_control_title),
+                subtitle = stringResource(Res.string.settings_allow_remote_control_subtitle),
+                icon = {
+                    SettingsItemIcon(
+                        Iconsax.IconsaxMirroringScreen,
+                        stringResource(Res.string.settings_allow_remote_control_title)
+                    )
+                },
+                checked = settings.allowRemoteControl,
+                onCheckedChange = { enabled ->
+                    settingsViewModel.updateSettings {
+                        copy(allowRemoteControl = enabled)
+                    }
+                    // Request the local network permission when enabling remote control
+                    // so that DNS-SD registration can succeed on Android 16+
+                    if (enabled) {
+                        requestLocalNetworkPermission()
+                    }
+                }
+            )
+        }
+        add {
+            TextInputSettingCard(
+                title = stringResource(Res.string.settings_remote_device_name_title),
+                subtitle = stringResource(
+                    Res.string.settings_remote_device_name_subtitle,
+                    settings.remoteControlDeviceName.ifBlank { stringResource(Res.string.settings_remote_device_name_default) }
+                ),
+                icon = {
+                    SettingsItemIcon(Iconsax.IconsaxEdit, stringResource(Res.string.settings_remote_device_name_title))
+                },
+                value = settings.remoteControlDeviceName,
+                dialogDescription = stringResource(Res.string.settings_remote_device_name_description),
+                placeholder = stringResource(Res.string.settings_remote_device_name_placeholder),
+                normalize = { it.trim() },
+                validate = { _ -> null },
+                onValueSaved = { value ->
+                    settingsViewModel.updateSettings {
+                        copy(remoteControlDeviceName = value)
+                    }
+                }
+            )
+        }
+        add {
+            val error_whole_number = stringResource(Res.string.settings_error_whole_number)
+            val error_port_range = stringResource(Res.string.settings_error_port_range)
 
-                TextInputSettingCard(
-                    title = stringResource(Res.string.settings_playback_port_title),
-                    subtitle = stringResource(
-                        Res.string.settings_playback_port_subtitle_current,
-                        settings.playbackProxyServerPort
-                    ),
-                    icon = {
-                        SettingsItemIcon(Iconsax.CustomServer, stringResource(Res.string.settings_playback_port_title))
-                    },
-                    value = settings.playbackProxyServerPort.toString(),
-                    dialogDescription = stringResource(Res.string.settings_playback_port_description),
-                    placeholder = stringResource(Res.string.settings_playback_port_placeholder),
-                    normalize = { it.trim() },
-                    validate = { value ->
-                        val port = value.toIntOrNull()
-                        when {
-                            port == null -> error_whole_number
-                            port !in 1..65535 -> error_port_range
-                            else -> null
-                        }
-                    },
-                    onValueSaved = { value ->
-                        settingsViewModel.updateSettings {
-                            copy(playbackProxyServerPort = value.toInt())
-                        }
+            TextInputSettingCard(
+                title = stringResource(Res.string.settings_playback_port_title),
+                subtitle = stringResource(
+                    Res.string.settings_playback_port_subtitle_current,
+                    settings.playbackProxyServerPort
+                ),
+                icon = {
+                    SettingsItemIcon(Iconsax.CustomServer, stringResource(Res.string.settings_playback_port_title))
+                },
+                value = settings.playbackProxyServerPort.toString(),
+                dialogDescription = stringResource(Res.string.settings_playback_port_description),
+                placeholder = stringResource(Res.string.settings_playback_port_placeholder),
+                normalize = { it.trim() },
+                validate = { value ->
+                    val port = value.toIntOrNull()
+                    when {
+                        port == null -> error_whole_number
+                        port !in 1..65535 -> error_port_range
+                        else -> null
                     }
-                )
-            },
-            {
+                },
+                onValueSaved = { value ->
+                    settingsViewModel.updateSettings {
+                        copy(playbackProxyServerPort = value.toInt())
+                    }
+                }
+            )
+        }
+        if (includeBlacklist) {
+            add {
                 SettingCardItem(
                     title = stringResource(Res.string.settings_blacklist_title),
                     subtitle = stringResource(Res.string.settings_blacklist_subtitle),
@@ -235,8 +237,12 @@ internal fun LazyListScope.playbackSection(
                         navigatorCommands.navigateTo(Routes.Blacklist)
                     },
                 )
-            },
-        )
-    )
-}
+            }
+        }
+    }
 
+    if (includeHeader) {
+        settingsSectionHeader(Res.string.settings_section_playback)
+    }
+    settingsSectionCard(items = cards)
+}

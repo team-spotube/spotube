@@ -26,6 +26,7 @@
     <string name="settings_section_caching">Caching</string>
     <string name="settings_section_desktop">Desktop</string>
     <string name="settings_section_updates">Updates</string>
+    <string name="settings_section_about">About</string>
 
     <string name="settings_action_close">Close</string>
     <string name="settings_action_save">Save</string>

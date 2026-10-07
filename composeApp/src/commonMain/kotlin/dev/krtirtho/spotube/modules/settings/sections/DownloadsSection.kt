@@ -79,6 +79,7 @@ import spotube.composeapp.generated.resources.settings_subtitle_current
 internal fun LazyListScope.downloadsSection(
     settings: UserSettings,
     settingsViewModel: SettingsViewModel,
+    includeHeader: Boolean = true,
 ) {
     val downloadFormats = availableAudioFormats(settings.downloadMusicFormat, downloadFormatPresets)
     val downloadQualities = availableAudioQualities(
@@ -86,7 +87,9 @@ internal fun LazyListScope.downloadsSection(
         current = settings.downloadMusicQuality,
     )
 
-    settingsSectionHeader(Res.string.settings_section_downloads)
+    if (includeHeader) {
+        settingsSectionHeader(Res.string.settings_section_downloads)
+    }
     settingsSectionCard(
         items = listOf(
             {

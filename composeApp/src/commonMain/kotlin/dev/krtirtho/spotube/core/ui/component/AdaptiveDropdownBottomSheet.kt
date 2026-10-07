@@ -82,6 +82,8 @@ data class AdaptiveMenuItem(
     val enabled: Boolean = true,
     val selected: Boolean = false,
     val dividerBefore: Boolean = false,
+    val subtitle: String? = null,
+    val leadingContent: (@Composable () -> Unit)? = null,
 )
 
 enum class HeaderDisplayMode {
@@ -156,6 +158,8 @@ fun AdaptiveDropdownBottomSheet(
                         enabled = item.enabled,
                         selected = item.selected,
                         leadingIcon = item.icon,
+                        leadingContent = item.leadingContent,
+                        subtitle = item.subtitle,
                     )
                 }
             }
@@ -261,33 +265,32 @@ private fun AdaptiveBottomSheetContent(
                             )
                             .padding(horizontal = 12.dp, vertical = 14.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            if (item.icon != null) {
-                                Icon(
-                                    imageVector = item.icon,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(22.dp),
-                                    tint = if (item.enabled) {
-                                        MaterialTheme.colorScheme.onSurface
-                                    } else {
-                                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-                                    },
-                                )
-                            } else if (item.selected) {
-                                Icon(
-                                    imageVector = FeatherIcons.Check,
-                                    contentDescription = "Selected",
-                                    modifier = Modifier.size(22.dp),
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
-                            } else if (hasSelection) {
-                                Spacer(modifier = Modifier.size(22.dp))
-                            }
+                        when {
+                            item.leadingContent != null -> item.leadingContent.invoke()
+                            item.icon != null -> Icon(
+                                imageVector = item.icon,
+                                contentDescription = null,
+                                modifier = Modifier.size(22.dp),
+                                tint = if (item.enabled) {
+                                    MaterialTheme.colorScheme.onSurface
+                                } else {
+                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                                },
+                            )
+
+                            item.selected -> Icon(
+                                imageVector = FeatherIcons.Check,
+                                contentDescription = "Selected",
+                                modifier = Modifier.size(22.dp),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+
+                            hasSelection -> Spacer(modifier = Modifier.size(22.dp))
+                        }
+
+                        Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = item.label,
                                 style = MaterialTheme.typography.bodyLarge,
@@ -297,9 +300,16 @@ private fun AdaptiveBottomSheetContent(
                                     MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
                                 },
                             )
+                            item.subtitle?.let { subtitle ->
+                                Text(
+                                    text = subtitle,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
                         }
 
-                        if (item.selected && item.icon != null) {
+                        if (item.selected && (item.icon != null || item.leadingContent != null)) {
                             Icon(
                                 imageVector = FeatherIcons.Check,
                                 contentDescription = "Selected",

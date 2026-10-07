@@ -17,6 +17,11 @@
 
 package dev.krtirtho.spotube.modules.plugin
 
+import org.jetbrains.compose.resources.DrawableResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.plugin_logo_lrclib
+import spotube.composeapp.generated.resources.plugin_logo_newpipe
+
 val NEWPIPE_YOUTUBE_BUILT_IN_PLUGIN = PluginEntry(
     name = "NewPipe YouTube",
     version = "0.1.0",
@@ -52,3 +57,15 @@ val BUILT_IN_PLUGINS = listOf(
     NEWPIPE_YOUTUBE_BUILT_IN_PLUGIN,
     LRCLIB_BUILT_IN_PLUGIN,
 )
+
+/**
+ * The bundled placeholder logo for a built-in plugin, or `null` if it has none.
+ *
+ * Built-in plugins are not installed to disk, so they have no `logo.png`; these
+ * resources (in `composeResources/drawable`) stand in as their logos.
+ */
+fun builtInPluginLogo(plugin: PluginEntry): DrawableResource? = when (plugin.id) {
+    NEWPIPE_YOUTUBE_BUILT_IN_PLUGIN.id -> Res.drawable.plugin_logo_newpipe
+    LRCLIB_BUILT_IN_PLUGIN.id -> Res.drawable.plugin_logo_lrclib
+    else -> null
+}

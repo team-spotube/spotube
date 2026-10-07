@@ -106,6 +106,8 @@ fun DropdownMenuItem(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     leadingIcon: ImageVector? = null,
+    leadingContent: (@Composable () -> Unit)? = null,
+    subtitle: String? = null,
     selected: Boolean = false,
     theme: BaseUITheme.DropdownMenuTheme? = null,
 ) {
@@ -142,8 +144,9 @@ fun DropdownMenuItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        if (leadingIcon != null) {
-            Icon(
+        when {
+            leadingContent != null -> leadingContent()
+            leadingIcon != null -> Icon(
                 imageVector = leadingIcon,
                 contentDescription = null,
                 modifier = Modifier.size(18.dp),
@@ -155,18 +158,28 @@ fun DropdownMenuItem(
             )
         }
 
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyMedium,
-            color = if (enabled) {
-                menuTheme.itemForeground
-            } else {
-                menuTheme.itemForeground.copy(alpha = 0.38f)
-            },
-            modifier = Modifier.weight(1f),
-            maxLines = 1,
-            softWrap = false,
-        )
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (enabled) {
+                    menuTheme.itemForeground
+                } else {
+                    menuTheme.itemForeground.copy(alpha = 0.38f)
+                },
+                maxLines = 1,
+                softWrap = false,
+            )
+            if (subtitle != null) {
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = menuTheme.itemForeground.copy(alpha = if (enabled) 0.6f else 0.38f),
+                    maxLines = 1,
+                    softWrap = false,
+                )
+            }
+        }
     }
 }
 

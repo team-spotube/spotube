@@ -67,6 +67,30 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun BlacklistScreen() {
     val viewModel = koinViewModel<BlacklistViewModel>()
+    Scaffold(
+        topBar = {
+            ApplicationMainBar(
+                backButton = true,
+                title = { Text("Blacklist") },
+            )
+        },
+    ) { innerPadding ->
+        BlacklistContent(
+            viewModel = viewModel,
+            modifier = Modifier.padding(innerPadding),
+        )
+    }
+}
+
+/**
+ * The blacklist UI without its own [Scaffold] / app bar, so it can be embedded
+ * as a tab in the large-screen settings layout as well as hosted by [BlacklistScreen].
+ */
+@Composable
+internal fun BlacklistContent(
+    viewModel: BlacklistViewModel,
+    modifier: Modifier = Modifier,
+) {
     val blacklistedTracks by viewModel.blacklistedTracks.collectAsStateWithLifecycle()
     val blacklistedArtists by viewModel.blacklistedArtists.collectAsStateWithLifecycle()
     val shellBottomInset = LocalAppShellBottomInset.current
@@ -102,92 +126,82 @@ fun BlacklistScreen() {
     val isEmpty = filteredTracks.isEmpty() && filteredArtists.isEmpty()
     val hasActiveFilter = normalizedQuery.isNotBlank()
 
-    Scaffold(
-        topBar = {
-            ApplicationMainBar(
-                backButton = true,
-                title = { Text("Blacklist") },
-            )
-        },
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            TextField(
-                value = filterQuery,
-                onValueChange = { filterQuery = it },
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Filter blacklist...") },
-                singleLine = true,
-                leadingIcon = {
-                    Icon(
-                        imageVector = Iconsax.IconsaxFilterSearch,
-                        contentDescription = "Search",
-                    )
-                },
-            )
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        TextField(
+            value = filterQuery,
+            onValueChange = { filterQuery = it },
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text("Filter blacklist...") },
+            singleLine = true,
+            leadingIcon = {
+                Icon(
+                    imageVector = Iconsax.IconsaxFilterSearch,
+                    contentDescription = "Search",
+                )
+            },
+        )
 
-            if (isEmpty) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = shellBottomInset),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = if (hasActiveFilter) {
-                            "No blacklisted items match '$filterQuery'"
-                        } else {
-                            "No blacklisted items"
-                        },
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                        bottom = 16.dp + shellBottomInset,
-                    ),
-                ) {
-                    if (filteredTracks.isNotEmpty()) {
-                        item {
-                            Text(
-                                text = "Tracks",
-                                style = MaterialTheme.typography.titleSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.padding(vertical = 8.dp),
-                            )
-                        }
-                        items(filteredTracks, key = { "track_${it.id}" }) { track ->
-                            BlacklistedTrackRow(
-                                track = track,
-                                onRemove = { viewModel.toggleTrack(track) },
-                            )
-                        }
+        if (isEmpty) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = shellBottomInset),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = if (hasActiveFilter) {
+                        "No blacklisted items match '$filterQuery'"
+                    } else {
+                        "No blacklisted items"
+                    },
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                    bottom = 16.dp + shellBottomInset,
+                ),
+            ) {
+                if (filteredTracks.isNotEmpty()) {
+                    item {
+                        Text(
+                            text = "Tracks",
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(vertical = 8.dp),
+                        )
                     }
+                    items(filteredTracks, key = { "track_${it.id}" }) { track ->
+                        BlacklistedTrackRow(
+                            track = track,
+                            onRemove = { viewModel.toggleTrack(track) },
+                        )
+                    }
+                }
 
-                    if (filteredArtists.isNotEmpty()) {
-                        item {
-                            Text(
-                                text = "Artists",
-                                style = MaterialTheme.typography.titleSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.padding(vertical = 8.dp),
-                            )
-                        }
-                        items(filteredArtists, key = { "artist_${it.id}" }) { artist ->
-                            BlacklistedArtistRow(
-                                artist = artist,
-                                onRemove = { viewModel.toggleArtist(artist) },
-                            )
-                        }
+                if (filteredArtists.isNotEmpty()) {
+                    item {
+                        Text(
+                            text = "Artists",
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(vertical = 8.dp),
+                        )
+                    }
+                    items(filteredArtists, key = { "artist_${it.id}" }) { artist ->
+                        BlacklistedArtistRow(
+                            artist = artist,
+                            onRemove = { viewModel.toggleArtist(artist) },
+                        )
                     }
                 }
             }

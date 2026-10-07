@@ -39,10 +39,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
-import coil3.compose.LocalPlatformContext
-import coil3.request.ImageRequest
-import coil3.request.crossfade
 import okio.Path
 import dev.krtirtho.spotube.core.ui.base.Card
 import dev.krtirtho.spotube.core.ui.base.OutlineButton
@@ -100,24 +96,20 @@ fun PluginPermissionDialog(
                         .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
                     contentAlignment = Alignment.Center
                 ) {
-                    if (logoPath != null) {
-                        val platformContext = LocalPlatformContext.current
-                        AsyncImage(
-                            model = ImageRequest.Builder(platformContext)
-                                .data(logoPath.toString())
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = pluginInfo.name,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Iconsax.IconsaxBoxAdd,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
+                    PluginLogo(
+                        plugin = pluginInfo,
+                        logoPath = logoPath,
+                        contentDescription = pluginInfo.name,
+                        modifier = Modifier.fillMaxSize(),
+                        fallback = {
+                            Icon(
+                                imageVector = Iconsax.IconsaxBoxAdd,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        },
+                    )
                 }
                 Column(modifier = Modifier.weight(1f)) {
                     Text(

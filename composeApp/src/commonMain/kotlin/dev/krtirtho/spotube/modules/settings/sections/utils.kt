@@ -32,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.krtirtho.plugin_interfaces.plugin_apis.audio.AudioFormat
 import dev.krtirtho.plugin_interfaces.plugin_apis.audio.AudioQuality
@@ -101,6 +102,23 @@ internal fun LazyListScope.settingsSectionHeader(title: StringResource) {
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         )
     }
+}
+
+/**
+ * A page-level title for a settings destination (used by the large-screen sidebar
+ * layout, where each section is its own page rather than one entry in a long list).
+ */
+@Composable
+internal fun SettingsPageTitle(title: StringResource) {
+    Text(
+        text = stringResource(title),
+        style = MaterialTheme.typography.headlineSmall,
+        fontWeight = FontWeight.SemiBold,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp)
+    )
 }
 
 @Composable

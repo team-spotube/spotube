@@ -59,13 +59,6 @@ import spotube.composeapp.generated.resources.settings_section_jam
 fun JamSettingsScreen(
     viewModel: JamSettingsViewModel = koinViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val broker = uiState.settings.jamBroker
-    val shellBottomInset = LocalAppShellBottomInset.current
-    val contentPadding = remember(shellBottomInset) {
-        PaddingValues(top = 16.dp, bottom = 16.dp + shellBottomInset)
-    }
-
     Scaffold(
         topBar = {
             ApplicationMainBar(
@@ -73,201 +66,222 @@ fun JamSettingsScreen(
             )
         },
     ) { innerPadding ->
-        Box(
+        JamSettingsContent(
+            viewModel = viewModel,
+            modifier = Modifier.padding(innerPadding),
+        )
+    }
+}
+
+/**
+ * The Group Jam settings UI without its own [Scaffold] / app bar, so it can be embedded
+ * as a tab in the large-screen settings layout as well as hosted by [JamSettingsScreen].
+ */
+@Composable
+internal fun JamSettingsContent(
+    viewModel: JamSettingsViewModel = koinViewModel(),
+    modifier: Modifier = Modifier,
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val broker = uiState.settings.jamBroker
+    val shellBottomInset = LocalAppShellBottomInset.current
+    val contentPadding = remember(shellBottomInset) {
+        PaddingValues(top = 16.dp, bottom = 16.dp + shellBottomInset)
+    }
+
+    Box(
+        modifier = modifier
+            .fillMaxSize(),
+    ) {
+        LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
+                .widthIn(max = 1280.dp)
+                .align(Alignment.TopCenter),
+            contentPadding = contentPadding,
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .widthIn(max = 1280.dp)
-                    .align(Alignment.TopCenter),
-                contentPadding = contentPadding,
-            ) {
-                settingsSectionHeader(Res.string.settings_jam_section_connection)
-                settingsSectionCard(
-                    items = listOf(
-                        {
-                            TextInputSettingCard(
-                                title = stringResource(Res.string.settings_jam_broker_host),
-                                value = broker.host,
-                                placeholder = "broker.example.com",
-                                icon = { SettingsItemIcon(Iconsax.CustomServer, "Broker") },
-                                onValueSaved = { host ->
-                                    viewModel.update {
-                                        copy(
-                                            jamBroker = jamBroker.copy(
-                                                host = host
-                                            )
+            settingsSectionHeader(Res.string.settings_jam_section_connection)
+            settingsSectionCard(
+                items = listOf(
+                    {
+                        TextInputSettingCard(
+                            title = stringResource(Res.string.settings_jam_broker_host),
+                            value = broker.host,
+                            placeholder = "broker.example.com",
+                            icon = { SettingsItemIcon(Iconsax.CustomServer, "Broker") },
+                            onValueSaved = { host ->
+                                viewModel.update {
+                                    copy(
+                                        jamBroker = jamBroker.copy(
+                                            host = host
                                         )
-                                    }
-                                },
-                            )
-                        },
-                        {
-                            val errorWholeNumber =
-                                stringResource(Res.string.settings_error_whole_number)
-                            val errorPortRange =
-                                stringResource(Res.string.settings_error_port_range)
+                                    )
+                                }
+                            },
+                        )
+                    },
+                    {
+                        val errorWholeNumber =
+                            stringResource(Res.string.settings_error_whole_number)
+                        val errorPortRange =
+                            stringResource(Res.string.settings_error_port_range)
 
-                            TextInputSettingCard(
-                                title = stringResource(Res.string.settings_jam_broker_port),
-                                value = broker.port.toString(),
-                                placeholder = "1883",
-                                normalize = { it.filter(Char::isDigit).take(5) },
-                                validate = { value ->
-                                    val port = value.toIntOrNull()
-                                    when {
-                                        port == null -> errorWholeNumber
-                                        port !in 1..65535 -> errorPortRange
-                                        else -> null
-                                    }
-                                },
-                                onValueSaved = { port ->
-                                    viewModel.update { copy(jamBroker = jamBroker.copy(port = port.toInt())) }
-                                },
-                                icon = {
-                                    SettingsItemIcon(
-                                        Iconsax.CustomServer,
-                                        stringResource(Res.string.settings_jam_broker_port)
-                                    )
-                                },
-                            )
-                        },
-                        {
-                            SwitchSettingCard(
-                                title = stringResource(Res.string.settings_jam_broker_tls),
-                                subtitle = stringResource(Res.string.settings_jam_broker_tls_subtitle),
-                                checked = broker.useTls,
-                                onCheckedChange = { tls ->
-                                    viewModel.update { copy(jamBroker = jamBroker.copy(useTls = tls)) }
-                                },
-                                icon = {
-                                    SettingsItemIcon(
-                                        Iconsax.IconsaxWifiSquare,
-                                        stringResource(Res.string.settings_jam_broker_tls)
-                                    )
-                                },
-                            )
-                        },
-                    ),
-                )
-                settingsSectionHeader(Res.string.settings_jam_section_credentials)
-                settingsSectionCard(
-                    items = listOf(
-                        {
-                            TextInputSettingCard(
-                                title = stringResource(Res.string.settings_jam_broker_username),
-                                value = broker.username.orEmpty(),
-                                placeholder = "anonymous",
-                                onValueSaved = { username ->
-                                    viewModel.update {
-                                        copy(jamBroker = jamBroker.copy(username = username.ifBlank { null }))
-                                    }
-                                },
-                                icon = {
-                                    SettingsItemIcon(
-                                        Iconsax.User,
-                                        stringResource(Res.string.settings_jam_broker_username)
-                                    )
-                                },
-                            )
-                        },
-                        {
-                            TextInputSettingCard(
-                                title = stringResource(Res.string.settings_jam_broker_password),
-                                value = broker.password.orEmpty(),
-                                placeholder = "••••••••",
-                                onValueSaved = { password ->
-                                    viewModel.update {
-                                        copy(jamBroker = jamBroker.copy(password = password.ifBlank { null }))
-                                    }
-                                },
-                                icon = {
-                                    SettingsItemIcon(
-                                        Iconsax.IconsaxEye,
-                                        stringResource(Res.string.settings_jam_broker_password)
-                                    )
-                                },
-                            )
-                        },
-                    ),
-                )
-                settingsSectionHeader(Res.string.settings_jam_section_identity)
-                settingsSectionCard(
-                    items = listOf(
-                        {
-                            TextInputSettingCard(
-                                title = stringResource(Res.string.settings_jam_broker_client_id),
-                                subtitle = stringResource(Res.string.settings_jam_broker_client_id_subtitle),
-                                value = broker.clientIdPrefix,
-                                placeholder = "spotube",
-                                onValueSaved = { prefix ->
-                                    viewModel.update {
-                                        copy(jamBroker = jamBroker.copy(clientIdPrefix = prefix.ifBlank { "spotube" }))
-                                    }
-                                },
-                                icon = {
-                                    SettingsItemIcon(
-                                        Iconsax.IconsaxTag,
-                                        stringResource(Res.string.settings_jam_broker_client_id)
-                                    )
-                                },
-                            )
-                        },
-                    ),
-                )
-                settingsSectionHeader(Res.string.settings_jam_section_diagnostics)
-                settingsSectionCard(
-                    items = listOf(
-                        {
-                            val canTest = broker.host.isNotBlank() && !uiState.isTesting
-                            val resultMessage = uiState.testResult?.fold(
-                                onSuccess = { it },
-                                onFailure = { "Failed: ${it.message ?: "Connection failed"}" },
-                            )
+                        TextInputSettingCard(
+                            title = stringResource(Res.string.settings_jam_broker_port),
+                            value = broker.port.toString(),
+                            placeholder = "1883",
+                            normalize = { it.filter(Char::isDigit).take(5) },
+                            validate = { value ->
+                                val port = value.toIntOrNull()
+                                when {
+                                    port == null -> errorWholeNumber
+                                    port !in 1..65535 -> errorPortRange
+                                    else -> null
+                                }
+                            },
+                            onValueSaved = { port ->
+                                viewModel.update { copy(jamBroker = jamBroker.copy(port = port.toInt())) }
+                            },
+                            icon = {
+                                SettingsItemIcon(
+                                    Iconsax.CustomServer,
+                                    stringResource(Res.string.settings_jam_broker_port)
+                                )
+                            },
+                        )
+                    },
+                    {
+                        SwitchSettingCard(
+                            title = stringResource(Res.string.settings_jam_broker_tls),
+                            subtitle = stringResource(Res.string.settings_jam_broker_tls_subtitle),
+                            checked = broker.useTls,
+                            onCheckedChange = { tls ->
+                                viewModel.update { copy(jamBroker = jamBroker.copy(useTls = tls)) }
+                            },
+                            icon = {
+                                SettingsItemIcon(
+                                    Iconsax.IconsaxWifiSquare,
+                                    stringResource(Res.string.settings_jam_broker_tls)
+                                )
+                            },
+                        )
+                    },
+                ),
+            )
+            settingsSectionHeader(Res.string.settings_jam_section_credentials)
+            settingsSectionCard(
+                items = listOf(
+                    {
+                        TextInputSettingCard(
+                            title = stringResource(Res.string.settings_jam_broker_username),
+                            value = broker.username.orEmpty(),
+                            placeholder = "anonymous",
+                            onValueSaved = { username ->
+                                viewModel.update {
+                                    copy(jamBroker = jamBroker.copy(username = username.ifBlank { null }))
+                                }
+                            },
+                            icon = {
+                                SettingsItemIcon(
+                                    Iconsax.User,
+                                    stringResource(Res.string.settings_jam_broker_username)
+                                )
+                            },
+                        )
+                    },
+                    {
+                        TextInputSettingCard(
+                            title = stringResource(Res.string.settings_jam_broker_password),
+                            value = broker.password.orEmpty(),
+                            placeholder = "••••••••",
+                            onValueSaved = { password ->
+                                viewModel.update {
+                                    copy(jamBroker = jamBroker.copy(password = password.ifBlank { null }))
+                                }
+                            },
+                            icon = {
+                                SettingsItemIcon(
+                                    Iconsax.IconsaxEye,
+                                    stringResource(Res.string.settings_jam_broker_password)
+                                )
+                            },
+                        )
+                    },
+                ),
+            )
+            settingsSectionHeader(Res.string.settings_jam_section_identity)
+            settingsSectionCard(
+                items = listOf(
+                    {
+                        TextInputSettingCard(
+                            title = stringResource(Res.string.settings_jam_broker_client_id),
+                            subtitle = stringResource(Res.string.settings_jam_broker_client_id_subtitle),
+                            value = broker.clientIdPrefix,
+                            placeholder = "spotube",
+                            onValueSaved = { prefix ->
+                                viewModel.update {
+                                    copy(jamBroker = jamBroker.copy(clientIdPrefix = prefix.ifBlank { "spotube" }))
+                                }
+                            },
+                            icon = {
+                                SettingsItemIcon(
+                                    Iconsax.IconsaxTag,
+                                    stringResource(Res.string.settings_jam_broker_client_id)
+                                )
+                            },
+                        )
+                    },
+                ),
+            )
+            settingsSectionHeader(Res.string.settings_jam_section_diagnostics)
+            settingsSectionCard(
+                items = listOf(
+                    {
+                        val canTest = broker.host.isNotBlank() && !uiState.isTesting
+                        val resultMessage = uiState.testResult?.fold(
+                            onSuccess = { it },
+                            onFailure = { "Failed: ${it.message ?: "Connection failed"}" },
+                        )
 
-                            SettingCardItem(
-                                enabled = canTest,
-                                title = stringResource(Res.string.settings_jam_broker_test),
-                                subtitle = when {
-                                    uiState.isTesting -> stringResource(Res.string.settings_jam_broker_testing)
-                                    resultMessage != null -> resultMessage
-                                    else -> stringResource(Res.string.settings_jam_broker_diagnostics_subtitle)
-                                },
-                                icon = {
-                                    SettingsItemIcon(
-                                        Iconsax.IconsaxInformation,
-                                        stringResource(Res.string.settings_jam_broker_test),
+                        SettingCardItem(
+                            enabled = canTest,
+                            title = stringResource(Res.string.settings_jam_broker_test),
+                            subtitle = when {
+                                uiState.isTesting -> stringResource(Res.string.settings_jam_broker_testing)
+                                resultMessage != null -> resultMessage
+                                else -> stringResource(Res.string.settings_jam_broker_diagnostics_subtitle)
+                            },
+                            icon = {
+                                SettingsItemIcon(
+                                    Iconsax.IconsaxInformation,
+                                    stringResource(Res.string.settings_jam_broker_test),
+                                )
+                            },
+                            trailingContent = {
+                                PrimaryButton(
+                                    onClick = viewModel::testConnection,
+                                    enabled = canTest,
+                                ) {
+                                    Text(
+                                        if (uiState.isTesting) {
+                                            stringResource(Res.string.settings_jam_broker_testing)
+                                        } else {
+                                            stringResource(Res.string.settings_jam_broker_test)
+                                        },
                                     )
-                                },
-                                trailingContent = {
-                                    PrimaryButton(
-                                        onClick = viewModel::testConnection,
-                                        enabled = canTest,
-                                    ) {
-                                        Text(
-                                            if (uiState.isTesting) {
-                                                stringResource(Res.string.settings_jam_broker_testing)
-                                            } else {
-                                                stringResource(Res.string.settings_jam_broker_test)
-                                            },
-                                        )
-                                    }
-                                },
-                                onClick = viewModel::testConnection,
-                            )
-                        },
-                    ),
+                                }
+                            },
+                            onClick = viewModel::testConnection,
+                        )
+                    },
+                ),
+            )
+            item {
+                Text(
+                    text = stringResource(Res.string.settings_jam_broker_placeholder_note),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 4.dp),
                 )
-                item {
-                    Text(
-                        text = stringResource(Res.string.settings_jam_broker_placeholder_note),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 4.dp),
-                    )
-                }
             }
         }
     }

@@ -18,6 +18,7 @@
 package dev.krtirtho.spotube.modules.settings
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -37,6 +38,7 @@ import dev.krtirtho.spotube.PlatformType
 import dev.krtirtho.spotube.getPlatform
 import dev.krtirtho.spotube.core.discovery.rememberLocalNetworkPermissionRequester
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
+import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import spotube.composeapp.generated.resources.*
 import dev.krtirtho.spotube.modules.settings.sections.appearanceSection
@@ -52,17 +54,37 @@ import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
+/**
+ * Minimum width of the settings content area required to show the settings as an
+ * overlay dialog instead of a full-screen destination.
+ */
+private val SettingsDialogMinWidth = 720.dp
+
+/**
+ * On large screens settings is presented as a modal overlay so it does not sit next to
+ * the main navigation sidebar. On smaller screens it stays a full-screen destination.
+ */
+@Composable
+fun SettingsScreen(settingsViewModel: SettingsViewModel) {
+    val navigatorCommands: NavigationCommands = koinInject()
+
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        if (maxWidth >= SettingsDialogMinWidth) {
+            SettingsDialog(
+                settingsViewModel = settingsViewModel,
+                onDismiss = { navigatorCommands.pop(Routes.Settings) },
+            )
+        } else {
+            CompactSettingsScreen(settingsViewModel = settingsViewModel)
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(settingsViewModel: SettingsViewModel) {
+private fun CompactSettingsScreen(settingsViewModel: SettingsViewModel) {
     val navigatorCommands = koinInject<NavigationCommands>()
     val settingsState by settingsViewModel.settingsState.collectAsStateWithLifecycle()
-    val platformType = remember { getPlatform().type }
-    val isDesktopPlatform = platformType == PlatformType.Windows ||
-            platformType == PlatformType.Linux ||
-            platformType == PlatformType.MacOS
-
     val shellBottomInset = LocalAppShellBottomInset.current
     val requestLocalNetworkPermission = rememberLocalNetworkPermissionRequester()
     val contentPadding = remember(shellBottomInset) {
@@ -79,66 +101,79 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
             )
         }
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            LazyColumn(
-                modifier = Modifier
-                    .widthIn(max = 1280.dp)
-                    .align(Alignment.TopCenter),
-                contentPadding = contentPadding,
-            ) {
-                pluginsSection(
-                    navigatorCommands = navigatorCommands,
-                )
-                if (settingsState != null) {
-                    languageRegionSection(
-                        settings = settingsState!!,
-                        settingsViewModel = settingsViewModel,
-                    )
-                }
-                if (settingsState != null)
-                    appearanceSection(
-                        settings = settingsState!!,
-                        settingsViewModel = settingsViewModel,
-                    )
-                if (settingsState != null)
-                    playbackSection(
-                        settings = settingsState!!,
-                        settingsViewModel = settingsViewModel,
-                        navigatorCommands = navigatorCommands,
-                        requestLocalNetworkPermission = requestLocalNetworkPermission,
-                    )
-                if (settingsState != null)
-                    jamSection(
-                        settings = settingsState!!,
-                        navigationCommands = navigatorCommands,
-                    )
-                if (settingsState != null)
-                    cacheSection(
-                        settings = settingsState!!,
-                        settingsViewModel = settingsViewModel,
-                    )
-                if (settingsState != null)
-                    downloadsSection(
-                        settings = settingsState!!,
-                        settingsViewModel = settingsViewModel,
-                    )
-                if (isDesktopPlatform && settingsState != null) {
-                    desktopSection(
-                        settings = settingsState!!,
-                        settingsViewModel = settingsViewModel,
-                    )
-                }
-                if (settingsState != null)
-                    updatesSection(
-                        settings = settingsState!!,
-                        settingsViewModel = settingsViewModel,
-                    )
-            }
+        CompactSettingsContent(
+            settings = settingsState,
+            settingsViewModel = settingsViewModel,
+            navigatorCommands = navigatorCommands,
+            requestLocalNetworkPermission = requestLocalNetworkPermission,
+            contentPadding = contentPadding,
+            modifier = Modifier.padding(innerPadding),
+        )
+    }
+}
 
+@Composable
+private fun CompactSettingsContent(
+    settings: UserSettings?,
+    settingsViewModel: SettingsViewModel,
+    navigatorCommands: NavigationCommands,
+    requestLocalNetworkPermission: () -> Unit,
+    contentPadding: PaddingValues,
+    modifier: Modifier = Modifier,
+) {
+    val platformType = remember { getPlatform().type }
+    val isDesktopPlatform = platformType == PlatformType.Windows ||
+            platformType == PlatformType.Linux ||
+            platformType == PlatformType.MacOS
+
+    Box(modifier = modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier
+                .widthIn(max = 1280.dp)
+                .align(Alignment.TopCenter),
+            contentPadding = contentPadding,
+        ) {
+            pluginsSection(
+                navigatorCommands = navigatorCommands,
+            )
+            if (settings != null) {
+                languageRegionSection(
+                    settings = settings,
+                    settingsViewModel = settingsViewModel,
+                )
+                appearanceSection(
+                    settings = settings,
+                    settingsViewModel = settingsViewModel,
+                )
+                playbackSection(
+                    settings = settings,
+                    settingsViewModel = settingsViewModel,
+                    navigatorCommands = navigatorCommands,
+                    requestLocalNetworkPermission = requestLocalNetworkPermission,
+                )
+                jamSection(
+                    settings = settings,
+                    navigationCommands = navigatorCommands,
+                )
+                cacheSection(
+                    settings = settings,
+                    settingsViewModel = settingsViewModel,
+                )
+                downloadsSection(
+                    settings = settings,
+                    settingsViewModel = settingsViewModel,
+                )
+                if (isDesktopPlatform) {
+                    desktopSection(
+                        settings = settings,
+                        settingsViewModel = settingsViewModel,
+                    )
+                }
+                updatesSection(
+                    settings = settings,
+                    settingsViewModel = settingsViewModel,
+                )
+            }
         }
     }
 }

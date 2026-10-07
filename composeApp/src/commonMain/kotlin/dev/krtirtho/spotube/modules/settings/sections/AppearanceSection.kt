@@ -67,8 +67,11 @@ import spotube.composeapp.generated.resources.*
 internal fun LazyListScope.appearanceSection(
     settings: UserSettings,
     settingsViewModel: SettingsViewModel,
+    includeHeader: Boolean = true,
 ) {
-    settingsSectionHeader(Res.string.settings_section_appearance)
+    if (includeHeader) {
+        settingsSectionHeader(Res.string.settings_section_appearance)
+    }
     settingsSectionCard(
         items = listOf(
             {

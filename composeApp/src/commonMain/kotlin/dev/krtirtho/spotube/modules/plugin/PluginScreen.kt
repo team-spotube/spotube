@@ -75,9 +75,14 @@ import dev.krtirtho.spotube.core.ui.component.AdaptiveMenuItem
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import dev.krtirtho.spotube.core.ui.component.HeaderDisplayMode
 import dev.krtirtho.spotube.getPlatform
+import dev.krtirtho.spotube.modules.plugin.components.DefaultAbilityPluginGrid
 import dev.krtirtho.spotube.modules.plugin.components.PluginCard
 import dev.krtirtho.spotube.modules.plugin.components.PluginInstallDialog
+import dev.krtirtho.spotube.modules.plugin.components.PluginLogo
 import dev.krtirtho.spotube.modules.plugin.components.PluginPermissionDialog
+import dev.krtirtho.spotube.modules.plugin.components.abilityIcon
+import dev.krtirtho.spotube.modules.plugin.components.accentColor
+import dev.krtirtho.spotube.modules.plugin.components.displayLabel
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import dev.krtirtho.spotube.openUrlInBrowser
 import dev.krtirtho.spotube.resources.iconsax.CarbonGithubLogo
@@ -86,16 +91,12 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxAdd
 import dev.krtirtho.spotube.resources.iconsax.IconsaxArrowDown4
 import dev.krtirtho.spotube.resources.iconsax.IconsaxBox
 import dev.krtirtho.spotube.resources.iconsax.IconsaxCheckCircle
-import dev.krtirtho.spotube.resources.iconsax.IconsaxDocumentText
 import dev.krtirtho.spotube.resources.iconsax.IconsaxEdit
 import dev.krtirtho.spotube.resources.iconsax.IconsaxExportArrowBulk
 import dev.krtirtho.spotube.resources.iconsax.IconsaxGlobe
 import dev.krtirtho.spotube.resources.iconsax.IconsaxHeart
 import dev.krtirtho.spotube.resources.iconsax.IconsaxImportArrow2Bulk
 import dev.krtirtho.spotube.resources.iconsax.IconsaxLink
-import dev.krtirtho.spotube.resources.iconsax.IconsaxMusic
-import dev.krtirtho.spotube.resources.iconsax.IconsaxSound
-import dev.krtirtho.spotube.resources.iconsax.IconsaxTextalignLeft
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import okio.Path
@@ -127,10 +128,6 @@ import spotube.composeapp.generated.resources.plugin_section_file_title
 import spotube.composeapp.generated.resources.plugin_section_install
 import spotube.composeapp.generated.resources.plugin_section_url_title
 import spotube.composeapp.generated.resources.plugin_url_placeholder
-import spotube.composeapp.generated.resources.settings_plugins_ability_audio
-import spotube.composeapp.generated.resources.settings_plugins_ability_lyrics
-import spotube.composeapp.generated.resources.settings_plugins_ability_metadata
-import spotube.composeapp.generated.resources.settings_plugins_ability_scrobble
 import spotube.composeapp.generated.resources.settings_plugins_action_change
 import spotube.composeapp.generated.resources.settings_plugins_action_select
 import spotube.composeapp.generated.resources.settings_plugins_default_ability_title
@@ -147,6 +144,32 @@ private val VERIFIED_PLUGIN_OWNERS = setOf<String>()
 fun PluginScreen(
     viewModel: PluginViewModel = koinViewModel(),
     onboarding: Boolean = false,
+) {
+    Scaffold(
+        topBar = {
+            if (!onboarding) {
+                ApplicationMainBar(title = { Text(stringResource(Res.string.plugin_screen_title)) })
+            }
+        },
+        containerColor = if (onboarding) Color.Transparent else MaterialTheme.colorScheme.surface,
+    ) { innerPadding ->
+        PluginScreenContent(
+            viewModel = viewModel,
+            onboarding = onboarding,
+            modifier = Modifier.padding(innerPadding),
+        )
+    }
+}
+
+/**
+ * The plugin management UI without its own [Scaffold] / app bar, so it can be embedded
+ * as a tab in the large-screen settings layout as well as hosted by [PluginScreen].
+ */
+@Composable
+internal fun PluginScreenContent(
+    viewModel: PluginViewModel,
+    onboarding: Boolean = false,
+    modifier: Modifier = Modifier,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val shellBottomInset = LocalAppShellBottomInset.current
@@ -222,28 +245,17 @@ fun PluginScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            if (!onboarding) {
-                ApplicationMainBar(title = { Text(stringResource(Res.string.plugin_screen_title)) })
-            }
-        },
-        containerColor = if (onboarding) Color.Transparent else MaterialTheme.colorScheme.surface,
-    ) { innerPadding ->
+    Box(modifier = modifier.fillMaxSize()) {
         when (val data = uiState) {
             is PluginUiState.Loading -> {
                 Box(
-                    modifier = Modifier.fillMaxSize().padding(innerPadding),
+                    modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) { CircularProgressIndicator() }
             }
 
             is PluginUiState.Data -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                ) {
+                Box(modifier = Modifier.fillMaxSize()) {
                     val discoverListState = rememberLazyListState()
                     LazyColumn(
                         state = discoverListState,
@@ -302,6 +314,19 @@ fun PluginScreen(
                             }
                         }
                         if (!onboarding || !data.onboardingDiscover) {
+
+                            item {
+                                DefaultAbilityPluginGrid(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 4.dp),
+                                    selections = data.abilitySelections,
+                                    onSelected = { ability, plugin ->
+                                        viewModel.selectPlugin(ability, plugin)
+                                    },
+                                )
+                            }
+
                             item {
                                 Row(
                                     modifier = Modifier
@@ -321,39 +346,6 @@ fun PluginScreen(
                                             contentDescription = stringResource(Res.string.plugin_install_section_title),
                                         )
                                         Text(stringResource(Res.string.plugin_install_section_title))
-                                    }
-                                }
-                            }
-
-                            item {
-                                Card(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 4.dp),
-                                ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(top = 4.dp, bottom = 4.dp)
-                                    ) {
-                                        data.abilitySelections.forEachIndexed { index, selection ->
-                                            if (index > 0) {
-                                                HorizontalDivider(
-                                                    color = MaterialTheme.colorScheme.outlineVariant.copy(
-                                                        alpha = 0.5f
-                                                    ),
-                                                )
-                                            }
-                                            DefaultAbilityPluginSelector(
-                                                selection = selection,
-                                                onSelected = { plugin ->
-                                                    viewModel.selectPlugin(
-                                                        selection.ability,
-                                                        plugin
-                                                    )
-                                                },
-                                            )
-                                        }
                                     }
                                 }
                             }
@@ -721,26 +713,22 @@ private fun PluginInfoDialog(
                         .clip(RoundedCornerShape(12.dp)),
                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
                 ) {
-                    if (logoPath != null) {
-                        val platformContext = LocalPlatformContext.current
-                        AsyncImage(
-                            model = ImageRequest.Builder(platformContext)
-                                .data(logoPath.toString())
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = plugin.name,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    } else {
-                        Box(contentAlignment = Alignment.Center) {
-                            Icon(
-                                Iconsax.IconsaxBox,
-                                contentDescription = null,
-                                modifier = Modifier.size(24.dp),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
+                    PluginLogo(
+                        plugin = plugin,
+                        logoPath = logoPath,
+                        contentDescription = plugin.name,
+                        modifier = Modifier.fillMaxSize(),
+                        fallback = {
+                            Box(contentAlignment = Alignment.Center) {
+                                Icon(
+                                    Iconsax.IconsaxBox,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp),
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        },
+                    )
                 }
                 Text(
                     plugin.name,
@@ -1135,31 +1123,16 @@ fun DefaultAbilityPluginSelector(
         ) {
             Surface(
                 modifier = Modifier.clip(RoundedCornerShape(8.dp)),
-                color = when (selection.ability) {
-                    PluginAbility.METADATA -> Color(0xFF4CAF50).copy(alpha = 0.1f)
-                    PluginAbility.AUDIO -> Color(0xFF2196F3).copy(alpha = 0.1f)
-                    PluginAbility.LYRICS -> Color(0xFFFFC107).copy(alpha = 0.1f)
-                    PluginAbility.SCROBBLE -> Color(0xFF9C27B0).copy(alpha = 0.1f)
-                }
+                color = selection.ability.accentColor().copy(alpha = 0.1f)
             ) {
                 Icon(
-                    imageVector = when (selection.ability) {
-                        PluginAbility.METADATA -> Iconsax.IconsaxDocumentText
-                        PluginAbility.AUDIO -> Iconsax.IconsaxMusic
-                        PluginAbility.LYRICS -> Iconsax.IconsaxTextalignLeft
-                        PluginAbility.SCROBBLE -> Iconsax.IconsaxSound
-                    },
+                    imageVector = selection.ability.abilityIcon(),
                     contentDescription = stringResource(
                         Res.string.settings_plugins_plugin_content_description,
                         selection.ability.displayLabel()
                     ),
                     modifier = Modifier.padding(8.dp),
-                    tint = when (selection.ability) {
-                        PluginAbility.METADATA -> Color(0xFF4CAF50)
-                        PluginAbility.AUDIO -> Color(0xFF2196F3)
-                        PluginAbility.LYRICS -> Color(0xFFFFC107)
-                        PluginAbility.SCROBBLE -> Color(0xFF9C27B0)
-                    }
+                    tint = selection.ability.accentColor()
                 )
             }
 
@@ -1203,28 +1176,13 @@ fun DefaultAbilityPluginSelector(
                 ) {
                     Surface(
                         modifier = Modifier.clip(RoundedCornerShape(8.dp)),
-                        color = when (selection.ability) {
-                            PluginAbility.METADATA -> Color(0xFF4CAF50).copy(alpha = 0.1f)
-                            PluginAbility.AUDIO -> Color(0xFF2196F3).copy(alpha = 0.1f)
-                            PluginAbility.LYRICS -> Color(0xFFFFC107).copy(alpha = 0.1f)
-                            PluginAbility.SCROBBLE -> Color(0xFF9C27B0).copy(alpha = 0.1f)
-                        }
+                        color = selection.ability.accentColor().copy(alpha = 0.1f)
                     ) {
                         Icon(
-                            imageVector = when (selection.ability) {
-                                PluginAbility.METADATA -> Iconsax.IconsaxDocumentText
-                                PluginAbility.AUDIO -> Iconsax.IconsaxMusic
-                                PluginAbility.LYRICS -> Iconsax.IconsaxTextalignLeft
-                                PluginAbility.SCROBBLE -> Iconsax.IconsaxSound
-                            },
+                            imageVector = selection.ability.abilityIcon(),
                             contentDescription = null,
                             modifier = Modifier.padding(8.dp),
-                            tint = when (selection.ability) {
-                                PluginAbility.METADATA -> Color(0xFF4CAF50)
-                                PluginAbility.AUDIO -> Color(0xFF2196F3)
-                                PluginAbility.LYRICS -> Color(0xFFFFC107)
-                                PluginAbility.SCROBBLE -> Color(0xFF9C27B0)
-                            }
+                            tint = selection.ability.accentColor()
                         )
                     }
                     Column(modifier = Modifier.weight(1f)) {
@@ -1265,12 +1223,3 @@ fun DefaultAbilityPluginSelector(
     }
 }
 
-@Composable
-private fun PluginAbility.displayLabel(): String {
-    return when (this) {
-        PluginAbility.METADATA -> stringResource(Res.string.settings_plugins_ability_metadata)
-        PluginAbility.AUDIO -> stringResource(Res.string.settings_plugins_ability_audio)
-        PluginAbility.LYRICS -> stringResource(Res.string.settings_plugins_ability_lyrics)
-        PluginAbility.SCROBBLE -> stringResource(Res.string.settings_plugins_ability_scrobble)
-    }
-}
