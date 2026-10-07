@@ -30,6 +30,8 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -40,10 +42,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -61,7 +61,6 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
@@ -309,5 +308,62 @@ fun Slider(
                     shape = CircleShape,
                 ),
         )
+    }
+}
+
+@BaseUIPhonePreview
+@Composable
+private fun SliderPreview() {
+    BaseUIPreview {
+        var volume by remember { mutableFloatStateOf(0.65f) }
+        var progress by remember { mutableFloatStateOf(0.3f) }
+        var quality by remember { mutableFloatStateOf(2f) }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(28.dp),
+        ) {
+            SliderPreviewField(title = "Volume", value = "${(volume * 100).toInt()}%") {
+                Slider(value = volume, onValueChange = { volume = it })
+            }
+            SliderPreviewField(title = "Progress", value = "${(progress * 100).toInt()}%") {
+                Slider(value = progress, onValueChange = { progress = it })
+            }
+            SliderPreviewField(title = "Quality", value = "${quality.toInt()} / 4") {
+                Slider(
+                    value = quality,
+                    onValueChange = { quality = it },
+                    valueRange = 0f..4f,
+                    steps = 3,
+                )
+            }
+            SliderPreviewField(title = "Disabled", value = "40%") {
+                Slider(value = 0.4f, onValueChange = {}, enabled = false)
+            }
+        }
+    }
+}
+
+@Composable
+private fun SliderPreviewField(
+    title: String,
+    value: String,
+    content: @Composable () -> Unit,
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(title, style = MaterialTheme.typography.bodyMedium)
+            Text(
+                text = value,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        content()
     }
 }

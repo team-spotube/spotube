@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -38,9 +39,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,7 +50,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 private val RadioSize = 22.dp
@@ -145,32 +146,37 @@ fun Radio(
     }
 }
 
-@Preview
+@BaseUIPhonePreview
 @Composable
 private fun RadioPreview() {
-    MaterialTheme {
-        val theme = rememberBaseUITheme()
-        CompositionLocalProvider(LocalBaseUITheme provides theme) {
-            androidx.compose.material3.Surface(
-                color = MaterialTheme.colorScheme.background,
-                modifier = Modifier.padding(24.dp),
-            ) {
-                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Radio(selected = true, onClick = {})
-                        Text("Selected", style = MaterialTheme.typography.bodyMedium)
-                    }
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Radio(selected = false, onClick = {})
-                        Text("Unselected", style = MaterialTheme.typography.bodyMedium)
-                    }
+    BaseUIPreview {
+        val options = listOf("Automatic", "High", "Lossless", "Data saver")
+        var selected by remember { mutableStateOf(0) }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            options.forEachIndexed { index, label ->
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Radio(
+                        selected = selected == index,
+                        onClick = { selected = index },
+                    )
+                    Text(label, style = MaterialTheme.typography.bodyMedium)
                 }
+            }
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Radio(selected = true, onClick = {}, enabled = false)
+                Text("Disabled", style = MaterialTheme.typography.bodyMedium)
             }
         }
     }

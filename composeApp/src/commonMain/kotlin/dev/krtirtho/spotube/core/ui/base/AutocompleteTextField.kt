@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -43,6 +44,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -74,7 +76,6 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
@@ -83,6 +84,7 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSearchBroken
+import dev.krtirtho.spotube.resources.iconsax.IconsaxTrash
 
 private val AutocompleteTextFieldMinHeight = 44.dp
 private val AutocompleteMenuDefaultMaxHeight = 300.dp
@@ -373,13 +375,11 @@ fun <T> AutocompleteTextField(
                     isMenuOpen = false
                 },
             ) {
-                Box(
+                AutocompleteMenuContainer(
+                    theme = resolvedMenuTheme,
                     modifier = Modifier
                         .width(textFieldWidthDp)
-                        .heightIn(max = menuMaxHeight)
-                        .shadow(resolvedMenuTheme.shadowElevation, resolvedMenuTheme.shape)
-                        .background(resolvedMenuTheme.background, resolvedMenuTheme.shape)
-                        .clip(resolvedMenuTheme.shape),
+                        .heightIn(max = menuMaxHeight),
                 ) {
                     LazyColumn(
                         state = menuListState,
@@ -407,77 +407,163 @@ fun <T> AutocompleteTextField(
     }
 }
 
-@Preview
+/**
+ * The visual container of the autocomplete suggestion menu, without the Popup window.
+ *
+ * Extracted so the menu can be rendered in previews, since popups are hosted in a
+ * separate window the preview canvas cannot show.
+ */
+@Composable
+internal fun AutocompleteMenuContainer(
+    theme: BaseUITheme.AutoCompleteMenuTheme,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    Box(
+        modifier = modifier
+            .shadow(theme.shadowElevation, theme.shape)
+            .background(theme.background, theme.shape)
+            .clip(theme.shape),
+    ) {
+        content()
+    }
+}
+
+private val AutocompletePreviewArtists = listOf(
+    "Twenty One Pilots",
+    "The Beatles",
+    "Adele",
+    "Drake",
+    "Taylor Swift",
+    "Arctic Monkeys",
+    "Billie Eilish",
+)
+
+@BaseUIPhonePreview
 @Composable
 private fun AutocompleteTextFieldPreview() {
-    MaterialTheme {
-        val theme = rememberBaseUITheme()
-        CompositionLocalProvider(LocalBaseUITheme provides theme) {
-            androidx.compose.material3.Surface(
-                color = MaterialTheme.colorScheme.background,
-                modifier = Modifier.padding(24.dp),
-            ) {
-                val artists = remember {
-                    listOf(
-                        "Twenty One Pilots",
-                        "The Beatles",
-                        "Adele",
-                        "Drake",
-                        "Taylor Swift",
-                        "Arctic Monkeys",
-                        "Billie Eilish",
-                    )
-                }
-                var value by remember { mutableStateOf("") }
+    BaseUIPreview {
+        var value by remember { mutableStateOf("") }
 
-                AutocompleteTextField(
-                    value = value,
-                    onValueChange = {
-                        value = it
-                    },
-                    items = artists.filter {
-                        it.contains(value, ignoreCase = true) && value.isNotEmpty()
-                    },
-                    onItemSelected = { selected ->
-                        value = selected
-                    },
-                    placeholder = { Text("Search artists...") },
-                    leadingIcon = {
-                        androidx.compose.material3.Icon(
-                            imageVector = Iconsax.IconsaxSearchBroken,
-                            contentDescription = "Search",
-                        )
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    itemContent = { item, isSelected ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(
-                                    color = if (isSelected) {
-                                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)
-                                    } else {
-                                        Color.Transparent
-                                    },
-                                )
-                                .padding(horizontal = 14.dp, vertical = 10.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        ) {
-                            androidx.compose.material3.Icon(
-                                imageVector = Iconsax.IconsaxSearchBroken,
-                                contentDescription = null,
-                                modifier = Modifier.size(16.dp),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                            Text(
-                                text = item,
-                                style = MaterialTheme.typography.bodyMedium,
-                            )
-                        }
-                    },
-                )
-            }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+        ) {
+            Text(
+                text = "Field states",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            AutocompleteTextField(
+                value = "",
+                onValueChange = {},
+                items = emptyList<String>(),
+                itemContent = { _, _ -> },
+                placeholder = { Text("Search artists...") },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Iconsax.IconsaxSearchBroken,
+                        contentDescription = "Search",
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+            )
+            AutocompleteTextField(
+                value = value,
+                onValueChange = { value = it },
+                items = AutocompletePreviewArtists.filter {
+                    it.contains(value, ignoreCase = true)
+                },
+                onItemSelected = { value = it },
+                placeholder = { Text("Search artists...") },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Iconsax.IconsaxSearchBroken,
+                        contentDescription = "Search",
+                    )
+                },
+                trailingIcon = {
+                    Icon(
+                        imageVector = Iconsax.IconsaxTrash,
+                        contentDescription = "Clear",
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+                itemContent = { item, isSelected ->
+                    AutocompletePreviewItem(item, isSelected)
+                },
+            )
         }
+    }
+}
+
+@BaseUIPhonePreview
+@Composable
+private fun AutocompleteMenuPreview() {
+    BaseUIPreview {
+        var selectedIndex by remember { mutableStateOf(1) }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Text(
+                text = "Suggestion menu",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            AutocompleteMenuContainer(
+                theme = LocalBaseUITheme.current.autoCompleteMenuTheme,
+                modifier = Modifier.width(320.dp),
+            ) {
+                Column {
+                    AutocompletePreviewArtists.take(5).forEachIndexed { index, artist ->
+                        Box(
+                            modifier = Modifier.clickable { selectedIndex = index },
+                        ) {
+                            AutocompletePreviewItem(artist, isSelected = selectedIndex == index)
+                        }
+                    }
+                }
+            }
+            Text(
+                text = "Selected: ${AutocompletePreviewArtists[selectedIndex]}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+@Composable
+private fun AutocompletePreviewItem(text: String, isSelected: Boolean) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = if (isSelected) {
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)
+                } else {
+                    Color.Transparent
+                },
+            )
+            .padding(horizontal = 14.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        Icon(
+            imageVector = Iconsax.IconsaxSearchBroken,
+            contentDescription = null,
+            modifier = Modifier.size(16.dp),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium,
+        )
     }
 }

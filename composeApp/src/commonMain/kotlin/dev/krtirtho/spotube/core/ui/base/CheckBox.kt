@@ -31,17 +31,20 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,7 +59,6 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 enum class CheckBoxState {
@@ -207,47 +209,72 @@ fun CheckBox(
     }
 }
 
-@Preview
+@BaseUIPhonePreview
 @Composable
-fun CheckBoxPreview() {
-    MaterialTheme {
-        val theme = rememberBaseUITheme()
-        CompositionLocalProvider(LocalBaseUITheme provides theme) {
-            Surface(
-                color = MaterialTheme.colorScheme.background,
-                modifier = Modifier.padding(24.dp),
-            ) {
-                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        CheckBox(state = CheckBoxState.SELECTED, onClick = {})
-                        Text("Selected", style = MaterialTheme.typography.bodyMedium)
-                    }
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        CheckBox(state = CheckBoxState.UNSELECTED, onClick = {})
-                        Text("Unselected", style = MaterialTheme.typography.bodyMedium)
-                    }
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        CheckBox(state = CheckBoxState.INDETERMINATE, onClick = {})
-                        Text("Indeterminate", style = MaterialTheme.typography.bodyMedium)
-                    }
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        CheckBox(state = CheckBoxState.SELECTED, onClick = {}, enabled = false)
-                        Text("Disabled", style = MaterialTheme.typography.bodyMedium)
-                    }
-                }
-            }
+private fun CheckBoxPreview() {
+    BaseUIPreview {
+        var wifi by remember { mutableStateOf(true) }
+        var bluetooth by remember { mutableStateOf(false) }
+        var downloads by remember { mutableStateOf(true) }
+
+        val allEnabled = wifi && bluetooth && downloads
+        val anyEnabled = wifi || bluetooth || downloads
+        val allState = when {
+            allEnabled -> CheckBoxState.SELECTED
+            anyEnabled -> CheckBoxState.INDETERMINATE
+            else -> CheckBoxState.UNSELECTED
         }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            CheckBoxPreviewRow(
+                state = allState,
+                label = "All playback sources",
+                onClick = {
+                    val target = !allEnabled
+                    wifi = target
+                    bluetooth = target
+                    downloads = target
+                },
+            )
+            Spacer(Modifier.height(4.dp))
+            CheckBoxPreviewRow(
+                state = if (wifi) CheckBoxState.SELECTED else CheckBoxState.UNSELECTED,
+                label = "Wi-Fi",
+                onClick = { wifi = !wifi },
+            )
+            CheckBoxPreviewRow(
+                state = if (bluetooth) CheckBoxState.SELECTED else CheckBoxState.UNSELECTED,
+                label = "Bluetooth",
+                onClick = { bluetooth = !bluetooth },
+            )
+            CheckBoxPreviewRow(
+                state = if (downloads) CheckBoxState.SELECTED else CheckBoxState.UNSELECTED,
+                label = "Download over cellular",
+                onClick = { downloads = !downloads },
+            )
+            CheckBoxPreviewRow(CheckBoxState.SELECTED, "Disabled selected", enabled = false)
+            CheckBoxPreviewRow(CheckBoxState.UNSELECTED, "Disabled unselected", enabled = false)
+        }
+    }
+}
+
+@Composable
+private fun CheckBoxPreviewRow(
+    state: CheckBoxState,
+    label: String,
+    enabled: Boolean = true,
+    onClick: () -> Unit = {},
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        CheckBox(state = state, onClick = onClick, enabled = enabled)
+        Text(label, style = MaterialTheme.typography.bodyMedium)
     }
 }

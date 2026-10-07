@@ -27,10 +27,14 @@ import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
@@ -38,7 +42,9 @@ import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,6 +56,9 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxDocumentDownload
+import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicLibrary
 
 private val ChipTabMinHeight = 36.dp
 
@@ -167,5 +176,64 @@ fun ChipTab(
             softWrap = false,
             fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
         )
+    }
+}
+
+@BaseUIPhonePreview
+@Composable
+private fun ChipTabsPreview() {
+    BaseUIPreview {
+        val tabs = listOf("All", "Songs", "Albums", "Playlists")
+        var selected by remember { mutableStateOf(0) }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                tabs.forEachIndexed { index, tab ->
+                    ChipTab(
+                        text = tab,
+                        selected = selected == index,
+                        onClick = { selected = index },
+                    )
+                }
+            }
+
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                ChipTab(
+                    text = "Library",
+                    selected = true,
+                    onClick = {},
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Iconsax.IconsaxMusicLibrary,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp),
+                        )
+                    },
+                )
+                ChipTab(
+                    text = "Downloads",
+                    selected = false,
+                    onClick = {},
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Iconsax.IconsaxDocumentDownload,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp),
+                        )
+                    },
+                )
+                ChipTab(
+                    text = "Disabled",
+                    selected = false,
+                    onClick = {},
+                    enabled = false,
+                )
+            }
+        }
     }
 }

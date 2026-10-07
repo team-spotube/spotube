@@ -27,6 +27,7 @@ import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -46,7 +47,10 @@ import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -57,7 +61,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.krtirtho.spotube.resources.iconsax.ArrowLeft3
@@ -549,244 +552,281 @@ fun ButtonGroupDivider(
     )
 }
 
-@Preview(showBackground = true)
+@BaseUIPhonePreview
+@BaseUIDesktopPreview
 @Composable
-private fun ButtonsRow1Preview() {
-    MaterialTheme {
-        val theme = rememberBaseUITheme()
-        CompositionLocalProvider(LocalBaseUITheme provides theme) {
-            Surface(
-                color = MaterialTheme.colorScheme.background,
-                modifier = Modifier.padding(24.dp),
+private fun ButtonsPreview() {
+    BaseUIPreview {
+        var liked by remember { mutableStateOf(false) }
+        var likeCount by remember { mutableIntStateOf(128) }
+        var following by remember { mutableStateOf(false) }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                OutlineButton(onClick = {}) {
+                    Icon(
+                        imageVector = Iconsax.IconsaxShare,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
+                    Text("Share", maxLines = 1, softWrap = false)
+                }
+                SecondaryButton(onClick = {}) {
+                    Text("Secondary", maxLines = 1, softWrap = false)
+                }
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                PrimaryButton(onClick = {}) {
+                    Icon(
+                        imageVector = Iconsax.IconsaxAddSquare,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
+                    Text(
+                        "Sign up",
+                        maxLines = 1,
+                        softWrap = false,
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+                    )
+                }
+                GhostButton(onClick = {}) {
+                    Text("Ghost", maxLines = 1, softWrap = false)
+                }
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                OutlineButton(onClick = {}, enabled = false) {
+                    Text("Disabled", maxLines = 1, softWrap = false)
+                }
+                SecondaryButton(onClick = {}, enabled = false) {
+                    Text("Disabled", maxLines = 1, softWrap = false)
+                }
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                PrimaryButton(onClick = {}, enabled = false) {
+                    Text("Disabled", maxLines = 1, softWrap = false)
+                }
+                OutlineButton(onClick = {}) {
+                    Text("Forward", maxLines = 1, softWrap = false)
+                    Icon(
+                        imageVector = Iconsax.IconsaxArrowSquareUp,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
+                }
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                OutlineButton(
+                    onClick = {
+                        liked = !liked
+                        likeCount += if (liked) 1 else -1
+                    },
                 ) {
-                    OutlineButton(onClick = {}) {
+                    Icon(
+                        imageVector = Iconsax.IconsaxHeart,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
+                    Text(if (liked) "Liked" else "Like", maxLines = 1, softWrap = false)
+                    ButtonBadge(count = likeCount)
+                }
+                PrimaryButton(onClick = { following = !following }) {
+                    Text(
+                        if (following) "Following" else "Follow",
+                        maxLines = 1,
+                        softWrap = false,
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@BaseUIPhonePreview
+@Composable
+private fun IconButtonsPreview() {
+    BaseUIPreview {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Text(
+                text = "Icon buttons",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                IconButton(onClick = {}) {
+                    Icon(
+                        imageVector = Iconsax.IconsaxMagic,
+                        contentDescription = "Magic",
+                        modifier = Modifier.size(18.dp),
+                    )
+                }
+                GhostIconButton(onClick = {}) {
+                    Icon(
+                        imageVector = Iconsax.IconsaxHeart,
+                        contentDescription = "Favorite",
+                        modifier = Modifier.size(18.dp),
+                    )
+                }
+                PrimaryIconButton(onClick = {}) {
+                    Icon(
+                        imageVector = Iconsax.IconsaxAddSquare,
+                        contentDescription = "Add",
+                        modifier = Modifier.size(18.dp),
+                    )
+                }
+                SecondaryIconButton(onClick = {}) {
+                    Icon(
+                        imageVector = Iconsax.IconsaxShare,
+                        contentDescription = "Share",
+                        modifier = Modifier.size(18.dp),
+                    )
+                }
+            }
+
+            Text(
+                text = "Variable icon button",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                VariableIconButton(
+                    variant = VariableIconButtonVariant.Outline,
+                    onClick = {},
+                ) {
+                    Icon(
+                        imageVector = Iconsax.IconsaxDocumentText,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
+                }
+                VariableIconButton(
+                    variant = VariableIconButtonVariant.Ghost,
+                    onClick = {},
+                ) {
+                    Icon(
+                        imageVector = Iconsax.Iconsax3DotsMore,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
+                }
+                VariableIconButton(
+                    variant = VariableIconButtonVariant.Primary,
+                    onClick = {},
+                ) {
+                    Icon(
+                        imageVector = Iconsax.IconsaxMagic,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
+                }
+                VariableIconButton(
+                    variant = VariableIconButtonVariant.Secondary,
+                    onClick = {},
+                ) {
+                    Icon(
+                        imageVector = Iconsax.User,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@BaseUIDesktopPreview
+@Composable
+private fun ButtonGroupPreview() {
+    BaseUIPreview {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp),
+        ) {
+            Text(
+                text = "Button groups",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                ButtonGroup {
+                    GroupButton(onClick = {}) {
+                        Icon(
+                            imageVector = Iconsax.IconsaxDocumentText,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                        )
+                        Text("Documents", maxLines = 1, softWrap = false)
+                    }
+                    ButtonGroupDivider()
+                    GroupButton(onClick = {}) {
                         Icon(
                             imageVector = Iconsax.IconsaxShare,
                             contentDescription = null,
                             modifier = Modifier.size(18.dp),
                         )
-                        Text(
-                            "Copy link",
-                            maxLines = 1,
-                            softWrap = false,
-                        )
+                        Text("Export", maxLines = 1, softWrap = false)
                     }
-                    OutlineButton(onClick = {}) {
+                    ButtonGroupDivider()
+                    GroupIconButton(onClick = {}) {
                         Icon(
-                            imageVector = Iconsax.User,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                        )
-                        Text("Login", maxLines = 1, softWrap = false)
-                    }
-                    PrimaryButton(onClick = {}) {
-                        Icon(
-                            imageVector = Iconsax.IconsaxAddSquare,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                        )
-                        Text(
-                            "Sign Up",
-                            maxLines = 1,
-                            softWrap = false,
-                            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun ButtonsRow2Preview() {
-    MaterialTheme {
-        val theme = rememberBaseUITheme()
-        CompositionLocalProvider(LocalBaseUITheme provides theme) {
-            Surface(
-                color = MaterialTheme.colorScheme.background,
-                modifier = Modifier.padding(24.dp),
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    ButtonGroup {
-                        GroupButton(onClick = {}) {
-                            Icon(
-                                imageVector = Iconsax.IconsaxDocumentText,
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp),
-                            )
-                            Text("Documents", maxLines = 1, softWrap = false)
-                        }
-                        ButtonGroupDivider()
-                        GroupButton(onClick = {}) {
-                            Icon(
-                                imageVector = Iconsax.IconsaxShare,
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp),
-                            )
-                            Text("Export", maxLines = 1, softWrap = false)
-                        }
-                        ButtonGroupDivider()
-                        GroupIconButton(onClick = {}) {
-                            Icon(
-                                imageVector = Iconsax.Iconsax3DotsMore,
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp),
-                            )
-                        }
-                    }
-                    ButtonGroup {
-                        GroupIconButton(onClick = {}) {
-                            Icon(
-                                imageVector = Iconsax.ArrowLeft3,
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp),
-                            )
-                        }
-                        ButtonGroupDivider()
-                        GroupIconButton(onClick = {}) {
-                            Icon(
-                                imageVector = Iconsax.IconsaxNext,
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp),
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun ButtonsRow3Preview() {
-    MaterialTheme {
-        val theme = rememberBaseUITheme()
-        CompositionLocalProvider(LocalBaseUITheme provides theme) {
-            Surface(
-                color = MaterialTheme.colorScheme.background,
-                modifier = Modifier.padding(24.dp),
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    OutlineButton(onClick = {}) {
-                        Text("Cancel", maxLines = 1, softWrap = false)
-                    }
-                    PrimaryButton(onClick = {}) {
-                        Text(
-                            "Done",
-                            maxLines = 1,
-                            softWrap = false,
-                            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
-                        )
-                    }
-                    IconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Iconsax.IconsaxMagic,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                        )
-                    }
-                    OutlineButton(onClick = {}) {
-                        Icon(
-                            imageVector = Iconsax.IconsaxHeart,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                        )
-                        Text("Like", maxLines = 1, softWrap = false)
-                        ButtonBadge(count = 2)
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun ButtonsRow4Preview() {
-    MaterialTheme {
-        val theme = rememberBaseUITheme()
-        CompositionLocalProvider(LocalBaseUITheme provides theme) {
-            Surface(
-                color = MaterialTheme.colorScheme.background,
-                modifier = Modifier.padding(24.dp),
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    ButtonGroup {
-                        GroupIconButton(onClick = {}) {
-                            Icon(
-                                imageVector = Iconsax.ArrowLeft3,
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp),
-                            )
-                        }
-                        ButtonGroupDivider()
-                        GroupIconButton(onClick = {}) {
-                            Icon(
-                                imageVector = Iconsax.IconsaxNext,
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp),
-                            )
-                        }
-                    }
-                    OutlineButton(onClick = {}) {
-                        Text("Forward", maxLines = 1, softWrap = false)
-                        Icon(
-                            imageVector = Iconsax.IconsaxArrowSquareUp,
+                            imageVector = Iconsax.Iconsax3DotsMore,
                             contentDescription = null,
                             modifier = Modifier.size(18.dp),
                         )
                     }
                 }
-            }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun ButtonStylesPreview() {
-    MaterialTheme {
-        val theme = rememberBaseUITheme()
-        CompositionLocalProvider(LocalBaseUITheme provides theme) {
-            Surface(
-                color = MaterialTheme.colorScheme.background,
-                modifier = Modifier.padding(24.dp),
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    OutlineButton(onClick = {}) {
-                        Text("Outline", maxLines = 1, softWrap = false)
+                ButtonGroup {
+                    GroupIconButton(onClick = {}) {
+                        Icon(
+                            imageVector = Iconsax.ArrowLeft3,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                        )
                     }
-                    SecondaryButton(onClick = {}) {
-                        Text("Secondary", maxLines = 1, softWrap = false)
-                    }
-                    PrimaryButton(onClick = {}) {
-                        Text(
-                            "Primary",
-                            maxLines = 1,
-                            softWrap = false,
-                            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+                    ButtonGroupDivider()
+                    GroupIconButton(onClick = {}) {
+                        Icon(
+                            imageVector = Iconsax.IconsaxNext,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
                         )
                     }
                 }
+                ButtonBadge(count = 8)
             }
         }
     }

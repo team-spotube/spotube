@@ -26,8 +26,10 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -38,7 +40,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,6 +51,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
+import dev.krtirtho.spotube.resources.iconsax.IconsaxHeart
+import dev.krtirtho.spotube.resources.iconsax.IconsaxPlay
+import dev.krtirtho.spotube.resources.iconsax.IconsaxShare
+import dev.krtirtho.spotube.resources.iconsax.IconsaxTrash
 
 @Composable
 fun DropdownMenu(
@@ -63,24 +73,31 @@ fun DropdownMenu(
         expanded = expanded,
         onDismissRequest = onDismissRequest,
         offset = offset,
-        modifier = modifier
-            .widthIn(min = 180.dp)
-            .shadow(
-                elevation = menuTheme.shadow.elevation,
-                shape = menuTheme.shape,
-                ambientColor = menuTheme.shadow.ambientColor,
-                spotColor = menuTheme.shadow.spotColor,
-            )
-            .clip(menuTheme.shape)
-            .background(menuTheme.background, menuTheme.shape)
-            .border(
-                BorderStroke(menuTheme.border.width, menuTheme.border.color),
-                menuTheme.shape,
-            ),
+        modifier = modifier.dropdownMenuContainer(menuTheme),
     ) {
         content()
     }
 }
+
+/**
+ * The container styling of [DropdownMenu], split out so it can be reused by the
+ * material3 popup and by previews, which cannot render the popup window itself.
+ */
+internal fun Modifier.dropdownMenuContainer(theme: BaseUITheme.DropdownMenuTheme): Modifier =
+    this
+        .widthIn(min = 180.dp)
+        .shadow(
+            elevation = theme.shadow.elevation,
+            shape = theme.shape,
+            ambientColor = theme.shadow.ambientColor,
+            spotColor = theme.shadow.spotColor,
+        )
+        .clip(theme.shape)
+        .background(theme.background, theme.shape)
+        .border(
+            BorderStroke(theme.border.width, theme.border.color),
+            theme.shape,
+        )
 
 @Composable
 fun DropdownMenuItem(
@@ -168,5 +185,80 @@ fun DropdownMenuDivider(
                 .height(0.5.dp)
                 .background(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)),
         )
+    }
+}
+
+@BaseUIPhonePreview
+@Composable
+private fun DropdownMenuPreview() {
+    BaseUIPreview {
+        var expanded by remember { mutableStateOf(true) }
+        var lastAction by remember { mutableStateOf("None") }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            OutlineButton(onClick = { expanded = !expanded }) {
+                Text(if (expanded) "Hide menu" else "Show menu")
+            }
+
+            if (expanded) {
+                Column(
+                    modifier = Modifier.dropdownMenuContainer(
+                        LocalBaseUITheme.current.dropdownMenu,
+                    ),
+                ) {
+                    DropdownMenuItem(
+                        text = "Play next",
+                        leadingIcon = Iconsax.IconsaxPlay,
+                        onClick = {
+                            lastAction = "Play next"
+                            expanded = false
+                        },
+                    )
+                    DropdownMenuItem(
+                        text = "Add to queue",
+                        leadingIcon = Iconsax.IconsaxAddSquare,
+                        onClick = {
+                            lastAction = "Add to queue"
+                            expanded = false
+                        },
+                    )
+                    DropdownMenuItem(
+                        text = "Add to favorites",
+                        leadingIcon = Iconsax.IconsaxHeart,
+                        selected = lastAction == "Add to favorites",
+                        onClick = {
+                            lastAction = "Add to favorites"
+                            expanded = false
+                        },
+                    )
+                    DropdownMenuDivider()
+                    DropdownMenuItem(
+                        text = "Share",
+                        leadingIcon = Iconsax.IconsaxShare,
+                        onClick = {
+                            lastAction = "Share"
+                            expanded = false
+                        },
+                    )
+                    DropdownMenuItem(
+                        text = "Remove from playlist",
+                        leadingIcon = Iconsax.IconsaxTrash,
+                        enabled = false,
+                        onClick = {},
+                    )
+                }
+            }
+
+            Text(
+                text = "Last action: $lastAction",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
     }
 }
