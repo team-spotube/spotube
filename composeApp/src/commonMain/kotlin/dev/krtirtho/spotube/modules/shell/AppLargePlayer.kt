@@ -72,8 +72,10 @@ import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.ui.base.GhostIconButton
 import dev.krtirtho.spotube.core.ui.base.IconButton
 import dev.krtirtho.spotube.core.ui.base.Slider
+import dev.krtirtho.spotube.core.ui.base.SurfaceRole
 import dev.krtirtho.spotube.core.ui.base.VariableIconButton
 import dev.krtirtho.spotube.core.ui.base.VariableIconButtonVariant
+import dev.krtirtho.spotube.core.ui.base.baseSurfaceTexture
 import dev.krtirtho.spotube.core.ui.base.copyShape
 import dev.krtirtho.spotube.core.ui.base.invertedButtonStyle
 import dev.krtirtho.spotube.modules.downloads.DownloadProgressIcon
@@ -210,7 +212,9 @@ fun AppLargePlayer(
         }
     }
 
-    val surfaceTint = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f)
+    // A translucent tint (not near-opaque) so the blurred art behind still reads through, and
+    // the material's watery caustics sit on top of it.
+    val surfaceTint = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f)
 
     Surface(
         modifier = modifier
@@ -234,6 +238,7 @@ fun AppLargePlayer(
                         )
                     }
                 }
+                .baseSurfaceTexture(SurfaceRole.PrimaryBackground)
         ) {
             Row(
                 modifier = Modifier

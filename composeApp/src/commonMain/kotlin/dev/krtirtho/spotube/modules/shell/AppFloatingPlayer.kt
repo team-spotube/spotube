@@ -36,7 +36,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -70,8 +69,10 @@ import org.koin.core.parameter.parametersOf
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.ui.base.BaseUITheme
+import dev.krtirtho.spotube.core.ui.base.BaseSurface
 import dev.krtirtho.spotube.core.ui.base.IconButton
 import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
+import dev.krtirtho.spotube.core.ui.base.SurfaceRole
 
 // The floating player on small screens that appears above the floating AppBottombar
 //
@@ -115,14 +116,12 @@ fun AppFloatingPlayer(
         }
     }
 
-    Surface(
+    BaseSurface(
+        role = SurfaceRole.InverseBackground,
+        shape = RoundedCornerShape(24.dp, 24.dp),
         modifier = modifier
             .fillMaxWidth()
             .height(76.dp),
-        shape = RoundedCornerShape(24.dp, 24.dp),
-        color = MaterialTheme.colorScheme.inverseSurface,
-        contentColor = MaterialTheme.colorScheme.inverseOnSurface,
-        tonalElevation = 3.dp,
     ) {
         Box(
             modifier = Modifier

@@ -22,11 +22,13 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.ui.NavDisplay
@@ -157,7 +159,16 @@ fun App(
     }
 
     SpotubeTheme(settings = userSettings) {
-        val baseUITheme = rememberBaseUITheme(surfaceTheme = userSettings.surfaceTheme)
+        val isDark = MaterialTheme.colorScheme.surface.luminance() < 0.5f
+        val accent = if (isDark) {
+            userSettings.accentColor.toDarkColor()
+        } else {
+            userSettings.accentColor.toLightColor()
+        }
+        val baseUITheme = rememberBaseUITheme(
+            surfaceTheme = userSettings.surfaceTheme,
+            accentColor = accent,
+        )
         CompositionLocalProvider(
             LocalBaseUITheme provides baseUITheme,
             LocalBaseUIColors provides baseUITheme.colors,

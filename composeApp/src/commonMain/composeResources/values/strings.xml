@@ -68,6 +68,14 @@
     <string name="settings_accent_midnight_blue">Midnight Blue</string>
     <string name="settings_accent_metallic_slate">Metallic Slate</string>
 
+    <string name="settings_appearance_title">Look &amp; feel</string>
+    <string name="settings_appearance_subtitle_current">Surface material and accent. Current: %1$s · %2$s</string>
+    <string name="settings_appearance_dialog_title">Look &amp; feel</string>
+    <string name="settings_appearance_dialog_description">Pick a surface material, then an accent that pairs with it. Every option is a curated combination.</string>
+    <string name="settings_appearance_surface_label">Surface</string>
+    <string name="settings_appearance_accent_label">Accent</string>
+    <string name="settings_preview_secondary">Secondary</string>
+
     <string name="settings_download_folder_title">Download folder override</string>
     <string name="settings_download_folder_current">Current folder: %1$s</string>
     <string name="settings_download_folder_default">Current folder: default music folder</string>

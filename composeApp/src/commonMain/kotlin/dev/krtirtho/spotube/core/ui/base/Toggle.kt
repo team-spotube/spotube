@@ -184,8 +184,9 @@ fun Toggle(
             )
             .clip(resolved.shape)
             .background(resolved.colors.background, resolved.shape)
+            .applySurfaceMaterial(resolved.colors)
             .border(BorderStroke(resolved.border.width, borderColor), resolved.shape)
-            .highlight(resolved.colors.highlight)
+            .applyHighlight(resolved.colors)
             .then(
                 if (onCheckedChange != null) {
                     Modifier

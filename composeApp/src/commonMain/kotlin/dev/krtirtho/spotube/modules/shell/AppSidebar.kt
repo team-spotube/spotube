@@ -55,6 +55,8 @@ import dev.krtirtho.spotube.core.navigation.NavigationState
 import dev.krtirtho.spotube.core.navigation.Navigator
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.ui.base.GhostIconButton
+import dev.krtirtho.spotube.core.ui.base.SurfaceRole
+import dev.krtirtho.spotube.core.ui.base.baseSurfaceMaterial
 import dev.krtirtho.spotube.core.ui.component.SidebarItem
 import dev.krtirtho.spotube.core.ui.component.SidebarSectionLabel
 import dev.krtirtho.spotube.core.ui.component.VerticalScrollbar
@@ -88,7 +90,8 @@ fun AppSidebar(
     Column(
         modifier = modifier
             .fillMaxHeight()
-            .width(width),
+            .width(width)
+            .baseSurfaceMaterial(role = SurfaceRole.PrimaryBackground),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(modifier = Modifier.weight(1f)) {

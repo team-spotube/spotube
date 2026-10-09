@@ -123,6 +123,7 @@ fun ChipTab(
             .applyChipShadow(state.shadow, state.shape)
             .clip(state.shape)
             .background(state.colors.background, state.shape)
+            .applySurfaceMaterial(state.colors)
             .border(BorderStroke(state.border.width, state.border.color), state.shape)
             .clickable(
                 enabled = enabled,
@@ -130,7 +131,7 @@ fun ChipTab(
                 indication = ripple(),
                 onClick = onClick,
             )
-            .highlight(state.colors.highlight)
+            .applyHighlight(state.colors)
             .padding(state.padding),
         contentAlignment = Alignment.Center,
     ) {

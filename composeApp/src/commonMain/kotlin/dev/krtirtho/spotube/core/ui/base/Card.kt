@@ -75,6 +75,7 @@ fun Card(
             )
             .clip(cardTheme.shape)
             .background(cardTheme.background, cardTheme.shape)
+            .applySurfaceMaterial(cardTheme.surfaceRole)
             .border(BorderStroke(cardTheme.border.width, cardTheme.border.color), cardTheme.shape)
             .padding(cardTheme.padding),
     ) {

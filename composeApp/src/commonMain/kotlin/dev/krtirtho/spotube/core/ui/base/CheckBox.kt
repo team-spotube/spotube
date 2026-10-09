@@ -146,8 +146,9 @@ fun CheckBox(
             )
             .clip(resolved.shape)
             .background(resolved.colors.background, resolved.shape)
+            .applySurfaceMaterial(resolved.colors)
             .border(BorderStroke(0.5.dp, borderColor), resolved.shape)
-            .highlight(resolved.colors.highlight)
+            .applyHighlight(resolved.colors)
             .then(
                 if (onClick != null) {
                     Modifier

@@ -47,6 +47,8 @@ import dev.krtirtho.spotube.bottombarTabs
 import dev.krtirtho.spotube.core.navigation.NavigationState
 import dev.krtirtho.spotube.core.navigation.Navigator
 import dev.krtirtho.spotube.core.navigation.Routes
+import dev.krtirtho.spotube.core.ui.base.BaseSurface
+import dev.krtirtho.spotube.core.ui.base.SurfaceRole
 import dev.krtirtho.spotube.modules.downloads.DownloadBadgeIndicator
 
 @Composable
@@ -55,12 +57,10 @@ fun AppBottombar(
     navigationState: NavigationState,
     modifier: Modifier = Modifier,
 ) {
-    Surface(
-        modifier = modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.navigationBars),
+    BaseSurface(
+        role = SurfaceRole.PrimaryBackground,
         shape = RoundedCornerShape(topStart = 18.dp, topEnd = 18.dp),
-        color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 3.dp,
-        shadowElevation = 10.dp,
+        modifier = modifier.fillMaxWidth().windowInsetsPadding(WindowInsets.navigationBars),
     ) {
         Row(
             modifier = Modifier

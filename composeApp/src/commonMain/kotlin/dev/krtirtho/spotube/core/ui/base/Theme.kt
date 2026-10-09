@@ -124,6 +124,13 @@ data class BaseUITheme(
         val background: Brush,
         val foreground: Color,
         val highlight: Color,
+        /**
+         * The [SurfaceRole] this colour represents. When set, components overlay the
+         * matching [SurfaceStyle] material (gloss, bubbles, facets, specular band, grain)
+         * on top of [background], so buttons and other actionable items share the exact
+         * look of a [BaseSurface]. `null` means no material (e.g. ghost buttons).
+         */
+        val surfaceRole: SurfaceRole? = null,
     )
 
     data class CardTheme(
@@ -132,6 +139,8 @@ data class BaseUITheme(
         val border: Border,
         val padding: PaddingValues,
         val shadow: Shadow,
+        /** The [SurfaceRole] the card renders, so it can overlay the matching material. */
+        val surfaceRole: SurfaceRole? = null,
     )
 
     data class ListRowTheme(
@@ -232,16 +241,12 @@ fun rememberBaseUITheme(
     // highlight and translucent "glass" edges, lifted by soft, coloured
     // shadows — the aqua/glass language of Frutiger-Aero.
     // ------------------------------------------------------------------
-    val glassTop = if (isLight) {
-        Color.White
-    } else {
-        lerp(colors.surfaceContainerHigh, Color.White, 0.10f)
-    }
-    val glassBottom = if (isLight) {
-        lerp(colors.surface, Color.White, 0.04f)
-    } else {
-        colors.surfaceContainer
-    }
+    // Primary surface (subtle) with the style's palette, and the secondary surface
+    // (slightly accented) used by cards and grouped content.
+    val panelTop = lerp(colors.backgroundPrimary, Color.White, if (isLight) 0.45f else 0.06f)
+    val panelBottom = colors.surfaceVariant
+    val secondaryTop = lerp(colors.backgroundSecondary, Color.White, if (isLight) 0.35f else 0.05f)
+    val secondaryBottom = colors.backgroundSecondary
     val glassPressed = if (isLight) {
         lerp(colors.surfaceContainerHighest, Color.White, 0.06f)
     } else {
@@ -292,12 +297,12 @@ fun rememberBaseUITheme(
     // --- Glass (outline) -------------------------------------------------
     val outlineColors = BaseUITheme.InteractionState(
         normal = BaseUITheme.ButtonColors(
-            background = glassBrush(glassTop, glassBottom),
+            background = glassBrush(panelTop, panelBottom),
             foreground = colors.onSurface,
             highlight = gloss,
         ),
         hovered = BaseUITheme.ButtonColors(
-            background = glassBrush(glassTop, glassBottom),
+            background = glassBrush(panelTop, panelBottom),
             foreground = colors.onSurface,
             highlight = Color.White.copy(alpha = if (isLight) 0.9f else 0.26f),
         ),
@@ -307,11 +312,11 @@ fun rememberBaseUITheme(
             highlight = glossSoft,
         ),
         focused = BaseUITheme.ButtonColors(
-            background = glassBrush(glassTop, glassBottom),
+            background = glassBrush(panelTop, panelBottom),
             foreground = colors.onSurface,
             highlight = gloss,
         ),
-    )
+    ).withRole(SurfaceRole.PrimaryBackground)
     val glassShadow = BaseUITheme.InteractionState(
         normal = BaseUITheme.Shadow(
             8.dp,
@@ -348,10 +353,10 @@ fun rememberBaseUITheme(
     // --- Aqua accent (primary) -------------------------------------------
     val primaryEdge = lerp(colors.primary, Color.White, 0.5f)
     val primaryColors = BaseUITheme.InteractionState(
-        normal = BaseUITheme.ButtonColors(aqua(colors.primary), colors.onPrimary, gloss),
+        normal = BaseUITheme.ButtonColors(aqua(colors.accentPrimary), colors.onAccentPrimary, gloss),
         hovered = BaseUITheme.ButtonColors(
-            aqua(colors.primary),
-            colors.onPrimary,
+            aqua(colors.accentPrimary),
+            colors.onAccentPrimary,
             Color.White.copy(alpha = if (isLight) 0.9f else 0.3f),
         ),
         pressed = BaseUITheme.ButtonColors(
@@ -359,11 +364,11 @@ fun rememberBaseUITheme(
                 lerp(colors.primary, Color.Black, 0.16f),
                 lerp(colors.primary, Color.Black, 0.24f),
             ),
-            colors.onPrimary,
+            colors.onAccentPrimary,
             glossSoft,
         ),
-        focused = BaseUITheme.ButtonColors(aqua(colors.primary), colors.onPrimary, gloss),
-    )
+        focused = BaseUITheme.ButtonColors(aqua(colors.accentPrimary), colors.onAccentPrimary, gloss),
+    ).withRole(SurfaceRole.PrimaryAccent)
     val primaryShadow = BaseUITheme.InteractionState(
         normal = BaseUITheme.Shadow(
             10.dp,
@@ -398,7 +403,7 @@ fun rememberBaseUITheme(
     )
 
     // --- Secondary (soft aqua glass) -------------------------------------
-    val secondaryBase = colors.secondaryContainer
+    val secondaryBase = colors.backgroundSecondary
     val secondaryColors = BaseUITheme.InteractionState(
         normal = BaseUITheme.ButtonColors(
             glassBrush(lerp(secondaryBase, Color.White, 0.5f), secondaryBase),
@@ -423,7 +428,7 @@ fun rememberBaseUITheme(
             colors.onSecondaryContainer,
             gloss,
         ),
-    )
+    ).withRole(SurfaceRole.SecondaryBackground)
     val secondaryShadow = BaseUITheme.InteractionState(
         normal = BaseUITheme.Shadow(
             8.dp,
@@ -592,10 +597,10 @@ fun rememberBaseUITheme(
         ),
         textField = TextFieldTheme(
             background = BaseUITheme.InteractionState(
-                normal = glassBrush(glassTop, glassBottom),
-                hovered = glassBrush(glassTop, glassBottom),
+                normal = glassBrush(panelTop, panelBottom),
+                hovered = glassBrush(panelTop, panelBottom),
                 pressed = glassBrush(glassPressed, glassPressed),
-                focused = glassBrush(glassTop, glassBottom),
+                focused = glassBrush(panelTop, panelBottom),
             ),
             highlight = BaseUITheme.InteractionState(
                 normal = gloss,
@@ -647,7 +652,7 @@ fun rememberBaseUITheme(
             foreground = textFieldForeground,
         ),
         autoCompleteMenuTheme = AutoCompleteMenuTheme(
-            background = glassBrush(glassTop, glassBottom),
+            background = glassBrush(panelTop, panelBottom),
             shape = RoundedCornerShape(16.dp),
             border = BaseUITheme.Border(glassBorder, 1.dp),
             padding = PaddingValues(0.dp),
@@ -716,7 +721,7 @@ fun rememberBaseUITheme(
                 border = glassBorderState,
                 padding = noPadding,
             ),
-            checkmarkColor = colors.onPrimary,
+            checkmarkColor = colors.onAccentPrimary,
         ),
         chipTab = ChipTabTheme(
             selected = BaseUITheme.ButtonStyle(
@@ -783,7 +788,7 @@ fun rememberBaseUITheme(
             ),
         ),
         card = BaseUITheme.CardTheme(
-            background = glassBrush(glassTop, glassBottom),
+            background = glassBrush(secondaryTop, secondaryBottom),
             shape = RoundedCornerShape(20.dp),
             border = BaseUITheme.Border(glassBorder, 1.dp),
             padding = PaddingValues(0.dp),
@@ -793,20 +798,18 @@ fun rememberBaseUITheme(
                 shadowColor.copy(alpha = 0.16f),
                 shadowColor.copy(alpha = 0.2f)
             ),
+            surfaceRole = SurfaceRole.SecondaryBackground,
         ),
         listRowTile = BaseUITheme.ListRowTheme(
             background = BaseUITheme.AdvancedInteractionState(
                 normal = glassBrush(Color.Transparent, Color.Transparent),
-                hovered = glassBrush(glassTop, glassBottom),
+                hovered = glassBrush(panelTop, panelBottom),
                 pressed = glassBrush(glassPressed, glassPressed),
-                focused = glassBrush(glassTop, glassBottom),
-                selected = glassBrush(
-                    lerp(colors.primaryContainer, Color.White, 0.4f),
-                    colors.primaryContainer,
-                ),
+                focused = glassBrush(panelTop, panelBottom),
+                selected = glassBrush(secondaryTop, secondaryBottom),
                 disabled = glassBrush(
-                    glassTop.copy(alpha = 0.5f),
-                    glassBottom.copy(alpha = 0.5f),
+                    panelTop.copy(alpha = 0.5f),
+                    panelBottom.copy(alpha = 0.5f),
                 ),
             ),
             shape = BaseUITheme.AdvancedInteractionState(
@@ -857,7 +860,7 @@ fun rememberBaseUITheme(
             ),
         ),
         dialog = BaseUITheme.DialogTheme(
-            background = glassBrush(glassTop, glassBottom),
+            background = glassBrush(panelTop, panelBottom),
             scrim = Color.Black.copy(alpha = 0.42f),
             shape = RoundedCornerShape(24.dp),
             border = BaseUITheme.Border(glassEdge, 1.dp),
@@ -870,7 +873,7 @@ fun rememberBaseUITheme(
             padding = PaddingValues(24.dp),
         ),
         dropdownMenu = BaseUITheme.DropdownMenuTheme(
-            background = glassBrush(glassTop, glassBottom),
+            background = glassBrush(panelTop, panelBottom),
             shape = RoundedCornerShape(16.dp),
             border = BaseUITheme.Border(glassBorder, 1.dp),
             shadow = BaseUITheme.Shadow(
@@ -879,7 +882,7 @@ fun rememberBaseUITheme(
                 shadowColor.copy(alpha = 0.22f),
                 shadowColor.copy(alpha = 0.28f)
             ),
-            itemHoverBackground = glassBrush(glassTop, glassBottom),
+            itemHoverBackground = glassBrush(panelTop, panelBottom),
             itemForeground = colors.onSurface,
             itemHighlight = gloss,
             padding = PaddingValues(6.dp),
@@ -904,6 +907,16 @@ fun BaseUITheme.ButtonStyle.copyPadding(padding: PaddingValues): BaseUITheme.But
 
 fun BaseUITheme.ButtonStyle.copyColors(colors: BaseUITheme.ButtonColors): BaseUITheme.ButtonStyle =
     copy(colors = BaseUITheme.InteractionState.fromSingleValue(colors))
+
+/** Tags every interaction state of a button colour set with the surface role it renders. */
+private fun BaseUITheme.InteractionState<BaseUITheme.ButtonColors>.withRole(
+    role: SurfaceRole,
+): BaseUITheme.InteractionState<BaseUITheme.ButtonColors> = BaseUITheme.InteractionState(
+    normal = normal.copy(surfaceRole = role),
+    hovered = hovered.copy(surfaceRole = role),
+    pressed = pressed.copy(surfaceRole = role),
+    focused = focused.copy(surfaceRole = role),
+)
 
 @Composable
 fun invertedButtonStyle(): BaseUITheme.ButtonStyle {

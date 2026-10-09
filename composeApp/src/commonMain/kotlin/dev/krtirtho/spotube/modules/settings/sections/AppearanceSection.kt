@@ -23,45 +23,48 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.Droplet
-import compose.icons.feathericons.Monitor
-import spotube.composeapp.generated.resources.*
-import dev.krtirtho.spotube.core.ui.base.ThemedDialog
+import dev.krtirtho.spotube.core.ui.base.BaseSurface
+import dev.krtirtho.spotube.core.ui.base.LocalBaseUIColors
 import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.core.ui.base.PrimaryButton
-import dev.krtirtho.spotube.core.ui.base.Radio
+import dev.krtirtho.spotube.core.ui.base.SurfaceRole
 import dev.krtirtho.spotube.core.ui.base.SurfaceStyle
+import dev.krtirtho.spotube.core.ui.base.ThemedDialog
+import dev.krtirtho.spotube.core.ui.base.baseUIColorScheme
 import dev.krtirtho.spotube.modules.settings.AccentColors
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import dev.krtirtho.spotube.modules.settings.Theme
 import dev.krtirtho.spotube.modules.settings.UserSettings
+import dev.krtirtho.spotube.modules.settings.colorFor
 import dev.krtirtho.spotube.modules.settings.components.SelectionSettingCard
 import dev.krtirtho.spotube.modules.settings.components.SettingCardItem
+import dev.krtirtho.spotube.modules.settings.recommendedAccents
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxColorSwatch
-import dev.krtirtho.spotube.resources.iconsax.IconsaxColorsSquare
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMagic
 import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.*
@@ -97,39 +100,23 @@ internal fun LazyListScope.appearanceSection(
                 )
             },
             {
-                SelectionSettingCard(
-                    title = stringResource(Res.string.settings_surface_theme_title),
-                    subtitle = stringResource(
-                        Res.string.settings_surface_theme_subtitle_current,
-                        settings.surfaceTheme.displayLabel()
-                    ),
+                // Surface material and accent are one decision: each surface only offers the
+                // accents that are known to pair with it, so the result is always a curated,
+                // good-looking combination instead of an arbitrary one.
+                AppearanceSettingCard(
+                    selectedSurface = settings.surfaceTheme,
+                    selectedAccent = settings.accentColor,
                     icon = {
                         SettingsItemIcon(
                             Iconsax.IconsaxMagic,
-                            stringResource(Res.string.settings_surface_theme_title)
+                            stringResource(Res.string.settings_appearance_title)
                         )
                     },
-                    selectedOption = settings.surfaceTheme,
-                    options = SurfaceStyle.entries,
-                    optionLabel = { it.displayLabel() },
-                    onOptionSelected = { surfaceTheme ->
+                    onSaved = { surface, accent ->
                         settingsViewModel.updateSettings {
-                            copy(surfaceTheme = surfaceTheme)
+                            copy(surfaceTheme = surface, accentColor = accent)
                         }
-                    }
-                )
-            },
-            {
-                AccentColorSettingCard(
-                    selectedAccent = settings.accentColor,
-                    icon = {
-                        SettingsItemIcon(Iconsax.IconsaxColorsSquare, stringResource(Res.string.settings_accent_title))
                     },
-                    onColorSaved = { accent ->
-                        settingsViewModel.updateSettings {
-                            copy(accentColor = accent)
-                        }
-                    }
                 )
             },
         )
@@ -170,43 +157,53 @@ private fun AccentColors.displayLabel(): String {
 }
 
 @Composable
-private fun AccentColorSettingCard(
+private fun AppearanceSettingCard(
+    selectedSurface: SurfaceStyle,
     selectedAccent: AccentColors,
     icon: (@Composable () -> Unit)? = null,
-    onColorSaved: (AccentColors) -> Unit,
+    onSaved: (SurfaceStyle, AccentColors) -> Unit,
 ) {
     var isDialogOpen by remember { mutableStateOf(false) }
+    val isLight = LocalBaseUIColors.current.isLight
 
     SettingCardItem(
-        title = stringResource(Res.string.settings_accent_title),
+        title = stringResource(Res.string.settings_appearance_title),
         subtitle = stringResource(
-            Res.string.settings_accent_subtitle_current,
-            selectedAccent.displayLabel()
+            Res.string.settings_appearance_subtitle_current,
+            selectedSurface.displayLabel(),
+            selectedAccent.displayLabel(),
         ),
         icon = icon,
         trailingContent = {
-            AccentDualPreview(
-                lightAccent = selectedAccent.toLightColor(),
-                darkAccent = selectedAccent.toDarkColor(),
+            AppearanceTrailingSwatch(
+                surface = selectedSurface,
+                accent = selectedAccent,
+                isLight = isLight,
             )
         },
-        onClick = {
-            isDialogOpen = true
-        }
+        onClick = { isDialogOpen = true },
     )
 
     if (isDialogOpen) {
-        var draftAccent by remember(selectedAccent, isDialogOpen) { mutableStateOf(selectedAccent) }
+        var draftSurface by remember(selectedSurface, isDialogOpen) {
+            mutableStateOf(selectedSurface)
+        }
+        var draftAccent by remember(selectedSurface, selectedAccent, isDialogOpen) {
+            mutableStateOf(selectedAccent)
+        }
 
         ThemedDialog(
             onDismissRequest = { isDialogOpen = false },
             title = {
-                Text(stringResource(Res.string.settings_accent_dialog_title), style = MaterialTheme.typography.titleLarge)
+                Text(
+                    stringResource(Res.string.settings_appearance_dialog_title),
+                    style = MaterialTheme.typography.titleLarge,
+                )
             },
             actions = {
                 PrimaryButton(
                     onClick = {
-                        onColorSaved(draftAccent)
+                        onSaved(draftSurface, draftAccent)
                         isDialogOpen = false
                     }
                 ) {
@@ -217,58 +214,116 @@ private fun AccentColorSettingCard(
                 }
             },
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
                 Text(
-                    text = stringResource(Res.string.settings_accent_dialog_description),
+                    text = stringResource(Res.string.settings_appearance_dialog_description),
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
 
+                Text(
+                    text = stringResource(Res.string.settings_appearance_surface_label),
+                    style = MaterialTheme.typography.labelLarge,
+                )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    AccentThemePreview(
-                        title = stringResource(Res.string.settings_preview_light),
-                        accent = draftAccent.toLightColor(),
-                        background = Color(0xFFFFFFFF),
-                        textColor = Color(0xFF121212),
-                        modifier = Modifier.weight(1f)
-                    )
-                    AccentThemePreview(
-                        title = stringResource(Res.string.settings_preview_dark),
-                        accent = draftAccent.toDarkColor(),
-                        background = Color(0xFF121212),
-                        textColor = Color(0xFFEDEDED),
-                        modifier = Modifier.weight(1f)
-                    )
+                    SurfaceStyle.entries.forEach { style ->
+                        SurfaceStyleTile(
+                            style = style,
+                            accent = draftAccent,
+                            isLight = isLight,
+                            selected = style == draftSurface,
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                draftSurface = style
+                                if (draftAccent !in style.recommendedAccents) {
+                                    draftAccent = style.recommendedAccents.first()
+                                }
+                            },
+                        )
+                    }
                 }
 
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    AccentColors.entries.forEach { option ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { draftAccent = option }
-                                .padding(horizontal = 4.dp, vertical = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            Radio(
-                                selected = option == draftAccent,
-                                onClick = { draftAccent = option }
-                            )
-                            Text(
-                                text = option.displayLabel(),
-                                style = MaterialTheme.typography.bodyMedium,
-                                modifier = Modifier.weight(1f)
-                            )
-                            AccentDualPreview(
-                                lightAccent = option.toLightColor(),
-                                darkAccent = option.toDarkColor(),
-                            )
-                        }
+                Text(
+                    text = stringResource(Res.string.settings_appearance_accent_label),
+                    style = MaterialTheme.typography.labelLarge,
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    draftSurface.recommendedAccents.forEach { accent ->
+                        AccentSwatch(
+                            accent = accent,
+                            label = accent.displayLabel(),
+                            isLight = isLight,
+                            selected = accent == draftAccent,
+                            onClick = { draftAccent = accent },
+                        )
                     }
+                }
+
+                AppearancePreview(
+                    surface = draftSurface,
+                    accent = draftAccent,
+                    isLight = isLight,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SurfaceStyleTile(
+    style: SurfaceStyle,
+    accent: AccentColors,
+    isLight: Boolean,
+    selected: Boolean,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit,
+) {
+    val scheme = remember(style, accent, isLight) {
+        baseUIColorScheme(style, isLight, accent.colorFor(isLight))
+    }
+    Box(
+        modifier = modifier
+            .height(70.dp)
+            .then(
+                if (selected) {
+                    Modifier
+                        .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(14.dp))
+                        .padding(2.dp)
+                } else {
+                    Modifier.padding(2.dp)
+                }
+            ),
+    ) {
+        CompositionLocalProvider(LocalBaseUIColors provides scheme) {
+            BaseSurface(
+                style = style,
+                role = SurfaceRole.PrimaryBackground,
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(12.dp))
+                    .clickable(onClick = onClick),
+                contentPadding = PaddingValues(8.dp),
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
+                        text = style.displayLabel(),
+                        style = MaterialTheme.typography.labelMedium,
+                    )
+                    Box(
+                        modifier = Modifier
+                            .size(14.dp)
+                            .background(accent.colorFor(isLight), CircleShape),
+                    )
                 }
             }
         }
@@ -276,82 +331,128 @@ private fun AccentColorSettingCard(
 }
 
 @Composable
-private fun AccentDualPreview(
-    lightAccent: Color,
-    darkAccent: Color,
+private fun AccentSwatch(
+    accent: AccentColors,
+    label: String,
+    isLight: Boolean,
+    selected: Boolean,
+    onClick: () -> Unit,
 ) {
-    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        Box(
-            modifier = Modifier
-                .size(20.dp)
-                .background(Color.White, RoundedCornerShape(6.dp))
-                .border(1.dp, Color(0x22000000), RoundedCornerShape(6.dp)),
-            contentAlignment = Alignment.Center
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(10.dp)
-                    .background(lightAccent, CircleShape)
+    Box(
+        modifier = Modifier
+            .size(34.dp)
+            .clip(CircleShape)
+            .background(accent.colorFor(isLight))
+            .border(
+                width = if (selected) 3.dp else 1.dp,
+                color = if (selected) {
+                    MaterialTheme.colorScheme.onSurface
+                } else {
+                    MaterialTheme.colorScheme.outlineVariant
+                },
+                shape = CircleShape,
             )
-        }
-        Box(
-            modifier = Modifier
-                .size(20.dp)
-                .background(Color(0xFF121212), RoundedCornerShape(6.dp))
-                .border(1.dp, Color(0x33FFFFFF), RoundedCornerShape(6.dp)),
-            contentAlignment = Alignment.Center
+            .clickable(onClick = onClick)
+            .semantics { contentDescription = label },
+    )
+}
+
+@Composable
+private fun AppearanceTrailingSwatch(
+    surface: SurfaceStyle,
+    accent: AccentColors,
+    isLight: Boolean,
+) {
+    val scheme = remember(surface, accent, isLight) {
+        baseUIColorScheme(surface, isLight, accent.colorFor(isLight))
+    }
+    CompositionLocalProvider(LocalBaseUIColors provides scheme) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(
-                modifier = Modifier
-                    .size(10.dp)
-                    .background(darkAccent, CircleShape)
-            )
+            BaseSurface(
+                style = surface,
+                role = SurfaceRole.PrimaryBackground,
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier.size(width = 46.dp, height = 28.dp),
+            ) {}
+            BaseSurface(
+                style = surface,
+                role = SurfaceRole.PrimaryAccent,
+                shape = CircleShape,
+                modifier = Modifier.size(18.dp),
+            ) {}
         }
     }
 }
 
 @Composable
-private fun AccentThemePreview(
-    title: String,
-    accent: Color,
-    background: Color,
-    textColor: Color,
-    modifier: Modifier = Modifier,
+private fun AppearancePreview(
+    surface: SurfaceStyle,
+    accent: AccentColors,
+    isLight: Boolean,
 ) {
-    Column(
-        modifier = modifier
-            .background(background, RoundedCornerShape(10.dp))
-            .border(1.dp, textColor.copy(alpha = 0.16f), RoundedCornerShape(10.dp))
-            .padding(10.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Text(title, style = MaterialTheme.typography.labelMedium, color = textColor)
-        Box(
+    val scheme = remember(surface, accent, isLight) {
+        baseUIColorScheme(surface, isLight, accent.colorFor(isLight))
+    }
+    CompositionLocalProvider(LocalBaseUIColors provides scheme) {
+        BaseSurface(
+            style = surface,
+            role = SurfaceRole.PrimaryBackground,
+            shape = RoundedCornerShape(16.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(6.dp)
-                .background(accent, RoundedCornerShape(999.dp))
-        )
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                .height(150.dp),
+            contentPadding = PaddingValues(14.dp),
         ) {
-            Box(
-                modifier = Modifier
-                    .size(14.dp)
-                    .background(accent, CircleShape)
-            )
-            Text(
-                stringResource(Res.string.settings_preview_label),
-                style = MaterialTheme.typography.bodySmall,
-                color = textColor
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                stringResource(Res.string.settings_preview_button),
-                style = MaterialTheme.typography.labelSmall,
-                color = accent
-            )
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                Text(
+                    text = stringResource(Res.string.settings_preview_label),
+                    style = MaterialTheme.typography.labelLarge,
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    BaseSurface(
+                        style = surface,
+                        role = SurfaceRole.PrimaryAccent,
+                        shape = RoundedCornerShape(999.dp),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    ) {
+                        Text(
+                            stringResource(Res.string.settings_preview_button),
+                            style = MaterialTheme.typography.labelMedium,
+                        )
+                    }
+                    BaseSurface(
+                        style = surface,
+                        role = SurfaceRole.SecondaryAccent,
+                        shape = RoundedCornerShape(999.dp),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    ) {
+                        Text(
+                            stringResource(Res.string.settings_preview_secondary),
+                            style = MaterialTheme.typography.labelMedium,
+                        )
+                    }
+                }
+                BaseSurface(
+                    style = surface,
+                    role = SurfaceRole.SecondaryBackground,
+                    shape = RoundedCornerShape(10.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    contentPadding = PaddingValues(10.dp),
+                ) {
+                    Text(
+                        text = stringResource(Res.string.settings_preview_label),
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+            }
         }
     }
 }

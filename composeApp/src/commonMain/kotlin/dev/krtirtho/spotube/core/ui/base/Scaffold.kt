@@ -39,12 +39,14 @@ import androidx.compose.ui.unit.dp
 /**
  * A theme-aware replacement for [Scaffold].
  *
- * Material's [Scaffold] paints Material's own surface colour, which hides the selected
- * [SurfaceStyle] (Watery/Icy/Chrome/Acrylic/Glass). [BaseScaffold] instead:
+ * A scaffold is always the current theme's **Primary Background** — there is no option to
+ * switch its surface. Material's [Scaffold] would paint Material's own surface colour and
+ * hide the selected [SurfaceStyle] (Watery/Icy/Chrome/Acrylic/Glass), so [BaseScaffold]
+ * paints the theme's primary background material instead.
  *
- * - is **transparent by default**, so the app-wide themed backdrop shows through, or
- * - paints a chosen [surface] material locally, or
- * - uses an explicit [containerColor] when one is given.
+ * [containerColor] is a narrow escape hatch for the rare screen that paints its own
+ * backdrop (e.g. onboarding) and needs the scaffold to stay out of the way; it is not a
+ * surface-style switch.
  *
  * It keeps the same slot structure as [Scaffold] (top/bottom bars, snackbar host,
  * floating action button) and hands the resolved [PaddingValues] to [content].
@@ -56,7 +58,6 @@ fun BaseScaffold(
     bottomBar: @Composable () -> Unit = {},
     snackbarHost: @Composable () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
-    surface: SurfaceStyle? = null,
     containerColor: Color? = null,
     contentWindowInsets: WindowInsets = ScaffoldDefaults.contentWindowInsets,
     content: @Composable (PaddingValues) -> Unit,
@@ -70,15 +71,9 @@ fun BaseScaffold(
         containerColor = Color.Transparent,
         contentWindowInsets = contentWindowInsets,
     ) { innerPadding ->
-        val backgroundModifier = when {
-            containerColor != null -> Modifier.background(containerColor)
-            surface != null -> {
-                val isLight = LocalBaseUIColors.current.isLight
-                Modifier.baseSurfaceBackdrop(surface, isLight)
-            }
-
-            else -> Modifier
-        }
+        val colors = LocalBaseUIColors.current
+        val backgroundModifier = containerColor?.let { Modifier.background(it) }
+            ?: Modifier.baseSurfaceBackdrop(colors.surfaceTheme, colors.isLight)
         Box(modifier = Modifier.fillMaxSize().then(backgroundModifier)) {
             content(innerPadding)
         }
@@ -90,9 +85,7 @@ fun BaseScaffold(
 @Composable
 private fun BaseScaffoldPreview() {
     BaseUIPreview {
-        val style = LocalBaseUITheme.current.surfaceTheme
         BaseScaffold(
-            surface = style,
             topBar = {
                 Text(
                     text = "Title",

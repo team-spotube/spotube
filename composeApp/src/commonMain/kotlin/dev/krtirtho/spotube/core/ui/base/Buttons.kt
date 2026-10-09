@@ -138,6 +138,27 @@ private fun Modifier.applyShadow(
     }
 }
 
+/**
+ * Overlays the ambient [SurfaceStyle] material for a colour's [BaseUITheme.ButtonColors.surfaceRole],
+ * so an actionable item looks exactly like the matching [BaseSurface] role.
+ */
+@Composable
+internal fun Modifier.applySurfaceMaterial(colors: BaseUITheme.ButtonColors): Modifier =
+    applySurfaceMaterial(colors.surfaceRole)
+
+@Composable
+internal fun Modifier.applySurfaceMaterial(role: SurfaceRole?): Modifier {
+    val scheme = LocalBaseUIColors.current
+    return role?.let { baseSurfaceTexture(scheme.surfaceTheme, it, scheme.isLight) } ?: this
+}
+
+/**
+ * The generic button gloss. Textured items get their sheen from the surface material, so it
+ * is only applied to colours without a [BaseUITheme.ButtonColors.surfaceRole].
+ */
+internal fun Modifier.applyHighlight(colors: BaseUITheme.ButtonColors): Modifier =
+    if (colors.surfaceRole == null) highlight(colors.highlight) else this
+
 @Composable
 fun OutlineButton(
     onClick: () -> Unit,
@@ -172,6 +193,7 @@ fun OutlineButton(
                     state.colors.background,
                     state.shape
                 )
+                    .applySurfaceMaterial(state.colors)
                     .border(BorderStroke(state.border.width, state.border.color), state.shape)
             )
             .clickable(
@@ -180,7 +202,7 @@ fun OutlineButton(
                 indication = ripple(),
                 onClick = onClick,
             )
-            .then(if (hoverOnly && !isHovered) Modifier else Modifier.highlight(state.colors.highlight))
+            .then(if (hoverOnly && !isHovered) Modifier else Modifier.applyHighlight(state.colors))
             .padding(state.padding),
         contentAlignment = Alignment.Center,
     ) {
@@ -221,6 +243,7 @@ fun PrimaryButton(
             .applyShadow(state.shadow, state.shape)
             .clip(state.shape)
             .background(state.colors.background, state.shape)
+            .applySurfaceMaterial(state.colors)
             .border(BorderStroke(state.border.width, state.border.color), state.shape)
             .clickable(
                 enabled = enabled,
@@ -228,7 +251,7 @@ fun PrimaryButton(
                 indication = ripple(),
                 onClick = onClick,
             )
-            .highlight(state.colors.highlight)
+            .applyHighlight(state.colors)
             .padding(state.padding),
         contentAlignment = Alignment.Center,
     ) {
@@ -267,6 +290,7 @@ fun SecondaryButton(
             .applyShadow(state.shadow, state.shape)
             .clip(state.shape)
             .background(state.colors.background, state.shape)
+            .applySurfaceMaterial(state.colors)
             .border(BorderStroke(state.border.width, state.border.color), state.shape)
             .clickable(
                 enabled = enabled,
@@ -274,7 +298,7 @@ fun SecondaryButton(
                 indication = ripple(),
                 onClick = onClick,
             )
-            .highlight(state.colors.highlight)
+            .applyHighlight(state.colors)
             .padding(state.padding),
         contentAlignment = Alignment.Center,
     ) {

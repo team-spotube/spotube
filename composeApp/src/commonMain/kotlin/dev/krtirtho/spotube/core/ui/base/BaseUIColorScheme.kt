@@ -55,6 +55,18 @@ data class BaseUIColorScheme(
     val onPrimaryContainer: Color,
     val secondaryContainer: Color,
     val onSecondaryContainer: Color,
+    val backgroundPrimary: Color,
+    val onBackgroundPrimary: Color,
+    val backgroundSecondary: Color,
+    val onBackgroundSecondary: Color,
+    val accentPrimary: Color,
+    val onAccentPrimary: Color,
+    val accentSecondary: Color,
+    val onAccentSecondary: Color,
+    val backgroundInverse: Color,
+    val onBackgroundInverse: Color,
+    val actionInverse: Color,
+    val onActionInverse: Color,
     val outline: Color,
     val outlineVariant: Color,
     val error: Color,
@@ -79,10 +91,50 @@ fun rememberBaseUIColorScheme(
     accentColor: Color? = null,
 ): BaseUIColorScheme {
     val isLight = MaterialTheme.colorScheme.surface.luminance() > 0.5f
-    val accent = accentColor ?: MaterialTheme.colorScheme.primary
+    val accent = accentColor ?: surfaceTheme.accentColor(isLight)
     return remember(surfaceTheme, isLight, accent) {
         baseUIColorScheme(surfaceTheme, isLight, accent)
     }
+}
+
+/**
+ * The default accent colour that characterises a surface theme. Every theme has its own,
+ * so a Watery app is aqua and a Chrome app is steel, unless an accent is passed explicitly.
+ */
+fun SurfaceStyle.accentColor(isLight: Boolean): Color = when (this) {
+    SurfaceStyle.Watery -> if (isLight) Color(0xFF0E8FD6) else Color(0xFF4FC3F7)
+    SurfaceStyle.Icy -> if (isLight) Color(0xFF3FA9E0) else Color(0xFF7FD8FF)
+    SurfaceStyle.Chrome -> if (isLight) Color(0xFF5B6B7C) else Color(0xFF9AA5B4)
+    SurfaceStyle.Acrylic -> if (isLight) Color(0xFF5C6BC0) else Color(0xFF8C9EFF)
+    SurfaceStyle.Glass -> if (isLight) Color(0xFF7C4DFF) else Color(0xFFB388FF)
+}
+
+/**
+ * The secondary accent is derived from the primary accent as a complementary hue, so it always
+ * shifts with — and harmonises with — the chosen accent instead of being fixed per style.
+ */
+private fun Color.complementaryAccent(hueShift: Float = 180f): Color {
+    val (hue, saturation, value) = toHsv()
+    return Color.hsv(
+        (hue + hueShift + 360f) % 360f,
+        saturation.coerceIn(0.45f, 0.9f),
+        value.coerceIn(0.45f, 0.95f),
+    )
+}
+
+private fun Color.toHsv(): Triple<Float, Float, Float> {
+    val max = maxOf(red, green, blue)
+    val min = minOf(red, green, blue)
+    val delta = max - min
+    val rawHue = when {
+        delta == 0f -> 0f
+        max == red -> 60f * (((green - blue) / delta) % 6f)
+        max == green -> 60f * (((blue - red) / delta) + 2f)
+        else -> 60f * (((red - green) / delta) + 4f)
+    }
+    val hue = if (rawHue < 0f) rawHue + 360f else rawHue
+    val saturation = if (max == 0f) 0f else delta / max
+    return Triple(hue, saturation, max)
 }
 
 fun baseUIColorScheme(
@@ -99,6 +151,21 @@ fun baseUIColorScheme(
         lerp(accent, Color.White, 0.7f)
     }
     val secondaryContainer = lerp(palette.surface, accent, if (isLight) 0.22f else 0.34f)
+    val inversePalette = surfacePalette(surfaceTheme, !isLight)
+    val secondaryAccent = accent.complementaryAccent()
+    val onSecondaryAccent = if (secondaryAccent.luminance() > 0.5f) Color(0xFF10161C) else Color.White
+    val secondaryBackground = if (isLight) {
+        lerp(palette.surface, secondaryAccent, 0.14f)
+    } else {
+        lerp(palette.surface, secondaryAccent, 0.22f)
+    }
+    val onSecondaryBackground = if (secondaryBackground.luminance() > 0.5f) {
+        lerp(secondaryAccent, Color.Black, 0.6f)
+    } else {
+        lerp(secondaryAccent, Color.White, 0.82f)
+    }
+    val actionInverse = if (isLight) lerp(accent, Color.Black, 0.45f) else lerp(accent, Color.White, 0.5f)
+    val onActionInverse = if (actionInverse.luminance() > 0.5f) Color(0xFF10161C) else Color.White
 
     return BaseUIColorScheme(
         surfaceTheme = surfaceTheme,
@@ -120,6 +187,18 @@ fun baseUIColorScheme(
         onPrimaryContainer = onPrimaryContainer,
         secondaryContainer = secondaryContainer,
         onSecondaryContainer = palette.onSurface,
+        backgroundPrimary = palette.surface,
+        onBackgroundPrimary = palette.onSurface,
+        backgroundSecondary = secondaryBackground,
+        onBackgroundSecondary = onSecondaryBackground,
+        accentPrimary = accent,
+        onAccentPrimary = onPrimary,
+        accentSecondary = secondaryAccent,
+        onAccentSecondary = onSecondaryAccent,
+        backgroundInverse = inversePalette.surface,
+        onBackgroundInverse = inversePalette.onSurface,
+        actionInverse = actionInverse,
+        onActionInverse = onActionInverse,
         outline = palette.outline,
         outlineVariant = palette.outlineVariant,
         error = if (isLight) Color(0xFFC0392B) else Color(0xFFE57373),
@@ -128,7 +207,7 @@ fun baseUIColorScheme(
     )
 }
 
-private class SurfacePalette(
+internal class SurfacePalette(
     val backgroundTop: Color,
     val backgroundBottom: Color,
     val surface: Color,
@@ -143,7 +222,7 @@ private class SurfacePalette(
     val outlineVariant: Color,
 )
 
-private fun surfacePalette(style: SurfaceStyle, isLight: Boolean): SurfacePalette {
+internal fun surfacePalette(style: SurfaceStyle, isLight: Boolean): SurfacePalette {
     return if (isLight) {
         when (style) {
             SurfaceStyle.Glass -> SurfacePalette(
@@ -177,18 +256,18 @@ private fun surfacePalette(style: SurfaceStyle, isLight: Boolean): SurfacePalett
             )
 
             SurfaceStyle.Watery -> SurfacePalette(
-                backgroundTop = Color(0xFFD6F0FF),
-                backgroundBottom = Color(0xFFB4DFFA),
+                backgroundTop = Color(0xFFEAF7FE),
+                backgroundBottom = Color(0xFFD8EFFB),
                 surface = Color(0xFFF0FAFF),
-                surfaceVariant = Color(0xFFDCF0FC),
-                surfaceContainer = Color(0xFFE7F5FE),
-                surfaceContainerHigh = Color(0xFFEFF9FF),
-                surfaceContainerHighest = Color(0xFFCFE9F8),
+                surfaceVariant = Color(0xFFE2F2FB),
+                surfaceContainer = Color(0xFFEAF6FD),
+                surfaceContainerHigh = Color(0xFFF2FAFE),
+                surfaceContainerHighest = Color(0xFFD8ECF8),
                 onBackground = Color(0xFF08324A),
                 onSurface = Color(0xFF08324A),
                 onSurfaceVariant = Color(0xFF3A6884),
-                outline = Color(0xFF8FBBD4),
-                outlineVariant = Color(0xFFC6E2F2),
+                outline = Color(0xFF9EC4DA),
+                outlineVariant = Color(0xFFD0E7F4),
             )
 
             SurfaceStyle.Icy -> SurfacePalette(
@@ -254,8 +333,8 @@ private fun surfacePalette(style: SurfaceStyle, isLight: Boolean): SurfacePalett
             )
 
             SurfaceStyle.Watery -> SurfacePalette(
-                backgroundTop = Color(0xFF06121E),
-                backgroundBottom = Color(0xFF0B1F31),
+                backgroundTop = Color(0xFF0A1622),
+                backgroundBottom = Color(0xFF0E1E2D),
                 surface = Color(0xFF0E2233),
                 surfaceVariant = Color(0xFF153148),
                 surfaceContainer = Color(0xFF0B1D2C),
