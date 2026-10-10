@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
@@ -121,7 +123,15 @@ class ErrorBox extends StatelessWidget {
                     },
                     child: Text(context.l10n.view_logs),
                   ),
-                  if (onRetry != null)
+                  if (error is DioException && error.response?.statusCode == 401)
+                    Button.text(
+                      leading: const Icon(SpotubeIcons.settings),
+                      onPressed: () {
+                        context.navigateTo(const SettingsMetadataProviderRoute());
+                      },
+                      child: Text(context.l10n.install_a_metadata_provider),
+                    )
+                  else if (onRetry != null)
                     Button.text(
                       leading: const Icon(SpotubeIcons.refresh),
                       onPressed: onRetry,
