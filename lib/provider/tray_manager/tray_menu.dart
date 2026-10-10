@@ -99,8 +99,8 @@ final trayMenuProvider = Provider((ref) {
       MenuItem.separator(),
       MenuItem(
         label: "Quit",
-        onClick: (menuItem) {
-          exit(0);
+        onClick: (menuItem) async {
+          await windowManager.destroy();
         },
       ),
     ],

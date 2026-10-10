@@ -17,8 +17,8 @@ final closeNotification = !kIsDesktop
         actions: [
           LocalNotificationAction(text: 'Close The App'),
         ],
-      )..onClickAction = (value) {
-        exit(0);
+      )..onClickAction = (value) async {
+        await windowManager.destroy();
       });
 
 void useCloseBehavior(WidgetRef ref) {
@@ -29,7 +29,7 @@ void useCloseBehavior(WidgetRef ref) {
         await windowManager.hide();
         closeNotification?.show();
       } else {
-        exit(0);
+        await windowManager.destroy();
       }
     },
   );

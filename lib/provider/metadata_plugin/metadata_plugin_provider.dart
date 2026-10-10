@@ -454,8 +454,10 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
                 p != plugin && p.abilities.contains(PluginAbilities.metadata),
           ) ??
           [];
-      if (remainingPlugins.length == 1) {
+      if (remainingPlugins.isNotEmpty) {
         await setDefaultMetadataPlugin(remainingPlugins.first);
+      } else {
+        await KVStoreService.setDefaultMetadataPlugin("");
       }
     }
 
@@ -466,8 +468,10 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
                 p.abilities.contains(PluginAbilities.audioSource),
           ) ??
           [];
-      if (remainingPlugins.length == 1) {
+      if (remainingPlugins.isNotEmpty) {
         await setDefaultAudioSourcePlugin(remainingPlugins.first);
+      } else {
+        await KVStoreService.setDefaultAudioSourcePlugin("");
       }
     }
   }
