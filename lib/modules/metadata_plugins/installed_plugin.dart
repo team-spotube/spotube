@@ -83,7 +83,7 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
               final repoOwner = repoUrl?.pathSegments.firstOrNull;
 
               final isOfficial =
-                  repoUrl?.host == "github.com" && repoOwner == "KRTirtho";
+                  repoUrl?.host == "github.com" && ["KRTirtho", "spotube"].contains(repoOwner);
 
               return Basic(
                 leading: snapshot.hasData

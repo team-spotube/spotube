@@ -57,7 +57,7 @@ class MetadataPluginRepositoryItem extends HookConsumerWidget {
                       .downloadAndCachePlugin(pluginRepo.repoUrl);
 
                   if (!context.mounted) return;
-                  final isOfficialPlugin = pluginRepo.owner == "KRTirtho";
+                  final isOfficialPlugin = ["KRTirtho", "spotube"].contains(pluginRepo.owner);
 
                   final isAllowed = isOfficialPlugin
                       ? true
@@ -157,7 +157,7 @@ class MetadataPluginRepositoryItem extends HookConsumerWidget {
               child: Text(context.l10n.install),
             ),
           ),
-          if (pluginRepo.owner != "KRTirtho")
+          if (!["KRTirtho", "spotube"].contains(pluginRepo.owner))
             Text.rich(
               TextSpan(
                 children: [
@@ -181,7 +181,7 @@ class MetadataPluginRepositoryItem extends HookConsumerWidget {
             spacing: 8,
             runSpacing: 8,
             children: [
-              if (pluginRepo.owner == "KRTirtho")
+              if (["KRTirtho", "spotube"].contains(pluginRepo.owner))
                 PrimaryBadge(
                   leading: const Icon(SpotubeIcons.done),
                   child: Text(context.l10n.official),
