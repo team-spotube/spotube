@@ -135,7 +135,15 @@ val sharedModules = module {
     singleOf(::LocalMediaCacheRepository)
     singleOf(::LocalMediaFoldersConfig)
     singleOf(::LocalMediaLibraryCoordinator)
+    // Library
+    singleOf(::LibraryState)
+    singleOf(::LibraryRepository)
+    singleOf(::LocalMediaCacheRepository)
+    singleOf(::LocalMediaFoldersConfig)
+    singleOf(::LocalMediaLibraryCoordinator)
+    singleOf(::LocalPlaylistRepository)  // Local playlist repository
     viewModelOf(::LibraryPlaylistsViewModel)
+    viewModelOf(::LocalPlaylistViewModel)  // Local playlist view model
     viewModelOf(::LibraryAlbumsViewModel)
     viewModelOf(::LibraryArtistsViewModel)
     viewModelOf(::LibraryLocalTracksViewModel)

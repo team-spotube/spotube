@@ -45,6 +45,10 @@
     <string name="library_action_list_view">Switch to list view</string>
     <string name="library_playlists_empty">No saved playlists</string>
     <string name="library_playlists_no_results">No playlists match “%1$s”</string>
+    <string name="library_local_playlists_empty">No local playlists yet</string>
+    <string name="library_playlist_name_empty">Playlist name cannot be empty</string>
+    <string name="library_playlist_name_exists">A playlist with this name already exists</string>
+    <string name="library_playlist_not_found">Playlist not found</string>
     <string name="library_albums_empty">No saved albums</string>
     <string name="library_albums_no_results">No albums match “%1$s”</string>
     <string name="library_artists_empty">No saved artists</string>
@@ -73,6 +77,9 @@
     <string name="library_local_empty_tracks">No tracks in this folder</string>
     <string name="library_local_no_results">No matching folders or tracks</string>
     <string name="library_local_refresh_failed">Failed to refresh local media</string>
+
+    <string name="library_playlists_spotify_section">Spotify Playlists</string>
+    <string name="library_local_playlists_section">Local Playlists</string>
 
     <!-- Downloads -->
     <string name="downloads_summary">%1$d active • %2$d completed</string>
