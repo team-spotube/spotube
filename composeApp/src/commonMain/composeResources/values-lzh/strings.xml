@@ -24,10 +24,10 @@
 
 <resources>
     <!-- 佇列 -->
-    <string name="queue_title">曲次</string>
-    <string name="queue_clear_queue">盡除曲次</string>
-    <string name="queue_filter_queue">篩曲目</string>
-    <string name="queue_no_queue_entries">曲次空虛</string>
+    <string name="queue_title">佇列</string>
+    <string name="queue_clear_queue">盡除佇列</string>
+    <string name="queue_filter_queue">篩佇列</string>
+    <string name="queue_no_queue_entries">佇列空虛</string>
 
     <string name="search_placeholder">搜樂曲、藝人、專輯</string>
     <string name="search_clear_history">盡削往歷</string>
