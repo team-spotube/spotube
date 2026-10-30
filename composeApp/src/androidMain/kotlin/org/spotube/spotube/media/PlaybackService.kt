@@ -45,6 +45,7 @@ import com.google.common.util.concurrent.SettableFuture
 import org.spotube.spotube.MainActivity
 import org.spotube.spotube.R
 import org.spotube.spotube.core.audioplayer.AudioPlayer
+import org.spotube.spotube.core.audioplayer.AudioFocusHandler
 import org.spotube.spotube.core.audioplayer.AudioPlayerInterface
 import org.spotube.spotube.core.audioplayer.AudioPlayerQueue
 import org.spotube.spotube.core.audioplayer.QueueEntry
@@ -123,6 +124,11 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
                 .build()
 
         addSession(librarySession)
+
+        // Install custom AudioFocusHandler AFTER MediaSession is created,
+        // so it takes precedence over MediaSession's default listener.
+        // Fixes #3182: volume jumps on screen on/off.
+        audioPlayer.setAudioFocusListener(AudioFocusHandler())
 
         Log.i(TAG, "Library session created")
     }
