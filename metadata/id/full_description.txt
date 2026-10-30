@@ -1,0 +1,14 @@
+Klien musik sumber terbuka yang tidak memerlukan Premium atau menggunakan Electron! Tersedia untuk desktop & seluler!
+
+
+Fitur:
+* Bebas iklan, berkat penggunaan penyedia metadata musik publik & gratis serta API Musik YT¹
+* Trek yang dapat diunduh
+* Dukungan lintas platform
+* Ukuran kecil & penggunaan data lebih sedikit
+* Login anonim/tamu
+* Lirik yang disinkronkan berdasarkan waktu
+* Tanpa telemetri, diagnostik, atau pengumpulan data pengguna
+* Performa asli
+* Perangkat lunak sumber terbuka/libre
+* Kontrol pemutaran dilakukan secara lokal, bukan di server
