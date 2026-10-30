@@ -58,6 +58,8 @@ import spotube.composeapp.generated.resources.settings_jam_broker_content_descri
 import spotube.composeapp.generated.resources.settings_jam_broker_username_placeholder
 import spotube.composeapp.generated.resources.settings_jam_broker_test_fail
 import spotube.composeapp.generated.resources.jam_error_connection_failed
+import spotube.composeapp.generated.resources.settings_jam_participant_name
+import spotube.composeapp.generated.resources.settings_jam_participant_name_placeholder
 
 @Composable
 fun JamSettingsScreen(
@@ -197,6 +199,23 @@ internal fun JamSettingsContent(
             settingsSectionHeader(Res.string.settings_jam_section_identity)
             settingsSectionCard(
                 items = listOf(
+                    {
+                        TextInputSettingCard(
+                            title = stringResource(Res.string.settings_jam_participant_name),
+                            value = uiState.settings.jamParticipantName,
+                            placeholder = stringResource(Res.string.settings_jam_participant_name_placeholder),
+                            onValueSaved = { name ->
+                                viewModel.update {
+                                    copy(jamParticipantName = name)
+                                }
+                            },
+                            icon = {
+                                SettingsItemIcon(
+                                    Iconsax.User,
+                                    stringResource(Res.string.settings_jam_participant_name)
+                                )
+                            })
+                    },
                     {
                         TextInputSettingCard(
                             title = stringResource(Res.string.settings_jam_broker_client_id),

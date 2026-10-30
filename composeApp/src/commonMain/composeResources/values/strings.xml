@@ -319,6 +319,8 @@
     <string name="settings_jam_broker_password">Password (optional)</string>
     <string name="settings_jam_broker_client_id">Client ID prefix</string>
     <string name="settings_jam_broker_client_id_subtitle">Used to identify this Spotube instance</string>
+    <string name="settings_jam_participant_name">Participant name</string>
+    <string name="settings_jam_participant_name_placeholder">Your display name in jam rooms</string>
     <string name="settings_jam_broker_tls_subtitle">Encrypt the broker connection</string>
     <string name="settings_jam_broker_diagnostics_subtitle">Check the current broker settings before starting a room.</string>
     <string name="settings_jam_broker_test">Test connection</string>
