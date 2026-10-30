@@ -102,7 +102,9 @@ class JamViewModel(
         codeCopied,
         snapshotFlow { codeInput.text.toString() },
         participantMenu,
-        isLeaving
+        isLeaving,
+        // Local client ID to exclude self from moderation menu
+        jamRoomService.participantClientId
     ) { values ->
         @Suppress("UNCHECKED_CAST")
         val role = values[0] as JamRole?
@@ -116,6 +118,7 @@ class JamViewModel(
         val localError = values[6] as String?
         val busy = values[8] as Boolean
         val brokerConfigured = !settings?.jamBroker?.host.isNullOrBlank()
+        val localClientId = values[13] as String
 
         JamUiState(
             isActive = role != null,
@@ -127,7 +130,8 @@ class JamViewModel(
                     displayName = participant.displayName,
                     initial = participant.displayName.firstOrNull()?.uppercase() ?: "?",
                     isHost = participant.isHost,
-                    canModerate = role == JamRole.Host && !participant.isHost,
+                    // Host can moderate OTHER participants only (not self)
+                    canModerate = role == JamRole.Host && !participant.isHost && participant.id != localClientId,
                     menuExpanded = values[11] == participant.id
                 )
             },
