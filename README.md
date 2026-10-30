@@ -43,6 +43,18 @@ Download Spotube from the Official Website: https://spotube.cc
 
 Grab the latest nightly builds of Spotube [from the Offical Website](https://spotube.cc/downloads/nightly).
 
+### 🧩 Plugins
+
+Spotube supports metadata and source plugins compiled as `.smplug` files.
+
+You can install plugins directly in Spotube:
+1. Navigate to **Settings** > **Plugins** > **Install a Plugin**.
+2. Under **Download from URL**, paste the direct plugin URL, for example:
+   - **Spotify Plugin (Latest)**: `https://github.com/pgwiz/spotube-plugin-spotify/releases/latest/download/plugin.smplug`
+   - **Spotify Plugin (v1.0.0)**: `https://github.com/pgwiz/spotube-plugin-spotify/releases/download/1.0.0/plugin.smplug`
+   - **Legacy Plugin Reference**: `https://github.com/sonic-liberation/spotube-plugin-spotify/releases/download/0.2.2/plugin.smplug` *(Format: `https://github.com/$LEGACY_REPO/releases/download/$LEGACY_TAG/plugin.smplug`)*
+3. Click **Download**, review permissions, and confirm.
+
 ## 🕳️ Building from source
 
 <a href="https://github.com/team-spotube/spotube/actions"><img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/KRTirtho/spotube/spotube-release-binary.yml?+label=Build%20Status"></a>

@@ -68,6 +68,7 @@ class FakeTrackSourceRepository : TrackSourceRepository {
     private val store = mutableMapOf<String, PluginTaggedAudioSource>()
     var getCallCount = 0
     var saveCallCount = 0
+    var deleteCallCount = 0
 
     override suspend fun getTrackSource(track: MetadataTrack, pluginId: String): AudioSource.Basic? {
         getCallCount++
@@ -79,6 +80,14 @@ class FakeTrackSourceRepository : TrackSourceRepository {
     override suspend fun saveTrackSource(track: MetadataTrack, source: AudioSource.Basic, pluginId: String) {
         saveCallCount++
         store[track.id] = PluginTaggedAudioSource(pluginId, source)
+    }
+
+    override suspend fun deleteTrackSource(track: MetadataTrack, pluginId: String) {
+        deleteCallCount++
+        val tagged = store[track.id] ?: return
+        if (tagged.pluginId == pluginId) {
+            store.remove(track.id)
+        }
     }
 
     fun rawEntryFor(trackId: String): PluginTaggedAudioSource? = store[trackId]

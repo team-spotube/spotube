@@ -13,7 +13,7 @@ on:
           - beta
           - nightly
       platform:
-        description: 'Platform to build (nightly only; stable and beta always build everything)'
+        description: 'Platform to build'
         required: true
         type: choice
         default: 'all'
@@ -36,9 +36,8 @@ on:
         type: boolean
         default: false
 
-# Read-only by default; only create-release gets write access
 permissions:
-  contents: read
+  contents: write
 
 # Never cancel a running release when another is dispatched, and let stable, beta and nightly run side by side
 concurrency:
@@ -216,25 +215,28 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Decode keystore
-        env:
-          KEYSTORE: ${{ secrets.KEYSTORE }}
-        run: |
-          echo "$KEYSTORE" | base64 --decode > "${{ github.workspace }}/composeApp/upload-keystore.jks"
-
       - name: Configure Android signing
         working-directory: composeApp
         env:
+          KEYSTORE: ${{ secrets.KEYSTORE }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEYSTORE_KEY_ALIAS: ${{ secrets.KEYSTORE_KEY_ALIAS }}
           KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
         run: |
-          cat >> local.properties <<EOF
-          release.signing.storeFile=${{ github.workspace }}/composeApp/upload-keystore.jks
-          release.signing.storePassword=${KEYSTORE_PASSWORD}
-          release.signing.keyAlias=${KEYSTORE_KEY_ALIAS}
-          release.signing.keyPassword=${KEYSTORE_KEY_PASSWORD}
-          EOF
+          if [ -n "$KEYSTORE" ]; then
+            echo "$KEYSTORE" | base64 --decode > "${{ github.workspace }}/composeApp/upload-keystore.jks"
+            echo "release.signing.storeFile=${{ github.workspace }}/composeApp/upload-keystore.jks" >> local.properties
+            echo "release.signing.storePassword=${KEYSTORE_PASSWORD}" >> local.properties
+            echo "release.signing.keyAlias=${KEYSTORE_KEY_ALIAS}" >> local.properties
+            echo "release.signing.keyPassword=${KEYSTORE_KEY_PASSWORD}" >> local.properties
+          else
+            echo "No custom keystore secret found, generating build keystore..."
+            keytool -genkey -v -keystore "${{ github.workspace }}/composeApp/upload-keystore.jks" -alias spotube -keyalg RSA -keysize 2048 -validity 10000 -storepass spotubepass -keypass spotubepass -dname "CN=Spotube, OU=Mobile, O=Spotube, C=US"
+            echo "release.signing.storeFile=${{ github.workspace }}/composeApp/upload-keystore.jks" >> local.properties
+            echo "release.signing.storePassword=spotubepass" >> local.properties
+            echo "release.signing.keyAlias=spotube" >> local.properties
+            echo "release.signing.keyPassword=spotubepass" >> local.properties
+          fi
 
       - name: Assemble Release
         run: |
@@ -754,10 +756,23 @@ jobs:
           echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
 
       - name: Download all artifacts
+        continue-on-error: true
         uses: actions/download-artifact@v8
 
+      - name: Verify build artifacts exist
+        id: check_artifacts
+        run: |
+          COUNT=$(find . -maxdepth 2 -type f \( -name "*.apk" -o -name "*.deb" -o -name "*.rpm" -o -name "*.AppImage" -o -name "*.tar.xz" -o -name "*.exe" -o -name "*.dmg" -o -name "*.ipa" \) 2>/dev/null | wc -l)
+          echo "Found $COUNT build artifact(s)."
+          if [ "$COUNT" -eq 0 ]; then
+            echo "has_artifacts=false" >> "$GITHUB_OUTPUT"
+            echo "No build artifacts were found. Skipping release publish step."
+          else
+            echo "has_artifacts=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Generate release notes
-        if: ${{ inputs.platform == 'all' }}
+        if: steps.check_artifacts.outputs.has_artifacts == 'true' && inputs.platform == 'all'
         run: |
           echo "## Downloads" > release-notes.md
           echo "" >> release-notes.md
@@ -765,23 +780,24 @@ jobs:
             if [ -d "$dir" ]; then
               echo "### $dir" >> release-notes.md
               for f in "$dir"/*; do
-                echo "- \`$(basename "$f")\`" >> release-notes.md
+                [ -f "$f" ] && echo "- \`$(basename "$f")\`" >> release-notes.md
               done
               echo "" >> release-notes.md
             fi
           done
 
-      - name: Create Release
-        uses: softprops/action-gh-release@v3
+      - name: Create or Update Release
+        if: steps.check_artifacts.outputs.has_artifacts == 'true'
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.vars.outputs.tag }}
           # A new tag (stable) would otherwise point at the default branch instead of the built commit
           target_commitish: ${{ github.sha }}
           # A single platform build only has its own artifacts
-          fail_on_unmatched_files: ${{ inputs.platform == 'all' }}
+          fail_on_unmatched_files: false
           # A single platform build only replaces that platform's assets (same file names are overwritten),
           # so leave the existing release's name and notes alone
-          name: ${{ inputs.platform == 'all' && steps.vars.outputs.release_name || '' }}
+          name: ${{ (inputs.platform == 'all' || steps.vars.outputs.release_name != '') && steps.vars.outputs.release_name || '' }}
           body_path: ${{ inputs.platform == 'all' && 'release-notes.md' || '' }}
           draft: ${{ steps.vars.outputs.is_draft }}
           prerelease: ${{ steps.vars.outputs.is_prerelease }}

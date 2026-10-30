@@ -18,7 +18,13 @@
 package org.spotube.spotube.core.audioplayer
 
 import org.spotube.plugin_interfaces.plugin_apis.audio.StreamProtocol
+import org.spotube.plugin_interfaces.plugin_apis.metadata.artist.MetadataArtist
+import org.spotube.plugin_interfaces.plugin_apis.metadata.common.Thumbnail
+import org.spotube.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import org.spotube.spotube.core.di.injectLogger
+import org.spotube.spotube.core.newpipe.NewPipeService
+import org.spotube.spotube.core.newpipe.SearchKind
+import org.spotube.spotube.core.server.LocalServer
 import org.spotube.spotube.modules.blacklist.BlacklistRepository
 import org.spotube.spotube.modules.plugin.PluginProvider
 import org.spotube.spotube.modules.settings.SettingsProvider
@@ -37,6 +43,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.spotube.spotube.PlatformType
+import org.spotube.spotube.core.server.StreamingUrlRepository
+import org.spotube.spotube.getPlatform
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -48,6 +58,7 @@ class DeviceAudioPlayerQueue(
     private val blacklistRepository: BlacklistRepository) : AudioPlayerQueue, KoinComponent {
 
     private val logger by injectLogger<DeviceAudioPlayerQueue>()
+    private val streamingUrlRepository by inject<StreamingUrlRepository>()
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -94,6 +105,12 @@ class DeviceAudioPlayerQueue(
         }
 
         scope.launch {
+            audioPlayer.errorFlow.collect { error ->
+                logger.e(error) { "AudioPlayer error encountered in queue: ${error.message}" }
+            }
+        }
+
+        scope.launch {
             audioPlayer.currentMediaItemFlow.collect {
                 logger.d { "Current media item changed, persisting queue state" }
                 persistQueueStateIfReady()
@@ -127,14 +144,15 @@ class DeviceAudioPlayerQueue(
         startPosition: Int,
         collectionEntry: QueueCollectionEntry?) {
         logger.i { "Loading queue with ${entries.size} entries, autoPlay=$autoPlay, startPosition=$startPosition" }
-        val mediaItems = entries.mapNotNull { it.toMediaItem() }
-        if (mediaItems.isEmpty()) {
+        val paired = entries.mapNotNull { entry -> entry.toMediaItem()?.let { mediaItem -> mediaItem to entry } }
+        if (paired.isEmpty()) {
             logger.w { "load: no valid media items after filtering blanks" }
         }
+        val mediaItems = paired.map { it.first }
         val normalizedStartPosition =
             if (mediaItems.isEmpty()) 0 else startPosition.coerceIn(0, mediaItems.lastIndex)
         logger.d { "Normalized start position: $startPosition -> $normalizedStartPosition" }
-        entryByMediaUrl.value = mediaItems.associate { it.url to entries.firstOrNull { e -> e.toMediaItem()?.url == it.url }!! }
+        entryByMediaUrl.value = paired.associate { (mediaItem, entry) -> mediaItem.url to entry }
         updateCollectionContext(collectionEntry)
         audioPlayer.load(mediaItems, autoPlay, normalizedStartPosition)
         persistQueueStateIfReady()
@@ -160,16 +178,14 @@ class DeviceAudioPlayerQueue(
         }
 
         logger.i { "Adding ${entries.size} entries to queue" }
-        val mediaItems = entries.mapNotNull { it.toMediaItem() }
-        if (mediaItems.isEmpty()) {
+        val paired = entries.mapNotNull { entry -> entry.toMediaItem()?.let { mediaItem -> mediaItem to entry } }
+        if (paired.isEmpty()) {
             logger.w { "addAllToQueue: all entries had blank urls, skipping" }
             return
         }
-        val validEntries = entries.zip(mediaItems).map { (entry) ->
-            entry
-        }
-        entryByMediaUrl.update {
-            it + mediaItems.zip(validEntries).associate { (mediaItem, entry) -> mediaItem.url to entry }
+        val mediaItems = paired.map { it.first }
+        entryByMediaUrl.update { current ->
+            current + paired.associate { (mediaItem, entry) -> mediaItem.url to entry }
         }
 
         updateCollectionContext(collectionEntry)
@@ -189,14 +205,14 @@ class DeviceAudioPlayerQueue(
         }
 
         logger.i { "Adding ${entries.size} entries after current position" }
-        val mediaItems = entries.mapNotNull { it.toMediaItem() }
-        if (mediaItems.isEmpty()) {
+        val paired = entries.mapNotNull { entry -> entry.toMediaItem()?.let { mediaItem -> mediaItem to entry } }
+        if (paired.isEmpty()) {
             logger.w { "addAllAfterCurrent: all entries had blank urls, skipping" }
             return
         }
-        val validEntries = entries.zip(mediaItems).map { (entry) -> entry }
-        entryByMediaUrl.update {
-            it + mediaItems.zip(validEntries).associate { (mediaItem, entry) -> mediaItem.url to entry }
+        val mediaItems = paired.map { it.first }
+        entryByMediaUrl.update { current ->
+            current + paired.associate { (mediaItem, entry) -> mediaItem.url to entry }
         }
 
         mediaItems.forEach { mediaItem ->
@@ -208,7 +224,9 @@ class DeviceAudioPlayerQueue(
     }
 
     override suspend fun removeFromQueue(entry: QueueEntry) {
-        val mediaUrl = entry.toMediaItem()?.url ?: return
+        val mediaUrl = entryByMediaUrl.value.entries.firstOrNull { it.value == entry }?.key
+            ?: entry.toMediaItem()?.url
+            ?: return
         removeFromQueueByMediaUrl(mediaUrl)
     }
 
@@ -313,7 +331,7 @@ class DeviceAudioPlayerQueue(
         val settings = settingsProvider.settingsState.value ?: return
         if (!settings.enableEndlessPlayback) return
 
-        val queue = queueFlow.value
+        val queue = getQueue()
         val streamingTracks = queue.filterIsInstance<QueueEntry.StreamingTrack>()
         if (streamingTracks.isEmpty()) return
 
@@ -330,19 +348,111 @@ class DeviceAudioPlayerQueue(
         isFetchingRecommendations = true
         logger.i { "Endless playback: fetching recommendations with ${seedTrackIds.size} seed tracks" }
 
-        val metadataService = pluginProvider.selectedMetadataPlugin.value ?: run {
-            logger.w { "Endless playback: no metadata plugin available" }
-            isFetchingRecommendations = false
-            return
+        val metadataService = pluginProvider.selectedMetadataPlugin.value
+        var recommendations: List<MetadataTrack> = emptyList()
+
+        if (metadataService != null) {
+            recommendations = runCatching {
+                metadataService.use {
+                    metadataTrackAPI.recommendationsBasedOnTracks(seedTrackIds, limit = 20)
+                }
+            }.getOrDefault(emptyList())
+        }
+
+        if (recommendations.isEmpty()) {
+            logger.i { "Endless playback: metadata recommendations unavailable or empty, falling back to native YouTube radio mix" }
+            val newPipeService = NewPipeService()
+            for (seedTrack in seedTracks) {
+                val seed = seedTrack.track
+                val videoId = if (seed.id.matches(Regex("^[a-zA-Z0-9_-]{11}$"))) {
+                    seed.id
+                } else {
+                    seed.externalUri?.let { uri ->
+                        Regex("""[?&]v=([a-zA-Z0-9_-]{11})(?:[&#]|$)""").find(uri)?.groupValues?.get(1)
+                            ?: Regex("""youtu\.be/([a-zA-Z0-9_-]{11})(?:[?#/]|$)""").find(uri)?.groupValues?.get(1)
+                            ?: Regex("""youtube\.com/(?:embed|v|shorts)/([a-zA-Z0-9_-]{11})(?:[?#/]|$)""").find(uri)?.groupValues?.get(1)
+                    }
+                }
+
+                if (!videoId.isNullOrBlank()) {
+                    val radioMix = runCatching { newPipeService.getRadioMix(videoId) }.getOrDefault(emptyList())
+                    val existingTrackIds = queue.filterIsInstance<QueueEntry.StreamingTrack>().map { it.track.id }.toSet()
+                    val newRadioTracks = radioMix.filter { it.id !in existingTrackIds && it.id != videoId }
+                    if (newRadioTracks.isNotEmpty()) {
+                        logger.i { "Endless playback: got ${newRadioTracks.size} new tracks from YouTube radio mix for video $videoId" }
+                        recommendations = newRadioTracks.map { video ->
+                            MetadataTrack(
+                                id = video.id,
+                                title = video.title,
+                                durationMs = video.durationMs,
+                                trackNumber = null,
+                                discNumber = null,
+                                artists = listOf(
+                                    MetadataArtist.Basic(
+                                        id = video.uploader,
+                                        name = video.uploader,
+                                        thumbnails = emptyList(),
+                                        externalUri = null
+                                    )
+                                ),
+                                album = null,
+                                thumbnails = if (video.thumbnailUrl.isNotBlank()) {
+                                    listOf(Thumbnail(url = video.thumbnailUrl, width = 300, height = 300))
+                                } else null,
+                                explicit = null,
+                                popularity = null,
+                                isrcCode = null,
+                                externalUri = "https://www.youtube.com/watch?v=${video.id}"
+                            )
+                        }
+                        break
+                    }
+                }
+            }
+        }
+
+        if (recommendations.isEmpty() && metadataService != null) {
+            val albumId = seedTracks.mapNotNull { it.track.album?.id }.firstOrNull { it.isNotBlank() }
+            if (!albumId.isNullOrBlank()) {
+                logger.i { "Endless playback: radio mix unavailable or empty, falling back to album tracks for album $albumId" }
+                val albumTracks = runCatching {
+                    metadataService.use {
+                        metadataAlbumAPI.getAlbumTracks(albumId).items
+                    }
+                }.getOrDefault(emptyList())
+
+                val existingTrackIds = queue.filterIsInstance<QueueEntry.StreamingTrack>().map { it.track.id }.toSet()
+                val newAlbumTracks = albumTracks.filter { it.id !in existingTrackIds }
+                if (newAlbumTracks.isNotEmpty()) {
+                    logger.i { "Endless playback: got ${newAlbumTracks.size} remaining album tracks for album $albumId" }
+                    recommendations = newAlbumTracks
+                }
+            }
+        }
+
+        if (recommendations.isEmpty() && metadataService != null) {
+            logger.i { "Endless playback: album tracks unavailable or empty, falling back to artist top tracks" }
+            val existingTrackIds = queue.filterIsInstance<QueueEntry.StreamingTrack>().map { it.track.id }.toSet()
+            val artistIds = seedTracks.flatMap { it.track.artists }.map { it.id }.filter { it.isNotBlank() }.distinct()
+            for (artistId in artistIds) {
+                val topTracks = runCatching {
+                    metadataService.use {
+                        metadataArtistAPI.getArtistTop10Tracks(artistId)
+                    }
+                }.getOrDefault(emptyList())
+
+                val newTracks = topTracks.filter { it.id !in existingTrackIds }
+                if (newTracks.isNotEmpty()) {
+                    logger.i { "Endless playback: got ${newTracks.size} top tracks for artist $artistId" }
+                    recommendations = newTracks
+                    break
+                }
+            }
         }
 
         try {
-            val recommendations = metadataService.use {
-                metadataTrackAPI.recommendationsBasedOnTracks(seedTrackIds, limit = 20)
-            }
-
             if (recommendations.isEmpty()) {
-                logger.w { "Endless playback: no recommendations returned" }
+                logger.w { "Endless playback: no recommendations, radio mix, album tracks, or artist top tracks found" }
                 isFetchingRecommendations = false
                 return
             }
@@ -369,7 +479,7 @@ class DeviceAudioPlayerQueue(
             logger.i { "Endless playback: adding ${newEntries.size} recommended tracks to queue" }
             addAllToQueue(newEntries)
         } catch (e: Exception) {
-            logger.e(e) { "Endless playback: failed to fetch recommendations" }
+            logger.e(e) { "Endless playback: failed to add recommendations to queue" }
         } finally {
             isFetchingRecommendations = false
         }
@@ -393,12 +503,13 @@ class DeviceAudioPlayerQueue(
             return
         }
 
-        val mediaItems = state.entries.mapNotNull { it.toMediaItem() }
-        if (mediaItems.isEmpty()) {
+        val paired = state.entries.mapNotNull { entry -> entry.toMediaItem()?.let { mediaItem -> mediaItem to entry } }
+        if (paired.isEmpty()) {
             logger.w { "restorePersistedState: all entries had blank urls" }
             return
         }
-        entryByMediaUrl.value = mediaItems.associate { it.url to state.entries.firstOrNull { e -> e.toMediaItem()?.url == it.url }!! }
+        val mediaItems = paired.map { it.first }
+        entryByMediaUrl.value = paired.associate { (mediaItem, entry) -> mediaItem.url to entry }
         val normalizedStartPosition = state.currentIndex.coerceIn(0, mediaItems.lastIndex)
         logger.d { "Loading restored playlist with normalized start position: ${state.currentIndex} -> $normalizedStartPosition" }
         audioPlayer.load(mediaItems, autoPlay = false, startPosition = normalizedStartPosition)
@@ -456,7 +567,25 @@ class DeviceAudioPlayerQueue(
     private suspend fun QueueEntry.toMediaItem(): MediaItem? {
         return when (this) {
             is QueueEntry.StreamingTrack -> {
-                val resolvedUrl = url.ifBlank { buildStreamingUrl(track.id, protocol) }
+                val isIos = getPlatform().type == PlatformType.IOS
+                val requiresIosResolution = isIos && (
+                    url.isBlank() ||
+                        url.startsWith("http://127.0.0.1") ||
+                        url.startsWith("https://127.0.0.1") ||
+                        url.startsWith("http://[::1]") ||
+                        url.startsWith("https://[::1]") ||
+                        url.startsWith("http://localhost") ||
+                        url.startsWith("https://localhost"))
+                val resolvedStream = if (requiresIosResolution) {
+                    streamingUrlRepository.resolveStreamInfo(track)
+                } else {
+                    null
+                }
+                val resolvedUrl = if (requiresIosResolution) {
+                    resolvedStream?.url ?: buildStreamingUrl(track.id, protocol)
+                } else {
+                    url.ifBlank { buildStreamingUrl(track.id, protocol) }
+                }
                 if (resolvedUrl.isBlank()) return null
                 MediaItem(
                     title = track.title,
@@ -465,7 +594,7 @@ class DeviceAudioPlayerQueue(
                     duration = track.durationMs.milliseconds,
                     coverURL = artworkUrl.orEmpty(),
                     url = resolvedUrl,
-                    protocol = protocol)
+                    protocol = resolvedStream?.protocol ?: protocol)
             }
 
             is QueueEntry.LocalTrack -> {
@@ -492,10 +621,15 @@ class DeviceAudioPlayerQueue(
             url = url)
     }
 
+    private val localServerOrNull: LocalServer?
+        get() = runCatching { getKoin().getOrNull<LocalServer>() }.getOrNull()
+
     private suspend fun buildStreamingUrl(trackId: String, protocol: StreamProtocol): String {
-        val port: Int =
-            settingsProvider.settingsState.mapNotNull { it?.playbackProxyServerPort }.first()
-        val baseUrl = "http://127.0.0.1:$port"
+        val baseUrl = localServerOrNull?.awaitBaseUrl() ?: run {
+            val port: Int =
+                settingsProvider.settingsState.mapNotNull { it?.playbackProxyServerPort }.first()
+            "http://127.0.0.1:$port"
+        }
         return when (protocol) {
             StreamProtocol.HLS, StreamProtocol.DASH -> "${baseUrl.trimEnd('/')}/manifest/$trackId"
             StreamProtocol.PROGRESSIVE -> "${baseUrl.trimEnd('/')}/stream/$trackId"

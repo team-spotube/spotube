@@ -72,7 +72,7 @@ class GitHubPluginRepository(private val httpClient: HttpClient) {
                 append("Accept", "application/vnd.github+json")
                 append("X-GitHub-Api-Version", "2022-11-28")
             }
-            parameter("q", "topic:spotube-zipline-plugin")
+            parameter("q", "topic:spotube-zipline-plugin fork:true")
             parameter("sort", "stars")
             parameter("order", "desc")
             parameter("page", page)

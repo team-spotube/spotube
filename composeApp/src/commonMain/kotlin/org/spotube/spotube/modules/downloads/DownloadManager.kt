@@ -34,8 +34,10 @@ import io.ktor.client.request.headers
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.Url
 import io.ktor.http.contentLength
 import io.ktor.http.isSuccess
+import io.ktor.utils.io.discard
 import io.ktor.utils.io.readRemaining
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -95,6 +97,15 @@ class DownloadManager(
         const val MAX_CONCURRENT_DOWNLOADS = 4
         private const val SEGMENT_COUNT = 4
         private const val CHUNK_SIZE = 256 * 1024
+        private const val YOUTUBE_REFERER = "https://www.youtube.com/"
+        private const val BROWSER_USER_AGENT =
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+        private const val ANDROID_USER_AGENT =
+            "com.google.android.youtube/20.10.38 (Linux; U; Android 11) gzip"
+        private const val IOS_USER_AGENT =
+            "com.google.ios.youtube/20.10.4 (iPhone16,2; U; CPU iOS 18_3_2 like Mac OS X;)"
+        private const val VISIONOS_USER_AGENT =
+            "com.google.visionos.youtube/1.04(RealityDevice17,1; U; CPU visionOS 26_6_0 like Mac OS X; US)"
     }
 
     private val logger = Logger.withTag("DownloadManager")
@@ -362,6 +373,7 @@ class DownloadManager(
             headers {
                 append(HttpHeaders.Range, "bytes=${segment.start}-${segment.end}")
             }
+            applyClientHeaders(url)
         }
         logger.d {
             "[Download ${item.id}] segment ${segment.index} bytes=${segment.start}-${segment.end} -> " +
@@ -398,7 +410,9 @@ class DownloadManager(
         downloadDir: Path) {
         val tempFile = tempDir / "${item.id}.tmp"
 
-        val response = httpClient.get(url)
+        val response = httpClient.get(url) {
+            applyClientHeaders(url)
+        }
         val totalSize = response.contentLength() ?: 0L
         logger.i {
             "[Download ${item.id}] GET -> HTTP ${response.status.value} " +
@@ -442,21 +456,34 @@ class DownloadManager(
 
     private suspend fun probeUrl(id: String, url: String): Pair<Long, Boolean> {
         return try {
-            val response = httpClient.head(url)
-            val contentLength = response.contentLength() ?: 0L
+            val response = httpClient.get(url) {
+                headers {
+                    append(HttpHeaders.Range, "bytes=0-0")
+                }
+                applyClientHeaders(url)
+            }
+            if (!response.status.isSuccess() && response.status != HttpStatusCode.PartialContent) {
+                logger.w { "[Download $id] PROBE returned HTTP ${response.status.value}; failing download early" }
+                throw DownloadException(getString(Res.string.downloads_error_http, response.status.value))
+            }
+            val contentRange = response.headers[HttpHeaders.ContentRange]
+            val totalFromContentRange = contentRange?.substringAfterLast('/')?.trim()?.toLongOrNull()
+            val contentLength = totalFromContentRange ?: response.contentLength() ?: 0L
             val acceptRanges = response.headers[HttpHeaders.AcceptRanges]
-            val supportsRanges = acceptRanges?.equals("bytes", ignoreCase = true) == true
+            val supportsRanges = response.status == HttpStatusCode.PartialContent ||
+                acceptRanges?.equals("bytes", ignoreCase = true) == true
             val contentType = response.headers[HttpHeaders.ContentType]
             logger.i {
-                "[Download $id] HEAD -> HTTP ${response.status.value} type=$contentType " +
-                    "length=$contentLength acceptRanges=$acceptRanges"
+                "[Download $id] PROBE (bytes=0-0) -> HTTP ${response.status.value} type=$contentType " +
+                    "length=$contentLength contentRange=$contentRange acceptRanges=$acceptRanges"
             }
+            runCatching { response.bodyAsChannel().discard() }
             rejectVideo(id, contentType)
             Pair(contentLength, supportsRanges)
         } catch (e: DownloadException) {
             throw e
         } catch (e: Exception) {
-            logger.w(e) { "[Download $id] HEAD request failed, falling back to single connection" }
+            logger.w(e) { "[Download $id] PROBE request failed, falling back to single connection" }
             Pair(0L, false)
         }
     }
@@ -469,6 +496,52 @@ class DownloadManager(
         if (contentType?.startsWith("video/", ignoreCase = true) == true) {
             logger.w { "[Download $id] server says this is VIDEO ($contentType), not audio; failing download" }
             throw DownloadException(getString(Res.string.downloads_error_video_only))
+        }
+    }
+
+    private fun isYouTubeOrGoogleVideo(url: String): Boolean {
+        val host = runCatching { Url(url).host.lowercase() }.getOrNull() ?: ""
+        return host.endsWith("googlevideo.com") ||
+            host.endsWith("youtube.com") ||
+            host.endsWith("youtu.be") ||
+            url.contains("googlevideo.com", ignoreCase = true) ||
+            url.contains("youtube.com", ignoreCase = true) ||
+            url.contains("youtu.be", ignoreCase = true)
+    }
+
+    private fun io.ktor.client.request.HttpRequestBuilder.applyClientHeaders(targetUrl: String) {
+        if (isYouTubeOrGoogleVideo(targetUrl)) {
+            val clientParam = runCatching { Url(targetUrl).parameters["c"]?.uppercase() }.getOrNull()
+                ?: Regex("""[?&]c=([^&#]+)""").find(targetUrl)?.groupValues?.get(1)?.uppercase()
+
+            when (clientParam) {
+                "ANDROID" -> {
+                    headers[HttpHeaders.UserAgent] = ANDROID_USER_AGENT
+                    headers.remove(HttpHeaders.Referrer)
+                    headers.remove("Referer")
+                    headers.remove(HttpHeaders.Origin)
+                    headers.remove("Origin")
+                }
+                "IOS" -> {
+                    headers[HttpHeaders.UserAgent] = IOS_USER_AGENT
+                    headers.remove(HttpHeaders.Referrer)
+                    headers.remove("Referer")
+                    headers.remove(HttpHeaders.Origin)
+                    headers.remove("Origin")
+                }
+                "VISIONOS" -> {
+                    headers[HttpHeaders.UserAgent] = VISIONOS_USER_AGENT
+                    headers.remove(HttpHeaders.Referrer)
+                    headers.remove("Referer")
+                    headers.remove(HttpHeaders.Origin)
+                    headers.remove("Origin")
+                }
+                else -> {
+                    headers[HttpHeaders.Referrer] = YOUTUBE_REFERER
+                    headers[HttpHeaders.Origin] = "https://www.youtube.com"
+                    headers[HttpHeaders.UserAgent] = BROWSER_USER_AGENT
+                }
+            }
         }
     }
 

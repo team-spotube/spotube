@@ -29,6 +29,8 @@ import org.spotube.plugin_interfaces.plugin_apis.metadata.playlist.MetadataPlayl
 import org.spotube.plugin_interfaces.plugin_apis.metadata.search.MetadataSearchResult
 import org.spotube.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import org.spotube.spotube.core.audioplayer.AudioPlayerQueue
+import org.spotube.spotube.core.server.LocalServer
+import org.koin.core.component.KoinComponent
 import org.spotube.spotube.core.audioplayer.QueueEntry
 import org.spotube.spotube.core.playback.CollectionPlaybackHelper
 import org.spotube.spotube.modules.album.AlbumRepository
@@ -662,9 +664,12 @@ class MediaBrowseHelper(
     }
 
     private suspend fun buildStreamingUrl(trackId: String): String? {
-        val settings = settingsRepository.userSettings.first()
-        val port = settings.playbackProxyServerPort
-        if (port == 0) return null
-        return "http://127.0.0.1:$port/stream/$trackId"
+        val baseUrl = localServer?.awaitBaseUrl() ?: run {
+            val settings = settingsRepository.userSettings.first()
+            val port = settings.playbackProxyServerPort
+            if (port == 0) return null
+            "http://127.0.0.1:$port"
+        }
+        return "${baseUrl.trimEnd('/')}/stream/$trackId"
     }
 }

@@ -1,5 +1,25 @@
 # Changelog
 
+## [Unreleased]
+
+### Features
+- **audioplayer/ios**: Implement `IosMediaSession` with `AVAudioSession`, `MPNowPlayingInfoCenter`, and `MPRemoteCommandCenter` for lock-screen / Control Center media controls and background audio playback (PR #3170).
+- **audioplayer/ios**: Enable direct streaming resolution for iOS playback in `DeviceAudioPlayerQueue.toMediaItem` (PR #3170).
+- **audioplayer/DeviceAudioPlayerQueue**: Implement complete 4-tier endless playback recommendation cascade: metadata recommendations, native YouTube radio mix, album tracks, and artist top tracks (PR #3092, PR #3134).
+- **plugin/PluginManager**: Auto-select vacant ability slots on plugin installation and recover fallback providers on plugin removal (PR #3147).
+
+### Fixes
+- **build/android**: Switch `desugar_jdk_libs` to `com.android.tools:desugar_jdk_libs_nio` to resolve Android 9-12 `NoSuchMethodError: java.net.URLEncoder.encode` (PR #3132).
+- **server/StreamProxy**: Harden YouTube/GoogleVideo proxy streaming against HTTP 403 Forbidden by inspecting client parameter `c` (`ANDROID`, `IOS`, `VISIONOS`), injecting matching mobile User-Agents, and stripping both `Origin` and `Referer`/`Referrer` headers on mobile streams (PR #3150).
+- **downloads/DownloadManager**: Prevent HTTP 403 Forbidden on YouTube audio downloads by injecting matching client User-Agents, stripping `Origin` and `Referer`/`Referrer` headers on mobile streams, and failing early on non-success HTTP probe status to prevent corrupt HTML error pages from saving into the media library (PR #3150).
+- **audioplayer/DeviceAudioPlayerQueue**: Pair `QueueEntry` with resolved `MediaItem` in queue mutations to prevent quadratic network re-resolutions and null pointer crashes; read queue state via `getQueue()` to ensure endless playback succeeds when backgrounded; deduplicate radio mix seed tracks to properly cascade to album and artist top tracks (PR #3092, PR #3134).
+- **audioplayer/ios**: Update lock screen and Control Center playback rates immediately in `pause()` and `syncTimeControlStatus()` to fix stuck playing indicators; register `togglePlayPauseCommand` handler for Bluetooth headphone and AirPods single-tap toggle controls (PR #3170).
+- **plugin/PluginManager**: Increment generation counter in `removePlugin` to trigger clean reactive flow restarts and reliable fallback activation upon plugin uninstallation (PR #3147).
+- **server/StreamingUrlRepository**: Evict stale cached track sources from `MatchedTracksRepository` when cached source resolution fails before falling back to fresh track lookups (PR #3092, PR #3134).
+- **newpipe/RealNewPipeAudioAPI**: Fix YouTube video ID extraction when `track.externalUri` contains YouTube URLs (`v=`, `youtu.be`, `/embed/`, `/shorts/`, with trailing slash/query/fragment support) instead of passing raw Spotify track IDs to video info lookups.
+- **newpipe/RealNewPipeAudioAPI**: Improve track matching and scoring for Topic channels, VEVO uploads, and official variants with relaxed duration bins, and guarantee top relevance search result is prioritized at index 0 when confidence scoring yields no candidates $\ge 0.3$.
+- **newpipe/NewPipeService**: Implement native YouTube radio mix extractor (`RD{videoId}`) across commonMain, androidJvmMain, and iosMain platforms with safe thumbnail fallbacks.
+
 ## [6.0.0-beta.0](https://github.com/team-spotube/spotube/compare/v5.1.2...v6.0.0-beta.0) (2026-10-26)
 
 ### Features

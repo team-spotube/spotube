@@ -43,6 +43,7 @@ data class PluginTaggedAudioSource(
 interface TrackSourceRepository {
     suspend fun getTrackSource(track: MetadataTrack, pluginId: String): AudioSource.Basic?
     suspend fun saveTrackSource(track: MetadataTrack, source: AudioSource.Basic, pluginId: String)
+    suspend fun deleteTrackSource(track: MetadataTrack, pluginId: String)
 }
 
 class MatchedTracksRepository(private val database: Database) : TrackSourceRepository {
@@ -70,6 +71,21 @@ class MatchedTracksRepository(private val database: Database) : TrackSourceRepos
         database.matchedTracksDataStore.edit { prefs ->
             prefs[stringPreferencesKey(track.id)] =
                 Json.encodeToString(PluginTaggedAudioSource(pluginId, source))
+        }
+    }
+
+    override suspend fun deleteTrackSource(track: MetadataTrack, pluginId: String) {
+        database.matchedTracksDataStore.edit { prefs ->
+            val key = stringPreferencesKey(track.id)
+            val json = prefs[key] ?: return@edit
+            val tagged = try {
+                Json.decodeFromString<PluginTaggedAudioSource>(json)
+            } catch (_: Exception) {
+                null
+            }
+            if (tagged == null || tagged.pluginId == pluginId) {
+                prefs.remove(key)
+            }
         }
     }
 }

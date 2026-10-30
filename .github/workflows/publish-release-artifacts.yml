@@ -1,0 +1,67 @@
+name: Publish Existing Artifacts to Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: 'Workflow Run ID with built artifacts'
+        required: true
+        default: '40649093060'
+        type: string
+      release_tag:
+        description: 'Release tag (e.g. nightly or v6.0.0)'
+        required: true
+        default: 'nightly'
+        type: string
+      release_name:
+        description: 'Release name'
+        required: false
+        default: 'Spotube Multiplatform Build (nightly)'
+        type: string
+      prerelease:
+        description: 'Mark as pre-release'
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  publish-artifacts:
+    name: Publish Artifacts to GitHub Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts from run
+        uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: downloaded-artifacts
+
+      - name: Inspect and organize artifacts
+        run: |
+          mkdir -p release-files
+          find downloaded-artifacts -type f \( -name "*.apk" -o -name "*.deb" -o -name "*.rpm" -o -name "*.AppImage" -o -name "*.tar.xz" -o -name "*.exe" -o -name "*.dmg" -o -name "*.ipa" \) -exec cp {} release-files/ \;
+          ls -lh release-files/
+
+      - name: Generate release notes
+        run: |
+          echo "## Downloads" > release-notes.md
+          echo "" >> release-notes.md
+          for f in release-files/*; do
+            if [ -f "$f" ]; then
+              echo "- \`$(basename "$f")\`" >> release-notes.md
+            fi
+          done
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.release_tag }}
+          name: ${{ inputs.release_name }}
+          body_path: release-notes.md
+          prerelease: ${{ inputs.prerelease }}
+          draft: false
+          fail_on_unmatched_files: false
+          files: release-files/*

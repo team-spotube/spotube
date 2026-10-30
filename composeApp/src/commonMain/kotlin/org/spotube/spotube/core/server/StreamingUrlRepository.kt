@@ -187,6 +187,7 @@ class StreamingUrlRepository(
             }
 
             logger.d { "Cached source did not provide a stream for track $trackId; falling back to track lookup" }
+            matchedTracksRepository.deleteTrackSource(track, audioPlugin.pluginId)
         }
 
         logger.d { "Attempting stream resolution for track $trackId using track lookup" }

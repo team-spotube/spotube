@@ -62,6 +62,7 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
 
     private val avPlayer: AVPlayer = AVPlayer()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    private val mediaSession = IosMediaSession()
 
     private var disposed = false
 
@@ -97,6 +98,13 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
     private var lastTimeControlStatus: AVPlayerTimeControlStatus? = null
 
     init {
+        mediaSession.configure(
+            onPlay = { scope.launch { play() } },
+            onPause = { scope.launch { pause() } },
+            onSeek = { seconds -> scope.launch { seekTo(seconds.seconds) } },
+            onNext = { scope.launch { skipToNext() } },
+            onPrevious = { scope.launch { skipToPrevious() } })
+
         avPlayer.addPeriodicTimeObserverForInterval(
             interval = CMTimeMake(1, 4),
             queue = null
@@ -115,6 +123,11 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
 //                        val range = loadedRanges.objectAtIndex(0u)
 //                    }
                 }
+                mediaSession.update(
+                    item = _currentMediaItem.value,
+                    positionSeconds = seconds,
+                    durationSeconds = _duration.value.inWholeMilliseconds / 1000.0,
+                    isPlaying = avPlayer.timeControlStatus == AVPlayerTimeControlStatusPlaying)
             }
         }
 
@@ -142,6 +155,12 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
         if (avPlayer.currentItem == null) {
             _playerState.tryEmit(PlayerState.IDLE)
         }
+
+        mediaSession.update(
+            item = _currentMediaItem.value,
+            positionSeconds = _position.value.inWholeMilliseconds / 1000.0,
+            durationSeconds = _duration.value.inWholeMilliseconds / 1000.0,
+            isPlaying = status == AVPlayerTimeControlStatusPlaying)
     }
 
     private fun resolveState(): PlayerState {
@@ -159,17 +178,29 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
     }
 
     actual override suspend fun play() {
+        mediaSession.activate()
         avPlayer.play()
     }
 
     actual override suspend fun pause() {
         avPlayer.pause()
+        mediaSession.update(
+            item = _currentMediaItem.value,
+            positionSeconds = _position.value.inWholeMilliseconds / 1000.0,
+            durationSeconds = _duration.value.inWholeMilliseconds / 1000.0,
+            isPlaying = false)
     }
 
     actual override suspend fun stop() {
         avPlayer.pause()
         avPlayer.seekToTime(CMTimeMake(0, 1))
         _playerState.tryEmit(PlayerState.IDLE)
+        mediaSession.deactivate()
+        mediaSession.update(
+            item = _currentMediaItem.value,
+            positionSeconds = 0.0,
+            durationSeconds = _duration.value.inWholeMilliseconds / 1000.0,
+            isPlaying = false)
     }
 
     actual override suspend fun seekTo(position: Duration) {
@@ -220,9 +251,14 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
 
         avPlayer.replaceCurrentItemWithPlayerItem(avItem)
         _currentMediaItem.tryEmit(item)
+        mediaSession.update(
+            item = item,
+            positionSeconds = 0.0,
+            durationSeconds = item.duration.inWholeMilliseconds / 1000.0,
+            isPlaying = false)
 
         if (autoPlay) {
-            avPlayer.play()
+            play()
         }
     }
 
@@ -277,7 +313,7 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
             if (avItem != null) {
                 avPlayer.replaceCurrentItemWithPlayerItem(avItem)
                 _currentMediaItem.tryEmit(nextItem)
-                avPlayer.play()
+                play()
             }
         }
     }
@@ -293,7 +329,7 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
             if (avItem != null) {
                 avPlayer.replaceCurrentItemWithPlayerItem(avItem)
                 _currentMediaItem.tryEmit(prevItem)
-                avPlayer.play()
+                play()
             }
         }
     }
@@ -327,6 +363,8 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
         disposed = true
         avPlayer.pause()
         avPlayer.replaceCurrentItemWithPlayerItem(null)
+        mediaSession.deactivate()
+        mediaSession.clear()
         currentPlaylist.clear()
         urlIndexMap.clear()
 

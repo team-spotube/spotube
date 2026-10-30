@@ -20,6 +20,7 @@ package org.spotube.spotube.core.audioplayer
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import co.touchlab.kermit.Logger
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaMetadata
@@ -49,6 +50,7 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
     actual val context: Any = context
 
     private val appContext: Context = (context as Context).applicationContext
+    private val kermitLogger = Logger.withTag("AudioPlayer")
 
     private fun ensureServiceStarted() {
         // A plain start, never startForegroundService: that obliges the service to call
@@ -127,6 +129,8 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
             }
 
             override fun onPlayerError(error: PlaybackException) {
+                kermitLogger.e(error) { "ExoPlayer error: ${error.errorCodeName} (${error.errorCode}): ${error.message}" }
+                Log.e("AudioPlayer", "ExoPlayer error: ${error.errorCodeName} (${error.errorCode}): ${error.message}", error)
                 _error.tryEmit(error)
             }
 

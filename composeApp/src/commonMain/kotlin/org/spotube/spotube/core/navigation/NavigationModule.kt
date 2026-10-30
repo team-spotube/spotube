@@ -36,6 +36,7 @@ import org.spotube.spotube.modules.saved_tracks.SAVED_TRACKS_COLLECTION_ID
 import org.spotube.spotube.modules.saved_tracks.SavedTracksScreen
 import org.spotube.spotube.modules.search.SearchScreen
 import org.spotube.spotube.modules.settings.SettingsScreen
+import org.spotube.spotube.modules.settings.logs.LogsScreen
 import org.spotube.spotube.modules.settings.JamSettingsScreen
 import org.spotube.spotube.modules.welcome.WelcomeScreen
 import kotlinx.serialization.Serializable
@@ -101,6 +102,9 @@ sealed interface Routes : NavKey {
 
     @Serializable
     data class LocalFolder(val folderPath: String) : Routes
+
+    @Serializable
+    data object Logs : Routes
 }
 
 @OptIn(KoinExperimentalAPI::class)
@@ -207,5 +211,8 @@ val navigationModule = module {
     }
     navigation<Routes.Welcome> {
         WelcomeScreen(viewModel = koinViewModel())
+    }
+    navigation<Routes.Logs> {
+        LogsScreen()
     }
 }

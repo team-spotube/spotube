@@ -51,6 +51,7 @@ import org.spotube.spotube.modules.settings.sections.languageRegionSection
 import org.spotube.spotube.modules.settings.sections.playbackSection
 import org.spotube.spotube.modules.settings.sections.pluginsSection
 import org.spotube.spotube.modules.settings.sections.supportSection
+import org.spotube.spotube.modules.settings.sections.logsSection
 import org.spotube.spotube.modules.settings.sections.updatesSection
 import org.spotube.spotube.modules.shell.LocalAppShellBottomInset
 import org.jetbrains.compose.resources.stringResource
@@ -161,6 +162,8 @@ private fun CompactSettingsContent(
                 updatesSection(
                     settings = settings,
                     settingsViewModel = settingsViewModel)
+                logsSection(
+                    navigatorCommands = navigatorCommands)
             }
         }
     }

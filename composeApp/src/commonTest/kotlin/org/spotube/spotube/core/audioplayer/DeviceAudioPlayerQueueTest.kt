@@ -494,4 +494,149 @@ class DeviceAudioPlayerQueueTest {
         assertEquals("Fallback", local.name)
         assertEquals(listOf("Artist1", "Artist2"), local.artists)
     }
+
+    private suspend fun waitUntil(maxAttempts: Int = 100, condition: suspend () -> Boolean) {
+        var attempts = 0
+        while (attempts < maxAttempts) {
+            if (condition()) return
+            withContext(Dispatchers.IO) {
+                Thread.sleep(25)
+            }
+            attempts++
+        }
+        assertTrue { condition() }
+    }
+
+    // --- endless playback ---
+
+    @Test
+    fun `endless playback appends recommendations when queue finishes`() = runTest {
+        val recTrack = streamingTrack("rec1")
+        val service = FakePluginService(
+            metadataTrackAPI = FakeMetadataTrackAPI(recommendations = listOf(recTrack))
+        )
+        fakePlugin.setPlugin(service)
+        fakeSettings.setSettings(
+            org.spotube.spotube.modules.settings.UserSettings(
+                playbackProxyServerPort = 14769,
+                enableEndlessPlayback = true
+            )
+        )
+
+        val queue = createQueue()
+        val seed = streamingEntry("t1")
+        queue.load(listOf(seed))
+
+        waitUntil {
+            queue.getQueue().any { (it as? QueueEntry.StreamingTrack)?.track?.id == "rec1" }
+        }
+    }
+
+    @Test
+    fun `endless playback cascades to album tracks when recommendations empty`() = runTest {
+        val albumTrack = streamingTrack("album-track-1")
+        val service = FakePluginService(
+            metadataTrackAPI = FakeMetadataTrackAPI(recommendations = emptyList()),
+            metadataAlbumAPI = FakeMetadataAlbumAPI(
+                albumTracks = mapOf("album-t1" to listOf(streamingTrack("t1"), albumTrack))
+            )
+        )
+        fakePlugin.setPlugin(service)
+        fakeSettings.setSettings(
+            org.spotube.spotube.modules.settings.UserSettings(
+                playbackProxyServerPort = 14769,
+                enableEndlessPlayback = true
+            )
+        )
+
+        val queue = createQueue()
+        val seed = streamingEntry("t1")
+        queue.load(listOf(seed))
+
+        waitUntil {
+            queue.getQueue().any { (it as? QueueEntry.StreamingTrack)?.track?.id == "album-track-1" }
+        }
+        val queueTracks = queue.getQueue()
+        assertEquals(1, queueTracks.count { (it as? QueueEntry.StreamingTrack)?.track?.id == "t1" })
+    }
+
+    @Test
+    fun `endless playback cascades to artist top tracks when album tracks empty`() = runTest {
+        val artistTrack = streamingTrack("top-track-1")
+        val service = FakePluginService(
+            metadataTrackAPI = FakeMetadataTrackAPI(recommendations = emptyList()),
+            metadataAlbumAPI = FakeMetadataAlbumAPI(albumTracks = emptyMap()),
+            metadataArtistAPI = FakeMetadataArtistAPI(
+                topTracks = mapOf("artist-t1" to listOf(streamingTrack("t1"), artistTrack))
+            )
+        )
+        fakePlugin.setPlugin(service)
+        fakeSettings.setSettings(
+            org.spotube.spotube.modules.settings.UserSettings(
+                playbackProxyServerPort = 14769,
+                enableEndlessPlayback = true
+            )
+        )
+
+        val queue = createQueue()
+        val seed = streamingEntry("t1")
+        queue.load(listOf(seed))
+
+        waitUntil {
+            queue.getQueue().any { (it as? QueueEntry.StreamingTrack)?.track?.id == "top-track-1" }
+        }
+        val queueTracks = queue.getQueue()
+        assertEquals(1, queueTracks.count { (it as? QueueEntry.StreamingTrack)?.track?.id == "t1" })
+    }
+
+    @Test
+    fun `endless playback filters out blacklisted tracks`() = runTest {
+        val recTrack = streamingTrack("rec1")
+        fakeBlacklist.toggleTrack(recTrack)
+
+        val service = FakePluginService(
+            metadataTrackAPI = FakeMetadataTrackAPI(recommendations = listOf(recTrack))
+        )
+        fakePlugin.setPlugin(service)
+        fakeSettings.setSettings(
+            org.spotube.spotube.modules.settings.UserSettings(
+                playbackProxyServerPort = 14769,
+                enableEndlessPlayback = true
+            )
+        )
+
+        val queue = createQueue()
+        val seed = streamingEntry("t1")
+        queue.load(listOf(seed))
+
+        withContext(Dispatchers.IO) { Thread.sleep(200) }
+
+        val queueTracks = queue.getQueue()
+        assertTrue { queueTracks.none { (it as? QueueEntry.StreamingTrack)?.track?.id == "rec1" } }
+    }
+
+    @Test
+    fun `endless playback does not fetch when setting is disabled`() = runTest {
+        val recTrack = streamingTrack("rec1")
+        val service = FakePluginService(
+            metadataTrackAPI = FakeMetadataTrackAPI(recommendations = listOf(recTrack))
+        )
+        fakePlugin.setPlugin(service)
+        fakeSettings.setSettings(
+            org.spotube.spotube.modules.settings.UserSettings(
+                playbackProxyServerPort = 14769,
+                enableEndlessPlayback = false
+            )
+        )
+
+        val queue = createQueue()
+        val seed = streamingEntry("t1")
+        queue.load(listOf(seed))
+
+        withContext(Dispatchers.IO) { Thread.sleep(200) }
+
+        val queueTracks = queue.getQueue()
+        assertEquals(1, queueTracks.size)
+        assertEquals("t1", (queueTracks[0] as? QueueEntry.StreamingTrack)?.track?.id)
+    }
 }

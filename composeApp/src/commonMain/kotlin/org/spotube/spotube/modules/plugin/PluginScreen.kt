@@ -182,7 +182,7 @@ import spotube.composeapp.generated.resources.settings_plugins_plugin_content_de
 
 private val OFFICIAL_PLUGIN_OWNERS = setOf("KRTirtho", "team-spotube")
 
-private val VERIFIED_PLUGIN_OWNERS = setOf<String>()
+private val VERIFIED_PLUGIN_OWNERS = setOf("pgwiz", "sonic-liberation")
 
 @Composable
 fun PluginScreen(

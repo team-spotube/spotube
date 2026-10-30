@@ -21,8 +21,10 @@ import co.touchlab.kermit.Logger
 import co.touchlab.kermit.koin.KermitKoinLogger
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
+import org.spotube.spotube.core.logger.AppLogWriter
 
 fun initKoin(configuration: KoinAppDeclaration? = null) {
+    Logger.addLogWriter(AppLogWriter())
     startKoin {
         configuration?.invoke(this)
         logger(

@@ -1,0 +1,118 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v6.0.0-custom or nightly)'
+        required: false
+        default: 'nightly'
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    name: Build Spotube Android APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout spotube
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout ComposeNativeWebview
+        uses: actions/checkout@v4
+        with:
+          repository: KRTirtho/ComposeNativeWebview
+          ref: cbd36f88927298a28a2d64c6acf7ec3b2def6f9d
+          path: compose-webview
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Install Linux build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev
+
+      - name: Publish compose-webview to mavenLocal
+        working-directory: compose-webview
+        run: |
+          chmod +x gradlew
+          mkdir -p src/jvmMain/resources/nucleus/native/linux-x64
+          touch src/jvmMain/resources/nucleus/native/linux-x64/libcompose_webview_linux.so
+          ./gradlew publishToMavenLocal -x :webview-compose:buildNativeLinux -x :webview-compose:verifyPublicationCoordinates --no-daemon
+
+      - name: Configure Android signing
+        working-directory: composeApp
+        env:
+          KEYSTORE: ${{ secrets.KEYSTORE }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEYSTORE_KEY_ALIAS: ${{ secrets.KEYSTORE_KEY_ALIAS }}
+          KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
+        run: |
+          chmod +x ../gradlew
+          if [ -n "$KEYSTORE" ]; then
+            echo "$KEYSTORE" | base64 --decode > "${{ github.workspace }}/composeApp/upload-keystore.jks"
+            echo "release.signing.storeFile=${{ github.workspace }}/composeApp/upload-keystore.jks" >> local.properties
+            echo "release.signing.storePassword=${KEYSTORE_PASSWORD}" >> local.properties
+            echo "release.signing.keyAlias=${KEYSTORE_KEY_ALIAS}" >> local.properties
+            echo "release.signing.keyPassword=${KEYSTORE_KEY_PASSWORD}" >> local.properties
+          else
+            echo "No custom keystore secret found, generating build keystore..."
+            keytool -genkey -v -keystore "${{ github.workspace }}/composeApp/upload-keystore.jks" -alias spotube -keyalg RSA -keysize 2048 -validity 10000 -storepass spotubepass -keypass spotubepass -dname "CN=Spotube, OU=Mobile, O=Spotube, C=US"
+            echo "release.signing.storeFile=${{ github.workspace }}/composeApp/upload-keystore.jks" >> local.properties
+            echo "release.signing.storePassword=spotubepass" >> local.properties
+            echo "release.signing.keyAlias=spotube" >> local.properties
+            echo "release.signing.keyPassword=spotubepass" >> local.properties
+          fi
+
+      - name: Assemble Android Release APK
+        run: |
+          ./gradlew :composeApp:assembleNightlyRelease -Pnightly=true -PbuildNumber=${{ github.run_number }} --stacktrace
+
+      - name: Locate and Rename APK
+        run: |
+          APK_FILE=$(find composeApp/build/outputs/apk -name "*.apk" -type f | grep -i "release" | head -1)
+          if [ -z "$APK_FILE" ]; then
+            APK_FILE=$(find composeApp/build/outputs/apk -name "*.apk" -type f | head -1)
+          fi
+          echo "Found APK at: $APK_FILE"
+          cp "$APK_FILE" Spotube-android-all-arch.apk
+          ls -lh Spotube-android-all-arch.apk
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Spotube-android-all-arch
+          path: Spotube-android-all-arch.apk
+
+      - name: Create or Update GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag || 'nightly' }}
+          name: "Spotube Android Build (${{ inputs.tag || 'nightly' }})"
+          body: |
+            ### Spotube Custom Android Build
+            Compiled automatically with custom playback & proxy fixes:
+            - **Google Video 403 Forbidden Fix:** Upstream headers with `Referer: https://www.youtube.com/`, `Origin`, and browser `User-Agent`.
+            - **YouTube Video ID Extraction:** Fixed parsing from `externalUri` instead of passing Spotify ID.
+            - **Relaxed Matching:** Top relevance fallback to prevent `TrackNotFoundError`.
+            - **Native YouTube Endless Playback:** Radio mix via `list=RD{videoId}`.
+          files: Spotube-android-all-arch.apk
+          prerelease: true
+          draft: false

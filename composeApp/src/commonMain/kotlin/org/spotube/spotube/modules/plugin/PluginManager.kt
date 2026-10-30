@@ -579,7 +579,12 @@ class PluginManager(
             val updatedSelectedPlugins =
                 currentState.selectedPlugins.mapValues { (_, selectedPlugin) ->
                     if (selectedPlugin.id == plugin.id) plugin else selectedPlugin
+                }.toMutableMap()
+            for (ability in plugin.abilities) {
+                if (updatedSelectedPlugins[ability] == null) {
+                    updatedSelectedPlugins[ability] = plugin
                 }
+            }
             val newState = PluginManagerStates.Data(
                 plugins = updatedPlugins,
                 selectedPlugins = updatedSelectedPlugins,
@@ -599,12 +604,21 @@ class PluginManager(
         if (currentState is PluginManagerStates.Data) {
             val updatedPlugins = currentState.plugins.filterNot { it.id == plugin.id }
             val updatedSelectedPlugins =
-                currentState.selectedPlugins.filterValues { it.id != plugin.id }
+                currentState.selectedPlugins.filterValues { it.id != plugin.id }.toMutableMap()
+            for (ability in plugin.abilities) {
+                if (updatedSelectedPlugins[ability] == null) {
+                    val fallback = updatedPlugins.firstOrNull { ability in it.abilities }
+                    if (fallback != null) {
+                        updatedSelectedPlugins[ability] = fallback
+                    }
+                }
+            }
             val newState = PluginManagerStates.Data(
                 plugins = updatedPlugins,
                 selectedPlugins = updatedSelectedPlugins,
-                generation = currentState.generation
+                generation = currentState.generation + 1
             )
+            logger.d { "removePlugin: bumped generation to ${newState.generation} after removing ${plugin.id}" }
 
             withContext(Dispatchers.IO) {
                 val pluginDir = pluginsDir / plugin.id.toPath()

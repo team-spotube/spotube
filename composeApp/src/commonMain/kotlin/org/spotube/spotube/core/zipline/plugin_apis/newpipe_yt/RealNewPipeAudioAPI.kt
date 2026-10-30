@@ -55,29 +55,47 @@ class RealNewPipeAudioAPI : AudioAPI, KoinComponent {
         var confidence = 0f
 
         val videoTitle = normalize(video.title)
-        val isTopicChannel = video.uploader.trim().endsWith("- Topic", ignoreCase = true)
-        val uploader = normalize(video.uploader.replace(Regex("(?i)\\s*-\\s*topic$"), ""))
+        val isTopicChannel = video.uploader.trim().endsWith("- Topic", ignoreCase = true) ||
+            video.uploader.trim().contains("Topic", ignoreCase = true)
+        val uploaderRaw = video.uploader.replace(Regex("(?i)\\s*-\\s*topic$"), "").trim()
+        val uploader = normalize(uploaderRaw)
         val artistNames = track.artists.map { normalize(it.name) }.filter { it.isNotEmpty() }
         val title = coreTitle(track.title)
 
         val videoTokens = videoTitle.split(' ').toSet()
         val isTitleMatch = title.isNotEmpty() &&
-            (title in videoTitle || title.split(' ').all { it in videoTokens })
+            (title in videoTitle || videoTitle in title || title.split(' ').filter { it.length > 2 }.all { it in videoTokens })
         val isArtistInTitle = artistNames.any { it in videoTitle }
         val isAlbumInTitle = track.album?.title?.let { normalize(it) }
             ?.takeIf { it.isNotEmpty() }?.let { it in videoTitle } ?: false
-        val isUploaderMatch = uploader.isNotEmpty() && artistNames.any { it in uploader || uploader in it }
-        // Unknown duration (0) must neither reward nor punish
-        val durationDiff = if (video.durationMs > 0) kotlin.math.abs(video.durationMs - track.durationMs) else Long.MAX_VALUE
+
+        // Normalize whitespace and punctuation for uploader comparison (e.g. "Taylor Swift" vs "TaylorSwiftVEVO")
+        val uploaderCompact = uploader.replace(Regex("(?i)vevo$"), "").replace(" ", "")
+        val artistCompacts = artistNames.map { it.replace(" ", "") }
+        val isUploaderMatch = uploader.isNotEmpty() && (
+            artistNames.any { it in uploader || uploader in it } ||
+            (uploaderCompact.isNotEmpty() && artistCompacts.any { it.isNotEmpty() && (it in uploaderCompact || uploaderCompact in it) })
+        )
+        val isVevo = video.uploader.contains("VEVO", ignoreCase = true)
+        val isOfficialTrack = listOf("official audio", "official video", "official music video", "official visualizer", "official lyric video").any { videoTitle.contains(it) }
+
+        val hasValidDurations = video.durationMs > 0 && track.durationMs > 0
+        val durationDiff = if (hasValidDurations) kotlin.math.abs(video.durationMs - track.durationMs) else Long.MAX_VALUE
 
         if (isTitleMatch) confidence += 0.3f
         if (isUploaderMatch) confidence += 0.3f
+        if (isVevo) confidence += 0.15f
+        if (isOfficialTrack) confidence += 0.1f
+        if (isTopicChannel) confidence += if (isUploaderMatch) 0.2f else 0.1f
+
         if (durationDiff <= 10_000) confidence += 0.2f
-        else if (durationDiff <= 30_000) confidence += 0.1f
+        else if (durationDiff <= 30_000) confidence += 0.15f
+        else if (durationDiff <= 60_000) confidence += 0.1f
+        else if (durationDiff <= 120_000) confidence += 0.05f
+        else if (!hasValidDurations) confidence += 0.1f // Don't penalize when duration is unknown
+
         if (isArtistInTitle) confidence += 0.1f
         if (isAlbumInTitle) confidence += 0.1f
-        // Auto-generated "Artist - Topic" uploads are the studio audio, preferred over videos
-        if (isTopicChannel && isUploaderMatch) confidence += 0.1f
         confidence = confidence.coerceAtMost(1f)
 
         logger.i {
@@ -122,12 +140,29 @@ class RealNewPipeAudioAPI : AudioAPI, KoinComponent {
         )
     )
 
+    private fun extractYouTubeVideoId(urlOrId: String?): String? {
+        if (urlOrId.isNullOrBlank()) return null
+        val trimmed = urlOrId.trim()
+        if (trimmed.matches(youtubeIDRegex)) return trimmed
+
+        val vParamRegex = Regex("""[?&]v=([a-zA-Z0-9_-]{11})(?:[&#]|$)""")
+        vParamRegex.find(trimmed)?.groupValues?.get(1)?.let { return it }
+
+        val youtuBeRegex = Regex("""youtu\.be/([a-zA-Z0-9_-]{11})(?:[?#/]|$)""")
+        youtuBeRegex.find(trimmed)?.groupValues?.get(1)?.let { return it }
+
+        val pathRegex = Regex("""youtube\.com/(?:embed|v|shorts)/([a-zA-Z0-9_-]{11})(?:[?#/]|$)""")
+        pathRegex.find(trimmed)?.groupValues?.get(1)?.let { return it }
+
+        return null
+    }
+
     override suspend fun getStreamsByTrack(track: MetadataTrack): List<AudioSource> {
-        val isYouTubeUrl =
-            track.externalUri != null && (track.externalUri!!.contains("youtube.com") || track.externalUri!!.contains(
-                "youtu.be"
-            ))
-        val isYouTubeID = track.id.matches(youtubeIDRegex)
+        val resolvedVideoId = if (track.id.matches(youtubeIDRegex)) {
+            track.id
+        } else {
+            extractYouTubeVideoId(track.externalUri)
+        }
 
         logger.i {
             "Searching streams for track(${track.id}): ${track.title} by ${
@@ -136,9 +171,9 @@ class RealNewPipeAudioAPI : AudioAPI, KoinComponent {
                 ) { it.name }
             }"
         }
-        if (isYouTubeID || isYouTubeUrl) {
-            logger.i { "Track has YouTube ID or URL, fetching video info directly" }
-            return newPipeService.getVideoInfo(track.id).let { videoInfo ->
+        if (resolvedVideoId != null) {
+            logger.i { "Track has YouTube ID or URL ($resolvedVideoId), fetching video info directly" }
+            return newPipeService.getVideoInfo(resolvedVideoId).let { videoInfo ->
                 listOf(
                     AudioSource.Streamed(
                         id = videoInfo.id,
@@ -228,17 +263,32 @@ class RealNewPipeAudioAPI : AudioAPI, KoinComponent {
 
         if (matched.isNotEmpty()) return matched.take(5)
 
-        // Nothing scored well. Playing YouTube's best text-search guess beats failing playback,
-        // and ISRC results are skipped because an ISRC text search tends to return unrelated songs.
-        val fallback = textSearchResults.values.toList()
-            .sortedByDescending { it.confidence } // stable: ties keep YouTube's relevance order
-            .take(5)
-            .ifEmpty { ranked.take(5) }
-        logger.w {
-            "[Search] no confident match for '${track.title}'; falling back to best guesses: " +
-                fallback.joinToString { "${it.id} conf=${it.confidence} '${it.title}'" }
+        // When confidence scoring yields no candidates >= 0.3, ensure the top relevance search
+        // result is returned as fallback rather than throwing TrackNotFoundError or failing.
+        val fallback = if (textSearchResults.isNotEmpty()) {
+            val list = textSearchResults.values.toList()
+            val topRelevance = list.first()
+            val rest = list.drop(1).sortedByDescending { it.confidence }
+            (listOf(topRelevance) + rest).take(5)
+        } else if (ranked.isNotEmpty()) {
+            ranked.take(5)
+        } else {
+            runCatching {
+                newPipeService.searchVideos(plainTitle.ifEmpty { track.title }, SearchKind.Videos)
+                    .map { transformVideo(track, it) }
+            }.getOrDefault(emptyList()).take(5)
         }
-        return fallback
+
+        if (fallback.isNotEmpty()) {
+            logger.w {
+                "[Search] no confident match for '${track.title}'; falling back to top relevance result: " +
+                    fallback.joinToString { "${it.id} conf=${it.confidence} '${it.title}'" }
+            }
+            return fallback
+        }
+
+        logger.w { "[Search] no search results found at all for '${track.title}'" }
+        return emptyList()
     }
 
     override suspend fun getStreamsOfAudioSource(source: AudioSource.Basic): List<AudioSource.Streamed> {

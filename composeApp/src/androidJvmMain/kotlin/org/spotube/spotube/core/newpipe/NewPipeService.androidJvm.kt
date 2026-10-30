@@ -155,6 +155,47 @@ actual class NewPipeService {
             )
         }
     }
+
+    actual suspend fun getRadioMix(videoId: String): List<VideoSearchResult> {
+        return withContext(Dispatchers.IO) {
+            val urls = listOf(
+                "https://www.youtube.com/watch?v=$videoId&list=RD$videoId",
+                "https://www.youtube.com/playlist?list=RD$videoId"
+            )
+            for (url in urls) {
+                val items = runCatching {
+                    val extractor = YouTube.getPlaylistExtractor(url)
+                    extractor.fetchPage()
+                    val page = extractor.initialPage
+                    page.items.mapNotNull { item ->
+                        if (item is StreamInfoItem) {
+                            val vId = runCatching { Url(item.url).parameters["v"] }.getOrNull()
+                                ?: item.url.substringAfter("watch?v=", "").substringBefore("&")
+                                .takeIf { it.isNotEmpty() }
+                                ?: item.url.substringAfterLast("/")
+                            VideoSearchResult(
+                                id = vId,
+                                title = item.name,
+                                url = item.url,
+                                uploader = item.uploaderName,
+                                durationMs = secondsToMs(item.duration),
+                                thumbnailUrl = item.thumbnails.firstOrNull()?.url.orEmpty()
+                            )
+                        } else null
+                    }
+                }.onFailure {
+                    logger.w(it) { "Failed to extract YouTube radio mix from $url" }
+                }.getOrNull()
+
+                if (!items.isNullOrEmpty()) {
+                    logger.i { "Extracted ${items.size} tracks from YouTube radio mix for video $videoId" }
+                    return@withContext items
+                }
+            }
+            logger.w { "Unable to fetch radio mix for video $videoId" }
+            emptyList()
+        }
+    }
 }
 
 /**

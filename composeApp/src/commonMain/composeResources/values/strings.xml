@@ -112,6 +112,17 @@
     <string name="settings_section_updates">Updates</string>
     <string name="settings_section_support">Support</string>
     <string name="settings_section_about">About</string>
+    <string name="settings_section_logs">Logs and Diagnostics</string>
+    <string name="settings_logs_title">Logs and Diagnostics</string>
+    <string name="settings_logs_subtitle">Inspect player, proxy server, and error logs</string>
+    <string name="settings_logs_copy">Copy Logs</string>
+    <string name="settings_logs_clear">Clear Logs</string>
+    <string name="settings_logs_copied">Copied to clipboard!</string>
+    <string name="settings_logs_empty">No logs captured yet.</string>
+    <string name="settings_logs_filter_all">All</string>
+    <string name="settings_logs_filter_errors">Errors</string>
+    <string name="settings_logs_filter_warnings">Warnings</string>
+    <string name="settings_logs_search_hint">Filter by tag or keyword…</string>
 
     <string name="common_close">Close</string>
     <string name="common_save">Save</string>

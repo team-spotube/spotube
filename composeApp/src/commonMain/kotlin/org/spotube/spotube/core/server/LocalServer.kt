@@ -48,6 +48,11 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -87,6 +92,19 @@ class LocalServer(
     val baseUrl = activePort.map { port ->
         port?.let { "http://$HOST_LOCAL:$it" }
     }.stateIn(scope, SharingStarted.WhileSubscribed(5_000), null)
+
+    suspend fun awaitPort(timeout: Duration = 3.seconds): Int {
+        val current = activePort.value
+        if (current != null) return current
+        return withTimeoutOrNull(timeout) {
+            activePort.filterNotNull().first()
+        } ?: settingsViewModel.settingsState.value?.playbackProxyServerPort ?: 14769
+    }
+
+    suspend fun awaitBaseUrl(timeout: Duration = 3.seconds): String {
+        val port = awaitPort(timeout)
+        return "http://$HOST_LOCAL:$port"
+    }
 
     private val cachedCacheEnabled = MutableStateFlow(false)
 

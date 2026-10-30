@@ -34,6 +34,7 @@ import io.ktor.http.HeadersBuilder
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.Url
 import io.ktor.http.content.OutgoingContent
 import io.ktor.http.decodeURLQueryComponent
 import io.ktor.http.encodeURLParameter
@@ -72,6 +73,15 @@ internal class StreamProxy(
 
     companion object {
         private const val HOST = "127.0.0.1"
+        private const val YOUTUBE_REFERER = "https://www.youtube.com/"
+        private const val BROWSER_USER_AGENT =
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+        private const val ANDROID_USER_AGENT =
+            "com.google.android.youtube/20.10.38 (Linux; U; Android 11) gzip"
+        private const val IOS_USER_AGENT =
+            "com.google.ios.youtube/20.10.4 (iPhone16,2; U; CPU iOS 18_3_2 like Mac OS X;)"
+        private const val VISIONOS_USER_AGENT =
+            "com.google.visionos.youtube/1.04(RealityDevice17,1; U; CPU visionOS 26_6_0 like Mac OS X; US)"
     }
 
     private val fileSystem = FileSystem.SYSTEM
@@ -233,8 +243,7 @@ internal class StreamProxy(
         val response = runCatching {
             httpClient.request(manifestUrl) {
                 method = HttpMethod.Get
-                call.forwardRequestHeaderIfPresent(headers, HttpHeaders.Accept)
-                call.forwardRequestHeaderIfPresent(headers, HttpHeaders.UserAgent)
+                applyUpstreamHeaders(call, this, manifestUrl, includeRange = false)
             }
         }.getOrElse { throwable ->
             logger.w(throwable) { "Failed to fetch manifest for track $trackId" }
@@ -284,9 +293,7 @@ internal class StreamProxy(
         runCatching {
             httpClient.prepareRequest(segmentUrl) {
                 method = HttpMethod.Get
-                call.forwardRequestHeaderIfPresent(headers, HttpHeaders.Range)
-                call.forwardRequestHeaderIfPresent(headers, HttpHeaders.Accept)
-                call.forwardRequestHeaderIfPresent(headers, HttpHeaders.UserAgent)
+                applyUpstreamHeaders(call, this, segmentUrl, includeRange = true)
             }.execute { response -> respondWithSegment(call, response, trackId) }
         }.onFailure { throwable ->
             if (throwable is CancellationException) throw throwable
@@ -343,10 +350,7 @@ internal class StreamProxy(
             val failure = runCatching {
                 httpClient.prepareRequest(currentUrl) {
                     method = requestMethod
-                    call.forwardRequestHeaderIfPresent(headers, HttpHeaders.Range)
-                    call.forwardRequestHeaderIfPresent(headers, HttpHeaders.IfRange)
-                    call.forwardRequestHeaderIfPresent(headers, HttpHeaders.Accept)
-                    call.forwardRequestHeaderIfPresent(headers, HttpHeaders.UserAgent)
+                    applyUpstreamHeaders(call, this, currentUrl, includeRange = true)
                 }.execute { response ->
                     logger.i {
                         "[Req] upstream headers for $trackId after ${upstreamStart.elapsedNow()}: " +
@@ -578,19 +582,83 @@ internal class StreamProxy(
     private fun encodeUrl(url: String): String = url.encodeURLParameter()
     private fun decodeUrl(encoded: String): String = encoded.decodeURLQueryComponent()
 
+    private fun isYouTubeOrGoogleVideo(url: String): Boolean {
+        val host = runCatching { Url(url).host.lowercase() }.getOrNull() ?: ""
+        return host.endsWith("googlevideo.com") ||
+            host.endsWith("youtube.com") ||
+            host.endsWith("youtu.be") ||
+            url.contains("googlevideo.com", ignoreCase = true) ||
+            url.contains("youtube.com", ignoreCase = true) ||
+            url.contains("youtu.be", ignoreCase = true)
+    }
+
+    private fun applyUpstreamHeaders(
+        call: ApplicationCall,
+        builder: io.ktor.client.request.HttpRequestBuilder,
+        targetUrl: String,
+        includeRange: Boolean
+    ) {
+        if (includeRange) {
+            call.forwardRequestHeaderIfPresent(builder.headers, HttpHeaders.Range)
+            call.forwardRequestHeaderIfPresent(builder.headers, HttpHeaders.IfRange)
+        }
+        call.forwardRequestHeaderIfPresent(builder.headers, HttpHeaders.Accept)
+
+        if (isYouTubeOrGoogleVideo(targetUrl)) {
+            val clientParam = runCatching { Url(targetUrl).parameters["c"]?.uppercase() }.getOrNull()
+                ?: Regex("""[?&]c=([^&#]+)""").find(targetUrl)?.groupValues?.get(1)?.uppercase()
+
+            when (clientParam) {
+                "ANDROID" -> {
+                    builder.headers[HttpHeaders.UserAgent] = ANDROID_USER_AGENT
+                    builder.headers.remove(HttpHeaders.Referrer)
+                    builder.headers.remove("Referer")
+                    builder.headers.remove(HttpHeaders.Origin)
+                    builder.headers.remove("Origin")
+                }
+                "IOS" -> {
+                    builder.headers[HttpHeaders.UserAgent] = IOS_USER_AGENT
+                    builder.headers.remove(HttpHeaders.Referrer)
+                    builder.headers.remove("Referer")
+                    builder.headers.remove(HttpHeaders.Origin)
+                    builder.headers.remove("Origin")
+                }
+                "VISIONOS" -> {
+                    builder.headers[HttpHeaders.UserAgent] = VISIONOS_USER_AGENT
+                    builder.headers.remove(HttpHeaders.Referrer)
+                    builder.headers.remove("Referer")
+                    builder.headers.remove(HttpHeaders.Origin)
+                    builder.headers.remove("Origin")
+                }
+                else -> {
+                    builder.headers[HttpHeaders.Referrer] = YOUTUBE_REFERER
+                    builder.headers[HttpHeaders.Origin] = "https://www.youtube.com"
+                    builder.headers[HttpHeaders.UserAgent] = BROWSER_USER_AGENT
+                }
+            }
+        } else {
+            call.forwardRequestHeaderIfPresent(builder.headers, HttpHeaders.UserAgent)
+            call.forwardRequestHeaderIfPresent(builder.headers, HttpHeaders.Referrer)
+        }
+    }
+
     private fun ApplicationCall.forwardRequestHeaderIfPresent(
         builder: HeadersBuilder,
         headerName: String
     ) {
         request.headers.getAll(headerName)?.forEach { value ->
-            builder.append(headerName, value)
+            builder[headerName] = value
         }
     }
 
     private fun upstreamHeadersToForward(upstream: HttpResponse): Headers {
         return HeadersBuilder().apply {
             upstream.headers.forEach { name, values ->
-                values.forEach { value -> append(name, value) }
+                if (!name.equals(HttpHeaders.TransferEncoding, ignoreCase = true) &&
+                    !name.equals(HttpHeaders.Connection, ignoreCase = true)
+                ) {
+                    values.forEach { value -> append(name, value) }
+                }
             }
         }.build()
     }

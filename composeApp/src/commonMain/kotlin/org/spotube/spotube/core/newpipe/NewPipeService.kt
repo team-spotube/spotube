@@ -28,4 +28,5 @@ enum class SearchKind {
 expect class NewPipeService() {
     suspend fun searchVideos(query: String, kind: SearchKind = SearchKind.Songs): List<VideoSearchResult>
     suspend fun getVideoInfo(id: String): VideoInfo
+    suspend fun getRadioMix(videoId: String): List<VideoSearchResult>
 }

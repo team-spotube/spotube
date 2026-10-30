@@ -97,6 +97,8 @@ import spotube.composeapp.generated.resources.common_close
 import spotube.composeapp.generated.resources.settings_blacklist_title
 import spotube.composeapp.generated.resources.settings_screen_title
 import spotube.composeapp.generated.resources.settings_section_about
+import spotube.composeapp.generated.resources.settings_section_logs
+import org.spotube.spotube.modules.settings.logs.LogsContent
 import spotube.composeapp.generated.resources.settings_section_appearance
 import spotube.composeapp.generated.resources.settings_section_caching
 import spotube.composeapp.generated.resources.settings_section_desktop
@@ -129,6 +131,7 @@ internal enum class SettingsTab(
     Desktop(Res.string.settings_section_desktop, Iconsax.IconsaxImportArrow2),
     Support(Res.string.settings_section_support, Iconsax.IconsaxHeart2),
     About(Res.string.settings_section_about, Iconsax.IconsaxInformation),
+    Logs(Res.string.settings_section_logs, Iconsax.IconsaxDocumentText),
 }
 
 /**
@@ -281,6 +284,10 @@ private fun SettingsTabContent(
 
         SettingsTab.GroupJam -> {
             JamSettingsContent(viewModel = koinViewModel())
+        }
+
+        SettingsTab.Logs -> {
+            LogsContent(modifier = Modifier.fillMaxSize())
         }
 
         else -> {

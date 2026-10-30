@@ -86,4 +86,8 @@ actual class NewPipeService {
             )
         }
     }
+
+    actual suspend fun getRadioMix(videoId: String): List<VideoSearchResult> {
+        return emptyList()
+    }
 }

@@ -455,6 +455,23 @@ class StreamingUrlRepositoryBehaviorTest {
         assertEquals("https://example.com/fresh.opus", info?.url)
         assertEquals(1, plugin.audioAPI.getStreamsOfAudioSourceCallCount)
         assertEquals(1, plugin.audioAPI.getStreamsByTrackCallCount)
+        assertEquals(1, h.matchedTracksRepository.deleteCallCount)
+    }
+
+    @Test
+    fun `deletes cached track source when cached source fails to provide a stream`() = runTest {
+        val h = Harness()
+        val t = track("t1")
+        val plugin = h.selectPlugin("pluginA")
+        h.matchedTracksRepository.seed(t, basicSource("stale-1"), pluginId = "pluginA")
+        plugin.audioAPI.onGetStreamsOfAudioSource = { emptyList() }
+        plugin.audioAPI.onGetStreamsByTrack = { emptyList() }
+
+        val info = h.repository.resolveStreamInfo(t)
+
+        assertNull(info)
+        assertEquals(1, h.matchedTracksRepository.deleteCallCount)
+        assertNull(h.matchedTracksRepository.rawEntryFor(t.id))
     }
 
     @Test
