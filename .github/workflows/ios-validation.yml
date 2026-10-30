@@ -1,0 +1,127 @@
+name: iOS validation
+
+on:
+  pull_request:
+    paths:
+      - "composeApp/src/commonMain/**"
+      - "composeApp/src/iosMain/**"
+      - "iosApp/**"
+      - "composeApp/build.gradle.kts"
+      - "gradle/**"
+      - "gradle.properties"
+      - "settings.gradle.kts"
+      - ".github/workflows/ios-validation.yml"
+  push:
+    branches:
+      - master
+    paths:
+      - "composeApp/src/commonMain/**"
+      - "composeApp/src/iosMain/**"
+      - "iosApp/**"
+      - "composeApp/build.gradle.kts"
+      - "gradle/**"
+      - "gradle.properties"
+      - "settings.gradle.kts"
+      - ".github/workflows/ios-validation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  COMPOSE_WEBVIEW_REPO: KRTirtho/ComposeNativeWebview
+  COMPOSE_WEBVIEW_COMMIT: cbd36f88927298a28a2d64c6acf7ec3b2def6f9d
+
+jobs:
+  prepare-deps:
+    name: Prepare dependencies
+    runs-on: macos-latest
+    steps:
+      - name: Check out ComposeNativeWebview
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.COMPOSE_WEBVIEW_REPO }}
+          ref: ${{ env.COMPOSE_WEBVIEW_COMMIT }}
+          path: compose-webview
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Publish ComposeNativeWebview locally
+        working-directory: compose-webview
+        run: |
+          chmod +x gradlew
+          ./gradlew publishToMavenLocal
+
+      - name: Upload Maven local repository
+        uses: actions/upload-artifact@v4
+        with:
+          name: maven-local
+          path: ~/.m2/repository/
+
+  build-ios:
+    name: Build unsigned iOS app
+    needs: prepare-deps
+    runs-on: macos-latest
+    timeout-minutes: 120
+    steps:
+      - name: Check out Spotube
+        uses: actions/checkout@v4
+
+      - name: Download Maven local repository
+        uses: actions/download-artifact@v4
+        with:
+          name: maven-local
+          path: ~/.m2/repository/
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make Gradle executable
+        run: chmod +x gradlew
+
+      - name: Compile Kotlin iOS simulator target
+        run: ./gradlew :composeApp:compileKotlinIosSimulatorArm64
+
+      - name: Build unsigned iOS app
+        run: >
+          xcodebuild
+          -project iosApp/iosApp.xcodeproj
+          -scheme iosApp
+          -configuration Release
+          -sdk iphonesimulator
+          -destination 'generic/platform=iOS Simulator'
+          -derivedDataPath build/ios
+          CODE_SIGNING_ALLOWED=NO
+          CODE_SIGNING_REQUIRED=NO
+          CODE_SIGN_IDENTITY=""
+          DEVELOPMENT_TEAM=""
+          build
