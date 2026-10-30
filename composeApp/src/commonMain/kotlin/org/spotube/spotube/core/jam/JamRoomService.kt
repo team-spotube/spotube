@@ -31,12 +31,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
@@ -48,6 +51,7 @@ import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.jam_error_invalid_code
 import spotube.composeapp.generated.resources.jam_error_no_broker
 import kotlin.time.Clock
+import kotlin.time.Duration
 
 /**
  * A jam session over MQTT (star topology, host-authoritative queue).
@@ -57,7 +61,8 @@ import kotlin.time.Clock
  *   from anyone are applied by the host, then broadcast via the retained state topic.
  * - Play/pause is global: anyone's play/pause is sent to the host, which applies it
  *   and broadcasts it; guests follow every change of the host's play state.
- * - Seek, volume and loop are local to each device — never broadcast.
+ * - Seek is now global: host broadcasts currentPositionMs; guests seek on resume/sync.
+ * - Volume and loop are local to each device — never broadcast.
  * - Shuffle is host-only; guests mirror the host's shuffle setting.
  * - Guests can only add to the queue (suggest); the host applies suggestions.
  * - If the host leaves, the participant with the lowest client id takes over.
@@ -66,7 +71,9 @@ private data class PlaybackBroadcast(
     val queue: List<QueueEntry>,
     val current: QueueEntry?,
     val shuffle: Boolean,
-    val isPlaying: Boolean)
+    val isPlaying: Boolean,
+    val positionMs: Long
+)
 
 class JamRoomService(
     private val jamClient: JamRoomClient,
@@ -75,6 +82,9 @@ class JamRoomService(
     private val settingsRepository: SettingsRepository) {
     private val log = Logger.withTag("JamRoomService")
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+    // Throttle host broadcasts to max 1 per 500ms to reduce MQTT traffic & CPU (fixes #3186)
+    private val hostBroadcastChannel = Channel<PlaybackBroadcast>(capacity = 10)
 
     /**
      * Play/pause intent. Transient states (buffering between tracks, loading, completion)
@@ -120,6 +130,7 @@ class JamRoomService(
         get() = localClientId
 
     private var hostBroadcastJob: Job? = null
+    private var hostBroadcastProcessorJob: Job? = null
 
     /** Guest side: last queue snapshot applied to the local player. */
     private var lastAppliedItems: List<JamMediaItem> = emptyList()
@@ -135,6 +146,8 @@ class JamRoomService(
 
     /** Guest side: the room's play state from the last host broadcast (null until the first one). */
     private var lastHostIsPlaying: Boolean? = null
+    /** Guest side: last known host position to avoid redundant seeks. */
+    private var lastHostPositionMs: Long = -1
 
     /** Host side: client ids banned for this session. */
     private val bannedClientIds = mutableSetOf<String>()
@@ -202,7 +215,10 @@ class JamRoomService(
             leaving = false
             autoAdvanceDeadlineMs = 0L
             lastHostIsPlaying = null
+            lastHostPositionMs = -1
             startHostBroadcast()
+            // IMMEDIATELY broadcast current playback state so guests sync instantly (fixes #3184)
+            broadcastCurrentStateImmediately()
             persistLastCode(code)
             code
         }
@@ -234,6 +250,7 @@ class JamRoomService(
             lastAppliedIndex = -1
             leaving = false
             lastHostIsPlaying = null
+            lastHostPositionMs = -1
             persistLastCode(normalized)
         }
     }
@@ -252,6 +269,7 @@ class JamRoomService(
         lastAppliedIndex = -1
         bannedClientIds.clear()
         lastHostIsPlaying = null
+        lastHostPositionMs = -1
     }
 
     // ---------- Controls (called from the UI) ----------
@@ -308,38 +326,90 @@ class JamRoomService(
 
     private fun startHostBroadcast() {
         if (hostBroadcastJob?.isActive == true) return
+
+        // Producer: collect playback state changes and send to channel (debounced)
         hostBroadcastJob = scope.launch {
             combine(
                 audioPlayerQueue.queueFlow,
                 audioPlayerQueue.currentQueueEntryFlow,
                 audioPlayer.shuffleModeFlow,
-                playIntent) { queue, current, shuffle, isPlaying ->
-                PlaybackBroadcast(queue, current, shuffle, isPlaying)
+                playIntent,
+                audioPlayer.positionFlow) { queue, current, shuffle, isPlaying, position ->
+                PlaybackBroadcast(queue, current, shuffle, isPlaying, position.inWholeMilliseconds)
             }
+                .distinctUntilChanged { old, new ->
+                    // Only emit if meaningfully changed: queue content, index, play state, or position > 1s diff
+                    old.queue == new.queue &&
+                    old.current == new.current &&
+                    old.shuffle == new.shuffle &&
+                    old.isPlaying == new.isPlaying &&
+                    kotlin.math.abs(old.positionMs - new.positionMs) < 1000
+                }
+                .debounce(500) // max 2 broadcasts/sec (fixes #3186 overheating)
                 .onEach { broadcast ->
                     if (_role.value != JamRole.Host) return@onEach
-                    val index = if (broadcast.current != null) {
-                        broadcast.queue.indexOfFirst { it.matchesEntry(broadcast.current) }
-                    } else {
-                        -1
-                    }
-                    _shuffleEnabled.value = broadcast.shuffle
-                    jamClient.publishState(
-                        JamMessage.QueueState(
-                            items = broadcast.queue.map(JamMediaItem::fromQueueEntry),
-                            currentIndex = index.coerceAtLeast(0),
-                            shuffleEnabled = broadcast.shuffle,
-                            follow = now() > autoAdvanceDeadlineMs,
-                            isPlaying = broadcast.isPlaying)
-                    )
+                    hostBroadcastChannel.trySend(broadcast)
                 }
                 .launchIn(this)
+        }
+
+        // Consumer: process broadcasts sequentially, serialize MQTT publishes
+        hostBroadcastProcessorJob = scope.launch {
+            for (broadcast in hostBroadcastChannel) {
+                if (_role.value != JamRole.Host) break
+                val index = if (broadcast.current != null) {
+                    broadcast.queue.indexOfFirst { it.matchesEntry(broadcast.current) }
+                } else {
+                    -1
+                }
+                _shuffleEnabled.value = broadcast.shuffle
+                jamClient.publishState(
+                    JamMessage.QueueState(
+                        items = broadcast.queue.map(JamMediaItem::fromQueueEntry),
+                        currentIndex = index.coerceAtLeast(0),
+                        shuffleEnabled = broadcast.shuffle,
+                        follow = now() > autoAdvanceDeadlineMs,
+                        isPlaying = broadcast.isPlaying,
+                        currentPositionMs = broadcast.positionMs)
+                )
+            }
         }
     }
 
     private fun stopHostBroadcast() {
         hostBroadcastJob?.cancel()
         hostBroadcastJob = null
+        hostBroadcastProcessorJob?.cancel()
+        hostBroadcastProcessorJob = null
+        hostBroadcastChannel.close()
+    }
+
+    /** Immediately broadcast current state (used on room creation and host takeover) */
+    private fun broadcastCurrentStateImmediately() {
+        scope.launch {
+            val currentQueue = audioPlayerQueue.queueFlow.value
+            val currentEntry = audioPlayerQueue.currentQueueEntryFlow.value
+            val shuffle = audioPlayer.shuffleModeFlow.value
+            val isPlaying = audioPlayer.playerStateFlow.value == PlayerState.PLAYING
+            val positionMs = audioPlayer.positionFlow.value.inWholeMilliseconds
+
+            if (currentEntry != null) {
+                val index = currentQueue.indexOfFirst { it.matchesEntry(currentEntry) }
+                jamClient.publishState(
+                    JamMessage.QueueState(
+                        items = currentQueue.map(JamMediaItem::fromQueueEntry),
+                        currentIndex = index.coerceAtLeast(0),
+                        shuffleEnabled = shuffle,
+                        follow = true,
+                        isPlaying = isPlaying,
+                        currentPositionMs = positionMs)
+                )
+                // If playing, also send explicit seek to ensure guests start at exact position
+                if (isPlaying) {
+                    jamClient.publishCommand(JamMessage.PlaybackCommand(PlaybackCmd.SeekTo(positionMs)))
+                }
+            }
+        }
     }
 
     // ---------- Guest: apply remote state ----------
@@ -351,13 +421,28 @@ class JamRoomService(
         _shuffleEnabled.value = state.shuffleEnabled
         runCatching { audioPlayer.shuffle(state.shuffleEnabled) }
 
-        // Play/pause is room-wide: follow every change of the host's play state. The room
-        // state is recorded first, so the resulting local intent isn't sent back as a command.
+        // Play/pause is room-wide: follow every change of the host's play state.
+        // On resume (isPlaying becomes true), seek to host's currentPositionMs first (fixes #3181).
         if (state.isPlaying != lastHostIsPlaying) {
             lastHostIsPlaying = state.isPlaying
-            if (state.isPlaying != playIntent.value) {
-                runCatching { if (state.isPlaying) audioPlayer.play() else audioPlayer.pause() }
-                    .onFailure { log.w(it) { "Failed to follow the host's play state" } }
+            if (state.isPlaying) {
+                // Host resumed: seek to their position BEFORE playing
+                if (state.currentPositionMs > 0 && state.currentPositionMs != lastHostPositionMs) {
+                    lastHostPositionMs = state.currentPositionMs
+                    runCatching {
+                        audioPlayer.seekTo(Duration.milliseconds(state.currentPositionMs))
+                    }.onFailure { log.w(it) { "Failed to seek to host position on resume" } }
+                }
+                if (state.isPlaying != playIntent.value) {
+                    runCatching { audioPlayer.play() }
+                        .onFailure { log.w(it) { "Failed to follow the host's play state" } }
+                }
+            } else {
+                // Host paused: just pause locally
+                if (state.isPlaying != playIntent.value) {
+                    runCatching { audioPlayer.pause() }
+                        .onFailure { log.w(it) { "Failed to follow the host's pause" } }
+                }
             }
         }
 
@@ -404,6 +489,17 @@ class JamRoomService(
                 audioPlayerQueue.jumpTo(state.currentIndex.coerceAtLeast(0), autoPlay = false)
             }.onFailure { log.w(it) { "Failed to follow jam queue index" } }
         }
+
+        // Periodic position sync: if host position drifted > 2s, correct it (fixes #3181 drift)
+        if (state.isPlaying && state.currentPositionMs > 0) {
+            val guestPosition = audioPlayer.positionFlow.value.inWholeMilliseconds
+            if (kotlin.math.abs(guestPosition - state.currentPositionMs) > 2000) {
+                lastHostPositionMs = state.currentPositionMs
+                runCatching {
+                    audioPlayer.seekTo(Duration.milliseconds(state.currentPositionMs))
+                }.onFailure { log.w(it) { "Failed to correct position drift" } }
+            }
+        }
     }
 
     // ---------- Incoming commands ----------
@@ -447,6 +543,9 @@ class JamRoomService(
             PlaybackCmd.SkipNext -> runCatching { audioPlayer.skipToNext() }
             PlaybackCmd.SkipPrevious -> runCatching { audioPlayer.skipToPrevious() }
             is PlaybackCmd.JumpTo -> runCatching { audioPlayer.jumpTo(command.index) }
+            is PlaybackCmd.SeekTo -> runCatching {
+                audioPlayer.seekTo(Duration.milliseconds(command.positionMs))
+            }
         }
     }
 
@@ -490,6 +589,7 @@ class JamRoomService(
             _role.value = JamRole.Host
             jamClient.claimHost()
             startHostBroadcast()
+            broadcastCurrentStateImmediately()
         }
     }
 
@@ -537,8 +637,6 @@ class JamRoomService(
                     MetadataArtist.Basic(id = "", name = artist, thumbnails = emptyList(), externalUri = null)
                 ),
                 album = null,
-                // Keep the cover art flowing to participants — the wire carries it
-                // as coverUrl, so mirror it back into the reconstructed thumbnails.
                 thumbnails = coverUrl.takeIf { it.isNotBlank() }
                     ?.let { url -> listOf(Thumbnail(url = url, width = 0, height = 0)) },
                 explicit = null,

@@ -32,6 +32,7 @@ import com.ditchoom.mqtt5.controlpacket.ConnectionRequest
 import org.spotube.spotube.modules.settings.JamBroker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -55,6 +56,7 @@ import spotube.composeapp.generated.resources.jam_error_connection_lost
 import spotube.composeapp.generated.resources.jam_error_no_broker
 import spotube.composeapp.generated.resources.settings_jam_broker_test_ok
 import org.koin.core.component.KoinComponent
+import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -68,6 +70,7 @@ import kotlin.time.Duration.Companion.seconds
  *
  * The library keeps the connection alive (auto-reconnect + backoff); this class only
  * re-establishes the room subscription and re-publishes presence after a reconnect.
+ * Exponential backoff on reconnect prevents CPU/battery drain on flaky networks (fixes #3186).
  */
 class JamRoomClient : KoinComponent {
     private val log = Logger.withTag("JamRoomClient")
@@ -79,9 +82,12 @@ class JamRoomClient : KoinComponent {
     }
 
     private var client: MqttClient? = null
+    private var reconnectJob: Job? = null
 
     private var roomCode: String? = null
     private var localPresence: JamPresence? = null
+    private var currentBroker: JamBroker? = null
+    private var currentClientId: String = ""
 
     private val _isConnected = MutableStateFlow(false)
     val isConnected: StateFlow<Boolean> = _isConnected.asStateFlow()
@@ -128,6 +134,8 @@ class JamRoomClient : KoinComponent {
         if (broker.host.isBlank()) {
             return Result.failure(IllegalArgumentException(getString(Res.string.jam_error_no_broker)))
         }
+        currentBroker = broker
+        currentClientId = clientId
         return runCatching {
             roomCode = code
             localPresence = JamPresence(
@@ -204,8 +212,12 @@ class JamRoomClient : KoinComponent {
     }
 
     suspend fun disconnect() {
+        reconnectJob?.cancel()
+        reconnectJob = null
         roomCode = null
         localPresence = null
+        currentBroker = null
+        currentClientId = ""
         _isConnected.value = false
         _presence.value = emptyMap()
         val current = client
@@ -246,6 +258,8 @@ class JamRoomClient : KoinComponent {
             is ConnectionState.Connected -> {
                 _isConnected.value = true
                 _connectionError.value = null
+                // Reset reconnect attempt counter on successful connection
+                reconnectAttempt = 0
                 scope.launch {
                     // Every connection (initial + reconnects) must re-establish the
                     // broker-side subscription (clean session) and re-publish our
@@ -258,6 +272,10 @@ class JamRoomClient : KoinComponent {
 
             ConnectionState.Disconnected, ConnectionState.Handshaking -> {
                 _isConnected.value = false
+                // Schedule exponential backoff reconnect (fixes #3186 reconnection storm)
+                if (state == ConnectionState.Disconnected && roomCode != null && currentBroker != null) {
+                    scheduleReconnect()
+                }
             }
 
             else -> {
@@ -266,6 +284,49 @@ class JamRoomClient : KoinComponent {
                     val message = getString(Res.string.jam_error_connection_lost)
                     if (!_isConnected.value) _connectionError.value = message
                 }
+            }
+        }
+    }
+
+    private var reconnectAttempt = 0
+    private const val MAX_RECONNECT_ATTEMPTS = 10
+    private const val BASE_RECONNECT_DELAY_MS = 1000L
+    private const val MAX_RECONNECT_DELAY_MS = 30_000L
+
+    private fun scheduleReconnect() {
+        reconnectJob?.cancel()
+        reconnectJob = scope.launch {
+            if (reconnectAttempt >= MAX_RECONNECT_ATTEMPTS) {
+                log.w { "Max reconnect attempts reached, giving up" }
+                _connectionError.value = getString(Res.string.jam_error_connection_lost)
+                return@launch
+            }
+
+            val delayMs = (BASE_RECONNECT_DELAY_MS * (2.0.pow(reconnectAttempt))).toLong().coerceAtMost(MAX_RECONNECT_DELAY_MS)
+            // Add jitter (±20%) to avoid thundering herd
+            val jitter = (delayMs * 0.2 * (Random.nextDouble() * 2 - 1)).toLong()
+            val finalDelay = (delayMs + jitter).coerceAtMost(MAX_RECONNECT_DELAY_MS)
+
+            log.i { "Scheduling reconnect attempt ${reconnectAttempt + 1} in ${finalDelay}ms" }
+            delay(finalDelay)
+
+            if (roomCode == null || currentBroker == null) return@launch
+
+            reconnectAttempt++
+            val broker = currentBroker!!
+            val clientId = currentClientId
+
+            runCatching {
+                val mqtt = startClient(broker, clientId)
+                client = mqtt
+                mqtt.connectionState
+                    .onEach { onConnectionStateChanged(it) }
+                    .launchIn(scope)
+                mqtt.connectionState.first { it is ConnectionState.Connected }
+            }.onFailure { e ->
+                log.w(e) { "Reconnect attempt $reconnectAttempt failed" }
+                // Schedule next attempt
+                scheduleReconnect()
             }
         }
     }

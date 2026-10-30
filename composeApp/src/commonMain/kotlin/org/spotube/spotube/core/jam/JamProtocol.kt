@@ -46,7 +46,9 @@ sealed class JamMessage {
          */
         val follow: Boolean = false,
         /** Room-wide play/pause; guests follow every change of it. */
-        val isPlaying: Boolean = false) : JamMessage()
+        val isPlaying: Boolean = false,
+        /** Host's current playback position in milliseconds. Guests seek to this on resume/sync. */
+        val currentPositionMs: Long = 0) : JamMessage()
 
     @Serializable
     @SerialName("playbackCommand")
@@ -96,6 +98,10 @@ sealed class PlaybackCmd {
     @Serializable
     @SerialName("jumpTo")
     data class JumpTo(val index: Int) : PlaybackCmd()
+
+    @Serializable
+    @SerialName("seekTo")
+    data class SeekTo(val positionMs: Long) : PlaybackCmd()
 }
 
 /** Retained per-participant presence entry (with an MQTT Last Will for leave). */
