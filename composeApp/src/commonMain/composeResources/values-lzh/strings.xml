@@ -1,0 +1,291 @@
+<!--
+  ~ Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  ~ 文言文翻譯 / Classical Chinese Translation
+  ~ Locale: lzh (ISO 639-3)
+  ~ 為 Spotube 增加雅韻，讓古人亦能賞現代音樂之便利
+  -->
+
+<resources>
+    <!-- General -->
+    <string name="app_name">Spotube</string>
+    <string name="queue_title">曲列</string>
+    <string name="queue_clear_queue">清空曲列</string>
+    <string name="queue_filter_queue">篩選曲目…</string>
+    <string name="queue_no_queue_entries">曲列空無一物</string>
+
+    <string name="search_placeholder">搜尋樂曲、藝人、專輯…</string>
+    <string name="search_clear_history">清除所有歷史</string>
+    <string name="search_filter_placeholder">搜尋…</string>
+
+    <!-- Library -->
+    <string name="library_screen_title">藏書樓</string>
+    <string name="library_toolbar_compact_title">藏書</string>
+    <string name="library_tab_playlists">歌單</string>
+    <string name="library_tab_albums">專輯</string>
+    <string name="library_tab_artists">藝人</string>
+    <string name="library_tab_local_tracks">本地樂曲</string>
+    <string name="library_tab_downloads">已下載</string>
+    <string name="library_filter_playlists">搜尋已儲存歌單…</string>
+    <string name="library_filter_albums">搜尋已儲存專輯…</string>
+    <string name="library_filter_artists">搜尋已儲存藝人…</string>
+    <string name="library_filter_local_tracks">搜尋資料夾或樂曲…</string>
+    <string name="library_action_search">篩選藏書</string>
+    <string name="library_action_close_search">關閉篩選</string>
+    <string name="library_action_create_playlist">新建歌單</string>
+    <string name="library_action_refresh_local_tracks">重整本地樂曲</string>
+    <string name="library_action_grid_view">切換至格狀視圖</string>
+    <string name="library_action_list_view">切換至列表視圖</string>
+    <string name="library_playlists_empty">無已儲存歌單</string>
+    <string name="library_playlists_no_results">無歌單符合「%1$s」</string>
+    <string name="library_albums_empty">無已儲存專輯</string>
+    <string name="library_albums_no_results">無專輯符合「%1$s」</string>
+    <string name="library_artists_empty">無已儲存藝人</string>
+    <string name="library_artists_no_results">無藝人符合「%1$s」</string>
+
+    <!-- Local media -->
+    <string name="library_local_folders">資料夾</string>
+    <string name="library_local_folder">資料夾</string>
+    <string name="library_local_summary">%1$s • %2$s</string>
+    <plurals name="library_local_tracks_count">
+        <item quantity="one">%1$d 曲</item>
+        <item quantity="other">%1$d 曲</item>
+    </plurals>
+    <plurals name="library_local_folders_count">
+        <item quantity="one">%1$d 資料夾</item>
+        <item quantity="other">%1$d 資料夾</item>
+    </plurals>
+    <string name="library_local_back">返回資料夾</string>
+    <string name="library_local_play_folder">播放資料夾</string>
+    <string name="library_local_permission_title">需音訊存取權限</string>
+    <string name="library_local_permission_description">允許存取音訊以瀏覽裝置上的音樂。</string>
+    <string name="library_local_grant_access">授予存取權</string>
+    <string name="library_local_empty_folders">未發現本地資料夾</string>
+    <string name="library_local_empty_folders_description">添加含音樂之資料夾即可於此播放。無需插件。</string>
+    <string name="library_local_add_folder">新增資料夾</string>
+    <string name="library_local_empty_tracks">此資料夾無樂曲</string>
+    <string name="library_local_no_results">無符合之資料夾或樂曲</string>
+    <string name="library_local_refresh_failed">重整本地媒體失敗</string>
+
+    <!-- Downloads -->
+    <string name="downloads_summary">%1$d 進行中 • %2$d 已完成</string>
+    <string name="downloads_saved_to">已儲存至 %1$s</string>
+    <string name="downloads_clear_completed">清除已完成</string>
+    <string name="downloads_empty">尚無下載</string>
+    <string name="downloads_status_downloading">下載中 %1$d%</string>
+    <string name="downloads_status_queued">排隊中</string>
+    <string name="downloads_status_completed">已完成</string>
+    <string name="downloads_status_cancelled">已取消</string>
+    <string name="downloads_status_failed">失敗</string>
+    <string name="downloads_status_failed_error">失敗：%1$s</string>
+    <string name="downloads_action_cancel">取消下載</string>
+    <string name="downloads_action_retry">重試下載</string>
+    <string name="downloads_action_remove">移除下載</string>
+
+    <!-- Shared media items -->
+    <string name="media_artist">藝人</string>
+    <string name="media_blacklisted">已屏蔽</string>
+    <string name="media_liked_tracks">喜愛樂曲</string>
+    <string name="media_saved_songs">您儲存的歌曲</string>
+    <string name="media_unknown_artist">佚名藝人</string>
+    <string name="media_preview_title">曲名</string>
+    <string name="media_preview_subtitle">藝人名</string>
+
+    <!-- Player -->
+    <string name="player_play">播放</string>
+    <string name="player_pause">暫停</string>
+    <string name="player_next">下一曲</string>
+    <string name="player_previous">上一曲</string>
+    <string name="player_shuffle">隨機播放</string>
+    <string name="player_repeat">重複播放</string>
+    <string name="player_repeat_one">單曲循環</string>
+    <string name="player_sleep_timer">睡眠定時</string>
+    <string name="player_go_to_album">前往專輯</string>
+    <string name="player_track_details">曲目詳情</string>
+    <string name="player_lyrics">歌詞</string>
+    <string name="player_queue">播放佇列</string>
+
+    <!-- Settings -->
+    <string name="settings_screen_title">設定</string>
+    <string name="settings_section_general">通用</string>
+    <string name="settings_section_playback">播放</string>
+    <string name="settings_section_downloads">下載</string>
+    <string name="settings_section_appearance">外觀</string>
+    <string name="settings_section_advanced">進階</string>
+    <string name="settings_section_about">關於</string>
+    <string name="settings_language">語言</string>
+    <string name="settings_theme">主題</string>
+    <string name="settings_theme_light">光明</string>
+    <string name="settings_theme_dark">暗黑</string>
+    <string name="settings_theme_system">跟隨系統</string>
+    <string name="settings_streaming_quality">串流音質</string>
+    <string name="settings_download_quality">下載音質</string>
+    <string name="settings_enable_caching">啟用快取</string>
+    <string name="settings_cache_size">快取大小</string>
+    <string name="settings_clear_cache">清除快取</string>
+
+    <!-- Playback -->
+    <string name="playback_gapless">無間斷播放</string>
+    <string name="playback_crossfade">淡入淡出</string>
+    <string name="playback_normalize_volume">音量標準化</string>
+    <string name="playback_equalizer">均衡器</string>
+
+    <!-- Network -->
+    <string name="network_proxy">代理伺服器</string>
+    <string name="network_proxy_host">主機</string>
+    <string name="network_proxy_port">連接埠</string>
+    <string name="network_timeout">逾時</string>
+
+    <!-- Plugins -->
+    <string name="plugins_screen_title">插件</string>
+    <string name="plugins_installed">已安裝</string>
+    <string name="plugins_available">可用插件</string>
+    <string name="plugins_install">安裝</string>
+    <string name="plugins_uninstall">移除</string>
+    <string name="plugins_update">更新</string>
+
+    <!-- Jam / Group Session -->
+    <string name="settings_section_jam">群聽</string>
+    <string name="jam_screen_title">群聽</string>
+    <string name="jam_setup_create_tab">建立</string>
+    <string name="jam_setup_join_tab">加入</string>
+    <string name="jam_setup_create_hint">建立房間，再將代碼分享給友人。</string>
+    <string name="jam_setup_create_button">建立房間</string>
+    <string name="jam_setup_join_button">加入房間</string>
+    <string name="jam_setup_working">連線中…</string>
+    <string name="jam_setup_code_label">房間代碼</string>
+    <string name="jam_setup_code_placeholder">ABC123</string>
+    <string name="jam_connection_host">代理伺服器：%1$s</string>
+    <string name="jam_connection_missing">請在設定中配置代理伺服器以建立或加入房間。</string>
+    <string name="jam_connection_settings">代理伺服器設定</string>
+    <string name="jam_session_connected">已連線</string>
+    <string name="jam_session_connecting">重新連線中…</string>
+    <string name="jam_invite_copy">複製代碼</string>
+    <string name="jam_invite_copied">已複製！</string>
+    <string name="jam_invite_share">分享</string>
+    <string name="jam_participants_heading">參與者（%1$d）</string>
+    <string name="jam_participants_host">主持人</string>
+    <string name="jam_participants_guest">聽眾</string>
+    <string name="jam_participants_waiting">等待聽眾加入…</string>
+    <string name="jam_participants_remove">移除</string>
+    <string name="jam_participants_ban">封鎖</string>
+    <string name="jam_participants_manage">管理</string>
+    <string name="jam_session_leave">離開房間</string>
+    <string name="jam_error_title">無法連線</string>
+    <string name="jam_error_dismiss">關閉</string>
+    <string name="jam_error_create">建立群聽會話失敗</string>
+    <string name="jam_error_join">加入群聽會話失敗</string>
+    <string name="jam_error_invalid_code">請輸入六字元之房間代碼（字母及數字）。</string>
+    <string name="jam_share_message">以此代碼加入我的 Spotube 群聽：%1$s</string>
+
+    <!-- Error / Empty states -->
+    <string name="error_generic">發生錯誤</string>
+    <string name="error_network">網路錯誤</string>
+    <string name="error_retry">重試</string>
+    <string name="error_dismiss">關閉</string>
+    <string name="empty_state_no_results">無搜尋結果</string>
+    <string name="empty_state_no_internet">無網路連線</string>
+    <string name="empty_state_try_again">請稍後再試</string>
+
+    <!-- About -->
+    <string name="about_version">版本 %1$s</string>
+    <string name="about_build">建構 %1$s</string>
+    <string name="about_license">授權條款</string>
+    <string name="about_privacy_policy">隱私權政策</string>
+    <string name="about_contributors">貢獻者</string>
+    <string name="about_translators">翻譯者</string>
+    <string name="about_source_code">原始碼</string>
+    <string name="about_report_issue">回報問題</string>
+
+    <!-- Permissions -->
+    <string name="permission_storage_title">需要儲存空間權限</string>
+    <string name="permission_storage_description">允許存取儲存空間以下載音樂。</string>
+    <string name="permission_audio_title">需要音訊權限</string>
+    <string name="permission_audio_description">允許存取音訊以播放音樂。</string>
+
+    <!-- Notification -->
+    <string name="notification_playback_channel_name">播放通知</string>
+    <string name="notification_playback_channel_description">媒體播放控制通知</string>
+
+    <!-- Time -->
+    <string name="time_seconds">%1$d 秒</string>
+    <string name="time_minutes">%1$d 分</string>
+    <string name="time_hours">%1$d 時</string>
+    <string name="time_days">%1$d 天</string>
+
+    <!-- Common actions -->
+    <string name="action_ok">確定</string>
+    <string name="action_cancel">取消</string>
+    <string name="action_save">儲存</string>
+    <string name="action_delete">刪除</string>
+    <string name="action_edit">編輯</string>
+    <string name="action_share">分享</string>
+    <string name="action_copy">複製</string>
+    <string name="action_paste">貼上</string>
+    <string name="action_select_all">全選</string>
+    <string name="action_rename">重新命名</string>
+    <string name="action_create">建立</string>
+    <string name="action_add">新增</string>
+    <string name="action_remove">移除</string>
+    <string name="action_clear">清除</string>
+    <string name="action_refresh">重整</string>
+    <string name="action_settings">設定</string>
+    <string name="action_more">更多</string>
+    <string name="action_done">完成</string>
+    <string name="action_yes">是</string>
+    <string name="action_no">否</string>
+    <string name="action_learn_more">進一步了解</string>
+
+    <!-- Playlists -->
+    <string name="playlist_create_title">新建歌單</string>
+    <string name="playlist_create_hint">歌單名稱</string>
+    <string name="playlist_create_description_hint">描述（選填）</string>
+    <string name="playlist_edit_title">編輯歌單</string>
+    <string name="playlist_delete_confirm">確定要刪除此歌單嗎？</string>
+    <string name="playlist_add_tracks">新增樂曲</string>
+    <string name="playlist_remove_track">移除樂曲</string>
+    <string name="playlist_reorder">重新排序</string>
+    <string name="playlist_empty">此歌單空無一曲</string>
+    <string name="playlist_no_results">無符合樂曲</string>
+
+    <!-- Artists / Albums -->
+    <string name="artist_top_tracks">熱門曲目</string>
+    <string name="artist_albums">專輯</string>
+    <string name="artist_singles">單曲</string>
+    <string name="artist_appears_on">參與作品</string>
+    <string name="artist_related">相關藝人</string>
+    <string name="album_release_date">發行日期：%1$s</string>
+    <string name="album_tracks">曲目</string>
+    <string name="album_credits">製作名單</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_not_available">無可用歌詞</string>
+    <string name="lyrics_loading">載入歌詞中…</string>
+    <string name="lyrics_error">載入歌詞失敗</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_welcome">歡迎使用 Spotube</string>
+    <string name="onboarding_description">開源、無廣告、注重隱私的音樂串流客戶端</string>
+    <string name="onboarding_get_started">開始使用</string>
+    <string name="onboarding_skip">略過</string>
+
+    <!-- Login / Auth -->
+    <string name="login_spotify">以 Spotify 登入</string>
+    <string name="login_github">以 GitHub 登入</string>
+    <string name="login_lastfm">以 Last.fm 登入</string>
+    <string name="login_listenbrainz">以 ListenBrainz 登入</string>
+    <string name="logout_confirm">確定要登出嗎？</string>
+</resources>
