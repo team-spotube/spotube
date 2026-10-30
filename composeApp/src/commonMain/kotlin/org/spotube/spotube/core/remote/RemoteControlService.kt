@@ -73,6 +73,7 @@ class RemoteControlService(
         // can reliably filter out this device's own advertisement.
         scope.launch {
             _localDeviceId.value = resolveDeviceId()
+            log.i { "Local device ID resolved: ${_localDeviceId.value}" }
         }
         scope.launch {
             combine(
@@ -98,13 +99,16 @@ class RemoteControlService(
     /**
      * The service name this device advertises under, derived deterministically
      * from settings so discovery can match it against the local advertisement.
+     * Always includes device ID suffix to avoid collisions between devices with
+     * the same configured name.
      */
     fun advertisedName(): String {
         val deviceId = _localDeviceId.value.ifBlank {
             settingsRepository.userSettings.value.remoteControlDeviceId
         }
         val configured = settingsRepository.userSettings.value.remoteControlDeviceName
-        return configured.ifBlank { "Spotube-${deviceId.take(6)}" }
+        val baseName = configured.ifBlank { "Spotube" }
+        return "$baseName-${deviceId.take(6)}"
     }
 
     /**
@@ -120,14 +124,15 @@ class RemoteControlService(
         scheduleCleanup(pendingService)
         pendingService = null
         registerJob = scope.launch {
-            registerLoop(settings.remoteControlDeviceName, port)
+            registerLoop(advertisedName(), port)
         }
     }
 
     private suspend fun registerLoop(name: String, port: Int) {
         val deviceId = resolveDeviceId()
         _localDeviceId.value = deviceId
-        val serviceName = name.ifBlank { "Spotube-${deviceId.take(6)}" }
+        // Always use advertisedName() which includes device ID to prevent collisions
+        val serviceName = advertisedName()
 
         var attempt = 0
         while (advertisedService == null && coroutineContext.isActive) {

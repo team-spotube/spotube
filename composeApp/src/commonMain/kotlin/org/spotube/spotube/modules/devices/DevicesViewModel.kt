@@ -207,16 +207,17 @@ class DevicesViewModel(
     /**
      * True when [device] is this device's own advertisement. On the initial
      * `Discovered` event dns-sd hasn't resolved the TXT record yet (deviceId is
-     * empty), so we match by the name we advertise; once resolved we also have
-     * the authoritative deviceId.
+     * empty), so we match by the name we advertise (which now always includes
+     * our device ID suffix); once resolved we also have the authoritative deviceId.
      */
     private fun isSelf(device: DiscoveredDevice): Boolean {
         val localId = remoteControlService.localDeviceId.value.ifBlank {
             settingsProvider.settingsState.value?.remoteControlDeviceId ?: ""
         }
         if (localId.isNotBlank() && device.deviceId == localId) return true
-        // Match by the deterministic advertised name as a fallback for the
-        // pre-resolution event where deviceId isn't available yet.
+        // Match by the deterministic advertised name (which now always includes
+        // our device ID suffix) as a fallback for the pre-resolution event
+        // where deviceId isn't available yet.
         return device.name.isNotBlank() && device.name == remoteControlService.advertisedName()
     }
 
