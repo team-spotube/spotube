@@ -40,6 +40,11 @@ import org.spotube.plugin_interfaces.plugin_apis.audio.AudioSource
 import org.spotube.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import org.spotube.spotube.core.audioplayer.AudioPlayerInterface
 import org.spotube.spotube.core.audioplayer.AudioPlayerQueue
+import org.spotube.spotube.core.audioplayer.DeviceAudioPlayerQueue
+import org.spotube.spotube.core.audioplayer.FakeAudioPlayerQueueRepository
+import org.spotube.spotube.core.audioplayer.FakeBlacklistRepository
+import org.spotube.spotube.core.audioplayer.FakePluginProvider
+import org.spotube.spotube.core.audioplayer.FakeSettingsProvider
 import org.spotube.spotube.core.audioplayer.LoopState
 import org.spotube.spotube.core.audioplayer.MediaItem
 import org.spotube.spotube.core.audioplayer.PlayerState
@@ -161,6 +166,176 @@ class JamSessionSimulationTest {
         }
     }
 
+    /**
+     * Songs that end on their own. The guest has its own uploads of every song (a shorter
+     * intro) and its player loads the next song halfway through the current one, so it
+     * must have the host's recording before then, or it plays a different one.
+     */
+    @Test
+    fun usesTheHostsRecordingForEverySong() = runBlocking {
+        val url = serverUrl ?: return@runBlocking
+        val http = HttpClientFactory()
+        val tracks = List(3) { track("song-$it", durationMs = SONG_MS) }
+        val host = Participant(http, url, speedError = 1.0, realQueue = true)
+        val guest = Participant(http, url, speedError = 1.01, realQueue = true)
+        tracks.forEach {
+            host.sources.seed(it, source("host-${it.id}"), PLUGIN)
+            guest.sources.seed(it, source("own-${it.id}"), PLUGIN)
+        }
+        try {
+            host.queue.load(tracks.map { QueueEntry.StreamingTrack(it, url = "") }, autoPlay = true, startPosition = 0)
+            delay(500)
+            val code = host.service.createRoom().getOrThrow()
+            guest.service.joinRoom(code).getOrThrow()
+            delay(6_000)
+            assertEquals("host-song-0", guest.player.currentSource, "guest plays the host's recording of song 0")
+            assertInSync(host, guest, "during song 0")
+
+            for (song in 1..2) {
+                while (host.player.index.value < song) delay(100)
+                delay(5_000)
+                assertEquals(song, guest.player.index.value, "guest on song $song")
+                assertEquals("host-song-$song", guest.player.currentSource, "guest plays the host's recording of song $song")
+                assertInSync(host, guest, "5 s into song $song after the previous one ended")
+            }
+        } finally {
+            guest.close()
+            host.close()
+            http.close()
+        }
+    }
+
+    /**
+     * A guest that can't use the host's recordings (another audio plugin) finishes each
+     * song early. It must wait for the host, not jump back to the song that just ended.
+     */
+    @Test
+    fun aGuestThatFinishesASongFirstWaitsForTheHost() = runBlocking {
+        val url = serverUrl ?: return@runBlocking
+        val http = HttpClientFactory()
+        val tracks = List(3) { track("song-$it", durationMs = SONG_MS) }
+        val host = Participant(http, url, speedError = 1.0)
+        val guest = Participant(http, url, speedError = 1.0, pluginId = "other-plugin")
+        tracks.forEach { guest.sources.seed(it, source("own-${it.id}"), "other-plugin") }
+        val jumpedBack = CopyOnWriteArrayList<String>()
+        try {
+            host.queue.load(tracks.map { QueueEntry.StreamingTrack(it, url = "") }, autoPlay = true, startPosition = 0)
+            delay(500)
+            val code = host.service.createRoom().getOrThrow()
+            guest.service.joinRoom(code).getOrThrow()
+            delay(4_000)
+            val watcher = launch {
+                var last = guest.player.index.value
+                guest.player.index.collect { now ->
+                    if (now < last) jumpedBack += "guest went back from song $last to $now"
+                    last = now
+                }
+            }
+            for (song in 1..2) {
+                while (host.player.index.value < song) delay(100)
+                delay(5_000)
+                assertEquals(song, guest.player.index.value, "guest on song $song")
+            }
+            watcher.cancel()
+            assertTrue(jumpedBack.isEmpty(), jumpedBack.toString())
+        } finally {
+            guest.close()
+            host.close()
+            http.close()
+        }
+    }
+
+    /**
+     * A jam must not keep the CPU busy (a spinning loop allocates nonstop and freezes the
+     * app in GC). Measures the process's CPU time while the room sits in each state.
+     */
+    @Test
+    fun idleStatesDoNotBurnCpu() = runBlocking {
+        val url = serverUrl ?: return@runBlocking
+        val http = HttpClientFactory()
+        val tracks = List(3) { track("cpu-$it") }
+        val host = Participant(http, url, speedError = 1.0, realQueue = true)
+        val guest = Participant(http, url, speedError = 1.01, realQueue = true)
+        val os = java.lang.management.ManagementFactory.getOperatingSystemMXBean() as com.sun.management.OperatingSystemMXBean
+        suspend fun cpuDuring(label: String, block: suspend () -> Unit) {
+            val before = os.processCpuTime
+            val start = System.nanoTime()
+            block()
+            val share = (os.processCpuTime - before).toDouble() / (System.nanoTime() - start)
+            println("Jam simulation: CPU ${"%.0f".format(share * 100)}% of a core while $label")
+            assertTrue(share < 0.5, "CPU ${"%.0f".format(share * 100)}% of a core while $label")
+        }
+        try {
+            host.queue.load(tracks.map { QueueEntry.StreamingTrack(it, url = "") }, autoPlay = true, startPosition = 0)
+            delay(500)
+            val code = host.service.createRoom().getOrThrow()
+            guest.service.joinRoom(code).getOrThrow()
+            delay(5_000)
+            cpuDuring("playing in sync") { delay(8_000) }
+            host.player.pause()
+            delay(2_000)
+            cpuDuring("the room is paused") { delay(8_000) }
+            host.player.play()
+            delay(3_000)
+            host.player.stall()
+            delay(1_000)
+            cpuDuring("the host is buffering") { delay(8_000) }
+            host.player.unstall()
+            delay(3_000)
+            guest.player.stall()
+            cpuDuring("the guest is buffering") { delay(8_000) }
+            guest.player.unstall()
+        } finally {
+            guest.close()
+            host.close()
+            http.close()
+        }
+    }
+
+    /**
+     * Several minutes of jam (songs ending, recordings switching, seeks) must not grow the
+     * heap. Opt-in, since it takes minutes: set `JAM_SOAK=1`.
+     */
+    @Test
+    fun longSessionDoesNotLeak() = runBlocking {
+        val url = serverUrl ?: return@runBlocking
+        if (System.getenv("JAM_SOAK") == null) return@runBlocking
+        val http = HttpClientFactory()
+        val tracks = List(8) { track("soak-$it", durationMs = SONG_MS) }
+        val host = Participant(http, url, speedError = 1.0, realQueue = true)
+        val guest = Participant(http, url, speedError = 1.01, realQueue = true)
+        tracks.forEach {
+            host.sources.seed(it, source("host-${it.id}"), PLUGIN)
+            guest.sources.seed(it, source("own-${it.id}"), PLUGIN)
+        }
+        val runtime = Runtime.getRuntime()
+        fun usedMb(): Long {
+            repeat(3) { System.gc(); Thread.sleep(200) }
+            return (runtime.totalMemory() - runtime.freeMemory()) / (1024 * 1024)
+        }
+        try {
+            host.queue.load(tracks.map { QueueEntry.StreamingTrack(it, url = "") }, autoPlay = true, startPosition = 0)
+            delay(500)
+            val code = host.service.createRoom().getOrThrow()
+            guest.service.joinRoom(code).getOrThrow()
+            delay(20_000)
+            val baseline = usedMb()
+            val samples = mutableListOf(baseline)
+            repeat(6) { round ->
+                if (round % 2 == 0) host.player.seekTo(10_000.milliseconds) else guest.player.seekTo(20_000.milliseconds)
+                delay(30_000)
+                samples += usedMb()
+            }
+            println("Jam simulation: heap after GC over ${samples.size} samples (MB): $samples")
+            assertTrue(samples.last() - baseline < 30, "heap grew from $baseline MB to ${samples.last()} MB")
+            assertInSync(host, guest, "after a long session")
+        } finally {
+            guest.close()
+            host.close()
+            http.close()
+        }
+    }
+
     /** Losing the network (guest, then host) must not crash, and the room picks up again. */
     @Test
     fun roomSurvivesNetworkLoss() = runBlocking {
@@ -223,16 +398,32 @@ class JamSessionSimulationTest {
 
     private fun assertInSync(host: Participant, guest: Participant, phase: String) {
         assertEquals(host.player.index.value, guest.player.index.value, "same track $phase")
-        val gap = guest.player.truePosition() - host.player.truePosition()
+        val gap = guest.player.songPosition() - host.player.songPosition()
         println("Jam simulation: guest is ${gap}ms off $phase")
         assertTrue(abs(gap) < MAX_GAP_MS, "guest is ${gap}ms off $phase")
     }
 
-    private class Participant(http: HttpClientFactory, serverUrl: String, speedError: Double) {
-        val player = SimPlayer(speedError)
-        val queue = SimQueue(player)
+    private class Participant(
+        http: HttpClientFactory,
+        serverUrl: String,
+        speedError: Double,
+        pluginId: String = PLUGIN,
+        /** The app's own queue (stateIn flows and all) instead of [SimQueue]. */
+        realQueue: Boolean = false) {
         val sources = FakeTrackSourceRepository()
-        private val plugins = FakeAudioPluginSource(FakeAudioPluginService(PLUGIN))
+        val player = SimPlayer(speedError)
+        val queue: AudioPlayerQueue = if (realQueue) {
+            player.resolveSource = { i ->
+                val id = player.playlistFlow.value.getOrNull(i)?.url?.substringAfterLast('/')
+                id?.let { sources.rawEntryFor(it)?.source?.id } ?: "default-$id"
+            }
+            DeviceAudioPlayerQueue(
+                player, FakeSettingsProvider(), FakeAudioPlayerQueueRepository(),
+                FakePluginProvider(), FakeBlacklistRepository())
+        } else {
+            SimQueue(player, sources)
+        }
+        private val plugins = FakeAudioPluginSource(FakeAudioPluginService(pluginId))
         val service = JamRoomService(
             jamClient = JamRoomClient(http),
             audioPlayer = player,
@@ -241,7 +432,8 @@ class JamSessionSimulationTest {
             audioPluginSource = plugins,
             trackSources = sources,
             streamingUrlRepository = StreamingUrlRepository(
-                plugins, FakeStreamingAudioPlayerQueue(), sources, FakeUserSettingsSource()))
+                plugins, FakeStreamingAudioPlayerQueue(), sources, FakeUserSettingsSource()),
+            evictCachedAudio = {})
 
         suspend fun close() {
             service.leaveRoom()
@@ -260,10 +452,18 @@ class JamSessionSimulationTest {
      * Plays a list of tracks in real time. Its clock runs [speedError] times true speed (as
      * a drifting device would), positions are reported every 250 ms rounded to 100 ms, and
      * every seek or track change buffers briefly.
+     *
+     * Like ExoPlayer, it picks a song's recording (source) when it loads the song: the next
+     * song is loaded halfway through the current one, and jumping to the song already
+     * playing keeps its recording. Recordings differ in intro length ([introMs]).
      */
     private class SimPlayer(private val speedError: Double) : AudioPlayerInterface {
         private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
         private var durations: List<Long> = emptyList()
+        /** The source the queue would resolve for a song now. */
+        var resolveSource: (Int) -> String = { "default" }
+        private val loadedSources = mutableMapOf<Int, String>()
+        val currentSource: String? get() = loadedSources[index.value]
         private var basePosition = 0L
         private var baseAt = now()
         private var speed = 1f
@@ -274,6 +474,8 @@ class JamSessionSimulationTest {
         private val _position = MutableStateFlow(Duration.ZERO)
         private val _duration = MutableStateFlow(Duration.ZERO)
         private val _speed = MutableStateFlow(1f)
+        private val _playlist = MutableStateFlow<List<MediaItem>>(emptyList())
+        private val _currentItem = MutableStateFlow<MediaItem?>(null)
         private val _completion = MutableSharedFlow<Unit>(extraBufferCapacity = 4)
 
         init {
@@ -281,16 +483,26 @@ class JamSessionSimulationTest {
                 while (isActive) {
                     delay(250)
                     val position = truePosition()
-                    val duration = durations.getOrNull(index.value) ?: continue
+                    val duration = currentDuration() ?: continue
+                    val next = index.value + 1
+                    if (position >= duration / 2 && next <= durations.lastIndex && next !in loadedSources) {
+                        loadedSources[next] = resolveSource(next)
+                    }
                     if (position >= duration) {
                         _completion.tryEmit(Unit)
-                        if (index.value < durations.lastIndex) startTrack(index.value + 1)
+                        if (index.value < durations.lastIndex) advanceGapless()
                         continue
                     }
                     _position.value = (position / 100 * 100).milliseconds
                 }
             }
         }
+
+        /** Where in the song (not the recording) playback is. */
+        fun songPosition(): Long = truePosition() - introMs(currentSource)
+
+        private fun currentDuration(): Long? =
+            durations.getOrNull(index.value)?.let { it + introMs(currentSource) }
 
         @Synchronized
         fun truePosition(): Long =
@@ -309,12 +521,30 @@ class JamSessionSimulationTest {
         fun loadTracks(trackDurations: List<Long>, start: Int, autoPlay: Boolean) {
             durations = trackDurations
             playWhenReady = autoPlay
+            loadedSources.clear()
             startTrack(start)
         }
 
+        /**
+         * A song ending on its own, like ExoPlayer's gapless transition: no buffering, and
+         * the position keeps the old song's value until the next report.
+         */
+        private fun advanceGapless() {
+            val next = index.value + 1
+            loadedSources.getOrPut(next) { resolveSource(next) }
+            index.value = next
+            _currentItem.value = _playlist.value.getOrNull(next)
+            _duration.value = currentDuration()!!.milliseconds
+            rebase(0)
+        }
+
         fun startTrack(i: Int) {
+            // Jumping to the song already playing seeks within it (ExoPlayer's
+            // seekToDefaultPosition): the loaded recording stays.
+            if (i != index.value || i !in loadedSources) loadedSources[i] = loadedSources[i] ?: resolveSource(i)
             index.value = i
-            _duration.value = durations[i].milliseconds
+            _currentItem.value = _playlist.value.getOrNull(i)
+            _duration.value = currentDuration()!!.milliseconds
             rebase(0)
             _position.value = Duration.ZERO
             buffer()
@@ -328,6 +558,17 @@ class JamSessionSimulationTest {
                 rebase()
                 _state.value = if (playWhenReady) PlayerState.PLAYING else PlayerState.PAUSED
             }
+        }
+
+        /** Network stall: buffering until [unstall]. */
+        fun stall() {
+            rebase()
+            _state.value = PlayerState.BUFFERING
+        }
+
+        fun unstall() {
+            rebase()
+            _state.value = if (playWhenReady) PlayerState.PLAYING else PlayerState.PAUSED
         }
 
         override suspend fun play() {
@@ -364,8 +605,8 @@ class JamSessionSimulationTest {
         override val playbackSpeedFlow: StateFlow<Float> = _speed
         override val completionFlow: Flow<Unit> = _completion
         override val shuffleModeFlow: StateFlow<Boolean> = MutableStateFlow(false)
-        override val currentMediaItemFlow: StateFlow<MediaItem?> = MutableStateFlow(null)
-        override val playlistFlow: StateFlow<List<MediaItem>> = MutableStateFlow(emptyList())
+        override val currentMediaItemFlow: StateFlow<MediaItem?> = _currentItem
+        override val playlistFlow: StateFlow<List<MediaItem>> = _playlist
         override val bufferingPositionFlow: StateFlow<Duration> = MutableStateFlow(Duration.ZERO)
         override val loopStateFlow: StateFlow<LoopState> = MutableStateFlow(LoopState.NONE)
         override val volumeFlow: StateFlow<Float> = MutableStateFlow(1f)
@@ -374,8 +615,15 @@ class JamSessionSimulationTest {
         override suspend fun stop() = pause()
         override suspend fun loop(state: LoopState) = Unit
         override suspend fun shuffle(enabled: Boolean) = Unit
-        override suspend fun load(playlist: List<MediaItem>, autoPlay: Boolean, startPosition: Int) = error("use SimQueue")
-        override suspend fun addMediaItem(mediaItem: MediaItem) = Unit
+        override suspend fun load(playlist: List<MediaItem>, autoPlay: Boolean, startPosition: Int) {
+            _playlist.value = playlist
+            loadTracks(playlist.map { it.duration.inWholeMilliseconds }, startPosition, autoPlay)
+        }
+
+        override suspend fun addMediaItem(mediaItem: MediaItem) {
+            _playlist.value += mediaItem
+            durations = durations + mediaItem.duration.inWholeMilliseconds
+        }
         override suspend fun insertMediaItemAtNextIndex(mediaItem: MediaItem) = Unit
         override suspend fun removeMediaItem(mediaItem: MediaItem) = Unit
         override suspend fun moveMediaItem(fromIndex: Int, toIndex: Int) = Unit
@@ -384,9 +632,16 @@ class JamSessionSimulationTest {
         override fun dispose() = scope.cancel()
     }
 
-    private class SimQueue(private val player: SimPlayer) : AudioPlayerQueue {
+    private class SimQueue(private val player: SimPlayer, sources: FakeTrackSourceRepository) : AudioPlayerQueue {
         private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
         private val entries = MutableStateFlow<List<QueueEntry>>(emptyList())
+
+        init {
+            player.resolveSource = { i ->
+                val id = (entries.value.getOrNull(i) as? QueueEntry.StreamingTrack)?.track?.id
+                id?.let { sources.rawEntryFor(it)?.source?.id } ?: "default-$id"
+            }
+        }
 
         override val queueFlow: StateFlow<List<QueueEntry>> = entries
         override val currentQueueEntryFlow: StateFlow<QueueEntry?> =
@@ -431,11 +686,15 @@ class JamSessionSimulationTest {
         private const val BUFFER_MS = 200L
         private const val MAX_GAP_MS = 200L
         private const val STEADY_WINDOW_MS = 40_000L
+        private const val SONG_MS = 30_000L
+
+        /** How much longer a recording's intro is than the original's ("own" uploads cut 2.5 s). */
+        private fun introMs(source: String?): Long = if (source?.startsWith("own-") == true) -2_500 else 0
 
         private fun now() = Clock.System.now().toEpochMilliseconds()
 
-        private fun track(id: String) = MetadataTrack(
-            id = id, title = id, durationMs = 180_000, trackNumber = null, discNumber = null,
+        private fun track(id: String, durationMs: Long = 180_000) = MetadataTrack(
+            id = id, title = id, durationMs = durationMs, trackNumber = null, discNumber = null,
             artists = emptyList(), album = null, thumbnails = null, explicit = null,
             popularity = null, isrcCode = null, externalUri = null)
 

@@ -41,6 +41,10 @@ data class JamQueue(
  * time [serverTimeMs]. While [advancing], everyone extrapolates the position from it at
  * [rate]; a buffering host sends a non-advancing anchor so guests don't run ahead.
  */
+/** The audio source the host plays [trackKey] from. */
+@Serializable
+data class JamTrackSource(val trackKey: String, val source: PluginTaggedAudioSource)
+
 @Serializable
 data class JamAnchor(
     val trackKey: String,
@@ -52,7 +56,12 @@ data class JamAnchor(
     val advancing: Boolean = playing,
     val rate: Float = 1f,
     /** The audio source the host plays [trackKey] from, so guests stream the same file. */
-    val source: PluginTaggedAudioSource? = null) {
+    val source: PluginTaggedAudioSource? = null,
+    /**
+     * The host's sources for the next songs. A player loads the next song long before it
+     * plays, so guests need the host's recording of it well before then.
+     */
+    val upcoming: List<JamTrackSource> = emptyList()) {
     /** The room's position at server time [serverNowMs]. */
     fun positionAt(serverNowMs: Long): Long =
         if (advancing) positionMs + ((serverNowMs - serverTimeMs) * rate).toLong() else positionMs

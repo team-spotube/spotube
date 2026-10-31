@@ -287,7 +287,11 @@ val sharedModules = module {
     }
     single { RemotePlaybackController(get(), get(), get(), get(), get()) }
     singleOf(::JamRoomClient)
-    single { JamRoomService(get(), get(), get(), get(), get(), get(), get()) }
+    single {
+        JamRoomService(
+            get(), get(), get(), get(), get(), get(), get(),
+            evictCachedAudio = get<CacheManager>()::invalidateCacheEntry)
+    }
     singleOf(::AudioPlayerQueueRepository) { bind<QueueStateRepository>() }
     single<AudioPlayerQueue> {
         DeviceAudioPlayerQueue(get(), get(), get(), get(), get())

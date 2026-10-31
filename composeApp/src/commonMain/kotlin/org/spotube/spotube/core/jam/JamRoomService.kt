@@ -46,6 +46,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.mapNotNull
@@ -94,7 +96,9 @@ class JamRoomService(
     private val settingsRepository: UserSettingsStore,
     private val audioPluginSource: AudioPluginSource,
     private val trackSources: TrackSourceRepository,
-    private val streamingUrlRepository: StreamingUrlRepository) {
+    private val streamingUrlRepository: StreamingUrlRepository,
+    /** Deletes a track's audio from the disk cache (`CacheManager.invalidateCacheEntry`). */
+    private val evictCachedAudio: suspend (trackId: String) -> Unit) {
     private val log = Logger.withTag("JamRoomService")
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
@@ -174,6 +178,11 @@ class JamRoomService(
     private var positionAdvancing = false
     private var ownSeekUntilMs = 0L
     private var entryChangedAtMs = 0L
+    /** The song [positionSampleMs] belongs to; a new song starts the tracking from zero. */
+    private var positionEntryKey: String? = null
+
+    /** Host: its sources for the next songs, sent with every anchor. */
+    private var upcomingSources: List<JamTrackSource> = emptyList()
 
     private val anchorRequests = Channel<Unit>(Channel.CONFLATED)
 
@@ -193,7 +202,7 @@ class JamRoomService(
             .onEach { onEvent(it) }
             .launchIn(scope)
         audioPlayerQueue.currentQueueEntryFlow
-            .onEach { entryChangedAtMs = now() }
+            .onEach { onEntryChanged(it?.jamKey()) }
             .launchIn(scope)
         audioPlayer.positionFlow
             .onEach { onPosition(it.inWholeMilliseconds) }
@@ -294,6 +303,8 @@ class JamRoomService(
 
     private suspend fun reset() {
         inRoom = false
+        audioPlayerQueue.setEndlessPlaybackSuppressed(false)
+        upcomingSources = emptyList()
         roleJob?.cancel()
         roleJob = null
         restoreSpeed()
@@ -407,7 +418,9 @@ class JamRoomService(
 
     private suspend fun runHost() {
         restoreSpeed()
+        audioPlayerQueue.setEndlessPlaybackSuppressed(false)
         sentAnchor = null
+        upcomingSources = emptyList()
         kotlinx.coroutines.coroutineScope {
             combine(audioPlayerQueue.queueFlow, audioPlayer.shuffleModeFlow) { queue, shuffle ->
                 JamQueue(queue.map(JamMediaItem::fromQueueEntry), shuffle)
@@ -442,6 +455,27 @@ class JamRoomService(
                 audioPlayer.playbackSpeedFlow) { _, _, _, _ -> }
                 .onEach { publishAnchor() }
                 .launchIn(this)
+
+            // Share the next songs' sources as soon as a song starts: a guest's player loads
+            // the next song long before it plays, and must find the host's recording by then.
+            launch {
+                combine(
+                    audioPlayerQueue.currentQueueEntryFlow.map { it?.jamKey() }.distinctUntilChanged(),
+                    audioPlayerQueue.queueFlow) { key, queue -> key to queue }
+                    .collectLatest { (key, queue) ->
+                        val start = queue.indexOfFirst { it.jamKey() == key } + 1
+                        if (start <= 0) return@collectLatest
+                        val upcoming = queue.drop(start).take(UPCOMING_SOURCES)
+                            .filterIsInstance<QueueEntry.StreamingTrack>()
+                            .mapNotNull { entry ->
+                                hostSource(entry.track, match = true)?.let { JamTrackSource(entry.track.id, it) }
+                            }
+                        if (upcoming != upcomingSources) {
+                            upcomingSources = upcoming
+                            publishAnchor()
+                        }
+                    }
+            }
 
             // Drift only builds up while playing; a paused host checks nothing.
             launch {
@@ -491,6 +525,7 @@ class JamRoomService(
     private suspend fun sendAnchor() {
         if (_role.value != JamRole.Host) return
         val current = audioPlayerQueue.currentQueueEntryFlow.value ?: return
+        onEntryChanged(current.jamKey())
         val playing = playIntent.value
         val next = JamAnchor(
             trackKey = current.jamKey(),
@@ -500,19 +535,29 @@ class JamRoomService(
             playing = playing,
             advancing = playing && audioPlayer.playerStateFlow.value == PlayerState.PLAYING,
             rate = audioPlayer.playbackSpeedFlow.value,
-            source = currentSource(current))
+            source = (current as? QueueEntry.StreamingTrack)?.let { hostSource(it.track, match = false) },
+            upcoming = upcomingSources)
         sentAnchor = next
         sentAnchorAtMs = now()
         hostDrifts.clear()
         jamClient.sendAnchor(next)
     }
 
-    /** The source the host's audio plugin matched to [entry], so guests can use the same one. */
-    private suspend fun currentSource(entry: QueueEntry): PluginTaggedAudioSource? {
-        if (entry !is QueueEntry.StreamingTrack) return null
+    /**
+     * The source the host's audio plugin matched to [track], so guests can use the same one.
+     * With [match], a track not matched yet is matched now (as the player would when it got
+     * there); the current song is being matched by the player already.
+     */
+    private suspend fun hostSource(track: MetadataTrack, match: Boolean): PluginTaggedAudioSource? {
         val plugin = audioPluginSource.selectedAudioPlugin.value ?: return null
-        return runCatching { trackSources.getTrackSource(entry.track, plugin.pluginId) }.getOrNull()
-            ?.let { PluginTaggedAudioSource(plugin.pluginId, it) }
+        suspend fun saved() = runCatching { trackSources.getTrackSource(track, plugin.pluginId) }.getOrNull()
+        val source = saved() ?: if (match) {
+            runCatching { streamingUrlRepository.resolveStreamInfo(track) }
+            saved()
+        } else {
+            null
+        }
+        return source?.let { PluginTaggedAudioSource(plugin.pluginId, it) }
     }
 
     private suspend fun applyCommand(command: JamCommand, from: String) {
@@ -550,7 +595,10 @@ class JamRoomService(
         // Guests follow the host's order through anchors; a local shuffle would only
         // make auto-advance pick a different track for a moment.
         runCatching { audioPlayer.shuffle(false) }
+        audioPlayerQueue.setEndlessPlaybackSuppressed(true)
         corrector.reset()
+        // The host's recordings first, so the queue's first load already uses them.
+        anchor?.let { pinSources(it) }
         roomQueue?.let { applyQueue(it) }
         anchor?.let { onAnchor(it) }
         while (true) {
@@ -599,7 +647,12 @@ class JamRoomService(
                     .onFailure { log.w(it) { "Failed to follow the host's play state" } }
             }
         }
-        next.source?.let { pinSource(next.trackKey, it) }
+        pinSources(next)
+    }
+
+    private suspend fun pinSources(anchor: JamAnchor) {
+        anchor.source?.let { pinSource(anchor.trackKey, it) }
+        anchor.upcoming.forEach { pinSource(it.trackKey, it.source) }
     }
 
     private suspend fun applyQueue(queue: JamQueue) {
@@ -610,6 +663,8 @@ class JamRoomService(
         if (items == lastAppliedItems) return
         val previous = lastAppliedItems
         lastAppliedItems = items
+        // Sources that arrived before the queue had their tracks, before the queue loads them.
+        anchor?.let { pinSources(it) }
 
         // The host only appended items (e.g. accepted suggestions): merge them in
         // without disturbing playback.
@@ -643,9 +698,12 @@ class JamRoomService(
         if (now < holdSyncUntilMs) return SyncStatus.Busy
 
         val current = audioPlayerQueue.currentQueueEntryFlow.value
+        onEntryChanged(current?.jamKey())
         if (current?.jamKey() != room.trackKey) {
-            val index = audioPlayerQueue.queueFlow.value.indexOfFirst { it.jamKey() == room.trackKey }
+            val queue = audioPlayerQueue.queueFlow.value
+            val index = queue.indexOfFirst { it.jamKey() == room.trackKey }
             if (index < 0) return SyncStatus.Idle // The queue with this track hasn't arrived yet.
+            if (finishedSongFirst(queue, current, index, room, now)) return SyncStatus.Busy
             log.d { "Jam sync: switching to queue index $index" }
             holdSync(TRACK_CHANGE_HOLD_MS)
             corrector.reset()
@@ -701,31 +759,72 @@ class JamRoomService(
     }
 
     /**
+     * Our song ended a moment before the host's (players and recordings differ slightly in
+     * length), so we're on the song after the room's. Wait for the host to get there
+     * instead of going back to replay the ending. The room has to be near the end of its
+     * song: a host that went back a song is followed right away.
+     */
+    private fun finishedSongFirst(
+        queue: List<QueueEntry>,
+        current: QueueEntry?,
+        roomIndex: Int,
+        room: JamAnchor,
+        now: Long): Boolean {
+        if (!room.playing || current == null) return false
+        if (queue.indexOfFirst { it.jamKey() == current.jamKey() } != roomIndex + 1) return false
+        if (now - entryChangedAtMs > NEXT_SONG_WAIT_MS) return false
+        val roomSongMs = roomQueue?.items?.firstOrNull { it.key == room.trackKey }?.durationMs
+            ?: (queue[roomIndex] as? QueueEntry.StreamingTrack)?.track?.durationMs
+            ?: return false
+        return roomSongMs > 0 && room.positionAt(jamClient.clock.serverTime(now)) >= roomSongMs - NEAR_SONG_END_MS
+    }
+
+    /**
      * Uses the host's audio source for [trackKey] when we use the same audio plugin, so
      * both sides stream the same recording. Uploads of one song differ in intro length,
-     * which no amount of clock sync can fix.
+     * which no amount of clock sync can fix. Upcoming songs are pinned well before our
+     * player loads them; a song already playing from another recording is reloaded.
      */
     private suspend fun pinSource(trackKey: String, tagged: PluginTaggedAudioSource) {
-        if (!pinnedSources.add("$trackKey|${tagged.source.id}")) return
+        val pin = "$trackKey|${tagged.source.id}"
+        if (pin in pinnedSources) return
         val plugin = audioPluginSource.selectedAudioPlugin.value ?: return
         if (plugin.pluginId != tagged.pluginId) return
-        val entry = audioPlayerQueue.queueFlow.value
-            .firstOrNull { it is QueueEntry.StreamingTrack && it.track.id == trackKey } as? QueueEntry.StreamingTrack
-            ?: return
-        val mine = runCatching { trackSources.getTrackSource(entry.track, plugin.pluginId) }.getOrNull()
+        // Not in the room's queue yet: tried again when the queue arrives (applyQueue).
+        val track = roomTrack(trackKey) ?: return
+        pinnedSources += pin
+        val mine = runCatching { trackSources.getTrackSource(track, plugin.pluginId) }.getOrNull()
         if (mine == tagged.source) return
 
         log.i { "Jam: using the host's source ${tagged.source.id} for $trackKey" }
         runCatching {
-            trackSources.saveTrackSource(entry.track, tagged.source, plugin.pluginId)
+            trackSources.saveTrackSource(track, tagged.source, plugin.pluginId)
             streamingUrlRepository.invalidateCachedStreamUrl(trackKey)
-            if (audioPlayerQueue.currentQueueEntryFlow.value?.jamKey() == trackKey) {
-                syncMutex.withLock {
-                    holdSync(TRACK_CHANGE_HOLD_MS)
-                    audioPlayerQueue.reloadCurrent()
-                }
-            }
+            // A cached copy of another recording would be played instead.
+            evictCachedAudio(trackKey)
+            if (audioPlayerQueue.currentQueueEntryFlow.value?.jamKey() == trackKey) reloadForNewSource(trackKey)
         }.onFailure { log.w(it) { "Failed to switch to the host's audio source" } }
+    }
+
+    /** [trackKey]'s track, from our queue or (before it has loaded) the room's. */
+    private fun roomTrack(trackKey: String): MetadataTrack? =
+        audioPlayerQueue.queueFlow.value
+            .firstNotNullOfOrNull { (it as? QueueEntry.StreamingTrack)?.track?.takeIf { t -> t.id == trackKey } }
+            ?: roomQueue?.items?.firstOrNull { it.trackId == trackKey }?.sanitized()
+                ?.let { (it.toQueueEntry() as? QueueEntry.StreamingTrack)?.track }
+
+    /**
+     * Plays the current song again from the newly pinned source. Jumping to the song that's
+     * playing only seeks within what's already loaded on Android (ExoPlayer), so the queue
+     * is reloaded at this song instead.
+     */
+    private suspend fun reloadForNewSource(trackKey: String) = syncMutex.withLock {
+        val queue = audioPlayerQueue.queueFlow.value
+        val index = queue.indexOfFirst { it.jamKey() == trackKey }.takeIf { it >= 0 } ?: return@withLock
+        holdSync(TRACK_CHANGE_HOLD_MS)
+        positionEntryKey = null
+        audioPlayerQueue.load(queue, autoPlay = anchor?.playing ?: true, startPosition = index)
+        onEntryChanged(trackKey)
     }
 
     private suspend fun setRate(rate: Float) {
@@ -750,6 +849,21 @@ class JamRoomService(
 
     // ---------- Position tracking ----------
 
+    /**
+     * A new song starts from zero. Without this, the old song's last position would carry
+     * over: a song that ends on its own doesn't make the player report a jump like a skip
+     * does, and its next report can still be the old song's.
+     */
+    private fun onEntryChanged(key: String?) {
+        if (key == positionEntryKey) return
+        positionEntryKey = key
+        entryChangedAtMs = now()
+        positionSampleMs = 0
+        positionSampledAtMs = entryChangedAtMs
+        positionAdvancing = audioPlayer.playerStateFlow.value == PlayerState.PLAYING
+        corrector.reset()
+    }
+
     /** The player's position now, extrapolated from its last (coarse) report. */
     private fun localPositionMs(): Long {
         if (!positionAdvancing) return positionSampleMs
@@ -766,6 +880,12 @@ class JamRoomService(
 
     private fun onPosition(positionMs: Long) {
         val now = now()
+        onEntryChanged(audioPlayerQueue.currentQueueEntryFlow.value?.jamKey())
+        // Right after a song change, a report can still be the old song's position.
+        val sinceChange = now - entryChangedAtMs
+        if (sinceChange < TRACK_CHANGE_HOLD_MS &&
+            positionMs > sinceChange * audioPlayer.playbackSpeedFlow.value + STALE_REPORT_SLACK_MS
+        ) return
         // A seek moves the position away from both the last report and the extrapolation;
         // a stall (or a long pause) only from the extrapolation.
         val jumped = abs(positionMs - positionSampleMs) > USER_SEEK_THRESHOLD_MS &&
@@ -876,6 +996,13 @@ class JamRoomService(
         private const val QUEUE_MIN_GAP_MS = 1_000L
         private const val ANCHOR_MIN_GAP_MS = 250L
         private const val MAX_SUGGESTED_ITEMS = 500
+        /** How many next songs the host shares its sources for. */
+        private const val UPCOMING_SOURCES = 2
+        /** How long a guest that finished a song first waits for the host to finish it too. */
+        private const val NEXT_SONG_WAIT_MS = 15_000L
+        /** "Near the end" of the room's song, allowing for recordings of different lengths. */
+        private const val NEAR_SONG_END_MS = 15_000L
+        private const val STALE_REPORT_SLACK_MS = 1_500L
         private const val HOST_DRIFT_CHECK_INTERVAL_MS = 2_000L
         private const val HOST_DRIFT_WINDOW = 5
         /** Below the guests' dead band, so the host's own error never adds up to a correction. */

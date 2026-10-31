@@ -57,19 +57,22 @@ class DeviceAudioPlayerQueue(
 
     private var isRestoringPersistedState = true
 
+    // Eagerly: callers read `.value` (the stream proxy looks up the track it's asked to play,
+    // Jam follows the room). With WhileSubscribed, `.value` went stale whenever nothing on
+    // screen was collecting, so the proxy answered "not in the queue" (404) for new tracks.
     override val queueFlow: StateFlow<List<QueueEntry>> = combine(
         audioPlayer.playlistFlow,
         entryByMediaUrl) { playlist, knownEntries ->
         playlist.map { mediaItem ->
             knownEntries[mediaItem.url] ?: mediaItem.toFallbackQueueEntry()
         }
-    }.stateIn(scope, SharingStarted.WhileSubscribed(5_000), emptyList())
+    }.stateIn(scope, SharingStarted.Eagerly, emptyList())
 
     override val currentQueueEntryFlow: StateFlow<QueueEntry?> = combine(
         audioPlayer.currentMediaItemFlow,
         entryByMediaUrl) { mediaItem, knownEntries ->
         mediaItem?.let { knownEntries[it.url] ?: it.toFallbackQueueEntry() }
-    }.stateIn(scope, SharingStarted.WhileSubscribed(5_000), null)
+    }.stateIn(scope, SharingStarted.Eagerly, null)
 
     override val currentCollectionEntryFlow: StateFlow<QueueCollectionEntry?> =
         currentCollectionEntryState.asStateFlow()
@@ -306,9 +309,14 @@ class DeviceAudioPlayerQueue(
     }
 
     private var isFetchingRecommendations = false
+    private var endlessPlaybackSuppressed = false
+
+    override fun setEndlessPlaybackSuppressed(suppressed: Boolean) {
+        endlessPlaybackSuppressed = suppressed
+    }
 
     private suspend fun handleQueueCompletion() {
-        if (isFetchingRecommendations) return
+        if (isFetchingRecommendations || endlessPlaybackSuppressed) return
 
         val settings = settingsProvider.settingsState.value ?: return
         if (!settings.enableEndlessPlayback) return
