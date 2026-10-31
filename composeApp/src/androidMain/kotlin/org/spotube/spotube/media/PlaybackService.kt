@@ -165,7 +165,7 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
         librarySession.release()
         super.onDestroy()
         // Swiping the app out of recents should fully close it: Android otherwise keeps this
-        // process cached with the proxy server, MQTT client and every singleton still alive.
+        // process cached with the proxy server, jam client and every singleton still alive.
         if (taskRemoved) Process.killProcess(Process.myPid())
     }
 

@@ -296,25 +296,11 @@
     <string name="plugin_permissions_capability_webview_title">WebView</string>
     <string name="plugin_permissions_capability_webview_desc">Exibir conteúdo da web dentro do app</string>
     <string name="settings_section_jam">Jam em grupo</string>
-    <string name="settings_jam_broker_title">Broker MQTT</string>
-    <string name="settings_jam_broker_host">Host do broker</string>
-    <string name="settings_jam_broker_host_subtitle">%1$s:%2$d</string>
-    <string name="settings_jam_broker_port">Porta do broker</string>
-    <string name="settings_jam_broker_tls">Usar TLS</string>
-    <string name="settings_jam_broker_username">Nome de usuário (opcional)</string>
-    <string name="settings_jam_broker_password">Senha (opcional)</string>
-    <string name="settings_jam_broker_client_id">Prefixo do ID do cliente</string>
-    <string name="settings_jam_broker_client_id_subtitle">Usado para identificar esta instância do Spotube</string>
-    <string name="settings_jam_broker_tls_subtitle">Criptografa a conexão com o broker</string>
-    <string name="settings_jam_broker_diagnostics_subtitle">Verifique as configurações atuais do broker antes de criar uma sala.</string>
-    <string name="settings_jam_broker_test">Testar conexão</string>
-    <string name="settings_jam_broker_testing">Testando…</string>
-    <string name="settings_jam_broker_test_ok">Conectado em %1$d ms</string>
-    <string name="settings_jam_broker_test_fail">Falhou: %1$s</string>
-    <string name="settings_jam_broker_placeholder_note">Broker provisório — configure o seu próprio para hospedar por conta própria</string>
+    <string name="settings_jam_server_test">Testar conexão</string>
+    <string name="settings_jam_server_testing">Testando…</string>
+    <string name="settings_jam_server_test_ok">Conectado em %1$d ms</string>
+    <string name="settings_jam_server_test_fail">Falhou: %1$s</string>
     <string name="settings_jam_section_connection">Conexão</string>
-    <string name="settings_jam_section_credentials">Credenciais</string>
-    <string name="settings_jam_section_identity">Identidade</string>
     <string name="settings_jam_section_diagnostics">Diagnóstico</string>
 
     <!-- Group Jam -->
@@ -327,9 +313,6 @@
     <string name="jam_setup_working">Conectando…</string>
     <string name="jam_setup_code_label">Código da sala</string>
     <string name="jam_setup_code_placeholder">ABC123</string>
-    <string name="jam_connection_host">Broker: %1$s</string>
-    <string name="jam_connection_missing">Configure um broker nas Configurações para criar ou entrar em uma sala.</string>
-    <string name="jam_connection_settings">Configurações do broker</string>
     <string name="jam_session_connected">Conectado</string>
     <string name="jam_session_connecting">Reconectando…</string>
     <string name="jam_invite_copy">Copiar código</string>
@@ -349,6 +332,28 @@
     <string name="jam_error_join">Falha ao entrar na Jam</string>
     <string name="jam_error_invalid_code">Digite um código de sala com seis caracteres, usando letras e números.</string>
     <string name="jam_share_message">Entre na minha Jam do Spotube com o código: %1$s</string>
+    <string name="settings_jam_server_title">Servidor de salas</string>
+    <string name="settings_jam_server_url">URL do servidor</string>
+    <string name="settings_jam_server_url_invalid">Digite uma URL que comece com https://</string>
+    <string name="settings_jam_server_diagnostics_subtitle">Verifique o servidor de salas antes de criar uma sala.</string>
+    <string name="settings_jam_server_note">O Jam usa o servidor de salas gratuito do Spotube. Para hospedar o seu, implante o servidor de github.com/team-spotube/jam-server e informe a URL dele.</string>
+    <string name="settings_jam_section_you">Você</string>
+    <string name="jam_connection_host">Servidor: %1$s</string>
+    <string name="jam_connection_missing">Defina um servidor de salas nas Configurações para criar ou entrar em uma sala.</string>
+    <string name="jam_connection_settings">Configurações do servidor</string>
+    <string name="jam_participants_you">%1$s (você)</string>
+    <string name="jam_name_title">Seu nome</string>
+    <string name="jam_name_subtitle">Os outros no jam veem você como %1$s</string>
+    <string name="jam_name_description">Visível para todos no jam. Deixe em branco para usar %1$s. Um novo nome vale a partir da próxima vez que você criar ou entrar em uma sala.</string>
+    <string name="jam_name_too_long">Use no máximo %1$d caracteres.</string>
+    <string name="jam_error_no_server">Nenhum servidor de jam configurado</string>
+    <string name="jam_error_server_unreachable">Não foi possível acessar o servidor de jam. Verifique sua rede ou a URL do servidor em Configurações → Jam em grupo.</string>
+    <string name="jam_error_server_incompatible">O servidor de jam usa uma versão incompatível.</string>
+    <string name="jam_error_room_not_found">Nenhuma sala com esse código. Confira e tente de novo.</string>
+    <string name="jam_error_room_full">Esta sala está cheia.</string>
+    <string name="jam_error_banned">O anfitrião baniu você desta sala.</string>
+    <string name="jam_error_kicked">O anfitrião removeu você da sala.</string>
+    <string name="jam_error_replaced">Esta sala foi aberta de novo neste dispositivo, então esta conexão foi encerrada.</string>
 
     <string name="player_go_to_album">Ir para o álbum</string>
     <string name="player_sleep_timer">Timer</string>
@@ -521,14 +526,9 @@
     <string name="jam_destination_suggest">Sugerir na Jam</string>
 
     <!-- Group Jam: connection errors -->
-    <string name="jam_error_no_broker">Nenhum broker de Jam configurado</string>
-    <string name="jam_error_broker_host_empty">O host do broker está vazio</string>
     <string name="jam_error_connection_failed">Falha na conexão</string>
     <string name="jam_error_connection_lost">Conexão perdida</string>
 
-    <!-- Settings: Group Jam broker -->
-    <string name="settings_jam_broker_content_description">Broker</string>
-    <string name="settings_jam_broker_username_placeholder">anônimo</string>
 
     <!-- Group Jam: queue snackbar -->
     <string name="jam_queue_added_track">Adicionada à fila da Jam</string>

@@ -202,7 +202,7 @@ class RemotePlaybackController(
 
     /**
      * Adds a single track to the active jam queue. The host applies it to the
-     * local (shared) queue directly; a guest suggests it to the host over MQTT.
+     * local (shared) queue directly; a guest suggests it to the host through the room server.
      */
     fun addTrackToJam(track: MetadataTrack) {
         if (jamRoomService.role.value == null) return
