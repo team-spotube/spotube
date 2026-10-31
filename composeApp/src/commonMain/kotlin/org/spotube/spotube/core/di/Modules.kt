@@ -86,6 +86,7 @@ import org.spotube.spotube.modules.update.AppUpdateService
 import org.spotube.spotube.modules.update.PluginUpdateService
 import org.spotube.spotube.modules.settings.SettingsProvider
 import org.spotube.spotube.modules.settings.SettingsRepository
+import org.spotube.spotube.modules.settings.UserSettingsStore
 import org.spotube.spotube.modules.settings.UserSettingsSource
 import org.spotube.spotube.modules.settings.SettingsViewModel
 import org.spotube.spotube.modules.settings.JamSettingsViewModel
@@ -151,7 +152,10 @@ val sharedModules = module {
     viewModelOf(::MetadataPluginGuardViewModel)
 
     // Settings
-    singleOf(::SettingsRepository) { bind<UserSettingsSource>() }
+    singleOf(::SettingsRepository) {
+        bind<UserSettingsSource>()
+        bind<UserSettingsStore>()
+    }
     viewModelOf(::SettingsViewModel) { bind<SettingsProvider>() }
     viewModelOf(::JamSettingsViewModel)
     viewModel {
@@ -283,7 +287,7 @@ val sharedModules = module {
     }
     single { RemotePlaybackController(get(), get(), get(), get(), get()) }
     singleOf(::JamRoomClient)
-    single { JamRoomService(get(), get(), get(), get()) }
+    single { JamRoomService(get(), get(), get(), get(), get(), get(), get()) }
     singleOf(::AudioPlayerQueueRepository) { bind<QueueStateRepository>() }
     single<AudioPlayerQueue> {
         DeviceAudioPlayerQueue(get(), get(), get(), get(), get())

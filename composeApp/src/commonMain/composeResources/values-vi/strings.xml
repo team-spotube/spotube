@@ -288,25 +288,11 @@
     <string name="plugin_permissions_capability_webview_title">WebView</string>
     <string name="plugin_permissions_capability_webview_desc">Hiển thị nội dung web trong ứng dụng</string>
     <string name="settings_section_jam">Jam nhóm</string>
-    <string name="settings_jam_broker_title">MQTT Broker</string>
-    <string name="settings_jam_broker_host">Máy chủ broker</string>
-    <string name="settings_jam_broker_host_subtitle">%1$s:%2$d</string>
-    <string name="settings_jam_broker_port">Cổng broker</string>
-    <string name="settings_jam_broker_tls">Dùng TLS</string>
-    <string name="settings_jam_broker_username">Tên người dùng (không bắt buộc)</string>
-    <string name="settings_jam_broker_password">Mật khẩu (không bắt buộc)</string>
-    <string name="settings_jam_broker_client_id">Tiền tố Client ID</string>
-    <string name="settings_jam_broker_client_id_subtitle">Dùng để nhận diện Spotube này</string>
-    <string name="settings_jam_broker_tls_subtitle">Mã hóa kết nối tới broker</string>
-    <string name="settings_jam_broker_diagnostics_subtitle">Kiểm tra cài đặt broker hiện tại trước khi tạo phòng.</string>
-    <string name="settings_jam_broker_test">Kiểm tra kết nối</string>
-    <string name="settings_jam_broker_testing">Đang kiểm tra…</string>
-    <string name="settings_jam_broker_test_ok">Đã kết nối trong %1$d ms</string>
-    <string name="settings_jam_broker_test_fail">Thất bại: %1$s</string>
-    <string name="settings_jam_broker_placeholder_note">Broker tạm thời — hãy cấu hình broker riêng để tự lưu trữ</string>
+    <string name="settings_jam_server_test">Kiểm tra kết nối</string>
+    <string name="settings_jam_server_testing">Đang kiểm tra…</string>
+    <string name="settings_jam_server_test_ok">Đã kết nối trong %1$d ms</string>
+    <string name="settings_jam_server_test_fail">Thất bại: %1$s</string>
     <string name="settings_jam_section_connection">Kết nối</string>
-    <string name="settings_jam_section_credentials">Thông tin đăng nhập</string>
-    <string name="settings_jam_section_identity">Danh tính</string>
     <string name="settings_jam_section_diagnostics">Chẩn đoán</string>
 
     <!-- Group Jam -->
@@ -319,9 +305,6 @@
     <string name="jam_setup_working">Đang kết nối…</string>
     <string name="jam_setup_code_label">Mã phòng</string>
     <string name="jam_setup_code_placeholder">ABC123</string>
-    <string name="jam_connection_host">Broker: %1$s</string>
-    <string name="jam_connection_missing">Hãy thiết lập broker trong Cài đặt để tạo hoặc tham gia phòng.</string>
-    <string name="jam_connection_settings">Cài đặt broker</string>
     <string name="jam_session_connected">Đã kết nối</string>
     <string name="jam_session_connecting">Đang kết nối lại…</string>
     <string name="jam_invite_copy">Sao chép mã</string>
@@ -513,14 +496,9 @@
     <string name="jam_destination_suggest">Đề xuất cho Jam</string>
 
     <!-- Group Jam: connection errors -->
-    <string name="jam_error_no_broker">Chưa cấu hình broker cho Jam</string>
-    <string name="jam_error_broker_host_empty">Máy chủ broker đang trống</string>
     <string name="jam_error_connection_failed">Kết nối thất bại</string>
     <string name="jam_error_connection_lost">Mất kết nối</string>
 
-    <!-- Settings: Group Jam broker -->
-    <string name="settings_jam_broker_content_description">Broker</string>
-    <string name="settings_jam_broker_username_placeholder">ẩn danh</string>
 
     <!-- Group Jam: queue snackbar -->
     <string name="jam_queue_added_track">Đã thêm vào danh sách chờ của Jam</string>

@@ -1,0 +1,35 @@
+name: Deploy Jam server
+
+on:
+  push:
+    branches: [master]
+    paths: ["jam-server/**"]
+  workflow_dispatch:
+
+concurrency:
+  group: jam-server-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: jam-server
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: jam-server/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - name: Deploy
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Smoke test
+        run: JAM_URL="${{ vars.JAM_SERVER_URL }}" npm test
+        if: ${{ vars.JAM_SERVER_URL != '' }}

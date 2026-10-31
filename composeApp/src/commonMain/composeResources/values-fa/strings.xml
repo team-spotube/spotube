@@ -292,25 +292,11 @@
     <string name="plugin_permissions_capability_webview_title">WebView</string>
     <string name="plugin_permissions_capability_webview_desc">نمایش محتوای وب درون برنامه</string>
     <string name="settings_section_jam">جم گروهی</string>
-    <string name="settings_jam_broker_title">بروکر MQTT</string>
-    <string name="settings_jam_broker_host">میزبان بروکر</string>
-    <string name="settings_jam_broker_host_subtitle">%1$s:%2$d</string>
-    <string name="settings_jam_broker_port">درگاه بروکر</string>
-    <string name="settings_jam_broker_tls">استفاده از TLS</string>
-    <string name="settings_jam_broker_username">نام کاربری (اختیاری)</string>
-    <string name="settings_jam_broker_password">گذرواژه (اختیاری)</string>
-    <string name="settings_jam_broker_client_id">پیشوند شناسهٔ کلاینت</string>
-    <string name="settings_jam_broker_client_id_subtitle">برای شناسایی این نسخه از Spotube استفاده می‌شود</string>
-    <string name="settings_jam_broker_tls_subtitle">رمزگذاری اتصال به بروکر</string>
-    <string name="settings_jam_broker_diagnostics_subtitle">پیش از شروع اتاق، تنظیمات فعلی بروکر را بررسی کنید.</string>
-    <string name="settings_jam_broker_test">آزمایش اتصال</string>
-    <string name="settings_jam_broker_testing">در حال آزمایش…</string>
-    <string name="settings_jam_broker_test_ok">در %1$d میلی‌ثانیه متصل شد</string>
-    <string name="settings_jam_broker_test_fail">ناموفق: %1$s</string>
-    <string name="settings_jam_broker_placeholder_note">بروکر نمونه — برای میزبانی شخصی، بروکر خودتان را پیکربندی کنید</string>
+    <string name="settings_jam_server_test">آزمایش اتصال</string>
+    <string name="settings_jam_server_testing">در حال آزمایش…</string>
+    <string name="settings_jam_server_test_ok">در %1$d میلی‌ثانیه متصل شد</string>
+    <string name="settings_jam_server_test_fail">ناموفق: %1$s</string>
     <string name="settings_jam_section_connection">اتصال</string>
-    <string name="settings_jam_section_credentials">اطلاعات ورود</string>
-    <string name="settings_jam_section_identity">هویت</string>
     <string name="settings_jam_section_diagnostics">عیب‌یابی</string>
 
     <!-- Group Jam -->
@@ -323,9 +309,6 @@
     <string name="jam_setup_working">در حال اتصال…</string>
     <string name="jam_setup_code_label">کد اتاق</string>
     <string name="jam_setup_code_placeholder">ABC123</string>
-    <string name="jam_connection_host">بروکر: %1$s</string>
-    <string name="jam_connection_missing">برای میزبانی یا پیوستن به اتاق، یک بروکر در تنظیمات راه‌اندازی کنید.</string>
-    <string name="jam_connection_settings">تنظیمات بروکر</string>
     <string name="jam_session_connected">متصل</string>
     <string name="jam_session_connecting">در حال اتصال دوباره…</string>
     <string name="jam_invite_copy">کپی کد</string>
@@ -517,14 +500,9 @@
     <string name="jam_destination_suggest">پیشنهاد به جم</string>
 
     <!-- Group Jam: connection errors -->
-    <string name="jam_error_no_broker">هیچ بروکر جمی پیکربندی نشده است</string>
-    <string name="jam_error_broker_host_empty">میزبان بروکر خالی است</string>
     <string name="jam_error_connection_failed">اتصال ناموفق بود</string>
     <string name="jam_error_connection_lost">اتصال قطع شد</string>
 
-    <!-- Settings: Group Jam broker -->
-    <string name="settings_jam_broker_content_description">بروکر</string>
-    <string name="settings_jam_broker_username_placeholder">ناشناس</string>
 
     <!-- Group Jam: queue snackbar -->
     <string name="jam_queue_added_track">به صف جم اضافه شد</string>

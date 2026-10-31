@@ -288,25 +288,11 @@
     <string name="plugin_permissions_capability_webview_title">WebView</string>
     <string name="plugin_permissions_capability_webview_desc">แสดงเนื้อหาเว็บภายในแอป</string>
     <string name="settings_section_jam">แจมกลุ่ม</string>
-    <string name="settings_jam_broker_title">MQTT Broker</string>
-    <string name="settings_jam_broker_host">โฮสต์ของ Broker</string>
-    <string name="settings_jam_broker_host_subtitle">%1$s:%2$d</string>
-    <string name="settings_jam_broker_port">พอร์ตของ Broker</string>
-    <string name="settings_jam_broker_tls">ใช้ TLS</string>
-    <string name="settings_jam_broker_username">ชื่อผู้ใช้ (ไม่บังคับ)</string>
-    <string name="settings_jam_broker_password">รหัสผ่าน (ไม่บังคับ)</string>
-    <string name="settings_jam_broker_client_id">คำนำหน้า Client ID</string>
-    <string name="settings_jam_broker_client_id_subtitle">ใช้เพื่อระบุ Spotube เครื่องนี้</string>
-    <string name="settings_jam_broker_tls_subtitle">เข้ารหัสการเชื่อมต่อกับ Broker</string>
-    <string name="settings_jam_broker_diagnostics_subtitle">ตรวจสอบการตั้งค่า Broker ปัจจุบันก่อนเริ่มห้อง</string>
-    <string name="settings_jam_broker_test">ทดสอบการเชื่อมต่อ</string>
-    <string name="settings_jam_broker_testing">กำลังทดสอบ…</string>
-    <string name="settings_jam_broker_test_ok">เชื่อมต่อแล้วใน %1$d ms</string>
-    <string name="settings_jam_broker_test_fail">ล้มเหลว: %1$s</string>
-    <string name="settings_jam_broker_placeholder_note">Broker ตัวอย่าง — กำหนดค่าของคุณเองเพื่อโฮสต์เอง</string>
+    <string name="settings_jam_server_test">ทดสอบการเชื่อมต่อ</string>
+    <string name="settings_jam_server_testing">กำลังทดสอบ…</string>
+    <string name="settings_jam_server_test_ok">เชื่อมต่อแล้วใน %1$d ms</string>
+    <string name="settings_jam_server_test_fail">ล้มเหลว: %1$s</string>
     <string name="settings_jam_section_connection">การเชื่อมต่อ</string>
-    <string name="settings_jam_section_credentials">ข้อมูลเข้าสู่ระบบ</string>
-    <string name="settings_jam_section_identity">ตัวตน</string>
     <string name="settings_jam_section_diagnostics">การวินิจฉัย</string>
 
     <!-- Group Jam -->
@@ -319,9 +305,6 @@
     <string name="jam_setup_working">กำลังเชื่อมต่อ…</string>
     <string name="jam_setup_code_label">รหัสห้อง</string>
     <string name="jam_setup_code_placeholder">ABC123</string>
-    <string name="jam_connection_host">Broker: %1$s</string>
-    <string name="jam_connection_missing">ตั้งค่า Broker ในการตั้งค่าเพื่อสร้างหรือเข้าร่วมห้อง</string>
-    <string name="jam_connection_settings">การตั้งค่า Broker</string>
     <string name="jam_session_connected">เชื่อมต่อแล้ว</string>
     <string name="jam_session_connecting">กำลังเชื่อมต่อใหม่…</string>
     <string name="jam_invite_copy">คัดลอกรหัส</string>
@@ -513,14 +496,9 @@
     <string name="jam_destination_suggest">เสนอให้แจม</string>
 
     <!-- Group Jam: connection errors -->
-    <string name="jam_error_no_broker">ยังไม่ได้กำหนดค่า Broker สำหรับแจม</string>
-    <string name="jam_error_broker_host_empty">โฮสต์ของ Broker ว่างอยู่</string>
     <string name="jam_error_connection_failed">การเชื่อมต่อล้มเหลว</string>
     <string name="jam_error_connection_lost">การเชื่อมต่อขาดหาย</string>
 
-    <!-- Settings: Group Jam broker -->
-    <string name="settings_jam_broker_content_description">Broker</string>
-    <string name="settings_jam_broker_username_placeholder">anonymous</string>
 
     <!-- Group Jam: queue snackbar -->
     <string name="jam_queue_added_track">เพิ่มลงในคิวแจมแล้ว</string>

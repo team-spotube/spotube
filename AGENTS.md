@@ -26,6 +26,14 @@
 - Never call `HttpClient(...)` directly. Inject `HttpClientFactory` (`commonMain/.../core/network/HttpClientFactory.kt`, a Koin single) and use `.default` / `.json` (shared, never close them) or `.create { ... }` for extra plugins (caller owns and may close it). It owns the one engine-backed client, so the platform default engine is used everywhere (Darwin on iOS, OkHttp on Android/desktop).
 - Do not add `ktor-client-cio`: on iOS it competes with Darwin as the default engine and has no TLS on Kotlin/Native, so every HTTPS request fails.
 
+## Group Jam
+- Room server: `jam-server/` (Cloudflare Worker + one Durable Object per six-letter room code, TypeScript, wrangler). It relays/retains small JSON frames and serves the clock; no audio passes through it. Protocol in `jam-server/src/protocol.ts`; keep it in sync with the wire frames in `core/jam/JamRoomClient.kt` (bump `PROTOCOL_VERSION` on both sides for breaking changes).
+- App side: `core/jam/` — `JamRoomClient` (Ktor WebSocket, reconnects, keep-alives, clock pings), `JamClock`/`JamDriftCorrector` (sync math), `JamRoomService` (host broadcasts queue + playback anchors in server time; guests follow by nudging playback rate, seeking only when far off).
+- Cost and battery: the room is billed per incoming message and storage write, and on phones each transmission wakes the cellular radio. Don't add periodic frames or polling. Keep-alives go out once a minute. Guests' sync loop sleeps while the room is paused or buffering, and the host checks its own drift only while playing. Anchors go out on change (plus host drift and a 60 s heartbeat), keep-alives are runtime auto-responses, and anchors aren't persisted. See `jam-server/README.md`.
+- A network drop must never crash the app: `JamRoomClient.pump` turns socket failures into a reconnect. `JamSessionSimulationTest.roomSurvivesNetworkLoss` cuts the network with `TcpProxy`.
+- Server URL setting: `UserSettings.jamServerUrl` (default `DEFAULT_JAM_SERVER_URL` in `SettingsModels.kt`).
+- Tests: `JamSyncTest` (pure), plus `JamRoomClientIntegrationTest` and `JamSessionSimulationTest`, which only run with `JAM_TEST_URL` set (start `npm run dev` in `jam-server/`).
+
 ## GraalVM native image (desktop)
 - Enabled via `graalvm { }` inside `nucleus.application` in `composeApp/build.gradle.kts`. Nucleus downloads GraalVM CE itself (or uses `$GRAALVM_HOME`). Linux needs `gcc` + `patchelf`.
 - Build: `:composeApp:createGraalvmNativeDistributable` (output `composeApp/build/compose/binaries/main/graalvm-app/`), installers via `packageGraalvm{Deb,Rpm,AppImage,Dmg,Msi,Exe}`. A build takes ~10 min and uses all cores and ~15 GB RAM.

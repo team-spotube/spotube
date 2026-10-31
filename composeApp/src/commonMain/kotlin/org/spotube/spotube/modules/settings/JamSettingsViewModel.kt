@@ -28,9 +28,12 @@ class JamSettingsViewModel(
         }
     }
 
-    fun update(transform: UserSettings.() -> UserSettings) {
+    /** A blank URL goes back to the public server. */
+    fun setServerUrl(url: String) {
         viewModelScope.launch {
-            settingsRepository.updateSettings(uiState.value.settings.transform())
+            val serverUrl = url.trim().trimEnd('/').ifBlank { DEFAULT_JAM_SERVER_URL }
+            settingsRepository.updateSettings(uiState.value.settings.copy(jamServerUrl = serverUrl))
+            _uiState.update { it.copy(testResult = null) }
         }
     }
 
@@ -39,7 +42,7 @@ class JamSettingsViewModel(
         _uiState.update { it.copy(isTesting = true, testResult = null) }
         viewModelScope.launch {
             try {
-                val result = jamRoomClient.testConnection(uiState.value.settings.jamBroker)
+                val result = jamRoomClient.testConnection(uiState.value.settings.jamServerUrl)
                 _uiState.update { it.copy(testResult = result) }
             } finally {
                 _uiState.update { it.copy(isTesting = false) }

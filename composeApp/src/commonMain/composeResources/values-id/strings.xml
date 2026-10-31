@@ -288,25 +288,11 @@
     <string name="plugin_permissions_capability_webview_title">WebView</string>
     <string name="plugin_permissions_capability_webview_desc">Menampilkan konten web di dalam aplikasi</string>
     <string name="settings_section_jam">Jam Grup</string>
-    <string name="settings_jam_broker_title">Broker MQTT</string>
-    <string name="settings_jam_broker_host">Host broker</string>
-    <string name="settings_jam_broker_host_subtitle">%1$s:%2$d</string>
-    <string name="settings_jam_broker_port">Port broker</string>
-    <string name="settings_jam_broker_tls">Gunakan TLS</string>
-    <string name="settings_jam_broker_username">Nama pengguna (opsional)</string>
-    <string name="settings_jam_broker_password">Kata sandi (opsional)</string>
-    <string name="settings_jam_broker_client_id">Prefiks ID klien</string>
-    <string name="settings_jam_broker_client_id_subtitle">Dipakai untuk mengidentifikasi Spotube ini</string>
-    <string name="settings_jam_broker_tls_subtitle">Enkripsi koneksi broker</string>
-    <string name="settings_jam_broker_diagnostics_subtitle">Periksa pengaturan broker saat ini sebelum memulai ruang.</string>
-    <string name="settings_jam_broker_test">Uji koneksi</string>
-    <string name="settings_jam_broker_testing">Menguji…</string>
-    <string name="settings_jam_broker_test_ok">Terhubung dalam %1$d ms</string>
-    <string name="settings_jam_broker_test_fail">Gagal: %1$s</string>
-    <string name="settings_jam_broker_placeholder_note">Broker sementara — konfigurasikan milikmu sendiri untuk self-host</string>
+    <string name="settings_jam_server_test">Uji koneksi</string>
+    <string name="settings_jam_server_testing">Menguji…</string>
+    <string name="settings_jam_server_test_ok">Terhubung dalam %1$d ms</string>
+    <string name="settings_jam_server_test_fail">Gagal: %1$s</string>
     <string name="settings_jam_section_connection">Koneksi</string>
-    <string name="settings_jam_section_credentials">Kredensial</string>
-    <string name="settings_jam_section_identity">Identitas</string>
     <string name="settings_jam_section_diagnostics">Diagnostik</string>
 
     <!-- Group Jam -->
@@ -319,9 +305,6 @@
     <string name="jam_setup_working">Menghubungkan…</string>
     <string name="jam_setup_code_label">Kode ruang</string>
     <string name="jam_setup_code_placeholder">ABC123</string>
-    <string name="jam_connection_host">Broker: %1$s</string>
-    <string name="jam_connection_missing">Atur broker di Pengaturan untuk membuat atau bergabung ke ruang.</string>
-    <string name="jam_connection_settings">Pengaturan broker</string>
     <string name="jam_session_connected">Terhubung</string>
     <string name="jam_session_connecting">Menghubungkan ulang…</string>
     <string name="jam_invite_copy">Salin kode</string>
@@ -513,14 +496,9 @@
     <string name="jam_destination_suggest">Sarankan ke Jam</string>
 
     <!-- Group Jam: connection errors -->
-    <string name="jam_error_no_broker">Belum ada broker Jam yang dikonfigurasi</string>
-    <string name="jam_error_broker_host_empty">Host broker kosong</string>
     <string name="jam_error_connection_failed">Koneksi gagal</string>
     <string name="jam_error_connection_lost">Koneksi terputus</string>
 
-    <!-- Settings: Group Jam broker -->
-    <string name="settings_jam_broker_content_description">Broker</string>
-    <string name="settings_jam_broker_username_placeholder">anonim</string>
 
     <!-- Group Jam: queue snackbar -->
     <string name="jam_queue_added_track">Ditambahkan ke antrean Jam</string>

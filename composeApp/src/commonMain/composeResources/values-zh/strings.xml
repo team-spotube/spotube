@@ -288,25 +288,11 @@
     <string name="plugin_permissions_capability_webview_title">WebView</string>
     <string name="plugin_permissions_capability_webview_desc">在应用内显示网页内容</string>
     <string name="settings_section_jam">一起听</string>
-    <string name="settings_jam_broker_title">MQTT 代理服务器</string>
-    <string name="settings_jam_broker_host">代理服务器主机</string>
-    <string name="settings_jam_broker_host_subtitle">%1$s:%2$d</string>
-    <string name="settings_jam_broker_port">代理服务器端口</string>
-    <string name="settings_jam_broker_tls">使用 TLS</string>
-    <string name="settings_jam_broker_username">用户名（可选）</string>
-    <string name="settings_jam_broker_password">密码（可选）</string>
-    <string name="settings_jam_broker_client_id">客户端 ID 前缀</string>
-    <string name="settings_jam_broker_client_id_subtitle">用于识别此 Spotube 实例</string>
-    <string name="settings_jam_broker_tls_subtitle">加密与代理服务器的连接</string>
-    <string name="settings_jam_broker_diagnostics_subtitle">创建房间前，检查当前的代理服务器设置。</string>
-    <string name="settings_jam_broker_test">测试连接</string>
-    <string name="settings_jam_broker_testing">正在测试…</string>
-    <string name="settings_jam_broker_test_ok">已连接，耗时 %1$d 毫秒</string>
-    <string name="settings_jam_broker_test_fail">失败：%1$s</string>
-    <string name="settings_jam_broker_placeholder_note">占位代理服务器 — 如需自托管，请配置你自己的服务器</string>
+    <string name="settings_jam_server_test">测试连接</string>
+    <string name="settings_jam_server_testing">正在测试…</string>
+    <string name="settings_jam_server_test_ok">已连接，耗时 %1$d 毫秒</string>
+    <string name="settings_jam_server_test_fail">失败：%1$s</string>
     <string name="settings_jam_section_connection">连接</string>
-    <string name="settings_jam_section_credentials">凭据</string>
-    <string name="settings_jam_section_identity">身份</string>
     <string name="settings_jam_section_diagnostics">诊断</string>
 
     <!-- Group Jam -->
@@ -319,9 +305,6 @@
     <string name="jam_setup_working">正在连接…</string>
     <string name="jam_setup_code_label">房间码</string>
     <string name="jam_setup_code_placeholder">ABC123</string>
-    <string name="jam_connection_host">代理服务器：%1$s</string>
-    <string name="jam_connection_missing">请先在设置中配置代理服务器，才能创建或加入房间。</string>
-    <string name="jam_connection_settings">代理服务器设置</string>
     <string name="jam_session_connected">已连接</string>
     <string name="jam_session_connecting">正在重新连接…</string>
     <string name="jam_invite_copy">复制房间码</string>
@@ -513,14 +496,9 @@
     <string name="jam_destination_suggest">推荐到一起听</string>
 
     <!-- Group Jam: connection errors -->
-    <string name="jam_error_no_broker">未配置一起听代理服务器</string>
-    <string name="jam_error_broker_host_empty">代理服务器主机为空</string>
     <string name="jam_error_connection_failed">连接失败</string>
     <string name="jam_error_connection_lost">连接已断开</string>
 
-    <!-- Settings: Group Jam broker -->
-    <string name="settings_jam_broker_content_description">代理服务器</string>
-    <string name="settings_jam_broker_username_placeholder">anonymous</string>
 
     <!-- Group Jam: queue snackbar -->
     <string name="jam_queue_added_track">已添加到一起听队列</string>

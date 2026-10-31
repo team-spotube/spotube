@@ -139,7 +139,7 @@ fun JamScreen(navigationCommands: NavigationCommands) {
                         viewModel::joinSession
                     )
                 }
-                BrokerStatus(state) { navigationCommands.navigateTo(Routes.JamSettings) }
+                ServerStatus(state) { navigationCommands.navigateTo(Routes.JamSettings) }
             }
         }
     }
@@ -461,16 +461,16 @@ internal fun SessionPanel(
 }
 
 @Composable
-internal fun BrokerStatus(state: JamUiState, onConfigure: () -> Unit) {
+internal fun ServerStatus(state: JamUiState, onConfigure: () -> Unit) {
     Row(
         Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            if (state.brokerConfigured) stringResource(
+            if (state.serverConfigured) stringResource(
                 Res.string.jam_connection_host,
-                state.brokerHost
+                state.serverHost
             ) else stringResource(Res.string.jam_connection_missing),
             style = AppTheme.typography.bodySmall,
             color = AppTheme.colors.onSurfaceVariant,

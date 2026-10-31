@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "spotube-jam",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "observability": { "enabled": true },
+  "durable_objects": {
+    "bindings": [{ "name": "JAM_ROOM", "class_name": "JamRoom" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["JamRoom"] }],
+  // Room connects per client IP; stops code guessing from waking (and billing) rooms.
+  "ratelimits": [
+    { "name": "CONNECT_LIMITER", "namespace_id": "1001", "simple": { "limit": 60, "period": 60 } }
+  ]
+}

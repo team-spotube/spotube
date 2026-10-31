@@ -288,25 +288,11 @@
     <string name="plugin_permissions_capability_webview_title">WebView</string>
     <string name="plugin_permissions_capability_webview_desc">アプリ内でのWebコンテンツの表示</string>
     <string name="settings_section_jam">グループジャム</string>
-    <string name="settings_jam_broker_title">MQTTブローカー</string>
-    <string name="settings_jam_broker_host">ブローカーのホスト</string>
-    <string name="settings_jam_broker_host_subtitle">%1$s:%2$d</string>
-    <string name="settings_jam_broker_port">ブローカーのポート</string>
-    <string name="settings_jam_broker_tls">TLSを使用</string>
-    <string name="settings_jam_broker_username">ユーザー名 (任意)</string>
-    <string name="settings_jam_broker_password">パスワード (任意)</string>
-    <string name="settings_jam_broker_client_id">クライアントIDのプレフィックス</string>
-    <string name="settings_jam_broker_client_id_subtitle">このSpotubeを識別するために使用されます</string>
-    <string name="settings_jam_broker_tls_subtitle">ブローカーとの接続を暗号化します</string>
-    <string name="settings_jam_broker_diagnostics_subtitle">ルームを開始する前に、現在のブローカー設定を確認します。</string>
-    <string name="settings_jam_broker_test">接続をテスト</string>
-    <string name="settings_jam_broker_testing">テスト中…</string>
-    <string name="settings_jam_broker_test_ok">%1$d msで接続しました</string>
-    <string name="settings_jam_broker_test_fail">失敗: %1$s</string>
-    <string name="settings_jam_broker_placeholder_note">仮のブローカーです。セルフホストするには独自のブローカーを設定してください</string>
+    <string name="settings_jam_server_test">接続をテスト</string>
+    <string name="settings_jam_server_testing">テスト中…</string>
+    <string name="settings_jam_server_test_ok">%1$d msで接続しました</string>
+    <string name="settings_jam_server_test_fail">失敗: %1$s</string>
     <string name="settings_jam_section_connection">接続</string>
-    <string name="settings_jam_section_credentials">認証情報</string>
-    <string name="settings_jam_section_identity">識別情報</string>
     <string name="settings_jam_section_diagnostics">診断</string>
 
     <!-- Group Jam -->
@@ -319,9 +305,6 @@
     <string name="jam_setup_working">接続中…</string>
     <string name="jam_setup_code_label">ルームコード</string>
     <string name="jam_setup_code_placeholder">ABC123</string>
-    <string name="jam_connection_host">ブローカー: %1$s</string>
-    <string name="jam_connection_missing">ルームを主催または参加するには、設定でブローカーを設定してください。</string>
-    <string name="jam_connection_settings">ブローカー設定</string>
     <string name="jam_session_connected">接続済み</string>
     <string name="jam_session_connecting">再接続中…</string>
     <string name="jam_invite_copy">コードをコピー</string>
@@ -513,14 +496,9 @@
     <string name="jam_destination_suggest">ジャムに提案</string>
 
     <!-- Group Jam: connection errors -->
-    <string name="jam_error_no_broker">ジャム用ブローカーが設定されていません</string>
-    <string name="jam_error_broker_host_empty">ブローカーのホストが空です</string>
     <string name="jam_error_connection_failed">接続に失敗しました</string>
     <string name="jam_error_connection_lost">接続が切断されました</string>
 
-    <!-- Settings: Group Jam broker -->
-    <string name="settings_jam_broker_content_description">ブローカー</string>
-    <string name="settings_jam_broker_username_placeholder">anonymous</string>
 
     <!-- Group Jam: queue snackbar -->
     <string name="jam_queue_added_track">ジャムのキューに追加しました</string>

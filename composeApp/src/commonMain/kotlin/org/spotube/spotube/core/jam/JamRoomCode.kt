@@ -21,7 +21,7 @@ import kotlin.random.Random
 
 /**
  * Six-character room codes shared verbally / by text. Codes are opaque keys used
- * to namespace the MQTT topics of a jam room — they carry no connection details.
+ * to name a jam room on the room server — they carry no connection details.
  *
  * The alphabet excludes look-alike characters (I, O, 0, 1) so codes are easy to
  * read aloud and retype.

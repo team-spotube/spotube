@@ -24,8 +24,7 @@ import org.spotube.spotube.resources.iconsax.CustomServer
 import org.spotube.spotube.resources.iconsax.Iconsax
 import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.Res
-import spotube.composeapp.generated.resources.settings_jam_broker_host_subtitle
-import spotube.composeapp.generated.resources.settings_jam_broker_title
+import spotube.composeapp.generated.resources.settings_jam_server_title
 import spotube.composeapp.generated.resources.settings_section_jam
 
 internal fun LazyListScope.jamSection(
@@ -36,20 +35,17 @@ internal fun LazyListScope.jamSection(
         items = listOf(
             {
                 SettingCardItem(
-                    title = stringResource(Res.string.settings_jam_broker_title),
-                    subtitle = stringResource(
-                        Res.string.settings_jam_broker_host_subtitle,
-                        settings.jamBroker.host.ifBlank { "—" },
-                        settings.jamBroker.port),
+                    title = stringResource(Res.string.settings_jam_server_title),
+                    subtitle = settings.jamServerUrl,
                     icon = {
                         SettingsItemIcon(
                             Iconsax.CustomServer,
-                            stringResource(Res.string.settings_jam_broker_title))
+                            stringResource(Res.string.settings_jam_server_title))
                     },
                     trailingContent = {
                         MillenniumIcon(
                             imageVector = FeatherIcons.ChevronRight,
-                            contentDescription = stringResource(Res.string.settings_jam_broker_title),
+                            contentDescription = stringResource(Res.string.settings_jam_server_title),
                             tint = AppTheme.colors.onSurfaceVariant)
                     },
                     onClick = { navigationCommands.navigateTo(Routes.JamSettings) })

@@ -310,25 +310,16 @@
     <string name="plugin_permissions_capability_webview_title">WebView</string>
     <string name="plugin_permissions_capability_webview_desc">Display web content inside the app</string>
     <string name="settings_section_jam">Group Jam</string>
-    <string name="settings_jam_broker_title">MQTT Broker</string>
-    <string name="settings_jam_broker_host">Broker host</string>
-    <string name="settings_jam_broker_host_subtitle">%1$s:%2$d</string>
-    <string name="settings_jam_broker_port">Broker port</string>
-    <string name="settings_jam_broker_tls">Use TLS</string>
-    <string name="settings_jam_broker_username">Username (optional)</string>
-    <string name="settings_jam_broker_password">Password (optional)</string>
-    <string name="settings_jam_broker_client_id">Client ID prefix</string>
-    <string name="settings_jam_broker_client_id_subtitle">Used to identify this Spotube instance</string>
-    <string name="settings_jam_broker_tls_subtitle">Encrypt the broker connection</string>
-    <string name="settings_jam_broker_diagnostics_subtitle">Check the current broker settings before starting a room.</string>
-    <string name="settings_jam_broker_test">Test connection</string>
-    <string name="settings_jam_broker_testing">Testing…</string>
-    <string name="settings_jam_broker_test_ok">Connected in %1$d ms</string>
-    <string name="settings_jam_broker_test_fail">Failed: %1$s</string>
-    <string name="settings_jam_broker_placeholder_note">Placeholder broker — configure your own to self-host</string>
+    <string name="settings_jam_server_title">Room server</string>
+    <string name="settings_jam_server_url">Server URL</string>
+    <string name="settings_jam_server_url_invalid">Enter a URL starting with https://</string>
+    <string name="settings_jam_server_diagnostics_subtitle">Check the room server before starting a room.</string>
+    <string name="settings_jam_server_note">Jam uses Spotube’s free room server. To self-host, deploy jam-server from the Spotube repository and enter its URL.</string>
+    <string name="settings_jam_server_test">Test connection</string>
+    <string name="settings_jam_server_testing">Testing…</string>
+    <string name="settings_jam_server_test_ok">Connected in %1$d ms</string>
+    <string name="settings_jam_server_test_fail">Failed: %1$s</string>
     <string name="settings_jam_section_connection">Connection</string>
-    <string name="settings_jam_section_credentials">Credentials</string>
-    <string name="settings_jam_section_identity">Identity</string>
     <string name="settings_jam_section_diagnostics">Diagnostics</string>
 
     <!-- Group Jam -->
@@ -341,9 +332,9 @@
     <string name="jam_setup_working">Connecting…</string>
     <string name="jam_setup_code_label">Room code</string>
     <string name="jam_setup_code_placeholder">ABC123</string>
-    <string name="jam_connection_host">Broker: %1$s</string>
-    <string name="jam_connection_missing">Set up a broker in Settings to host or join a room.</string>
-    <string name="jam_connection_settings">Broker settings</string>
+    <string name="jam_connection_host">Server: %1$s</string>
+    <string name="jam_connection_missing">Set a room server in Settings to host or join a room.</string>
+    <string name="jam_connection_settings">Server settings</string>
     <string name="jam_session_connected">Connected</string>
     <string name="jam_session_connecting">Reconnecting…</string>
     <string name="jam_invite_copy">Copy code</string>
@@ -549,15 +540,17 @@
     <string name="jam_destination_suggest">Suggest to Jam</string>
 
     <!-- Group Jam: connection errors -->
-    <string name="jam_error_no_broker">No jam broker configured</string>
-    <string name="jam_error_broker_host_empty">Broker host is empty</string>
+    <string name="jam_error_no_server">No jam server configured</string>
+    <string name="jam_error_server_unreachable">Couldn’t reach the jam server. Check your network or the server URL in Settings → Jam.</string>
+    <string name="jam_error_server_incompatible">The jam server runs an incompatible version.</string>
+    <string name="jam_error_room_not_found">No room with that code. Check it and try again.</string>
+    <string name="jam_error_room_full">This room is full.</string>
+    <string name="jam_error_banned">The host banned you from this room.</string>
+    <string name="jam_error_kicked">The host removed you from the room.</string>
+    <string name="jam_error_replaced">You joined this room from another device.</string>
     <string name="jam_error_connection_failed">Connection failed</string>
     <string name="jam_error_connection_lost">Connection lost</string>
-    <string name="jam_error_broker_unreachable">Couldn't reach %1$s:%2$d. Check your network or pick another broker in Settings → Jam.</string>
 
-    <!-- Settings: Group Jam broker -->
-    <string name="settings_jam_broker_content_description">Broker</string>
-    <string name="settings_jam_broker_username_placeholder">anonymous</string>
 
     <!-- Group Jam: queue snackbar -->
     <string name="jam_queue_added_track">Added to the jam queue</string>

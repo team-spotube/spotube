@@ -291,25 +291,11 @@
     <string name="plugin_permissions_capability_webview_title">WebView</string>
     <string name="plugin_permissions_capability_webview_desc">ऐप के अंदर वेब कंटेंट दिखाएं</string>
     <string name="settings_section_jam">ग्रुप जैम</string>
-    <string name="settings_jam_broker_title">MQTT ब्रोकर</string>
-    <string name="settings_jam_broker_host">ब्रोकर होस्ट</string>
-    <string name="settings_jam_broker_host_subtitle">%1$s:%2$d</string>
-    <string name="settings_jam_broker_port">ब्रोकर पोर्ट</string>
-    <string name="settings_jam_broker_tls">TLS इस्तेमाल करें</string>
-    <string name="settings_jam_broker_username">यूज़रनेम (वैकल्पिक)</string>
-    <string name="settings_jam_broker_password">पासवर्ड (वैकल्पिक)</string>
-    <string name="settings_jam_broker_client_id">क्लाइंट ID प्रीफ़िक्स</string>
-    <string name="settings_jam_broker_client_id_subtitle">इस Spotube की पहचान के लिए इस्तेमाल होता है</string>
-    <string name="settings_jam_broker_tls_subtitle">ब्रोकर कनेक्शन एन्क्रिप्ट करें</string>
-    <string name="settings_jam_broker_diagnostics_subtitle">रूम शुरू करने से पहले मौजूदा ब्रोकर सेटिंग जांचें।</string>
-    <string name="settings_jam_broker_test">कनेक्शन टेस्ट करें</string>
-    <string name="settings_jam_broker_testing">टेस्ट हो रहा है…</string>
-    <string name="settings_jam_broker_test_ok">%1$d ms में कनेक्ट हुआ</string>
-    <string name="settings_jam_broker_test_fail">विफल: %1$s</string>
-    <string name="settings_jam_broker_placeholder_note">प्लेसहोल्डर ब्रोकर — खुद होस्ट करने के लिए अपना ब्रोकर सेट करें</string>
+    <string name="settings_jam_server_test">कनेक्शन टेस्ट करें</string>
+    <string name="settings_jam_server_testing">टेस्ट हो रहा है…</string>
+    <string name="settings_jam_server_test_ok">%1$d ms में कनेक्ट हुआ</string>
+    <string name="settings_jam_server_test_fail">विफल: %1$s</string>
     <string name="settings_jam_section_connection">कनेक्शन</string>
-    <string name="settings_jam_section_credentials">क्रेडेंशियल</string>
-    <string name="settings_jam_section_identity">पहचान</string>
     <string name="settings_jam_section_diagnostics">डायग्नोस्टिक्स</string>
 
     <!-- Group Jam -->
@@ -322,9 +308,6 @@
     <string name="jam_setup_working">कनेक्ट हो रहा है…</string>
     <string name="jam_setup_code_label">रूम कोड</string>
     <string name="jam_setup_code_placeholder">ABC123</string>
-    <string name="jam_connection_host">ब्रोकर: %1$s</string>
-    <string name="jam_connection_missing">रूम होस्ट करने या उससे जुड़ने के लिए सेटिंग में ब्रोकर सेट करें।</string>
-    <string name="jam_connection_settings">ब्रोकर सेटिंग</string>
     <string name="jam_session_connected">कनेक्ट है</string>
     <string name="jam_session_connecting">फिर से कनेक्ट हो रहा है…</string>
     <string name="jam_invite_copy">कोड कॉपी करें</string>
@@ -516,14 +499,9 @@
     <string name="jam_destination_suggest">जैम में सुझाएं</string>
 
     <!-- Group Jam: connection errors -->
-    <string name="jam_error_no_broker">कोई जैम ब्रोकर सेट नहीं है</string>
-    <string name="jam_error_broker_host_empty">ब्रोकर होस्ट खाली है</string>
     <string name="jam_error_connection_failed">कनेक्शन विफल</string>
     <string name="jam_error_connection_lost">कनेक्शन टूट गया</string>
 
-    <!-- Settings: Group Jam broker -->
-    <string name="settings_jam_broker_content_description">ब्रोकर</string>
-    <string name="settings_jam_broker_username_placeholder">anonymous</string>
 
     <!-- Group Jam: queue snackbar -->
     <string name="jam_queue_added_track">जैम कतार में जोड़ा गया</string>

@@ -20,91 +20,73 @@ package org.spotube.spotube.core.jam
 import org.spotube.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import org.spotube.spotube.core.audioplayer.MediaItem
 import org.spotube.spotube.core.audioplayer.QueueEntry
+import org.spotube.spotube.core.server.PluginTaggedAudioSource
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Jam messages exchanged over MQTT.
+ * Room payloads. The server only routes and retains them; their shape is owned here.
  *
- * - `state` topic: [QueueState] (retained, host -> everyone)
- * - `cmd` topic: [PlaybackCommand], [Kick], [SuggestTrack], [SuggestPlaylist]
- *   (anyone -> host, except Kick which is host -> guest)
- * - `presence/{clientId}` topic: [JamPresence] (retained, one per participant)
+ * - [JamQueue] (retained, host -> everyone): the shared queue.
+ * - [JamAnchor] (retained, host -> everyone): where playback is, in server time.
+ * - [JamCommand] (guest -> host): playback control and suggestions.
  */
 @Serializable
-sealed class JamMessage {
-    @Serializable
-    @SerialName("queueState")
-    data class QueueState(
-        val items: List<JamMediaItem>,
-        val currentIndex: Int,
-        val shuffleEnabled: Boolean = false,
-        /**
-         * Whether guests should follow the host's current index. True when the
-         * host manually skipped/jumped or loaded a queue; false when the host
-         * merely auto-advanced because its song ended (guests stay put).
-         */
-        val follow: Boolean = false,
-        /** Room-wide play/pause; guests follow every change of it. */
-        val isPlaying: Boolean = false) : JamMessage()
-
-    @Serializable
-    @SerialName("playbackCommand")
-    data class PlaybackCommand(val command: PlaybackCmd) : JamMessage()
-
-    @Serializable
-    @SerialName("suggestTrack")
-    data class SuggestTrack(
-        val mediaItem: JamMediaItem,
-        val addedBy: String = "") : JamMessage()
-
-    @Serializable
-    @SerialName("suggestPlaylist")
-    data class SuggestPlaylist(
-        val tracks: List<JamMediaItem>,
-        val addedBy: String = "") : JamMessage()
-
-    @Serializable
-    @SerialName("kick")
-    data class Kick(
-        val participantId: String,
-        val reason: String = "kicked") : JamMessage()
-
-    @Serializable
-    @SerialName("leave")
-    data class Leave(val reason: String = "user_left") : JamMessage()
-}
+data class JamQueue(
+    val items: List<JamMediaItem>,
+    val shuffleEnabled: Boolean = false)
 
 /**
- * Playback commands. Queue navigation and play/pause are global — seek,
- * volume, shuffle and loop are local to each participant.
+ * A playback anchor: track [trackKey] (at queue [index]) was at [positionMs] at server
+ * time [serverTimeMs]. While [advancing], everyone extrapolates the position from it at
+ * [rate]; a buffering host sends a non-advancing anchor so guests don't run ahead.
  */
 @Serializable
-sealed class PlaybackCmd {
+data class JamAnchor(
+    val trackKey: String,
+    val index: Int,
+    val positionMs: Long,
+    val serverTimeMs: Long,
+    /** Room-wide play/pause intent; guests follow every change of it. */
+    val playing: Boolean,
+    val advancing: Boolean = playing,
+    val rate: Float = 1f,
+    /** The audio source the host plays [trackKey] from, so guests stream the same file. */
+    val source: PluginTaggedAudioSource? = null) {
+    /** The room's position at server time [serverNowMs]. */
+    fun positionAt(serverNowMs: Long): Long =
+        if (advancing) positionMs + ((serverNowMs - serverTimeMs) * rate).toLong() else positionMs
+}
+
+/** Playback control and suggestions. Volume, loop and the local queue view stay local. */
+@Serializable
+sealed class JamCommand {
     @Serializable
     @SerialName("setPlaying")
-    data class SetPlaying(val playing: Boolean) : PlaybackCmd()
+    data class SetPlaying(val playing: Boolean) : JamCommand()
 
     @Serializable
     @SerialName("skipNext")
-    data object SkipNext : PlaybackCmd()
+    data object SkipNext : JamCommand()
 
     @Serializable
     @SerialName("skipPrevious")
-    data object SkipPrevious : PlaybackCmd()
+    data object SkipPrevious : JamCommand()
 
     @Serializable
     @SerialName("jumpTo")
-    data class JumpTo(val index: Int) : PlaybackCmd()
-}
+    data class JumpTo(val index: Int) : JamCommand()
 
-/** Retained per-participant presence entry (with an MQTT Last Will for leave). */
-@Serializable
-data class JamPresence(
-    val clientId: String,
-    val displayName: String,
-    val isHost: Boolean,
-    val left: Boolean = false)
+    @Serializable
+    @SerialName("seekTo")
+    data class SeekTo(val positionMs: Long) : JamCommand()
+
+    @Serializable
+    @SerialName("suggest")
+    data class Suggest(
+        val items: List<JamMediaItem>,
+        val addedBy: String = "") : JamCommand()
+}
 
 @Serializable
 data class JamMediaItem(
@@ -117,6 +99,9 @@ data class JamMediaItem(
     val coverUrl: String,
     val protocol: String,
     val addedBy: String = "") {
+    /** Identifies the track across devices: the metadata id, or the file for local tracks. */
+    val key: String get() = trackId.ifBlank { "local:$url" }
+
     companion object {
         fun fromQueueEntry(entry: QueueEntry): JamMediaItem = when (entry) {
             is QueueEntry.StreamingTrack -> JamMediaItem(

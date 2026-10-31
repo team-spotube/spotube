@@ -296,25 +296,11 @@
     <string name="plugin_permissions_capability_webview_title">WebView</string>
     <string name="plugin_permissions_capability_webview_desc">Mostrare contenuti web all\'interno dell\'app</string>
     <string name="settings_section_jam">Jam di gruppo</string>
-    <string name="settings_jam_broker_title">Broker MQTT</string>
-    <string name="settings_jam_broker_host">Host del broker</string>
-    <string name="settings_jam_broker_host_subtitle">%1$s:%2$d</string>
-    <string name="settings_jam_broker_port">Porta del broker</string>
-    <string name="settings_jam_broker_tls">Usa TLS</string>
-    <string name="settings_jam_broker_username">Nome utente (facoltativo)</string>
-    <string name="settings_jam_broker_password">Password (facoltativa)</string>
-    <string name="settings_jam_broker_client_id">Prefisso ID client</string>
-    <string name="settings_jam_broker_client_id_subtitle">Usato per identificare questa istanza di Spotube</string>
-    <string name="settings_jam_broker_tls_subtitle">Crittografa la connessione al broker</string>
-    <string name="settings_jam_broker_diagnostics_subtitle">Verifica le impostazioni attuali del broker prima di avviare una stanza.</string>
-    <string name="settings_jam_broker_test">Verifica connessione</string>
-    <string name="settings_jam_broker_testing">Verifica in corso…</string>
-    <string name="settings_jam_broker_test_ok">Connesso in %1$d ms</string>
-    <string name="settings_jam_broker_test_fail">Non riuscito: %1$s</string>
-    <string name="settings_jam_broker_placeholder_note">Broker di esempio: configurane uno tuo per l\'hosting autonomo</string>
+    <string name="settings_jam_server_test">Verifica connessione</string>
+    <string name="settings_jam_server_testing">Verifica in corso…</string>
+    <string name="settings_jam_server_test_ok">Connesso in %1$d ms</string>
+    <string name="settings_jam_server_test_fail">Non riuscito: %1$s</string>
     <string name="settings_jam_section_connection">Connessione</string>
-    <string name="settings_jam_section_credentials">Credenziali</string>
-    <string name="settings_jam_section_identity">Identità</string>
     <string name="settings_jam_section_diagnostics">Diagnostica</string>
 
     <!-- Group Jam -->
@@ -327,9 +313,6 @@
     <string name="jam_setup_working">Connessione…</string>
     <string name="jam_setup_code_label">Codice stanza</string>
     <string name="jam_setup_code_placeholder">ABC123</string>
-    <string name="jam_connection_host">Broker: %1$s</string>
-    <string name="jam_connection_missing">Configura un broker nelle Impostazioni per ospitare una stanza o parteciparvi.</string>
-    <string name="jam_connection_settings">Impostazioni broker</string>
     <string name="jam_session_connected">Connesso</string>
     <string name="jam_session_connecting">Riconnessione…</string>
     <string name="jam_invite_copy">Copia codice</string>
@@ -521,14 +504,9 @@
     <string name="jam_destination_suggest">Suggerisci alla Jam</string>
 
     <!-- Group Jam: connection errors -->
-    <string name="jam_error_no_broker">Nessun broker Jam configurato</string>
-    <string name="jam_error_broker_host_empty">L\'host del broker è vuoto</string>
     <string name="jam_error_connection_failed">Connessione non riuscita</string>
     <string name="jam_error_connection_lost">Connessione persa</string>
 
-    <!-- Settings: Group Jam broker -->
-    <string name="settings_jam_broker_content_description">Broker</string>
-    <string name="settings_jam_broker_username_placeholder">anonimo</string>
 
     <!-- Group Jam: queue snackbar -->
     <string name="jam_queue_added_track">Aggiunto alla coda della Jam</string>

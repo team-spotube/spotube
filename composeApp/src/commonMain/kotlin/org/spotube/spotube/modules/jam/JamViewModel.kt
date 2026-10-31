@@ -57,8 +57,8 @@ data class JamUiState(
     val role: JamRole? = null,
     val participants: List<JamParticipantUi> = emptyList(),
     val roomCode: String? = null,
-    val brokerHost: String = "",
-    val brokerConfigured: Boolean = false,
+    val serverHost: String = "",
+    val serverConfigured: Boolean = false,
     val error: String? = null,
     val setupMode: JamSetupMode = JamSetupMode.Create,
     val codeInput: TextFieldState = TextFieldState(),
@@ -115,7 +115,7 @@ class JamViewModel(
         val settings = values[5] as? org.spotube.spotube.modules.settings.UserSettings
         val localError = values[6] as String?
         val busy = values[8] as Boolean
-        val brokerConfigured = !settings?.jamBroker?.host.isNullOrBlank()
+        val serverConfigured = !settings?.jamServerUrl.isNullOrBlank()
 
         JamUiState(
             isActive = role != null,
@@ -132,16 +132,17 @@ class JamViewModel(
                 )
             },
             roomCode = roomCode,
-            brokerHost = settings?.jamBroker?.host.orEmpty(),
-            brokerConfigured = brokerConfigured,
+            serverHost = settings?.jamServerUrl.orEmpty()
+                .substringAfter("://").substringBefore('/'),
+            serverConfigured = serverConfigured,
             error = localError ?: connectionError,
             setupMode = values[7] as JamSetupMode,
             isBusy = busy,
             isLeaving = values[12] as Boolean,
             codeCopied = values[9] as Boolean,
             codeInput = codeInput,
-            canCreate = brokerConfigured,
-            canJoin = brokerConfigured &&
+            canCreate = serverConfigured,
+            canJoin = serverConfigured &&
                     JamRoomCode.isValid(JamRoomCode.normalize(values[10] as String)),
             isHost = role == JamRole.Host,
             supportsNativeShare = supportsNativeShare

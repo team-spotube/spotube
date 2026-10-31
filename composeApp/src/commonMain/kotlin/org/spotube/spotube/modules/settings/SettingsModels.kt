@@ -59,9 +59,10 @@ data class UserSettings(
     val remoteControlDeviceName: String = "",
     val remoteControlDeviceId: String = "",
 
-    // Group Jam (MQTT)
+    // Group Jam
     val jamParticipantName: String = "",
-    val jamBroker: JamBroker = JamBroker(),
+    /** Room server (`jam-server/`); self-hosters point this at their own deployment. */
+    val jamServerUrl: String = DEFAULT_JAM_SERVER_URL,
     val lastJamCode: String = "",
 
     // Downloads
@@ -91,21 +92,12 @@ data class UserSettings(
     val supportRemindersEnabled: Boolean = true,
     val lastSupportReminderEpochMs: Long = 0L)
 
-/**
- * Configuration for the MQTT broker used by Group Jam. The host is a placeholder
- * until a real broker is configured; users can self-host and point the app at it.
- */
-@Serializable
-data class JamBroker(
-    val name: String = "",
-    val host: String = "broker.hivemq.com",
-    val port: Int = 8883,
-    val useTls: Boolean = true,
-    val username: String? = null,
-    val password: String? = null,
-    val clientIdPrefix: String = "spotube",
-    val keepAliveSeconds: Int = 30,
-    val connectionTimeoutSeconds: Int = 10)
+/** The public Group Jam room server. */
+const val DEFAULT_JAM_SERVER_URL = "https://spotube-jam.workers.dev"
+
+/** Whether [url] can be a room server address (http(s), or ws(s) for self-hosters). */
+internal fun isJamServerUrl(url: String): Boolean =
+    Regex("^(https?|wss?)://[^\\s/?#]+(/\\S*)?$", RegexOption.IGNORE_CASE).matches(url.trim())
 
 /**
  * opus/webm wherever the platform's player can open WebM; iOS (AVPlayer) can't, so it streams AAC.
