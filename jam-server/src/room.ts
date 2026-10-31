@@ -4,10 +4,14 @@ import {
   KEEPALIVE_PING,
   KEEPALIVE_PONG,
   EMPTY_ROOM_TTL_MS,
+  FRAME_BUDGET,
   HOST_GRACE_MS,
+  MAX_BANS,
+  MAX_MEMBERS,
   MAX_FRAME_BYTES,
   MAX_PARTICIPANTS,
   PROTOCOL_VERSION,
+  QUEUE_BUDGET,
   type ClientFrame,
   type ErrorCode,
   type JoinMode,
@@ -15,17 +19,35 @@ import {
   type ServerFrame,
 } from "./protocol";
 
+interface Bucket {
+  tokens: number;
+  at: number;
+}
+
+/** Takes one token; false when [bucket] is empty. */
+function spend(bucket: Bucket, budget: { burst: number; perSecond: number }, now: number): boolean {
+  bucket.tokens = Math.min(budget.burst, bucket.tokens + ((now - bucket.at) / 1000) * budget.perSecond);
+  bucket.at = now;
+  if (bucket.tokens < 1) return false;
+  bucket.tokens -= 1;
+  return true;
+}
+
 /** Kept on each socket so it survives hibernation. */
 interface Attachment {
   id: string;
   name: string;
   joined: number;
+  /** See [deviceMark]; empty when the client sent no device digest. */
+  mark: string;
 }
 
 const enum Key {
   Host = "host",
   Queue = "queue",
   Banned = "banned",
+  BannedMarks = "bannedMarks",
+  Members = "members",
   HostGoneAt = "hostGoneAt",
   EmptySince = "emptySince",
 }
@@ -46,6 +68,10 @@ const enum Key {
  */
 export class JamRoom extends DurableObject<Env> {
   private anchor: unknown = null;
+  // In memory: a room that hibernated starts everyone with a full budget again, which
+  // only matters to a client that floods, and that one wakes the room right away.
+  private frameBudgets = new WeakMap<WebSocket, Bucket>();
+  private queueBudgets = new WeakMap<WebSocket, Bucket>();
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
@@ -57,16 +83,17 @@ export class JamRoom extends DurableObject<Env> {
     const id = url.searchParams.get("id")!;
     const name = url.searchParams.get("name")!;
     const mode = url.searchParams.get("mode") as JoinMode;
+    const mark = url.searchParams.get("mark") ?? "";
 
     const { 0: client, 1: server } = new WebSocketPair();
     const previous = this.ctx.getWebSockets(id);
     this.ctx.acceptWebSocket(server, [id]);
-    server.serializeAttachment({ id, name, joined: Date.now() } satisfies Attachment);
+    server.serializeAttachment({ id, name, joined: Date.now(), mark } satisfies Attachment);
 
     // A reconnect with the same id (network change, app restart) takes over the old socket.
     for (const ws of previous) this.reject(ws, "replaced");
 
-    const refusal = await this.admit(id, mode);
+    const refusal = await this.admit(id, mode, mark);
     if (refusal) {
       this.reject(server, refusal);
     } else {
@@ -94,6 +121,7 @@ export class JamRoom extends DurableObject<Env> {
     const size = typeof message === "string" ? message.length : message.byteLength;
     if (size > MAX_FRAME_BYTES) return this.reject(ws, "frame_too_large");
     if (typeof message !== "string") return;
+    if (!this.withinBudget(this.frameBudgets, ws, FRAME_BUDGET)) return this.reject(ws, "rate_limited");
 
     let frame: ClientFrame;
     try {
@@ -110,6 +138,7 @@ export class JamRoom extends DurableObject<Env> {
 
       case "queue":
         if (!(await this.isHost(sender.id))) return;
+        if (!this.withinBudget(this.queueBudgets, ws, QUEUE_BUDGET)) return this.reject(ws, "rate_limited");
         await this.ctx.storage.put(Key.Queue, frame.body);
         this.broadcast({ t: "queue", body: frame.body }, ws);
         return;
@@ -133,12 +162,7 @@ export class JamRoom extends DurableObject<Env> {
 
       case "kick": {
         if (!(await this.isHost(sender.id)) || frame.target === sender.id) return;
-        if (frame.ban) {
-          const banned = (await this.ctx.storage.get<string[]>(Key.Banned)) ?? [];
-          if (!banned.includes(frame.target)) {
-            await this.ctx.storage.put(Key.Banned, [...banned, frame.target]);
-          }
-        }
+        if (frame.ban) await this.ban(frame.target);
         for (const target of this.ctx.getWebSockets(frame.target)) {
           this.reject(target, frame.ban ? "banned" : "kicked");
         }
@@ -183,16 +207,32 @@ export class JamRoom extends DurableObject<Env> {
 
   // ---------- Membership ----------
 
-  private async admit(id: string, mode: JoinMode): Promise<ErrorCode | null> {
-    const others = this.live().filter((ws) => this.attachment(ws).id !== id);
+  /**
+   * Bans [id], and the device it's on: someone who comes back with a fresh identity from
+   * the same device and network is refused too, unless they were already a member.
+   */
+  private async ban(id: string): Promise<void> {
+    const marks = this.ctx
+      .getWebSockets(id)
+      .map((ws) => this.attachment(ws).mark)
+      .filter((mark) => mark);
+    const [banned, bannedMarks] = await Promise.all([
+      this.ctx.storage.get<string[]>(Key.Banned),
+      this.ctx.storage.get<string[]>(Key.BannedMarks),
+    ]);
+    await this.ctx.storage.put({
+      [Key.Banned]: [...new Set([...(banned ?? []), id])].slice(-MAX_BANS),
+      [Key.BannedMarks]: [...new Set([...(bannedMarks ?? []), ...marks])].slice(-MAX_BANS),
+    });
+  }
 
-    if (mode === "create") {
-      if (others.length > 0) return "room_taken";
-      // Leftovers of an expired-but-not-yet-cleaned room must not leak into a new one.
+  private async admit(id: string, mode: JoinMode, mark: string): Promise<ErrorCode | null> {
+    const others = this.live().filter((ws) => this.attachment(ws).id !== id);
+    // An empty room past its TTL whose cleanup alarm hasn't run yet is gone.
+    const emptySince = await this.ctx.storage.get<number>(Key.EmptySince);
+    if (others.length === 0 && emptySince !== undefined && Date.now() - emptySince >= EMPTY_ROOM_TTL_MS) {
       await this.ctx.storage.deleteAll();
       this.anchor = null;
-      await this.ctx.storage.put(Key.Host, id);
-      return null;
     }
 
     const [host, banned, queue] = await Promise.all([
@@ -200,9 +240,27 @@ export class JamRoom extends DurableObject<Env> {
       this.ctx.storage.get<string[]>(Key.Banned),
       this.ctx.storage.get(Key.Queue),
     ]);
-    if (host === undefined && queue === undefined && others.length === 0) return "room_not_found";
+    const exists = host !== undefined || queue !== undefined || others.length > 0;
+
+    if (mode === "create") {
+      // Only a fresh code, or the room's own host bringing it back. Anyone else
+      // "creating" an existing room (even an empty one) would take it over.
+      if (others.length > 0 || (exists && host !== id)) return "room_taken";
+      if (!exists) await this.ctx.storage.put({ [Key.Host]: id, [Key.Members]: [id] });
+      return null;
+    }
+
+    if (!exists) return "room_not_found";
     if (banned?.includes(id)) return "banned";
+    const members = (await this.ctx.storage.get<string[]>(Key.Members)) ?? [];
+    const isMember = members.includes(id);
+    // A member who was in the room before a ban (a friend on the same Wi-Fi with the
+    // same phone, say) is never caught by another person's device ban.
+    if (mark && !isMember && (await this.ctx.storage.get<string[]>(Key.BannedMarks))?.includes(mark)) {
+      return "banned";
+    }
     if (others.length >= MAX_PARTICIPANTS) return "room_full";
+    if (!isMember) await this.ctx.storage.put(Key.Members, [...members, id].slice(-MAX_MEMBERS));
 
     // Joining a room whose host is gone (and whose grace period is over) promotes someone.
     const hostLive = host === id || others.some((ws) => this.attachment(ws).id === host);
@@ -274,6 +332,20 @@ export class JamRoom extends DurableObject<Env> {
     return [...byId.values()]
       .sort((a, b) => a.joined - b.joined || a.id.localeCompare(b.id))
       .map(({ id, name }) => ({ id, name }));
+  }
+
+  private withinBudget(
+    buckets: WeakMap<WebSocket, Bucket>,
+    ws: WebSocket,
+    budget: { burst: number; perSecond: number },
+  ): boolean {
+    const now = Date.now();
+    let bucket = buckets.get(ws);
+    if (!bucket) {
+      bucket = { tokens: budget.burst, at: now };
+      buckets.set(ws, bucket);
+    }
+    return spend(bucket, budget, now);
   }
 
   private attachment(ws: WebSocket): Attachment {

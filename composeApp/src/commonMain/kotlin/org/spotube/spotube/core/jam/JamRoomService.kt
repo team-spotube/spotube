@@ -35,7 +35,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.merge
@@ -55,7 +57,6 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.math.abs
-import kotlin.random.Random
 import org.jetbrains.compose.resources.getString
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.jam_error_invalid_code
@@ -129,7 +130,6 @@ class JamRoomService(
     private val _shuffleEnabled = MutableStateFlow(false)
     val shuffleEnabled: StateFlow<Boolean> = _shuffleEnabled.asStateFlow()
 
-    private var localClientId: String = ""
     private var localDisplayName: String = ""
 
     /** Display name of the local participant. */
@@ -138,7 +138,7 @@ class JamRoomService(
 
     /** Stable id of the local participant (stamped on items this device adds). */
     val participantClientId: String
-        get() = localClientId
+        get() = jamClient.selfId.orEmpty()
 
     private var roleJob: Job? = null
     private var leaving = false
@@ -174,6 +174,8 @@ class JamRoomService(
     private var positionAdvancing = false
     private var ownSeekUntilMs = 0L
     private var entryChangedAtMs = 0L
+
+    private val anchorRequests = Channel<Unit>(Channel.CONFLATED)
 
     // The host's last anchor, to notice its own player drifting away from it.
     private var sentAnchor: JamAnchor? = null
@@ -222,8 +224,8 @@ class JamRoomService(
 
     suspend fun createRoom(): Result<String> {
         val serverUrl = serverUrl() ?: return Result.failure(IllegalStateException(getString(Res.string.jam_error_no_server)))
-        localClientId = newClientId()
-        localDisplayName = participantName("Host")
+        val deviceKey = deviceKey()
+        localDisplayName = participantName(deviceKey)
         enter()
 
         // A fresh code is almost never taken; retry the rare collision with another one.
@@ -232,7 +234,9 @@ class JamRoomService(
         var attempts = 0
         do {
             code = JamRoomCode.generate()
-            result = jamClient.connect(serverUrl, code, localClientId, localDisplayName, create = true)
+            result = jamClient.connect(
+                serverUrl, code, jamParticipantKey(deviceKey, code), localDisplayName, create = true,
+                deviceDigest = jamDeviceDigest(code))
             val taken = (result.exceptionOrNull() as? JamRoomException)?.code == "room_taken"
         } while (taken && ++attempts < CREATE_ATTEMPTS)
 
@@ -250,11 +254,13 @@ class JamRoomService(
         if (!JamRoomCode.isValid(normalized)) {
             return Result.failure(IllegalArgumentException(getString(Res.string.jam_error_invalid_code)))
         }
-        localClientId = newClientId()
-        localDisplayName = participantName("Guest")
+        val deviceKey = deviceKey()
+        localDisplayName = participantName(deviceKey)
         enter()
 
-        val welcome = jamClient.connect(serverUrl, normalized, localClientId, localDisplayName, create = false)
+        val welcome = jamClient.connect(
+            serverUrl, normalized, jamParticipantKey(deviceKey, normalized), localDisplayName, create = false,
+            deviceDigest = jamDeviceDigest(normalized))
             .getOrElse {
                 inRoom = false
                 return Result.failure(it)
@@ -322,12 +328,12 @@ class JamRoomService(
     }
 
     suspend fun suggestTrack(track: MetadataTrack) {
-        jamClient.sendCommand(JamCommand.Suggest(listOf(JamMediaItem.fromTrack(track)), addedBy = localClientId))
+        jamClient.sendCommand(JamCommand.Suggest(listOf(JamMediaItem.fromTrack(track)), addedBy = participantClientId))
     }
 
     suspend fun suggestPlaylist(tracks: List<MetadataTrack>) {
         if (tracks.isEmpty()) return
-        jamClient.sendCommand(JamCommand.Suggest(tracks.map(JamMediaItem::fromTrack), addedBy = localClientId))
+        jamClient.sendCommand(JamCommand.Suggest(tracks.map(JamMediaItem::fromTrack), addedBy = participantClientId))
     }
 
     suspend fun kickParticipant(participantId: String) {
@@ -343,7 +349,7 @@ class JamRoomService(
     /** The host applies its own controls; a guest's go to the host. */
     private fun control(command: JamCommand) {
         scope.launch {
-            if (_role.value == JamRole.Host) applyCommand(command) else jamClient.sendCommand(command)
+            if (_role.value == JamRole.Host) applyCommand(command, from = participantClientId) else jamClient.sendCommand(command)
         }
     }
 
@@ -367,7 +373,8 @@ class JamRoomService(
                 anchor = event.anchor
                 if (_role.value == JamRole.Guest) onAnchor(event.anchor)
             }
-            is JamRoomEvent.Command -> if (_role.value == JamRole.Host) applyCommand(event.command)
+            // [JamRoomEvent.Command.from] is the server's word for who sent it; the body is the sender's.
+            is JamRoomEvent.Command -> if (_role.value == JamRole.Host) applyCommand(event.command, event.from)
             is JamRoomEvent.Closed -> {
                 log.i { "Left jam room: ${event.code}" }
                 reset()
@@ -385,7 +392,7 @@ class JamRoomService(
 
     private fun onMembership(host: String?, participants: List<JamParticipant>, force: Boolean = false) {
         _participants.value = participants
-        val role = if (host == localClientId) JamRole.Host else JamRole.Guest
+        val role = if (host != null && host == jamClient.selfId) JamRole.Host else JamRole.Guest
         // A (re)welcome restarts the role so a guest re-applies the room's state.
         if (role == _role.value && !force) return
         log.i { "Jam role: ${_role.value} -> $role" }
@@ -406,15 +413,27 @@ class JamRoomService(
                 JamQueue(queue.map(JamMediaItem::fromQueueEntry), shuffle)
             }
                 .distinctUntilChanged()
+                // At most one upload a second (the server's limit), always the latest queue.
+                .conflate()
                 .onEach { queue ->
                     _shuffleEnabled.value = queue.shuffleEnabled
                     // After a reconnect the server already has it: skip the re-upload.
                     if (queue != roomQueue) {
                         roomQueue = queue
                         jamClient.sendQueue(queue)
+                        delay(QUEUE_MIN_GAP_MS)
                     }
                 }
                 .launchIn(this)
+
+            // Anchors are built when sent, so coalescing a burst of requests (rapid skips)
+            // loses nothing; it keeps the host under the server's frame budget.
+            launch {
+                for (request in anchorRequests) {
+                    sendAnchor()
+                    delay(ANCHOR_MIN_GAP_MS)
+                }
+            }
 
             combine(
                 audioPlayerQueue.currentQueueEntryFlow,
@@ -464,7 +483,12 @@ class JamRoomService(
         }
     }
 
-    private suspend fun publishAnchor() {
+    /** Asks the host loop to send a fresh anchor (coalesced, see [runHost]). */
+    private fun publishAnchor() {
+        anchorRequests.trySend(Unit)
+    }
+
+    private suspend fun sendAnchor() {
         if (_role.value != JamRole.Host) return
         val current = audioPlayerQueue.currentQueueEntryFlow.value ?: return
         val playing = playIntent.value
@@ -491,7 +515,7 @@ class JamRoomService(
             ?.let { PluginTaggedAudioSource(plugin.pluginId, it) }
     }
 
-    private suspend fun applyCommand(command: JamCommand) {
+    private suspend fun applyCommand(command: JamCommand, from: String) {
         runCatching {
             when (command) {
                 // Applied locally; the anchor carries the change to every guest.
@@ -503,15 +527,21 @@ class JamRoomService(
                     seek(command.positionMs)
                     publishAnchor()
                 }
-                is JamCommand.Suggest -> acceptSuggestion(command.items.map { it.copy(addedBy = command.addedBy) })
+                is JamCommand.Suggest -> acceptSuggestion(command.items, from)
             }
         }.onFailure { log.w(it) { "Failed to apply jam command $command" } }
     }
 
-    private suspend fun acceptSuggestion(items: List<JamMediaItem>) {
-        if (items.isEmpty()) return
-        log.i { "Accepting ${items.size} suggested item(s) into the jam queue" }
-        audioPlayerQueue.addAllToQueue(items.map { it.toQueueEntry() })
+    /** Suggestions come from other devices: only clean streaming items, credited to the actual sender. */
+    private suspend fun acceptSuggestion(items: List<JamMediaItem>, from: String) {
+        val accepted = items.asSequence()
+            .mapNotNull { it.sanitized() }
+            .take(MAX_SUGGESTED_ITEMS)
+            .map { it.copy(addedBy = from) }
+            .toList()
+        if (accepted.isEmpty()) return
+        log.i { "Accepting ${accepted.size} suggested item(s) into the jam queue" }
+        audioPlayerQueue.addAllToQueue(accepted.map { it.toQueueEntry() })
     }
 
     // ---------- Guest ----------
@@ -575,7 +605,8 @@ class JamRoomService(
     private suspend fun applyQueue(queue: JamQueue) {
         roomVersion.value++
         _shuffleEnabled.value = queue.shuffleEnabled
-        val items = queue.items.filter { it.trackId.isNotBlank() || it.url.isNotBlank() }
+        // The host's local files can't play here, and anything else is cleaned first.
+        val items = queue.items.mapNotNull { it.sanitized() }
         if (items == lastAppliedItems) return
         val previous = lastAppliedItems
         lastAppliedItems = items
@@ -747,7 +778,7 @@ class JamRoomService(
 
         // The user seeked: it applies to the whole room.
         when (_role.value) {
-            JamRole.Host -> scope.launch { publishAnchor() }
+            JamRole.Host -> publishAnchor()
             JamRole.Guest -> {
                 holdSync(SEEK_HOLD_MS * 2)
                 jamClient.sendCommand(JamCommand.SeekTo(positionMs))
@@ -761,15 +792,29 @@ class JamRoomService(
     private fun serverUrl(): String? =
         settingsRepository.userSettings.value.jamServerUrl.trim().ifBlank { null }
 
-    private fun participantName(fallbackPrefix: String): String {
-        val configured = settingsRepository.userSettings.value.jamParticipantName
-        return configured.ifBlank { "$fallbackPrefix-${Random.nextInt(1000, 9999)}" }
+    private suspend fun participantName(deviceKey: String): String =
+        JamNames.normalize(settingsRepository.userSettings.value.jamParticipantName)
+            .take(JamNames.MAX_LENGTH)
+            .ifBlank { JamNames.generate(deviceKey) }
+
+    /** The name this device gets when the user hasn't picked one; the same every time. */
+    suspend fun defaultParticipantName(): String = JamNames.generate(deviceKey())
+
+    /** Saves the user's own name; blank goes back to [defaultParticipantName]. */
+    suspend fun setParticipantName(name: String) {
+        val settings = settingsRepository.userSettings.value
+        settingsRepository.updateSettings(
+            settings.copy(jamParticipantName = JamNames.normalize(name).take(JamNames.MAX_LENGTH)))
     }
 
-    private fun newClientId(): String = buildString {
-        append("sp-")
-        val chars = "0123456789abcdef"
-        repeat(12) { append(chars[Random.nextInt(chars.length)]) }
+    /** This install's jam secret, created on first use. */
+    private suspend fun deviceKey(): String {
+        val settings = settingsRepository.userSettings.value
+        if (settings.jamDeviceKey.isNotBlank()) return settings.jamDeviceKey
+        val generated = JamRoomCode.newClientKey()
+        runCatching { settingsRepository.updateSettings(settings.copy(jamDeviceKey = generated)) }
+            .onFailure { log.w(it) { "Failed to save the jam device key" } }
+        return generated
     }
 
     private fun persistLastCode(code: String) {
@@ -785,7 +830,7 @@ class JamRoomService(
 
     private fun QueueEntry.jamKey(): String = when (this) {
         is QueueEntry.StreamingTrack -> track.id
-        is QueueEntry.LocalTrack -> "local:$url"
+        is QueueEntry.LocalTrack -> JamMediaItem.localTrackKey(url)
     }
 
     private fun JamMediaItem.toQueueEntry(): QueueEntry = when {
@@ -827,6 +872,10 @@ class JamRoomService(
 
     companion object {
         private const val CREATE_ATTEMPTS = 3
+        /** Keeps the host under the server's budgets (see `jam-server/src/protocol.ts`). */
+        private const val QUEUE_MIN_GAP_MS = 1_000L
+        private const val ANCHOR_MIN_GAP_MS = 250L
+        private const val MAX_SUGGESTED_ITEMS = 500
         private const val HOST_DRIFT_CHECK_INTERVAL_MS = 2_000L
         private const val HOST_DRIFT_WINDOW = 5
         /** Below the guests' dead band, so the host's own error never adds up to a correction. */

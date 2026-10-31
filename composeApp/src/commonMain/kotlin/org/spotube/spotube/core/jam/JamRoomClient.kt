@@ -117,6 +117,13 @@ class JamRoomClient(httpClientFactory: HttpClientFactory) {
     private var lastFrameAtMs = 0L
     /** The room's host as last reported by the server. */
     private var hostId: String? = null
+
+    /**
+     * Our public participant id in the current room, as the server derived it from our
+     * secret key. Null until the first welcome.
+     */
+    var selfId: String? = null
+        private set
     private val pongs = MutableStateFlow(0)
 
     private val _isConnected = MutableStateFlow(false)
@@ -144,16 +151,22 @@ class JamRoomClient(httpClientFactory: HttpClientFactory) {
      * Opens room [code] on [serverUrl] and syncs the clock. Fails with [JamRoomException]
      * when the server refuses (code taken, room not found, banned, …). Once connected,
      * drops are retried in the background until [disconnect] or a refusal.
+     *
+     * [clientKey] is this participant's secret ([jamParticipantKey]): reconnecting with
+     * it makes us the same participant, so it never leaves this device except to the
+     * server. [deviceDigest] ([jamDeviceDigest]) lets a ban cover this device too.
      */
     suspend fun connect(
         serverUrl: String,
         code: String,
-        clientId: String,
+        clientKey: String,
         displayName: String,
-        create: Boolean): Result<JamRoomEvent.Welcome> {
+        create: Boolean,
+        deviceDigest: String? = null): Result<JamRoomEvent.Welcome> {
         disconnect()
         clock.reset()
-        val welcome = runCatching { open(serverUrl, code, clientId, displayName, create) }
+        val opener = Opener(serverUrl, code, clientKey, displayName, deviceDigest)
+        val welcome = runCatching { open(opener, create) }
             .onFailure { e ->
                 log.w(e) { "Failed to open jam room $code" }
                 _connectionError.value = e.message ?: getString(Res.string.jam_error_connection_failed)
@@ -176,11 +189,13 @@ class JamRoomClient(httpClientFactory: HttpClientFactory) {
                 while (isActive) {
                     delay(RECONNECT_BACKOFF_MS[attempt.coerceAtMost(RECONNECT_BACKOFF_MS.lastIndex)])
                     attempt++
-                    var reopened = runCatching { open(serverUrl, code, clientId, displayName, create = false) }
+                    var reopened = runCatching { open(opener, create = false) }
                     // Everyone was gone long enough for the room to expire: its host brings it back.
-                    if ((reopened.exceptionOrNull() as? JamRoomException)?.code == "room_not_found" && hostId == clientId) {
+                    if ((reopened.exceptionOrNull() as? JamRoomException)?.code == "room_not_found" &&
+                        hostId != null && hostId == selfId
+                    ) {
                         log.i { "Jam room $code expired while offline; recreating it" }
-                        reopened = runCatching { open(serverUrl, code, clientId, displayName, create = true) }
+                        reopened = runCatching { open(opener, create = true) }
                     }
                     val error = reopened.exceptionOrNull()
                     if (error is JamRoomException) {
@@ -210,6 +225,7 @@ class JamRoomClient(httpClientFactory: HttpClientFactory) {
         connectionJob?.cancel()
         connectionJob = null
         hostId = null
+        selfId = null
         reader?.cancel()
         reader = null
         val current = session
@@ -225,13 +241,17 @@ class JamRoomClient(httpClientFactory: HttpClientFactory) {
      * Connects, waits for the welcome (or refusal) and syncs the clock. Returns the welcome
      * and the socket's reader, which completes with the server's refusal (if any) on close.
      */
-    private suspend fun open(
-        serverUrl: String,
-        code: String,
-        clientId: String,
-        displayName: String,
-        create: Boolean): Pair<JamRoomEvent.Welcome, Deferred<String?>> {
-        val socket = runCatching { http.webSocketSession(roomUrl(serverUrl, code, clientId, displayName, create)) }
+    /** Everything needed to (re)open one room connection. */
+    private data class Opener(
+        val serverUrl: String,
+        val code: String,
+        val clientKey: String,
+        val displayName: String,
+        val deviceDigest: String?)
+
+    private suspend fun open(opener: Opener, create: Boolean): Pair<JamRoomEvent.Welcome, Deferred<String?>> {
+        val code = opener.code
+        val socket = runCatching { http.webSocketSession(roomUrl(opener, create)) }
             .getOrElse { throw IllegalStateException(getString(Res.string.jam_error_server_unreachable), it) }
         try {
             val welcome = withTimeoutOrNull(CONNECT_TIMEOUT_MS) { awaitWelcome(socket) }
@@ -241,6 +261,7 @@ class JamRoomClient(httpClientFactory: HttpClientFactory) {
             }
 
             session = socket
+            selfId = welcome.you
             hostId = welcome.host
             lastFrameAtMs = now()
             _isConnected.value = true
@@ -249,7 +270,7 @@ class JamRoomClient(httpClientFactory: HttpClientFactory) {
             val socketReader = scope.async { pump(socket) }
             reader = socketReader
             syncClock(socket)
-            log.i { "Joined jam room $code as $clientId (host=${welcome.host}, rtt=${clock.rttMs}ms)" }
+            log.i { "Joined jam room $code as ${welcome.you} (host=${welcome.host}, rtt=${clock.rttMs}ms)" }
             return welcome.toEvent() to socketReader
         } catch (e: Throwable) {
             runCatching { socket.close() }
@@ -351,7 +372,8 @@ class JamRoomClient(httpClientFactory: HttpClientFactory) {
             is ServerFrame.Queue -> _events.emit(JamRoomEvent.Queue(decoded.body))
             is ServerFrame.Anchor -> _events.emit(JamRoomEvent.Anchor(decoded.body))
             is ServerFrame.Cmd -> _events.emit(JamRoomEvent.Command(decoded.from, decoded.body))
-            is ServerFrame.Error -> return decoded.code
+            // Sent too much too fast (a burst of skips, say): not a refusal, just reconnect.
+            is ServerFrame.Error -> return decoded.code.takeIf { it != "rate_limited" }
             null -> Unit
         }
         return null
@@ -395,13 +417,14 @@ class JamRoomClient(httpClientFactory: HttpClientFactory) {
         else -> getString(Res.string.jam_error_connection_failed)
     }
 
-    private fun roomUrl(serverUrl: String, code: String, clientId: String, displayName: String, create: Boolean) =
-        URLBuilder(serverUrl.trim()).apply {
+    private fun roomUrl(opener: Opener, create: Boolean) =
+        URLBuilder(opener.serverUrl.trim()).apply {
             protocol = if (protocol == URLProtocol.HTTP || protocol == URLProtocol.WS) URLProtocol.WS else URLProtocol.WSS
-            appendPathSegments("v1", "rooms", code)
-            parameters.append("id", clientId)
-            parameters.append("name", displayName)
+            appendPathSegments("v1", "rooms", opener.code)
+            parameters.append("key", opener.clientKey)
+            parameters.append("name", opener.displayName)
             parameters.append("mode", if (create) "create" else "join")
+            opener.deviceDigest?.let { parameters.append("dev", it) }
         }.buildString()
 
     private fun healthUrl(serverUrl: String) =

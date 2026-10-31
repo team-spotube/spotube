@@ -46,8 +46,9 @@ class JamRoomClientIntegrationTest {
         try {
             host.testConnection(url).getOrThrow()
 
-            val hostWelcome = host.connect(url, code, "it-host-1", "Host", create = true).getOrThrow()
-            assertEquals("it-host-1", hostWelcome.host)
+            val hostWelcome = host.connect(url, code, JamRoomCode.newClientKey(), "Host", create = true).getOrThrow()
+            val hostId = hostWelcome.you
+            assertEquals(hostId, hostWelcome.host)
             // Same machine: the clock offset is just measurement noise.
             assertTrue(abs(host.clock.offsetMs!!) < 50, "offset ${host.clock.offsetMs}")
 
@@ -59,22 +60,24 @@ class JamRoomClientIntegrationTest {
             Thread.sleep(300)
 
             // Late joiners get the retained queue and anchor in the welcome.
-            val guestWelcome = guest.connect(url, code, "it-guest-1", "Guest", create = false).getOrThrow()
+            val guestKey = JamRoomCode.newClientKey()
+            val guestWelcome = guest.connect(url, code, guestKey, "Guest", create = false).getOrThrow()
+            val guestId = guestWelcome.you
             assertEquals(queue, guestWelcome.queue)
             assertEquals(anchor, guestWelcome.anchor)
-            assertEquals(listOf("it-host-1", "it-guest-1"), guestWelcome.participants.map { it.id })
+            assertEquals(listOf(hostId, guestId), guestWelcome.participants.map { it.id })
 
             val received = async(start = CoroutineStart.UNDISPATCHED) { host.events.filterIsInstance<JamRoomEvent.Command>().first() }
             guest.sendCommand(JamCommand.SeekTo(42_000))
             val command = withTimeout(5_000) { received.await() }
-            assertEquals("it-guest-1", command.from)
+            assertEquals(guestId, command.from)
             assertEquals(JamCommand.SeekTo(42_000), command.command)
 
             val closed = async(start = CoroutineStart.UNDISPATCHED) { guest.events.filterIsInstance<JamRoomEvent.Closed>().first() }
-            host.kick("it-guest-1", ban = false)
+            host.kick(guestId, ban = false)
             assertEquals("kicked", withTimeout(5_000) { closed.await() }.code)
 
-            val wrongRoom = guest.connect(url, JamRoomCode.generate(), "it-guest-1", "Guest", create = false)
+            val wrongRoom = guest.connect(url, JamRoomCode.generate(), guestKey, "Guest", create = false)
             assertEquals("room_not_found", (wrongRoom.exceptionOrNull() as JamRoomException).code)
         } finally {
             host.disconnect()

@@ -130,10 +130,17 @@ class JamSessionSimulationTest {
             assertEquals(PlayerState.PLAYING, guest.player.playerStateFlow.value)
             assertInSync(host, guest, "after the skip")
 
+            // Mashing skip stays within the server's flood limits (the host isn't cut off).
+            repeat(20) { if (it % 2 == 0) host.service.skipNext() else host.service.skipPrevious() }
+            delay(6_000)
+            assertEquals(true, host.service.isConnected.value, "host still connected after mashing skip")
+            assertEquals(host.player.index.value, guest.player.index.value, "guest followed the skips")
+            assertInSync(host, guest, "after mashing skip")
+
             // Steady playback costs (almost) nothing: count the anchors a listener receives.
             val listener = JamRoomClient(http)
             try {
-                listener.connect(url, code, "it-listener", "Listener", create = false).getOrThrow()
+                listener.connect(url, code, JamRoomCode.newClientKey(), "Listener", create = false).getOrThrow()
                 delay(1_000) // The host answers the join with an anchor.
                 var anchors = 0
                 val counting = launch {

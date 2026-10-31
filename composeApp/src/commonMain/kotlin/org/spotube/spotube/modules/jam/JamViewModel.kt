@@ -48,6 +48,7 @@ data class JamParticipantUi(
     val initial: String,
     val isHost: Boolean,
     val canModerate: Boolean,
+    val isYou: Boolean = false,
     val menuExpanded: Boolean = false
 )
 
@@ -68,7 +69,11 @@ data class JamUiState(
     val isLeaving: Boolean = false,
     val isHost: Boolean = false,
     val supportsNativeShare: Boolean = false,
-    val codeCopied: Boolean = false
+    val codeCopied: Boolean = false,
+    /** The name the user picked (blank when they haven't). */
+    val customName: String = "",
+    /** This device's generated name, used when [customName] is blank. */
+    val defaultName: String = ""
 )
 
 class JamViewModel(
@@ -85,6 +90,7 @@ class JamViewModel(
     private val codeInput = TextFieldState()
     private var copyFeedbackJob: Job? = null
     private val participantMenu = MutableStateFlow<String?>(null)
+    private val defaultName = MutableStateFlow("")
 
     val supportsNativeShare: Boolean =
         getPlatform().type == PlatformType.Android || getPlatform().type == PlatformType.IOS
@@ -102,7 +108,8 @@ class JamViewModel(
         codeCopied,
         snapshotFlow { codeInput.text.toString() },
         participantMenu,
-        isLeaving
+        isLeaving,
+        defaultName
     ) { values ->
         @Suppress("UNCHECKED_CAST")
         val role = values[0] as JamRole?
@@ -128,6 +135,7 @@ class JamViewModel(
                     initial = participant.displayName.firstOrNull()?.uppercase() ?: "?",
                     isHost = participant.isHost,
                     canModerate = role == JamRole.Host && !participant.isHost,
+                    isYou = participant.id == jamRoomService.participantClientId,
                     menuExpanded = values[11] == participant.id
                 )
             },
@@ -145,13 +153,23 @@ class JamViewModel(
             canJoin = serverConfigured &&
                     JamRoomCode.isValid(JamRoomCode.normalize(values[10] as String)),
             isHost = role == JamRole.Host,
-            supportsNativeShare = supportsNativeShare
+            supportsNativeShare = supportsNativeShare,
+            customName = settings?.jamParticipantName.orEmpty(),
+            defaultName = values[13] as String
         )
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5_000),
         JamUiState(codeInput = codeInput)
     )
+
+    init {
+        viewModelScope.launch { defaultName.value = jamRoomService.defaultParticipantName() }
+    }
+
+    fun setParticipantName(name: String) {
+        viewModelScope.launch { jamRoomService.setParticipantName(name) }
+    }
 
     // ---------- Session lifecycle ----------
 

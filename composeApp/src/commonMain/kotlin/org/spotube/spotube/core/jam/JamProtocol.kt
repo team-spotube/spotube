@@ -99,10 +99,35 @@ data class JamMediaItem(
     val coverUrl: String,
     val protocol: String,
     val addedBy: String = "") {
-    /** Identifies the track across devices: the metadata id, or the file for local tracks. */
-    val key: String get() = trackId.ifBlank { "local:$url" }
+    /** Identifies the track across devices: the metadata id, or an opaque id for local files. */
+    val key: String get() = trackId.ifBlank { url }
+
+    /**
+     * This item as received from another participant, made safe to load: streaming tracks
+     * only (a peer's local file can't play here, and a URL would make this device fetch
+     * whatever a peer chose), https covers only, and bounded text. Null if unusable.
+     */
+    fun sanitized(): JamMediaItem? {
+        if (trackId.isBlank() || trackId.length > MAX_ID_LENGTH) return null
+        return copy(
+            url = "",
+            title = title.take(MAX_TEXT_LENGTH),
+            artist = artist.take(MAX_TEXT_LENGTH),
+            album = album.take(MAX_TEXT_LENGTH),
+            durationMs = durationMs.coerceAtLeast(0),
+            coverUrl = coverUrl.takeIf { it.startsWith("https://") && it.length <= MAX_URL_LENGTH }.orEmpty(),
+            protocol = protocol.take(MAX_ID_LENGTH),
+            addedBy = addedBy.take(MAX_ID_LENGTH))
+    }
 
     companion object {
+        private const val MAX_ID_LENGTH = 200
+        private const val MAX_TEXT_LENGTH = 300
+        private const val MAX_URL_LENGTH = 2048
+
+        /** The cross-device key of a local file at [path], which doesn't reveal the path. */
+        fun localTrackKey(path: String): String = "local:" + path.hashCode().toUInt().toString(16)
+
         fun fromQueueEntry(entry: QueueEntry): JamMediaItem = when (entry) {
             is QueueEntry.StreamingTrack -> JamMediaItem(
                 url = "",
@@ -117,8 +142,9 @@ data class JamMediaItem(
                 protocol = entry.protocol.name,
                 addedBy = entry.addedBy)
 
+            // Only an opaque id: the path would show the host's folders (and user name) to everyone.
             is QueueEntry.LocalTrack -> JamMediaItem(
-                url = entry.url,
+                url = localTrackKey(entry.url),
                 trackId = "",
                 title = entry.name,
                 artist = entry.artists.joinToString(", "),

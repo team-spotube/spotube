@@ -1,4 +1,4 @@
-import { CLIENT_ID, MAX_NAME_LENGTH, PROTOCOL_VERSION, ROOM_CODE } from "./protocol";
+import { CLIENT_KEY, DEVICE_DIGEST, PROTOCOL_VERSION, ROOM_CODE, cleanName, deviceMark, participantId } from "./protocol";
 
 export { JamRoom } from "./room";
 
@@ -7,7 +7,10 @@ const JSON_HEADERS = { "content-type": "application/json" };
 /**
  * Routes:
  * - `GET /v1/health` → `{ ok, v, now }` (used by the app's "Test connection")
- * - `GET /v1/rooms/{CODE}?id=&name=&mode=create|join` (WebSocket) → the room's Durable Object
+ * - `GET /v1/rooms/{CODE}?key=&name=&mode=create|join[&dev=]` (WebSocket) → the room's Durable Object
+ *
+ * Durable Objects aren't reachable from the internet, only through this Worker, so the
+ * room trusts the `id` and `name` this Worker hands it.
  */
 export default {
   async fetch(request, env): Promise<Response> {
@@ -25,10 +28,17 @@ export default {
     }
 
     const code = match[1].toUpperCase();
-    const id = url.searchParams.get("id") ?? "";
-    const name = (url.searchParams.get("name") ?? "").trim().slice(0, MAX_NAME_LENGTH);
+    const key = url.searchParams.get("key") ?? "";
+    const name = cleanName(url.searchParams.get("name") ?? "");
     const mode = url.searchParams.get("mode");
-    if (!ROOM_CODE.test(code) || !CLIENT_ID.test(id) || !name || (mode !== "create" && mode !== "join")) {
+    const dev = url.searchParams.get("dev");
+    if (
+      !ROOM_CODE.test(code) ||
+      !CLIENT_KEY.test(key) ||
+      !name ||
+      (mode !== "create" && mode !== "join") ||
+      (dev !== null && !DEVICE_DIGEST.test(dev))
+    ) {
       return new Response(JSON.stringify({ error: "bad_request" }), { status: 400, headers: JSON_HEADERS });
     }
 
@@ -37,7 +47,12 @@ export default {
     if (!success) return new Response("Too many connections", { status: 429 });
 
     const forwarded = new URL(request.url);
-    forwarded.search = new URLSearchParams({ id, name, mode }).toString();
+    forwarded.search = new URLSearchParams({
+      id: await participantId(code, key),
+      name,
+      mode,
+      mark: (await deviceMark(code, dev, ip)) ?? "",
+    }).toString();
     const room = env.JAM_ROOM.get(env.JAM_ROOM.idFromName(code));
     return room.fetch(new Request(forwarded, request));
   },

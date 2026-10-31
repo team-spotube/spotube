@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.spotube.spotube.core.ui.component.ApplicationMainBar
 import org.spotube.spotube.modules.settings.components.TextInputSettingCard
+import org.spotube.spotube.modules.settings.sections.JamNameSettingCard
 import org.spotube.spotube.modules.settings.sections.SettingsItemIcon
 import org.spotube.spotube.modules.settings.sections.settingsSectionCard
 import org.spotube.spotube.modules.settings.sections.settingsSectionHeader
@@ -33,6 +34,7 @@ import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.jam_error_connection_failed
 import spotube.composeapp.generated.resources.settings_jam_section_connection
 import spotube.composeapp.generated.resources.settings_jam_section_diagnostics
+import spotube.composeapp.generated.resources.settings_jam_section_you
 import spotube.composeapp.generated.resources.settings_jam_server_diagnostics_subtitle
 import spotube.composeapp.generated.resources.settings_jam_server_note
 import spotube.composeapp.generated.resources.settings_jam_server_test
@@ -77,6 +79,15 @@ internal fun JamSettingsContent(
                 .widthIn(max = 1280.dp)
                 .align(Alignment.TopCenter),
             contentPadding = contentPadding) {
+            settingsSectionHeader(Res.string.settings_jam_section_you)
+            settingsSectionCard(
+                items = listOf(
+                    {
+                        JamNameSettingCard(
+                            customName = uiState.settings.jamParticipantName,
+                            defaultName = uiState.defaultName,
+                            onNameSaved = viewModel::setParticipantName)
+                    }))
             settingsSectionHeader(Res.string.settings_jam_section_connection)
             settingsSectionCard(
                 items = listOf(

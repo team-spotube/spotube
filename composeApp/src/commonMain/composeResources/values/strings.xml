@@ -321,6 +321,7 @@
     <string name="settings_jam_server_test_fail">Failed: %1$s</string>
     <string name="settings_jam_section_connection">Connection</string>
     <string name="settings_jam_section_diagnostics">Diagnostics</string>
+    <string name="settings_jam_section_you">You</string>
 
     <!-- Group Jam -->
     <string name="jam_screen_title">Group Jam</string>
@@ -343,6 +344,7 @@
     <string name="jam_participants_heading">Participants (%1$d)</string>
     <string name="jam_participants_host">Host</string>
     <string name="jam_participants_guest">Listener</string>
+    <string name="jam_participants_you">%1$s (you)</string>
     <string name="jam_participants_waiting">Waiting for listeners…</string>
     <string name="jam_participants_remove">Remove</string>
     <string name="jam_participants_ban">Ban</string>
@@ -354,6 +356,145 @@
     <string name="jam_error_join">Failed to join jam session</string>
     <string name="jam_error_invalid_code">Enter a six-character room code using letters and digits.</string>
     <string name="jam_share_message">Join my Spotube Jam with code: %1$s</string>
+    <string name="jam_name_title">Your name</string>
+    <string name="jam_name_subtitle">Others in the jam see you as %1$s</string>
+    <string name="jam_name_description">Shown to everyone in the jam. Leave it empty to use %1$s. A new name applies the next time you start or join a room.</string>
+    <string name="jam_name_too_long">Use at most %1$d characters.</string>
+    <!-- A generated name: adjective, then animal (e.g. "Mellow Otter"). Reorder for your language if needed. -->
+    <string name="jam_name_format">%1$s %2$s</string>
+    <!-- Word lists for generated jam names. Translations may use their own words and any number of them. -->
+    <string-array name="jam_name_adjectives">
+        <item>Brave</item>
+        <item>Bright</item>
+        <item>Calm</item>
+        <item>Cheerful</item>
+        <item>Chill</item>
+        <item>Clever</item>
+        <item>Cosmic</item>
+        <item>Cozy</item>
+        <item>Curious</item>
+        <item>Dapper</item>
+        <item>Dreamy</item>
+        <item>Eager</item>
+        <item>Electric</item>
+        <item>Fancy</item>
+        <item>Fearless</item>
+        <item>Fizzy</item>
+        <item>Fluffy</item>
+        <item>Funky</item>
+        <item>Gentle</item>
+        <item>Giddy</item>
+        <item>Glowing</item>
+        <item>Golden</item>
+        <item>Groovy</item>
+        <item>Happy</item>
+        <item>Humble</item>
+        <item>Jazzy</item>
+        <item>Jolly</item>
+        <item>Jumpy</item>
+        <item>Kind</item>
+        <item>Lively</item>
+        <item>Lucky</item>
+        <item>Lunar</item>
+        <item>Mellow</item>
+        <item>Merry</item>
+        <item>Mighty</item>
+        <item>Misty</item>
+        <item>Nimble</item>
+        <item>Peppy</item>
+        <item>Plucky</item>
+        <item>Polite</item>
+        <item>Quick</item>
+        <item>Quiet</item>
+        <item>Rapid</item>
+        <item>Rhythmic</item>
+        <item>Rosy</item>
+        <item>Silly</item>
+        <item>Sleepy</item>
+        <item>Smooth</item>
+        <item>Snappy</item>
+        <item>Soulful</item>
+        <item>Sparkly</item>
+        <item>Speedy</item>
+        <item>Spicy</item>
+        <item>Sunny</item>
+        <item>Swift</item>
+        <item>Tidy</item>
+        <item>Tiny</item>
+        <item>Vivid</item>
+        <item>Wavy</item>
+        <item>Whistling</item>
+        <item>Witty</item>
+        <item>Zany</item>
+        <item>Zesty</item>
+        <item>Zippy</item>
+    </string-array>
+    <string-array name="jam_name_animals">
+        <item>Alpaca</item>
+        <item>Badger</item>
+        <item>Beaver</item>
+        <item>Bison</item>
+        <item>Bunny</item>
+        <item>Capybara</item>
+        <item>Cheetah</item>
+        <item>Chipmunk</item>
+        <item>Cobra</item>
+        <item>Corgi</item>
+        <item>Coyote</item>
+        <item>Crane</item>
+        <item>Dingo</item>
+        <item>Dolphin</item>
+        <item>Duckling</item>
+        <item>Eagle</item>
+        <item>Falcon</item>
+        <item>Ferret</item>
+        <item>Finch</item>
+        <item>Flamingo</item>
+        <item>Fox</item>
+        <item>Gazelle</item>
+        <item>Gecko</item>
+        <item>Giraffe</item>
+        <item>Hedgehog</item>
+        <item>Heron</item>
+        <item>Hippo</item>
+        <item>Ibis</item>
+        <item>Jaguar</item>
+        <item>Koala</item>
+        <item>Lemur</item>
+        <item>Llama</item>
+        <item>Lynx</item>
+        <item>Magpie</item>
+        <item>Manatee</item>
+        <item>Marmot</item>
+        <item>Meerkat</item>
+        <item>Mongoose</item>
+        <item>Moose</item>
+        <item>Narwhal</item>
+        <item>Ocelot</item>
+        <item>Octopus</item>
+        <item>Orca</item>
+        <item>Otter</item>
+        <item>Owl</item>
+        <item>Panda</item>
+        <item>Pangolin</item>
+        <item>Parrot</item>
+        <item>Pelican</item>
+        <item>Penguin</item>
+        <item>Puffin</item>
+        <item>Quokka</item>
+        <item>Raccoon</item>
+        <item>Raven</item>
+        <item>Robin</item>
+        <item>Seal</item>
+        <item>Sloth</item>
+        <item>Sparrow</item>
+        <item>Squirrel</item>
+        <item>Tapir</item>
+        <item>Tiger</item>
+        <item>Toucan</item>
+        <item>Walrus</item>
+        <item>Wombat</item>
+    </string-array>
 
     <string name="player_go_to_album">Go to album</string>
     <string name="player_sleep_timer">Sleep timer</string>
@@ -547,7 +688,7 @@
     <string name="jam_error_room_full">This room is full.</string>
     <string name="jam_error_banned">The host banned you from this room.</string>
     <string name="jam_error_kicked">The host removed you from the room.</string>
-    <string name="jam_error_replaced">You joined this room from another device.</string>
+    <string name="jam_error_replaced">This room was opened again on this device, so this connection was closed.</string>
     <string name="jam_error_connection_failed">Connection failed</string>
     <string name="jam_error_connection_lost">Connection lost</string>
 

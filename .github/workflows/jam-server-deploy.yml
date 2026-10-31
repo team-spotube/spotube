@@ -6,6 +6,11 @@ on:
     paths: ["jam-server/**"]
   workflow_dispatch:
 
+# The deploy only reads the repo; the Cloudflare token comes from secrets, which
+# workflows triggered by pull requests from forks never receive.
+permissions:
+  contents: read
+
 concurrency:
   group: jam-server-deploy
   cancel-in-progress: false
