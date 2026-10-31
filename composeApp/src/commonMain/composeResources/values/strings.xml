@@ -759,6 +759,8 @@
     <string name="player_collapse_content_description">Collapse player</string>
     <string name="player_expand_lyrics_content_description">Expand lyrics</string>
     <string name="player_now_playing">Now Playing</string>
+    <string name="player_fullscreen_open_content_description">Open full screen player</string>
+    <string name="player_fullscreen_close_content_description">Close full screen player</string>
     <string name="player_lyrics">Lyrics</string>
     <string name="player_alternative_source">Alternative Source</string>
     <string name="player_alternative_source_content_description">Alternative source</string>
@@ -964,6 +966,8 @@
     <string name="app_window_maximize">Maximize</string>
     <string name="app_window_restore">Restore</string>
     <string name="app_window_close">Close</string>
+    <string name="app_window_enter_fullscreen">Enter full screen</string>
+    <string name="app_window_exit_fullscreen">Exit full screen</string>
 
     <!-- Android playback notification -->
     <string name="notification_playback_channel_name">Playback</string>

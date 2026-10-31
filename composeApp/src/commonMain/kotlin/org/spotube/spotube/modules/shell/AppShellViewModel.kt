@@ -54,6 +54,7 @@ class AppShellViewModel : ViewModel() {
     val expandedPlayerVisibilityThreshold = 0.001f
 
     private val lyricsOverlayVisible = MutableStateFlow(false)
+    private val fullscreenPlayerVisible = MutableStateFlow(false)
     private val compactChrome = MutableStateFlow(CompactChromeUiState())
     val compactChromeUiState = compactChrome.asStateFlow()
 
@@ -62,6 +63,7 @@ class AppShellViewModel : ViewModel() {
     }
 
     val isLyricsOverlayVisible: StateFlow<Boolean> = lyricsOverlayVisible.asStateFlow()
+    val isFullscreenPlayerVisible: StateFlow<Boolean> = fullscreenPlayerVisible.asStateFlow()
 
     @Composable
     fun useSidebar(maxWidth: Dp? = null): Boolean {
@@ -112,5 +114,13 @@ class AppShellViewModel : ViewModel() {
 
     fun toggleLyricsOverlay() {
         lyricsOverlayVisible.update { !it }
+    }
+
+    fun showFullscreenPlayer() {
+        fullscreenPlayerVisible.value = true
+    }
+
+    fun hideFullscreenPlayer() {
+        fullscreenPlayerVisible.value = false
     }
 }
