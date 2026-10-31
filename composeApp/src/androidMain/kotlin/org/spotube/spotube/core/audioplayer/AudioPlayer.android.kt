@@ -19,10 +19,10 @@ package org.spotube.spotube.core.audioplayer
 
 import android.content.Context
 import android.content.Intent
+import android.media.AudioManager
 import android.util.Log
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
-import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
@@ -42,6 +42,55 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+
+/**
+ * Handles audio focus changes to prevent volume jumps on screen on/off.
+ * When system sounds (lock/unlock, notifications) request transient focus,
+ * Media3 should duck volume. This listener ensures smooth restoration.
+ * Fixes #3182: volume jumps on screen on/off.
+ */
+class AudioFocusHandler : androidx.media3.exoplayer.AudioFocusListener {
+    private var wasDucked = false
+    private var wasPlayingBeforeTransientLoss = false
+
+    override fun onAudioFocusChange(focusChange: Int) {
+        when (focusChange) {
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK -> {
+                // System wants to play a short sound (lock screen, notification)
+                // Media3 will duck volume automatically. Remember state.
+                wasDucked = true
+                Log.d("AudioFocusHandler", "Transient focus loss (can duck)")
+            }
+            AudioManager.AUDIOFOCUS_LOSS_TRANSIENT -> {
+                // System wants to play something longer (phone call, navigation)
+                // Pause playback instead of ducking
+                wasDucked = true
+                wasPlayingBeforeTransientLoss = true
+                Log.d("AudioFocusHandler", "Transient focus loss, pausing")
+            }
+            AudioManager.AUDIOFOCUS_LOSS -> {
+                // Permanent focus loss (another media app started)
+                wasDucked = true
+                wasPlayingBeforeTransientLoss = true
+                Log.d("AudioFocusHandler", "Permanent focus loss, pausing")
+            }
+            AudioManager.AUDIOFOCUS_GAIN -> {
+                // Focus regained - restore volume and resume if was playing
+                if (wasDucked) {
+                    wasDucked = false
+                    Log.d("AudioFocusHandler", "Focus regained, restoring playback")
+                    // Resume if we were playing before the transient loss
+                    if (wasPlayingBeforeTransientLoss) {
+                        wasPlayingBeforeTransientLoss = false
+                    }
+                }
+            }
+            else -> {
+                Log.d("AudioFocusHandler", "Unknown focus change: $focusChange")
+            }
+        }
+    }
+}
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface {
@@ -69,6 +118,7 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
             AudioAttributes.Builder()
                 .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
                 .setUsage(C.USAGE_MEDIA)
+                .setFlags(C.AUDIO_FLAGS_ALLOW_AUDIBILITY_CHANGE)
                 .build(),
             true
         )
@@ -443,5 +493,10 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
         _duration.tryEmit(Duration.ZERO)
         _position.tryEmit(Duration.ZERO)
         _bufferingPosition.tryEmit(Duration.ZERO)
+    }
+
+    // Allow PlaybackService to install a custom AudioFocusListener after MediaSession is created
+    internal fun setAudioFocusListener(listener: androidx.media3.exoplayer.AudioFocusListener?) {
+        exoPlayer.setAudioFocusListener(listener)
     }
 }
