@@ -314,7 +314,8 @@ enum class SupportedLanguages(
     UK("uk", "", "Українська"),
     VI("vi", "", "Tiếng Việt"),
     ZH_CN("zh", "CN", "简体中文"),
-    ZH_TW("zh", "TW", "繁體中文");
+    ZH_TW("zh", "TW", "繁體中文"),
+    ZH_CLASSICAL("lzh", "", "文言文");
 
     /** BCP 47 tag (e.g. "zh-TW"), or null for [SYSTEM]. */
     val languageTag: String?

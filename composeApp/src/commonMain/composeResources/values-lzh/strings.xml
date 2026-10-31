@@ -1,0 +1,374 @@
+<!--
+  ~ Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  ~ 文言文本地化 / Classical Chinese Localization
+  ~ Locale: lzh (ISO 639-3 Literary Chinese)
+  ~ 採漢制雅言，去白話語法，用古本單音詞組雙音、虛詞得體
+  ~ 造詞法：動賓(播樂)、主謂(失聯)、偏正(新造)、聯綴(循環)
+  ~ 虛詞：之(屬/代賓)、於(介)、以(介/連)、乃(判)、故(因)、矣(完)、哉(嘆)、也(判)、乎(疑)、焉(於+此)
+  ~ 禁白話：的、是、在、有、這、那、麼、們、著、了、過、給、被、把、讓
+  -->
+
+<resources>
+    <!-- 佇列 -->
+    <string name="queue_title">佇列</string>
+    <string name="queue_clear_queue">盡除佇列</string>
+    <string name="queue_filter_queue">篩佇列</string>
+    <string name="queue_no_queue_entries">佇列空虛</string>
+
+    <string name="search_placeholder">搜樂曲、藝人、專輯</string>
+    <string name="search_clear_history">盡削往歷</string>
+    <string name="search_filter_placeholder">搜尋</string>
+
+    <!-- 藏書樓 -->
+    <string name="library_screen_title">藏書樓</string>
+    <string name="library_toolbar_compact_title">藏書</string>
+    <string name="library_tab_playlists">歌選</string>
+    <string name="library_tab_albums">專輯</string>
+    <string name="library_tab_artists">藝人</string>
+    <string name="library_tab_local_tracks">本地樂</string>
+    <string name="library_tab_downloads">所獲</string>
+    <string name="library_filter_playlists">覓已藏歌選</string>
+    <string name="library_filter_albums">覓已藏專輯</string>
+    <string name="library_filter_artists">覓已藏藝人</string>
+    <string name="library_filter_local_tracks">覓資料夾或樂曲</string>
+    <string name="library_action_search">篩藏書</string>
+    <string name="library_action_close_search">罷篩</string>
+    <string name="library_action_create_playlist">制歌選</string>
+    <string name="library_action_refresh_local_tracks">新本地樂</string>
+    <string name="library_action_grid_view">改格視</string>
+    <string name="library_action_list_view">改列視</string>
+    <string name="library_playlists_empty">無藏歌選</string>
+    <string name="library_playlists_no_results">無歌選合「%1$s」</string>
+    <string name="library_albums_empty">無藏專輯</string>
+    <string name="library_albums_no_results">無專輯合「%1$s」</string>
+    <string name="library_artists_empty">無藏藝人</string>
+    <string name="library_artists_no_results">無藝人合「%1$s」</string>
+
+    <!-- 本地媒體 -->
+    <string name="library_local_folders">資料夾</string>
+    <string name="library_local_folder">資料夾</string>
+    <string name="library_local_summary">%1$s · %2$s</string>
+    <plurals name="library_local_tracks_count">
+        <item quantity="one">%1$d 曲</item>
+        <item quantity="other">%1$d 曲</item>
+    </plurals>
+    <plurals name="library_local_folders_count">
+        <item quantity="one">%1$d 夾</item>
+        <item quantity="other">%1$d 夾</item>
+    </plurals>
+    <string name="library_local_back">返夾</string>
+    <string name="library_local_play_folder">播夾內樂</string>
+    <string name="library_local_permission_title">須音訊權</string>
+    <string name="library_local_permission_description">允音訊權，以覽器中樂。</string>
+    <string name="library_local_grant_access">予權</string>
+    <string name="library_local_empty_folders">無本地夾</string>
+    <string name="library_local_empty_folders_description">增含樂之夾，即可於此播。無需外掛。</string>
+    <string name="library_local_add_folder">增夾</string>
+    <string name="library_local_empty_tracks">此夾無曲</string>
+    <string name="library_local_no_results">無合之夾或曲</string>
+    <string name="library_local_refresh_failed">新本地媒體失</string>
+
+    <!-- 下載 -->
+    <string name="downloads_summary">%1$d 行 · %2$d 成</string>
+    <string name="downloads_saved_to">藏於 %1$s</string>
+    <string name="downloads_clear_completed">削已成</string>
+    <string name="downloads_empty">未獲</string>
+    <string name="downloads_status_downloading">獲取中 %1$d%</string>
+    <string name="downloads_status_queued">候獲</string>
+    <string name="downloads_status_completed">已成</string>
+    <string name="downloads_status_cancelled">已止</string>
+    <string name="downloads_status_failed">失</string>
+    <string name="downloads_status_failed_error">失：%1$s</string>
+    <string name="downloads_action_cancel">止獲</string>
+    <string name="downloads_action_retry">重獲</string>
+    <string name="downloads_action_remove">去獲</string>
+
+    <!-- 樂曲共用 -->
+    <string name="media_artist">藝人</string>
+    <string name="media_blacklisted">已屏</string>
+    <string name="media_liked_tracks">好樂</string>
+    <string name="media_saved_songs">藏曲</string>
+    <string name="media_unknown_artist">無名氏</string>
+    <string name="media_preview_title">曲名</string>
+    <string name="media_preview_subtitle">藝名</string>
+
+    <string name="accessibility_selected">已選</string>
+
+    <string name="settings_screen_title">設定</string>
+
+    <string name="settings_section_plugins">外掛</string>
+    <string name="settings_section_language_region">語言地域</string>
+    <string name="settings_section_appearance">儀制</string>
+    <string name="settings_section_playback">播放</string>
+    <string name="settings_section_downloads">下載</string>
+    <string name="settings_section_caching">緩存</string>
+    <string name="settings_section_desktop">桌面</string>
+    <string name="settings_section_updates">更新</string>
+    <string name="settings_section_support">贊助</string>
+    <string name="settings_section_about">關於</string>
+
+    <string name="common_close">閉</string>
+    <string name="common_save">存</string>
+    <string name="common_cancel">止</string>
+
+    <string name="settings_language_title">語言</string>
+    <string name="settings_language_subtitle_current">介面語言。現用：%1$s</string>
+    <string name="settings_language_system_default">從制</string>
+    <string name="settings_country_title">地域</string>
+    <string name="settings_country_subtitle_current">內容地域。現用：%1$s</string>
+    <string name="settings_option_name_and_code">%1$s (%2$s)</string>
+
+    <string name="settings_theme_title">主題</string>
+    <string name="settings_theme_subtitle_current">Spotube 從制外觀。現用：%1$s</string>
+    <string name="settings_theme_light">明</string>
+    <string name="settings_theme_dark">暗</string>
+    <string name="settings_theme_system">制</string>
+
+    <string name="settings_surface_theme_title">面材</string>
+    <string name="settings_surface_theme_subtitle_current">程式底材。現用：%1$s</string>
+    <string name="settings_surface_watery">水態</string>
+    <string name="settings_surface_icy">冰態</string>
+    <string name="settings_surface_chrome">鍍鉻</string>
+    <string name="settings_surface_acrylic">亞克力</string>
+    <string name="settings_surface_glass">玻璃</string>
+
+    <string name="settings_accent_title">強調色</string>
+    <string name="settings_accent_subtitle_current">現用調色盤：%1$s</string>
+    <string name="settings_accent_dialog_title">強調色</string>
+    <string name="settings_accent_dialog_description">選調色盤，明暗雙題預覽。</string>
+    <string name="settings_preview_light">明題</string>
+    <string name="settings_preview_dark">暗題</string>
+    <string name="settings_preview_label">預覽</string>
+    <string name="settings_preview_button">按鈕</string>
+    <string name="settings_accent_green_goblin">綠鬼</string>
+    <string name="settings_accent_electric_violet">電紫</string>
+    <string name="settings_accent_oceanic_cyan">海青</string>
+    <string name="settings_accent_sunset_orange">暮橙</string>
+    <string name="settings_accent_rose_garden">薔薇園</string>
+    <string name="settings_accent_midnight_blue">夜藍</string>
+    <string name="settings_accent_metallic_slate">金石</string>
+
+    <string name="settings_appearance_title">觀感</string>
+    <string name="settings_appearance_subtitle_current">面材與強調色。現用：%1$s · %2$s</string>
+    <string name="settings_appearance_dialog_title">觀感</string>
+    <string name="settings_appearance_dialog_description">選面材，再選配之強調色。皆精選組合。</string>
+    <string name="settings_appearance_surface_label">面材</string>
+    <string name="settings_appearance_accent_label">強調色</string>
+    <string name="settings_preview_secondary">次要</string>
+
+    <string name="settings_palette_title">調色盤</string>
+    <string name="settings_palette_subtitle_current">千禧強調色盤。現用：%1$s</string>
+    <string name="settings_palette_dialog_title">調色盤</string>
+    <string name="settings_palette_dialog_description">選千禧強調色盤，明暗預覽。</string>
+    <string name="settings_palette_label">調色盤</string>
+    <string name="settings_appearance_subtitle_palette">千禧色盤與強調色。現用：%1$s</string>
+    <string name="settings_palette_blue">青</string>
+    <string name="settings_palette_orange">橙</string>
+    <string name="settings_palette_lime">檸檬綠</string>
+
+    <string name="settings_download_folder_title">下載資料夾覆寫</string>
+    <string name="settings_download_folder_current">現用夾：%1$s</string>
+    <string name="settings_download_folder_default_path">現用夾：%1$s (預設)</string>
+    <string name="settings_download_folder_description">留空則用預設樂資料夾。</string>
+    <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
+    <string name="settings_local_media_folders_title">本地媒體資料夾</string>
+    <string name="settings_local_media_folders_subtitle_current">桌面自訂掃描夾。已增：%1$d</string>
+    <string name="settings_local_media_folders_subtitle_empty">未增自訂夾</string>
+    <string name="settings_local_media_folders_description">本地樂庫自訂夾。</string>
+    <string name="settings_local_media_folders_manage">管理</string>
+    <string name="settings_local_media_folders_add_action">增夾</string>
+    <string name="settings_local_media_folders_remove_action">去夾</string>
+    <string name="settings_local_media_folders_none_added">未增自訂夾。</string>
+    <string name="settings_local_media_folders_remove_named">去掃描列表 %1$s</string>
+    <string name="settings_local_media_folders_automatic_both">下載與緩存夾自動包含。</string>
+    <string name="settings_local_media_folders_automatic_downloads">下載夾自動包含。</string>
+    <string name="settings_local_media_folders_automatic_cache">樂緩存夾自動包含。</string>
+    <string name="settings_local_media_folders_saving">存檔中</string>
+    <string name="settings_local_media_folders_save_error">存夾失。變更仍在；請重試。</string>
+    <plurals name="settings_local_media_folders_count">
+        <item quantity="one">%1$d 夾</item>
+        <item quantity="other">%1$d 夾</item>
+    </plurals>
+    <string name="settings_download_format_title">下載樂格式</string>
+    <string name="settings_download_format_subtitle_current">下載偏好編碼與容器。現用：%1$s</string>
+    <string name="settings_download_quality_title">下載樂音質</string>
+
+    <string name="settings_streaming_format_title">串流樂格式</string>
+    <string name="settings_streaming_format_subtitle_current">串流偏好編碼與容器。現用：%1$s</string>
+    <string name="settings_streaming_quality_title">串流樂音質</string>
+    <string name="settings_subtitle_current">現用：%1$s</string>
+    <string name="settings_enable_music_caching_title">啟樂緩存</string>
+    <string name="settings_enable_music_caching_subtitle">存串流音訊於本地，以速再播。</string>
+    <string name="settings_cache_folder_title">緩存夾</string>
+    <string name="settings_cache_folder_current">現用：%1$s</string>
+    <string name="settings_cache_folder_default">現用：預設應用緩存</string>
+    <string name="settings_cache_size_limit_title">緩存大小限</string>
+    <string name="settings_cache_size_limit_unlimited">無限</string>
+    <string name="settings_cache_size_limit_current">現限：%1$d MB</string>
+    <string name="settings_cache_size_limit_description">設緩存最大 MB。空或 0 為無限。</string>
+    <string name="settings_cache_size_limit_placeholder">500</string>
+    <string name="settings_error_cache_size_range">大小須為 0 或正數。</string>
+    <string name="settings_enable_endless_playback_title">啟無盡播放</string>
+    <string name="settings_enable_endless_playback_subtitle">佇列盡時，以推薦續播。</string>
+    <string name="settings_playback_port_title">播放代理伺服器埠</string>
+    <string name="settings_allow_remote_control_title">允遠端控制</string>
+    <string name="settings_allow_remote_control_subtitle">同網裝置連線時，得控制播放。</string>
+    <string name="settings_remote_device_name_title">遠端控制裝置名</string>
+    <string name="settings_remote_device_name_subtitle">他裝置發現時顯示名。現用：%1$s</string>
+    <string name="settings_remote_device_name_description">為網上他裝置發現本 Spotube 時顯示之友好名。</string>
+    <string name="settings_remote_device_name_placeholder">如：客廳 Spotube</string>
+    <string name="settings_remote_device_name_default">裝置主機名</string>
+    <string name="settings_playback_port_subtitle_current">播放代理伺服器埠。現用：%1$d</string>
+    <string name="settings_playback_port_description">選 1 至 65535 間埠。</string>
+    <string name="settings_playback_port_placeholder">14769</string>
+    <string name="settings_error_whole_number">請輸整數。</string>
+    <string name="settings_error_port_range">埠須在 1 至 65535 間。</string>
+
+    <string name="settings_blacklist_title">屏蔽</string>
+    <string name="settings_blacklist_subtitle">管屏蔽曲與藝人</string>
+
+    <string name="settings_desktop_minimize_title">縮至盤</string>
+    <string name="settings_desktop_minimize_subtitle">窗最小時，留 Spotube 於系統盤運行。</string>
+    <string name="settings_desktop_discord_title">Discord 富在線</string>
+    <string name="settings_desktop_discord_subtitle">桌面上於 Discord 顯示播放狀態。</string>
+
+    <string name="settings_updates_auto_check_title">自動檢更新</string>
+    <string name="settings_updates_auto_check_subtitle">背景尋新 Spotube 版本。</string>
+
+    <string name="settings_plugins_manage_title">管外掛</string>
+    <string name="settings_plugins_manage_subtitle">管你的外掛</string>
+    <string name="settings_plugins_default_ability_title">預設 %1$s 外掛</string>
+    <string name="settings_plugins_ability_metadata">元數據</string>
+    <string name="settings_plugins_ability_audio">音訊</string>
+    <string name="settings_plugins_ability_lyrics">歌詞</string>
+    <string name="settings_plugins_ability_scrobble">記聽</string>
+    <string name="settings_plugins_no_selection">未選外掛</string>
+    <string name="settings_plugins_action_change">換</string>
+    <string name="settings_plugins_action_select">選</string>
+    <string name="settings_plugins_selected">已選</string>
+    <string name="settings_plugins_clear">清選</string>
+    <string name="settings_plugins_no_plugins">無可用外掛</string>
+    <string name="settings_plugins_plugin_content_description">%1$s 外掛</string>
+    <string name="settings_plugins_clear_content_description">清</string>
+
+    <string name="plugin_configure_title">配置</string>
+    <string name="plugin_screen_title">外掛管理</string>
+    <string name="plugin_error_enter_url">請輸網址</string>
+    <string name="plugin_error_url_scheme">網址須以 http:// 或 https:// 始</string>
+    <string name="plugin_error_download_failed">下載外掛失</string>
+    <string name="plugin_error_invalid_plugin_json">plugin.json 格式無效：%1$s</string>
+    <string name="plugin_error_read_failed">讀外掛失：%1$s</string>
+    <string name="plugin_error_install_failed">裝外掛失：%1$s</string>
+    <string name="plugin_error_update_needs_confirmation">%1$s 有新版。確認更新前裝之。</string>
+    <string name="plugin_error_replace_needs_confirmation">%1$s 已裝。確認替換前裝之。</string>
+    <string name="plugin_error_builtin_add">內建外掛已含，不可重增。</string>
+    <string name="plugin_error_builtin_remove">內建外掛不可卸。</string>
+    <string name="plugin_error_api_version_invalid">%1$s 宣稱無效 apiVersion (%2$s)。期與 %3$s 相容之語義版本。</string>
+    <string name="plugin_error_app_api_version_invalid">Spotube 外掛 API 版本 %1$s 無效。</string>
+    <string name="plugin_error_api_incompatible">%1$s 針對外掛 API %2$s，但 Spotube 支援破壞性 API %3$s。裝針對同破壞性 API 版本之外掛。</string>
+
+    <!-- 外掛安裝提示 -->
+    <string name="plugin_prompt_incompatible_title">外掛 API 不相容</string>
+    <string name="plugin_prompt_install_title">裝外掛？</string>
+    <string name="plugin_prompt_install_message">%1$s 將增入你的已裝外掛。</string>
+    <string name="plugin_prompt_update_title">更新外掛？</string>
+    <string name="plugin_prompt_update_message">舊版已裝 (%1$s)。更新至 %2$s？</string>
+    <string name="plugin_prompt_replace_title">替換已裝外掛？</string>
+    <string name="plugin_prompt_replace_invalid_incoming">%1$s 採無效語義版本 (%2$s)，不可作更新比較。仍替換？</string>
+    <string name="plugin_prompt_replace_invalid_installed">已裝版 (%1$s) 不可用語義版本比較。以 %2$s 替換？</string>
+    <string name="plugin_prompt_replace_same_version">版本 %1$s 已裝。仍以提供副本替換？</string>
+    <string name="plugin_prompt_replace_downgrade">已裝版 %1$s 新於提供版 %2$s。仍替換？</string>
+    <string name="plugin_prompt_replace_generic">以提供副本替換已裝外掛？</string>
+
+    <!-- 外掛詳情對話框 -->
+    <string name="plugin_info_label_format">%1$s：</string>
+    <string name="plugin_info_version">版本</string>
+    <string name="plugin_info_api_version">API 版本</string>
+    <string name="plugin_info_author">作者</string>
+    <string name="plugin_info_license">授權</string>
+    <string name="plugin_info_capabilities">能力</string>
+    <string name="plugin_info_abilities">能</string>
+    <string name="plugin_info_repository">倉庫</string>
+    <string name="plugin_info_contact">聯繫</string>
+    <string name="plugin_info_report_bugs">報錯</string>
+    <string name="plugin_support_dialog_title">贊助 %1$s</string>
+
+    <!-- 外掛發現 -->
+    <string name="plugin_discover_badge_official">官方</string>
+    <string name="plugin_discover_badge_verified">已驗</string>
+    <string name="plugin_discover_stars_content_description">GitHub 星</string>
+    <string name="plugin_discover_repository_content_description">GitHub 倉庫網址</string>
+    <string name="plugin_discover_repository_host">github.com</string>
+
+    <!-- 外掛版本安裝對話框 -->
+    <string name="plugin_install_no_releases">無發現釋出</string>
+    <string name="plugin_install_select_release_label">選釋出</string>
+    <string name="plugin_install_select_release_placeholder">選一釋出</string>
+    <string name="plugin_install_prerelease">預發布</string>
+    <string name="plugin_install_release_notes">釋出說明</string>
+
+    <!-- 應用導航 -->
+    <string name="nav_home">首頁</string>
+    <string name="nav_search">搜尋</string>
+    <string name="nav_group_on_device">本機</string>
+    <string name="nav_group_connect">連線</string>
+    <string name="nav_devices">裝置</string>
+    <plurals name="connect_jam_hosting">
+        <item quantity="one">主持 · %1$d 聽者</item>
+        <item quantity="other">主持 · %1$d 聽者</item>
+    </plurals>
+    <plurals name="connect_jam_joined">
+        <item quantity="one">入群聽 · %1$d 聽者</item>
+        <item quantity="other">入群聽 · %1$d 聽者</item>
+    </plurals>
+
+    <!-- 系統盤 -->
+    <string name="tray_hide_window">隱窗</string>
+    <string name="tray_show_window">顯窗</string>
+    <string name="tray_next_track">次曲</string>
+    <string name="tray_previous_track">前曲</string>
+    <string name="tray_shuffle">亂序</string>
+    <string name="tray_loop">循環</string>
+    <string name="tray_loop_off">循環：關</string>
+    <string name="tray_loop_one">循環：單</string>
+    <string name="tray_loop_all">循環：全</string>
+    <string name="tray_volume">音量：%1$d%</string>
+    <string name="tray_volume_up">音量 +</string>
+    <string name="tray_volume_down">音量 -</string>
+    <string name="tray_mute">靜音</string>
+    <string name="tray_unmute">取消靜音</string>
+    <string name="tray_like_track">喜樂</string>
+    <string name="tray_unlike_track">取消喜</string>
+    <string name="tray_exit">退出</string>
+
+    <!-- 桌面窗口控制 -->
+    <string name="app_window_minimize">最小化</string>
+    <string name="app_window_maximize">最大化</string>
+    <string name="app_window_restore">還原</string>
+    <string name="app_window_close">關閉</string>
+
+    <!-- Android 播放通知 -->
+    <string name="notification_playback_channel_name">播放</string>
+    <string name="notification_playback_channel_description">媒體播放控制</string>
+
+    <!-- Android Auto / 媒體瀏覽器 -->
+    <string name="media_browser_browse">瀏覽</string>
+    <string name="media_browser_now_playing">正播放</string>
+    <string name="media_browser_featured">精選</string>
+    <string name="media_browser_saved_tracks">藏曲</string>
+    <string name="media_browser_top_tracks">熱曲</string>
+</resources>
