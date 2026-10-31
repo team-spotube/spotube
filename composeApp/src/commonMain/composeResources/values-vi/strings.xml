@@ -328,7 +328,7 @@
     <string name="settings_jam_server_url">URL máy chủ</string>
     <string name="settings_jam_server_url_invalid">Nhập URL bắt đầu bằng https://</string>
     <string name="settings_jam_server_diagnostics_subtitle">Kiểm tra máy chủ phòng trước khi tạo phòng.</string>
-    <string name="settings_jam_server_note">Jam dùng máy chủ phòng miễn phí của Spotube. Để tự lưu trữ, hãy triển khai jam-server từ kho mã Spotube rồi nhập URL của nó.</string>
+    <string name="settings_jam_server_note">Jam dùng máy chủ phòng miễn phí của Spotube. Để tự lưu trữ, hãy triển khai máy chủ từ github.com/team-spotube/jam-server rồi nhập URL của nó.</string>
     <string name="settings_jam_section_you">Bạn</string>
     <string name="jam_connection_host">Máy chủ: %1$s</string>
     <string name="jam_connection_missing">Đặt máy chủ phòng trong Cài đặt để tạo hoặc tham gia phòng.</string>

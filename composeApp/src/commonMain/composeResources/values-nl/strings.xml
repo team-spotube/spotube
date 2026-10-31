@@ -332,7 +332,7 @@
     <string name="settings_jam_server_url">Server-URL</string>
     <string name="settings_jam_server_url_invalid">Voer een URL in die begint met https://</string>
     <string name="settings_jam_server_diagnostics_subtitle">Controleer de sessieserver voordat je een sessie start.</string>
-    <string name="settings_jam_server_note">Jam gebruikt de gratis sessieserver van Spotube. Wil je hem zelf hosten, deploy dan jam-server uit de Spotube-repository en voer de URL in.</string>
+    <string name="settings_jam_server_note">Jam gebruikt de gratis sessieserver van Spotube. Wil je hem zelf hosten, deploy dan de server van github.com/team-spotube/jam-server en voer de URL in.</string>
     <string name="settings_jam_section_you">Jij</string>
     <string name="jam_connection_host">Server: %1$s</string>
     <string name="jam_connection_missing">Stel in Instellingen een sessieserver in om een sessie te hosten of eraan deel te nemen.</string>

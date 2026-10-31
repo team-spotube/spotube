@@ -332,7 +332,7 @@
     <string name="settings_jam_server_url">Server-URL</string>
     <string name="settings_jam_server_url_invalid">Gib eine URL ein, die mit https:// beginnt.</string>
     <string name="settings_jam_server_diagnostics_subtitle">Prüfe den Raumserver, bevor du einen Raum startest.</string>
-    <string name="settings_jam_server_note">Jam nutzt den kostenlosen Raumserver von Spotube. Zum Selbsthosten stelle jam-server aus dem Spotube-Repository bereit und gib seine URL ein.</string>
+    <string name="settings_jam_server_note">Jam nutzt den kostenlosen Raumserver von Spotube. Zum Selbsthosten stelle den Server von github.com/team-spotube/jam-server bereit und gib seine URL ein.</string>
     <string name="settings_jam_section_you">Du</string>
     <string name="jam_connection_host">Server: %1$s</string>
     <string name="jam_connection_missing">Lege in den Einstellungen einen Raumserver fest, um einen Raum zu hosten oder beizutreten.</string>

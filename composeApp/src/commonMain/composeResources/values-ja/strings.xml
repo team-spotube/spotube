@@ -328,7 +328,7 @@
     <string name="settings_jam_server_url">サーバーURL</string>
     <string name="settings_jam_server_url_invalid">https:// で始まるURLを入力してください。</string>
     <string name="settings_jam_server_diagnostics_subtitle">ルームを始める前にルームサーバーを確認します。</string>
-    <string name="settings_jam_server_note">ジャムはSpotubeの無料ルームサーバーを使います。自分でホストするには、Spotubeリポジトリのjam-serverをデプロイし、そのURLを入力してください。</string>
+    <string name="settings_jam_server_note">ジャムはSpotubeの無料ルームサーバーを使います。自分でホストするには、github.com/team-spotube/jam-server のサーバーをデプロイし、そのURLを入力してください。</string>
     <string name="settings_jam_section_you">あなた</string>
     <string name="jam_connection_host">サーバー: %1$s</string>
     <string name="jam_connection_missing">ルームをホストまたは参加するには、設定でルームサーバーを指定してください。</string>

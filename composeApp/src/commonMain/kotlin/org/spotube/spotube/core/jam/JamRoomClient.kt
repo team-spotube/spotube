@@ -74,7 +74,7 @@ import spotube.composeapp.generated.resources.settings_jam_server_test_ok
 import kotlin.time.Clock
 
 /**
- * WebSocket client for one jam room on the room server (`jam-server/`, a Cloudflare
+ * WebSocket client for one jam room on the room server (https://github.com/team-spotube/jam-server, a Cloudflare
  * Durable Object per room code).
  *
  * The server keeps the host's latest queue and anchor for late joiners, routes guest
@@ -482,7 +482,7 @@ sealed interface JamRoomEvent {
 /** The server refused to let us into the room. */
 class JamRoomException(val code: String, message: String) : Exception(message)
 
-// ---------- Wire frames (see jam-server/src/protocol.ts) ----------
+// ---------- Wire frames (see src/protocol.ts in https://github.com/team-spotube/jam-server) ----------
 
 @Serializable
 private data class Health(val ok: Boolean = false, val v: Int = 0)

@@ -332,7 +332,7 @@
     <string name="settings_jam_server_url">نشانی سرور</string>
     <string name="settings_jam_server_url_invalid">نشانی‌ای وارد کنید که با https:// شروع شود</string>
     <string name="settings_jam_server_diagnostics_subtitle">پیش از شروع اتاق، سرور اتاق‌ها را بررسی کنید.</string>
-    <string name="settings_jam_server_note">جم از سرور رایگان اتاق‌های Spotube استفاده می‌کند. برای میزبانی شخصی، jam-server را از مخزن Spotube راه‌اندازی کنید و نشانی آن را وارد کنید.</string>
+    <string name="settings_jam_server_note">جم از سرور رایگان اتاق‌های Spotube استفاده می‌کند. برای میزبانی شخصی، سرور را از github.com/team-spotube/jam-server راه‌اندازی کنید و نشانی آن را وارد کنید.</string>
     <string name="settings_jam_section_you">شما</string>
     <string name="jam_connection_host">سرور: %1$s</string>
     <string name="jam_connection_missing">برای میزبانی یا پیوستن به اتاق، در تنظیمات یک سرور اتاق تعیین کنید.</string>

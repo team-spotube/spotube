@@ -27,7 +27,7 @@ import spotube.composeapp.generated.resources.jam_name_format
 
 /** Friendly default names for jam participants ("Mellow Otter"), like npm or Docker use. */
 object JamNames {
-    /** The server's limit (`MAX_NAME_LENGTH` in `jam-server/src/protocol.ts`). */
+    /** The server's limit (`MAX_NAME_LENGTH` in the jam-server repository's `src/protocol.ts`). */
     const val MAX_LENGTH = 40
 
     /**

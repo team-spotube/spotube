@@ -328,7 +328,7 @@
     <string name="settings_jam_server_url">URL ของเซิร์ฟเวอร์</string>
     <string name="settings_jam_server_url_invalid">ใส่ URL ที่ขึ้นต้นด้วย https://</string>
     <string name="settings_jam_server_diagnostics_subtitle">ตรวจสอบเซิร์ฟเวอร์ห้องก่อนเริ่มห้อง</string>
-    <string name="settings_jam_server_note">แจมใช้เซิร์ฟเวอร์ห้องฟรีของ Spotube หากต้องการโฮสต์เอง ให้ติดตั้ง jam-server จากรีโพสิทอรีของ Spotube แล้วใส่ URL ของเซิร์ฟเวอร์นั้น</string>
+    <string name="settings_jam_server_note">แจมใช้เซิร์ฟเวอร์ห้องฟรีของ Spotube หากต้องการโฮสต์เอง ให้ติดตั้งเซิร์ฟเวอร์จาก github.com/team-spotube/jam-server แล้วใส่ URL ของเซิร์ฟเวอร์นั้น</string>
     <string name="settings_jam_section_you">คุณ</string>
     <string name="jam_connection_host">เซิร์ฟเวอร์: %1$s</string>
     <string name="jam_connection_missing">ตั้งค่าเซิร์ฟเวอร์ห้องในการตั้งค่าเพื่อโฮสต์หรือเข้าร่วมห้อง</string>

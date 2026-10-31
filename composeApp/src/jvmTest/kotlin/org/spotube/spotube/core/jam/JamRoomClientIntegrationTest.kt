@@ -31,7 +31,7 @@ import kotlin.test.assertTrue
 
 /**
  * Runs the real client against a room server. Skipped unless `JAM_TEST_URL` is set:
- * `cd jam-server && npm run dev`, then `JAM_TEST_URL=http://127.0.0.1:8787 ./gradlew :composeApp:jvmTest`.
+ * run `npm run dev` in a checkout of https://github.com/team-spotube/jam-server, then `JAM_TEST_URL=http://127.0.0.1:8787 ./gradlew :composeApp:jvmTest`.
  */
 class JamRoomClientIntegrationTest {
     private val serverUrl: String? = System.getenv("JAM_TEST_URL")

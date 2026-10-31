@@ -314,7 +314,7 @@
     <string name="settings_jam_server_url">Server URL</string>
     <string name="settings_jam_server_url_invalid">Enter a URL starting with https://</string>
     <string name="settings_jam_server_diagnostics_subtitle">Check the room server before starting a room.</string>
-    <string name="settings_jam_server_note">Jam uses Spotube’s free room server. To self-host, deploy jam-server from the Spotube repository and enter its URL.</string>
+    <string name="settings_jam_server_note">Jam uses Spotube’s free room server. To self-host, deploy the server from github.com/team-spotube/jam-server and enter its URL.</string>
     <string name="settings_jam_server_test">Test connection</string>
     <string name="settings_jam_server_testing">Testing…</string>
     <string name="settings_jam_server_test_ok">Connected in %1$d ms</string>

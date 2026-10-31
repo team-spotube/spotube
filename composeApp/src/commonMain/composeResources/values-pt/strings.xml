@@ -336,7 +336,7 @@
     <string name="settings_jam_server_url">URL do servidor</string>
     <string name="settings_jam_server_url_invalid">Digite uma URL que comece com https://</string>
     <string name="settings_jam_server_diagnostics_subtitle">Verifique o servidor de salas antes de criar uma sala.</string>
-    <string name="settings_jam_server_note">O Jam usa o servidor de salas gratuito do Spotube. Para hospedar o seu, implante o jam-server do repositório do Spotube e informe a URL dele.</string>
+    <string name="settings_jam_server_note">O Jam usa o servidor de salas gratuito do Spotube. Para hospedar o seu, implante o servidor de github.com/team-spotube/jam-server e informe a URL dele.</string>
     <string name="settings_jam_section_you">Você</string>
     <string name="jam_connection_host">Servidor: %1$s</string>
     <string name="jam_connection_missing">Defina um servidor de salas nas Configurações para criar ou entrar em uma sala.</string>

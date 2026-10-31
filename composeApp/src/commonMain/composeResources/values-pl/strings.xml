@@ -340,7 +340,7 @@
     <string name="settings_jam_server_url">Adres URL serwera</string>
     <string name="settings_jam_server_url_invalid">Wpisz adres URL zaczynający się od https://</string>
     <string name="settings_jam_server_diagnostics_subtitle">Sprawdź serwer pokojów przed utworzeniem pokoju.</string>
-    <string name="settings_jam_server_note">Jam korzysta z darmowego serwera pokojów Spotube. Aby hostować własny, wdróż jam-server z repozytorium Spotube i wpisz jego adres URL.</string>
+    <string name="settings_jam_server_note">Jam korzysta z darmowego serwera pokojów Spotube. Aby hostować własny, wdróż serwer z github.com/team-spotube/jam-server i wpisz jego adres URL.</string>
     <string name="settings_jam_section_you">Ty</string>
     <string name="jam_connection_host">Serwer: %1$s</string>
     <string name="jam_connection_missing">Ustaw serwer pokojów w Ustawieniach, aby utworzyć pokój lub do niego dołączyć.</string>

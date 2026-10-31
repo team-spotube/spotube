@@ -340,7 +340,7 @@
     <string name="settings_jam_server_url">URL сервера</string>
     <string name="settings_jam_server_url_invalid">Введіть URL, що починається з https://</string>
     <string name="settings_jam_server_diagnostics_subtitle">Перевірте сервер кімнат перед створенням кімнати.</string>
-    <string name="settings_jam_server_note">Джем використовує безкоштовний сервер кімнат Spotube. Щоб розгорнути власний, встановіть jam-server із репозиторію Spotube і вкажіть його URL.</string>
+    <string name="settings_jam_server_note">Джем використовує безкоштовний сервер кімнат Spotube. Щоб розгорнути власний, встановіть сервер із github.com/team-spotube/jam-server і вкажіть його URL.</string>
     <string name="settings_jam_section_you">Ви</string>
     <string name="jam_connection_host">Сервер: %1$s</string>
     <string name="jam_connection_missing">Укажіть сервер кімнат у налаштуваннях, щоб створити кімнату або приєднатися до неї.</string>

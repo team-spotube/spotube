@@ -332,7 +332,7 @@
     <string name="settings_jam_server_url">Sunucu URL’si</string>
     <string name="settings_jam_server_url_invalid">https:// ile başlayan bir URL gir.</string>
     <string name="settings_jam_server_diagnostics_subtitle">Oda başlatmadan önce oda sunucusunu kontrol et.</string>
-    <string name="settings_jam_server_note">Jam, Spotube’un ücretsiz oda sunucusunu kullanır. Kendin barındırmak için Spotube deposundaki jam-server’ı kur ve URL’sini gir.</string>
+    <string name="settings_jam_server_note">Jam, Spotube’un ücretsiz oda sunucusunu kullanır. Kendin barındırmak için github.com/team-spotube/jam-server adresindeki sunucuyu kur ve URL’sini gir.</string>
     <string name="settings_jam_section_you">Sen</string>
     <string name="jam_connection_host">Sunucu: %1$s</string>
     <string name="jam_connection_missing">Oda açmak veya bir odaya katılmak için Ayarlar’da bir oda sunucusu belirle.</string>

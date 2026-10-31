@@ -61,7 +61,7 @@ data class UserSettings(
 
     // Group Jam
     val jamParticipantName: String = "",
-    /** Room server (`jam-server/`); self-hosters point this at their own deployment. */
+    /** Room server (https://github.com/team-spotube/jam-server); self-hosters point this at their own deployment. */
     val jamServerUrl: String = DEFAULT_JAM_SERVER_URL,
     val lastJamCode: String = "",
     /** Random per-install secret behind this device's jam identities (see `jamParticipantKey`). */

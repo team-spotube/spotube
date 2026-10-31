@@ -336,7 +336,7 @@
     <string name="settings_jam_server_url">URL del server</string>
     <string name="settings_jam_server_url_invalid">Inserisci un URL che inizi con https://</string>
     <string name="settings_jam_server_diagnostics_subtitle">Controlla il server delle stanze prima di avviare una stanza.</string>
-    <string name="settings_jam_server_note">Jam usa il server delle stanze gratuito di Spotube. Per ospitarlo in proprio, distribuisci jam-server dal repository di Spotube e inseriscine l’URL.</string>
+    <string name="settings_jam_server_note">Jam usa il server delle stanze gratuito di Spotube. Per ospitarlo in proprio, distribuisci il server da github.com/team-spotube/jam-server e inseriscine l’URL.</string>
     <string name="settings_jam_section_you">Tu</string>
     <string name="jam_connection_host">Server: %1$s</string>
     <string name="jam_connection_missing">Imposta un server delle stanze nelle Impostazioni per ospitare una stanza o entrarci.</string>

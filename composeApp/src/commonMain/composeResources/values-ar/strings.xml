@@ -348,7 +348,7 @@
     <string name="settings_jam_server_url">رابط الخادم</string>
     <string name="settings_jam_server_url_invalid">أدخل رابطًا يبدأ بـ https://</string>
     <string name="settings_jam_server_diagnostics_subtitle">تحقّق من خادم الغرف قبل بدء غرفة.</string>
-    <string name="settings_jam_server_note">يستخدم الجام خادم الغرف المجاني من Spotube. للاستضافة الذاتية، انشر jam-server من مستودع Spotube وأدخل رابطه.</string>
+    <string name="settings_jam_server_note">يستخدم الجام خادم الغرف المجاني من Spotube. للاستضافة الذاتية، انشر الخادم من github.com/team-spotube/jam-server وأدخل رابطه.</string>
     <string name="settings_jam_section_you">أنت</string>
     <string name="jam_connection_host">الخادم: %1$s</string>
     <string name="jam_connection_missing">حدّد خادم غرف في الإعدادات لاستضافة غرفة أو الانضمام إليها.</string>

@@ -328,7 +328,7 @@
     <string name="settings_jam_server_url">URL server</string>
     <string name="settings_jam_server_url_invalid">Masukkan URL yang diawali https://</string>
     <string name="settings_jam_server_diagnostics_subtitle">Periksa server ruang sebelum memulai ruang.</string>
-    <string name="settings_jam_server_note">Jam memakai server ruang gratis milik Spotube. Untuk meng-host sendiri, deploy jam-server dari repositori Spotube lalu masukkan URL-nya.</string>
+    <string name="settings_jam_server_note">Jam memakai server ruang gratis milik Spotube. Untuk meng-host sendiri, deploy server dari github.com/team-spotube/jam-server lalu masukkan URL-nya.</string>
     <string name="settings_jam_section_you">Kamu</string>
     <string name="jam_connection_host">Server: %1$s</string>
     <string name="jam_connection_missing">Atur server ruang di Pengaturan untuk membuat atau bergabung ke ruang.</string>

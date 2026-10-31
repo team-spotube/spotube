@@ -331,7 +331,7 @@
     <string name="settings_jam_server_url">सर्वर URL</string>
     <string name="settings_jam_server_url_invalid">https:// से शुरू होने वाला URL डालें</string>
     <string name="settings_jam_server_diagnostics_subtitle">रूम शुरू करने से पहले रूम सर्वर जांच लें।</string>
-    <string name="settings_jam_server_note">जैम Spotube के मुफ़्त रूम सर्वर का इस्तेमाल करता है। खुद होस्ट करने के लिए Spotube रिपॉज़िटरी से jam-server डिप्लॉय करें और उसका URL डालें।</string>
+    <string name="settings_jam_server_note">जैम Spotube के मुफ़्त रूम सर्वर का इस्तेमाल करता है। खुद होस्ट करने के लिए github.com/team-spotube/jam-server से सर्वर डिप्लॉय करें और उसका URL डालें।</string>
     <string name="settings_jam_section_you">आप</string>
     <string name="jam_connection_host">सर्वर: %1$s</string>
     <string name="jam_connection_missing">रूम होस्ट करने या उसमें शामिल होने के लिए सेटिंग में रूम सर्वर सेट करें।</string>

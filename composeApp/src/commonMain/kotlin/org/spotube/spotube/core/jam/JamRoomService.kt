@@ -872,7 +872,7 @@ class JamRoomService(
 
     companion object {
         private const val CREATE_ATTEMPTS = 3
-        /** Keeps the host under the server's budgets (see `jam-server/src/protocol.ts`). */
+        /** Keeps the host under the server's budgets (see `src/protocol.ts` in the jam-server repository). */
         private const val QUEUE_MIN_GAP_MS = 1_000L
         private const val ANCHOR_MIN_GAP_MS = 250L
         private const val MAX_SUGGESTED_ITEMS = 500

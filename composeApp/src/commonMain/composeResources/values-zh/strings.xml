@@ -328,7 +328,7 @@
     <string name="settings_jam_server_url">服务器网址</string>
     <string name="settings_jam_server_url_invalid">请输入以 https:// 开头的网址</string>
     <string name="settings_jam_server_diagnostics_subtitle">创建房间前先检查房间服务器。</string>
-    <string name="settings_jam_server_note">一起听使用 Spotube 的免费房间服务器。如需自行托管，请部署 Spotube 仓库中的 jam-server 并填写其网址。</string>
+    <string name="settings_jam_server_note">一起听使用 Spotube 的免费房间服务器。如需自行托管，请部署 github.com/team-spotube/jam-server 中的服务器并填写其网址。</string>
     <string name="settings_jam_section_you">你</string>
     <string name="jam_connection_host">服务器：%1$s</string>
     <string name="jam_connection_missing">请在设置中指定房间服务器，以创建或加入房间。</string>

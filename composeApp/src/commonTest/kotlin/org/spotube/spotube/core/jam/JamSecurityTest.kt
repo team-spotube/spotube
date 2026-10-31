@@ -62,7 +62,7 @@ class JamSecurityTest {
     fun clientKeysAreLongRandomAndAcceptedByTheServer() {
         val keys = List(100) { JamRoomCode.newClientKey() }
         assertEquals(keys.size, keys.toSet().size)
-        // Mirrors CLIENT_KEY in jam-server/src/protocol.ts.
+        // Mirrors CLIENT_KEY in the jam-server repository's src/protocol.ts.
         val serverPattern = Regex("^[A-Za-z0-9_-]{22,64}$")
         assertTrue(keys.all { serverPattern.matches(it) })
     }
@@ -82,7 +82,7 @@ class JamSecurityTest {
         assertEquals(digest, jamDeviceDigest("ABCDEF"))
         assertNotEquals(digest, jamDeviceDigest("ABCDEG"))
         assertTrue(jamDeviceTraits().none { trait -> trait.length > 3 && trait in digest })
-        // Mirrors DEVICE_DIGEST in jam-server/src/protocol.ts.
+        // Mirrors DEVICE_DIGEST in the jam-server repository's src/protocol.ts.
         assertTrue(Regex("^[A-Za-z0-9_-]{16,64}$").matches(digest))
     }
 

@@ -328,7 +328,7 @@
     <string name="settings_jam_server_url">서버 URL</string>
     <string name="settings_jam_server_url_invalid">https://로 시작하는 URL을 입력하세요.</string>
     <string name="settings_jam_server_diagnostics_subtitle">방을 시작하기 전에 방 서버를 확인하세요.</string>
-    <string name="settings_jam_server_note">잼은 Spotube의 무료 방 서버를 사용합니다. 직접 호스팅하려면 Spotube 저장소의 jam-server를 배포하고 URL을 입력하세요.</string>
+    <string name="settings_jam_server_note">잼은 Spotube의 무료 방 서버를 사용합니다. 직접 호스팅하려면 github.com/team-spotube/jam-server의 서버를 배포하고 URL을 입력하세요.</string>
     <string name="settings_jam_section_you">나</string>
     <string name="jam_connection_host">서버: %1$s</string>
     <string name="jam_connection_missing">방을 만들거나 참여하려면 설정에서 방 서버를 지정하세요.</string>
