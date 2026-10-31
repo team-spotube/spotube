@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.compose.resources.getString
 import spotube.composeapp.generated.resources.Res
 import io.github.vinceglb.filekit.PlatformFile
@@ -50,7 +51,8 @@ sealed interface LocalPlaylistScreenState {
         val showAddTracksDialog: Boolean = false,
         val editingPlaylist: LocalPlaylist? = null,
         val isLoading: Boolean = false,
-        val error: String? = null
+        val error: String? = null,
+        val syncState: LocalPlaylistRepository.SyncState = LocalPlaylistRepository.SyncState.Idle
     ) : LocalPlaylistScreenState
 
     data object Loading : LocalPlaylistScreenState
@@ -97,11 +99,12 @@ class LocalPlaylistViewModel(
     init {
         viewModelScope.launch {
             repository.playlists
-                .combine(localTracksViewModel.state) { playlists, localTracksState ->
+                .combine(localTracksViewModel.state, repository.syncState) { playlists, localTracksState, syncState ->
                     LocalPlaylistScreenState.Data(
                         playlists = playlists,
                         query = "",
-                        selectedPlaylist = null
+                        selectedPlaylist = null,
+                        syncState = syncState
                     )
                 }
                 .stateIn(
@@ -290,6 +293,31 @@ class LocalPlaylistViewModel(
                     _uiState.update { state ->
                         if (state is LocalPlaylistScreenState.Data) {
                             state.copy(error = e.message)
+                        } else state
+                    }
+                }
+        }
+    }
+    
+    fun syncNow() {
+        viewModelScope.launch {
+            _uiState.update { state ->
+                if (state is LocalPlaylistScreenState.Data) {
+                    state.copy(syncState = LocalPlaylistRepository.SyncState.Syncing)
+                } else state
+            }
+            repository.syncNow()
+                .onSuccess {
+                    _uiState.update { state ->
+                        if (state is LocalPlaylistScreenState.Data) {
+                            state.copy(syncState = LocalPlaylistRepository.SyncState.Success(System.currentTimeMillis()))
+                        } else state
+                    }
+                }
+                .onFailure { e ->
+                    _uiState.update { state ->
+                        if (state is LocalPlaylistScreenState.Data) {
+                            state.copy(syncState = LocalPlaylistRepository.SyncState.Error(e.message ?: "Sync failed"))
                         } else state
                     }
                 }

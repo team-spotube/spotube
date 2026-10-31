@@ -17,6 +17,7 @@
 
 package org.spotube.spotube.modules.library.playlist
 
+import org.spotube.spotube.core.jam.JamRoomClient
 import org.spotube.spotube.modules.library.local_tracks.media.LocalMediaTrack
 import org.spotube.spotube.modules.settings.SettingsRepository
 import kotlinx.coroutines.CoroutineScope
@@ -42,9 +43,41 @@ import org.koin.core.component.KoinComponent
  * Local playlists are stored as M3U8 files in the configured playlists directory.
  * They contain local tracks (from LocalMediaTrack) referenced by their file path.
  */
+package org.spotube.spotube.modules.library.playlist
+
+import org.spotube.spotube.core.jam.JamRoomClient
+import org.spotube.spotube.core.jam.JamRoomService
+import org.spotube.spotube.modules.library.local_tracks.media.LocalMediaTrack
+import org.spotube.spotube.modules.settings.SettingsRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import java.io.File
+import java.nio.charset.StandardCharsets
+import org.jetbrains.compose.resources.getString
+import spotube.composeapp.generated.resources.Res
+import org.koin.core.component.KoinComponent
+
+/**
+ * Repository for managing local playlists (stored as M3U8 files).
+ *
+ * Local playlists are stored as M3U8 files in the configured playlists directory.
+ * They contain local tracks (from LocalMediaTrack) referenced by their file path.
+ * Supports cross-device sync via Jam (MQTT) mechanism.
+ */
 @OptIn(ExperimentalCoroutinesApi::class)
 class LocalPlaylistRepository(
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val jamRoomClient: JamRoomClient,
+    private val jamRoomService: JamRoomService
 ) : KoinComponent {
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     
@@ -56,10 +89,22 @@ class LocalPlaylistRepository(
     private val _playlists = MutableStateFlow<List<LocalPlaylist>>(emptyList())
     val playlists: StateFlow<List<LocalPlaylist>> = _playlists.asStateFlow()
     
+    private val _syncState = MutableStateFlow<SyncState>(SyncState.Idle)
+    val syncState: StateFlow<SyncState> = _syncState.asStateFlow()
+    
     private var isInitialized = false
+    private var currentSyncJob: kotlinx.coroutines.Job? = null
     
     init {
         loadPlaylists()
+        observeJamSync()
+    }
+    
+    sealed interface SyncState {
+        data object Idle : SyncState
+        data object Syncing : SyncState
+        data class Success(val timestamp: Long) : SyncState
+        data class Error(val message: String) : SyncState
     }
     
     private val playlistsDir: String
@@ -107,6 +152,7 @@ class LocalPlaylistRepository(
             
             _playlists.update { it + playlist }
             savePlaylist(playlist)
+            broadcastPlaylistChange(PlaylistChange.Created(playlist))
             playlist
         }
     }
@@ -126,6 +172,7 @@ class LocalPlaylistRepository(
                 list.set(index, updated)
             }
             savePlaylist(updated)
+            broadcastPlaylistChange(PlaylistChange.Updated(updated))
         }
     }
     
@@ -140,6 +187,7 @@ class LocalPlaylistRepository(
             file.delete()
             
             _playlists.update { it.filter { it.id != playlistId } }
+            broadcastPlaylistChange(PlaylistChange.Deleted(playlistId))
         }
     }
     
@@ -162,6 +210,7 @@ class LocalPlaylistRepository(
                 list.map { if (it.id == playlistId) updated else it }
             }
             savePlaylist(updated)
+            broadcastPlaylistChange(PlaylistChange.TrackAdded(playlistId, track.path))
         }
     }
     
@@ -182,6 +231,7 @@ class LocalPlaylistRepository(
                 list.map { if (it.id == playlistId) updated else it }
             }
             savePlaylist(updated)
+            broadcastPlaylistChange(PlaylistChange.TracksAdded(playlistId, newTrackPaths))
         }
     }
     
@@ -201,6 +251,7 @@ class LocalPlaylistRepository(
                 list.map { if (it.id == playlistId) updated else it }
             }
             savePlaylist(updated)
+            broadcastPlaylistChange(PlaylistChange.TrackRemoved(playlistId, trackPath))
         }
     }
     
@@ -227,6 +278,7 @@ class LocalPlaylistRepository(
                 list.map { if (it.id == playlistId) updated else it }
             }
             savePlaylist(updated)
+            broadcastPlaylistChange(PlaylistChange.Reordered(playlistId, newTrackPaths))
         }
     }
     
@@ -298,6 +350,136 @@ class LocalPlaylistRepository(
             filePath = file.absolutePath
         )
     }
+    
+    // ============ Sync via Jam (MQTT) ============
+    
+    sealed interface PlaylistChange {
+        @Serializable
+        data class Created(val playlist: LocalPlaylist) : PlaylistChange
+        @Serializable
+        data class Updated(val playlist: LocalPlaylist) : PlaylistChange
+        @Serializable
+        data class Deleted(val playlistId: String) : PlaylistChange
+        @Serializable
+        data class TrackAdded(val playlistId: String, val trackPath: String) : PlaylistChange
+        @Serializable
+        data class TracksAdded(val playlistId: String, val trackPaths: List<String>) : PlaylistChange
+        @Serializable
+        data class TrackRemoved(val playlistId: String, val trackPath: String) : PlaylistChange
+        @Serializable
+        data class Reordered(val playlistId: String, val trackPaths: List<String>) : PlaylistChange
+    }
+    
+    private fun broadcastPlaylistChange(change: PlaylistChange) {
+        if (!jamRoomService.isConnected.value) return
+        if (jamRoomService.role.value != org.spotube.spotube.core.jam.JamRole.Host) return
+        
+        scope.launch {
+            jamRoomClient.publishCommand(
+                org.spotube.spotube.core.jam.JamMessage.PlaybackCommand(
+                    org.spotube.spotube.core.jam.PlaybackCmd.Custom(
+                        type = "playlist_sync",
+                        payload = json.encodeToString(PlaylistChange.serializer(), change)
+                    )
+                )
+            )
+        }
+    }
+    
+    private fun observeJamSync() {
+        scope.launch {
+            jamRoomClient.commands
+                .filter { it is org.spotube.spotube.core.jam.JamMessage.PlaybackCommand }
+                .map { it as org.spotube.spotube.core.jam.JamMessage.PlaybackCommand }
+                .filter { it.command is org.spotube.spotube.core.jam.PlaybackCmd.Custom }
+                .map { (it.command as org.spotube.spotube.core.jam.PlaybackCmd.Custom) }
+                .filter { it.type == "playlist_sync" }
+                .onEach { cmd ->
+                    try {
+                        val change = json.decodeFromString(PlaylistChange.serializer(), cmd.payload)
+                        applyRemoteChange(change)
+                    } catch (e: Exception) {
+                        // Ignore parse errors
+                    }
+                }
+                .launchIn(scope)
+        }
+    }
+    
+    private fun applyRemoteChange(change: PlaylistChange) {
+        when (change) {
+            is PlaylistChange.Created -> {
+                _playlists.update { it + change.playlist }
+            }
+            is PlaylistChange.Updated -> {
+                _playlists.update { list ->
+                    val index = list.indexOfFirst { it.id == change.playlist.id }
+                    if (index >= 0) list.set(index, change.playlist) else list
+                }
+            }
+            is PlaylistChange.Deleted -> {
+                _playlists.update { it.filter { it.id != change.playlistId } }
+                getPlaylistFile(change.playlistId).delete()
+            }
+            is PlaylistChange.TrackAdded -> {
+                _playlists.update { list ->
+                    list.map { pl ->
+                        if (pl.id == change.playlistId && !pl.trackPaths.contains(change.trackPath)) {
+                            pl.copy(trackPaths = pl.trackPaths + change.trackPath, updatedAt = System.currentTimeMillis())
+                        } else pl
+                    }
+                }
+            }
+            is PlaylistChange.TracksAdded -> {
+                _playlists.update { list ->
+                    list.map { pl ->
+                        if (pl.id == change.playlistId) {
+                            val newPaths = change.trackPaths.filterNot { it in pl.trackPaths }
+                            if (newPaths.isEmpty()) pl else pl.copy(trackPaths = pl.trackPaths + newPaths, updatedAt = System.currentTimeMillis())
+                        } else pl
+                    }
+                }
+            }
+            is PlaylistChange.TrackRemoved -> {
+                _playlists.update { list ->
+                    list.map { pl ->
+                        if (pl.id == change.playlistId) {
+                            pl.copy(trackPaths = pl.trackPaths.filter { it != change.trackPath }, updatedAt = System.currentTimeMillis())
+                        } else pl
+                    }
+                }
+            }
+            is PlaylistChange.Reordered -> {
+                _playlists.update { list ->
+                    list.map { pl ->
+                        if (pl.id == change.playlistId) {
+                            pl.copy(trackPaths = change.trackPaths, updatedAt = System.currentTimeMillis())
+                        } else pl
+                    }
+                }
+            }
+        }
+    }
+    
+    // ============ Manual Sync Trigger ============
+    
+    suspend fun syncNow(): Result<Unit> {
+        return runCatching {
+            _syncState.value = SyncState.Syncing
+            try {
+                // Broadcast full playlist state to other devices
+                for (playlist in _playlists.value) {
+                    broadcastPlaylistChange(PlaylistChange.Created(playlist))
+                }
+                _syncState.value = SyncState.Success(System.currentTimeMillis())
+            } catch (e: Exception) {
+                _syncState.value = SyncState.Error(e.message ?: "Sync failed")
+                throw e
+            }
+        }
+    }
+    
+    fun getSyncState(): SyncState = _syncState.value
 }
 
 @Serializable

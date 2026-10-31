@@ -46,6 +46,10 @@
     <string name="library_playlists_empty">No saved playlists</string>
     <string name="library_playlists_no_results">No playlists match “%1$s”</string>
     <string name="library_local_playlists_empty">No local playlists yet</string>
+    <string name="library_playlist_syncing">Syncing…</string>
+    <string name="library_playlist_synced">Synced</string>
+    <string name="library_playlist_sync_error">Sync failed</string>
+    <string name="library_playlist_sync_now">Sync now</string>
     <string name="library_playlist_name_empty">Playlist name cannot be empty</string>
     <string name="library_playlist_name_exists">A playlist with this name already exists</string>
     <string name="library_playlist_not_found">Playlist not found</string>
