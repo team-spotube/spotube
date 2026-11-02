@@ -34,7 +34,7 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 import org.spotube.spotube.PlatformType
 import org.spotube.spotube.getPlatform
-import org.jetbrains.compose.resources.getString
+import org.spotube.spotube.core.i18n.getString
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.library_local_refresh_failed
 

@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.use
 import org.spotube.spotube.modules.settings.SupportedLanguages
 import kotlinx.coroutines.runBlocking
-import org.jetbrains.compose.resources.getString
+import org.spotube.spotube.core.i18n.getString
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.Res

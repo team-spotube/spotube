@@ -40,8 +40,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import org.jetbrains.compose.resources.getPluralString
-import org.jetbrains.compose.resources.getString
+import org.spotube.spotube.core.i18n.getPluralString
+import org.spotube.spotube.core.i18n.getString
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.jam_queue_added_track
 import spotube.composeapp.generated.resources.jam_queue_added_tracks

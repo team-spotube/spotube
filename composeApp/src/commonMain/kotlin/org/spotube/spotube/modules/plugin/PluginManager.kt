@@ -61,7 +61,7 @@ import okio.Path.Companion.toPath
 import okio.SYSTEM
 import okio.buffer
 import okio.use
-import org.jetbrains.compose.resources.getString
+import org.spotube.spotube.core.i18n.getString
 import org.koin.core.component.KoinComponent
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.plugin_action_install

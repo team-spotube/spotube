@@ -18,8 +18,8 @@
 package org.spotube.spotube.core.jam
 
 import okio.ByteString.Companion.encodeUtf8
-import org.jetbrains.compose.resources.getString
-import org.jetbrains.compose.resources.getStringArray
+import org.spotube.spotube.core.i18n.getString
+import org.spotube.spotube.core.i18n.getStringArray
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.jam_name_adjectives
 import spotube.composeapp.generated.resources.jam_name_animals
