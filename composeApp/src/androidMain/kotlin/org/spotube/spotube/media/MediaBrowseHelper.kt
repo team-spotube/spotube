@@ -41,7 +41,7 @@ import org.spotube.spotube.modules.saved_tracks.SavedTracksRepository
 import org.spotube.spotube.modules.search.SearchRepository
 import org.spotube.spotube.modules.settings.SettingsRepository
 import kotlinx.coroutines.flow.first
-import org.jetbrains.compose.resources.getString
+import org.spotube.spotube.core.i18n.getString
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.library_tab_albums
 import spotube.composeapp.generated.resources.library_tab_artists

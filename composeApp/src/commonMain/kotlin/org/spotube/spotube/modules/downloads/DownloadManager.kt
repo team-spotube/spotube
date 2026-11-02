@@ -62,7 +62,7 @@ import okio.SYSTEM
 import okio.buffer
 import okio.use
 import kotlin.time.Clock
-import org.jetbrains.compose.resources.getString
+import org.spotube.spotube.core.i18n.getString
 import spotube.composeapp.generated.resources.*
 
 data class DownloadItem(

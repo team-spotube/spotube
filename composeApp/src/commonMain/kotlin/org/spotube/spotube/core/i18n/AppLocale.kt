@@ -54,6 +54,7 @@ fun AppLocaleProvider(language: SupportedLanguages, content: @Composable () -> U
         layoutDirection?.let { LocalLayoutDirection provides it })
     CompositionLocalProvider(*locales.toTypedArray()) {
         key(languageTag) {
+            PublishResourceEnvironment()
             content()
         }
     }

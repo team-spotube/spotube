@@ -37,7 +37,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.Job
-import org.jetbrains.compose.resources.getString
+import org.spotube.spotube.core.i18n.getString
 import spotube.composeapp.generated.resources.*
 
 enum class JamSetupMode { Create, Join }

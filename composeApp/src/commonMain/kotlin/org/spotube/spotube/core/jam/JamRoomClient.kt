@@ -58,7 +58,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonClassDiscriminator
-import org.jetbrains.compose.resources.getString
+import org.spotube.spotube.core.i18n.getString
 import org.spotube.spotube.core.network.HttpClientFactory
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.jam_error_banned
