@@ -34,7 +34,12 @@ interface UserSettingsSource {
     val userSettings: StateFlow<UserSettings>
 }
 
-class SettingsRepository(private val database: Database) : UserSettingsSource {
+/** [UserSettingsSource] that can also save, for consumers that update a setting or two. */
+interface UserSettingsStore : UserSettingsSource {
+    suspend fun updateSettings(newSettings: UserSettings)
+}
+
+class SettingsRepository(private val database: Database) : UserSettingsStore {
     companion object {
         private val SETTINGS_KEY = stringPreferencesKey("user_settings")
 
@@ -64,7 +69,7 @@ class SettingsRepository(private val database: Database) : UserSettingsSource {
         initialValue = UserSettings() // Default value
     )
 
-    suspend fun updateSettings(newSettings: UserSettings) {
+    override suspend fun updateSettings(newSettings: UserSettings) {
         database.settingsDataStore.edit { prefs ->
             prefs[SETTINGS_KEY] = settingsJson.encodeToString(newSettings)
         }

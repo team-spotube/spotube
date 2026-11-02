@@ -288,25 +288,11 @@
     <string name="plugin_permissions_capability_webview_title">WebView</string>
     <string name="plugin_permissions_capability_webview_desc">アプリ内でのWebコンテンツの表示</string>
     <string name="settings_section_jam">グループジャム</string>
-    <string name="settings_jam_broker_title">MQTTブローカー</string>
-    <string name="settings_jam_broker_host">ブローカーのホスト</string>
-    <string name="settings_jam_broker_host_subtitle">%1$s:%2$d</string>
-    <string name="settings_jam_broker_port">ブローカーのポート</string>
-    <string name="settings_jam_broker_tls">TLSを使用</string>
-    <string name="settings_jam_broker_username">ユーザー名 (任意)</string>
-    <string name="settings_jam_broker_password">パスワード (任意)</string>
-    <string name="settings_jam_broker_client_id">クライアントIDのプレフィックス</string>
-    <string name="settings_jam_broker_client_id_subtitle">このSpotubeを識別するために使用されます</string>
-    <string name="settings_jam_broker_tls_subtitle">ブローカーとの接続を暗号化します</string>
-    <string name="settings_jam_broker_diagnostics_subtitle">ルームを開始する前に、現在のブローカー設定を確認します。</string>
-    <string name="settings_jam_broker_test">接続をテスト</string>
-    <string name="settings_jam_broker_testing">テスト中…</string>
-    <string name="settings_jam_broker_test_ok">%1$d msで接続しました</string>
-    <string name="settings_jam_broker_test_fail">失敗: %1$s</string>
-    <string name="settings_jam_broker_placeholder_note">仮のブローカーです。セルフホストするには独自のブローカーを設定してください</string>
+    <string name="settings_jam_server_test">接続をテスト</string>
+    <string name="settings_jam_server_testing">テスト中…</string>
+    <string name="settings_jam_server_test_ok">%1$d msで接続しました</string>
+    <string name="settings_jam_server_test_fail">失敗: %1$s</string>
     <string name="settings_jam_section_connection">接続</string>
-    <string name="settings_jam_section_credentials">認証情報</string>
-    <string name="settings_jam_section_identity">識別情報</string>
     <string name="settings_jam_section_diagnostics">診断</string>
 
     <!-- Group Jam -->
@@ -319,9 +305,6 @@
     <string name="jam_setup_working">接続中…</string>
     <string name="jam_setup_code_label">ルームコード</string>
     <string name="jam_setup_code_placeholder">ABC123</string>
-    <string name="jam_connection_host">ブローカー: %1$s</string>
-    <string name="jam_connection_missing">ルームを主催または参加するには、設定でブローカーを設定してください。</string>
-    <string name="jam_connection_settings">ブローカー設定</string>
     <string name="jam_session_connected">接続済み</string>
     <string name="jam_session_connecting">再接続中…</string>
     <string name="jam_invite_copy">コードをコピー</string>
@@ -341,6 +324,28 @@
     <string name="jam_error_join">ジャムセッションに参加できませんでした</string>
     <string name="jam_error_invalid_code">英数字6文字のルームコードを入力してください。</string>
     <string name="jam_share_message">コード %1$s で私のSpotubeジャムに参加しよう</string>
+    <string name="settings_jam_server_title">ルームサーバー</string>
+    <string name="settings_jam_server_url">サーバーURL</string>
+    <string name="settings_jam_server_url_invalid">https:// で始まるURLを入力してください。</string>
+    <string name="settings_jam_server_diagnostics_subtitle">ルームを始める前にルームサーバーを確認します。</string>
+    <string name="settings_jam_server_note">ジャムはSpotubeの無料ルームサーバーを使います。自分でホストするには、github.com/team-spotube/jam-server のサーバーをデプロイし、そのURLを入力してください。</string>
+    <string name="settings_jam_section_you">あなた</string>
+    <string name="jam_connection_host">サーバー: %1$s</string>
+    <string name="jam_connection_missing">ルームをホストまたは参加するには、設定でルームサーバーを指定してください。</string>
+    <string name="jam_connection_settings">サーバー設定</string>
+    <string name="jam_participants_you">%1$s（あなた）</string>
+    <string name="jam_name_title">あなたの名前</string>
+    <string name="jam_name_subtitle">ジャムの他の参加者には %1$s と表示されます</string>
+    <string name="jam_name_description">ジャムの全員に表示されます。空欄にすると %1$s を使います。新しい名前は次にルームを作成または参加したときから使われます。</string>
+    <string name="jam_name_too_long">%1$d 文字以内で入力してください。</string>
+    <string name="jam_error_no_server">ジャムサーバーが設定されていません</string>
+    <string name="jam_error_server_unreachable">ジャムサーバーに接続できません。ネットワーク、または 設定 → グループジャム のサーバーURLを確認してください。</string>
+    <string name="jam_error_server_incompatible">ジャムサーバーのバージョンに互換性がありません。</string>
+    <string name="jam_error_room_not_found">そのコードのルームはありません。コードを確認してもう一度お試しください。</string>
+    <string name="jam_error_room_full">このルームは満員です。</string>
+    <string name="jam_error_banned">ホストによってこのルームからBANされました。</string>
+    <string name="jam_error_kicked">ホストによってルームから削除されました。</string>
+    <string name="jam_error_replaced">このデバイスでこのルームが再度開かれたため、この接続は閉じられました。</string>
 
     <string name="player_go_to_album">アルバムへ移動</string>
     <string name="player_sleep_timer">スリープタイマー</string>
@@ -513,14 +518,9 @@
     <string name="jam_destination_suggest">ジャムに提案</string>
 
     <!-- Group Jam: connection errors -->
-    <string name="jam_error_no_broker">ジャム用ブローカーが設定されていません</string>
-    <string name="jam_error_broker_host_empty">ブローカーのホストが空です</string>
     <string name="jam_error_connection_failed">接続に失敗しました</string>
     <string name="jam_error_connection_lost">接続が切断されました</string>
 
-    <!-- Settings: Group Jam broker -->
-    <string name="settings_jam_broker_content_description">ブローカー</string>
-    <string name="settings_jam_broker_username_placeholder">anonymous</string>
 
     <!-- Group Jam: queue snackbar -->
     <string name="jam_queue_added_track">ジャムのキューに追加しました</string>

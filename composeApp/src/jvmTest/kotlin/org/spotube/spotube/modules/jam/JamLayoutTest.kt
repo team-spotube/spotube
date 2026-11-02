@@ -65,20 +65,20 @@ class JamLayoutTest {
         assertEquals(100.dp, viewModel.compactChromeUiState.value.measuredBottomBarHeight)
     }
 
-    /** Actual Compose controls rendered without native-window capture or an MQTT connection. */
+    /** Actual Compose controls rendered without native-window capture or a room server connection. */
     @OptIn(ExperimentalComposeUiApi::class)
     @Test
     fun renderRoomControlsAtNarrowAndWideSizes() {
         val output = File("build/reports/jam-ui").apply { mkdirs() }
         val states = mapOf(
             "create" to JamUiState(
-                brokerConfigured = true,
-                brokerHost = "test.mosquitto.org",
+                serverConfigured = true,
+                serverHost = "jam.example.com",
                 canCreate = true
             ),
             "join" to JamUiState(
-                brokerConfigured = true,
-                brokerHost = "test.mosquitto.org",
+                serverConfigured = true,
+                serverHost = "jam.example.com",
                 setupMode = JamSetupMode.Join
             ),
             "host" to JamUiState(
@@ -86,8 +86,8 @@ class JamLayoutTest {
                 isConnected = true,
                 isHost = true,
                 roomCode = "RC5FJ8",
-                brokerConfigured = true,
-                brokerHost = "test.mosquitto.org",
+                serverConfigured = true,
+                serverHost = "jam.example.com",
                 participants = listOf(
                     JamParticipantUi("host", "Host-8316", "H", true, false),
                     JamParticipantUi("guest", "Guest-6684", "G", false, true)
@@ -97,8 +97,8 @@ class JamLayoutTest {
                 isActive = true,
                 isConnected = true,
                 roomCode = "RC5FJ8",
-                brokerConfigured = true,
-                brokerHost = "test.mosquitto.org",
+                serverConfigured = true,
+                serverHost = "jam.example.com",
                 participants = listOf(JamParticipantUi("host", "Host-8316", "H", true, false))
             )
         )
@@ -161,7 +161,7 @@ class JamLayoutTest {
                                                 {},
                                                 {})
                                             else SetupPanel(state, {}, {}, {})
-                                            BrokerStatus(state, {})
+                                            ServerStatus(state, {})
                                         }
                                     }
                                 }

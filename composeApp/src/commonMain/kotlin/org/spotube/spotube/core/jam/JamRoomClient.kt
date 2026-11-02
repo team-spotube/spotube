@@ -18,22 +18,31 @@
 package org.spotube.spotube.core.jam
 
 import co.touchlab.kermit.Logger
-import com.ditchoom.buffer.Charset
-import com.ditchoom.buffer.codec.asReadBuffer
-import com.ditchoom.buffer.toReadBuffer
-import com.ditchoom.mqtt.client.ConnectionState
-import com.ditchoom.mqtt.client.MqttClient
-import com.ditchoom.mqtt.connection.MqttConnectionOptions
-import com.ditchoom.mqtt.controlpacket.OpaquePublishPayloadCodec
-import com.ditchoom.mqtt.controlpacket.QualityOfService
-import com.ditchoom.mqtt.controlpacket.TopicName
-import com.ditchoom.mqtt.controlpacket.WillConfig
-import com.ditchoom.mqtt5.controlpacket.ConnectionRequest
-import org.spotube.spotube.modules.settings.JamBroker
+import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.client.plugins.websocket.webSocketSession
+import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.URLBuilder
+import io.ktor.http.URLProtocol
+import io.ktor.http.appendPathSegments
+import io.ktor.http.isSuccess
+import io.ktor.websocket.DefaultWebSocketSession
+import io.ktor.websocket.Frame
+import io.ktor.websocket.close
+import io.ktor.websocket.readText
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -41,47 +50,81 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonClassDiscriminator
 import org.jetbrains.compose.resources.getString
+import org.spotube.spotube.core.network.HttpClientFactory
 import spotube.composeapp.generated.resources.Res
-import spotube.composeapp.generated.resources.jam_error_broker_host_empty
-import spotube.composeapp.generated.resources.jam_error_broker_unreachable
+import spotube.composeapp.generated.resources.jam_error_banned
 import spotube.composeapp.generated.resources.jam_error_connection_failed
 import spotube.composeapp.generated.resources.jam_error_connection_lost
-import spotube.composeapp.generated.resources.jam_error_no_broker
-import spotube.composeapp.generated.resources.settings_jam_broker_test_ok
-import org.koin.core.component.KoinComponent
-import kotlin.time.Duration.Companion.seconds
+import spotube.composeapp.generated.resources.jam_error_kicked
+import spotube.composeapp.generated.resources.jam_error_replaced
+import spotube.composeapp.generated.resources.jam_error_room_full
+import spotube.composeapp.generated.resources.jam_error_room_not_found
+import spotube.composeapp.generated.resources.jam_error_server_incompatible
+import spotube.composeapp.generated.resources.jam_error_server_unreachable
+import spotube.composeapp.generated.resources.settings_jam_server_test_ok
+import kotlin.time.Clock
 
 /**
- * Thin facade over the Ditchoom MQTT 5 client for one jam room.
+ * WebSocket client for one jam room on the room server (https://github.com/team-spotube/jam-server, a Cloudflare
+ * Durable Object per room code).
  *
- * Topics (room code `C`):
- * - `spotube/jam/{C}/state`   retained  — [JamMessage.QueueState] (host -> everyone)
- * - `spotube/jam/{C}/cmd`     volatile  — commands/suggestions (everyone -> host, host -> guest)
- * - `spotube/jam/{C}/presence/{clientId}` retained — [JamPresence], with a Last Will
- *   (`left = true`) so a dropped client disappears from the room automatically.
+ * The server keeps the host's latest queue and anchor for late joiners, routes guest
+ * commands to the host and is the clock every participant syncs playback against
+ * ([clock]). A dropped connection is retried with the same client id, which the
+ * server treats as the same participant (a host keeps the room for a grace period).
  *
- * The library keeps the connection alive (auto-reconnect + backoff); this class only
- * re-establishes the room subscription and re-publishes presence after a reconnect.
+ * The room is billed per incoming message, and on phones every transmission wakes the
+ * cellular radio for seconds, so the steady state sends almost nothing: one keep-alive
+ * a minute (answered by the server runtime for free) and a clock re-sync every
+ * [CLOCK_RESYNC_INTERVAL_MS]. Reconnect attempts back off to [RECONNECT_BACKOFF_MS]'s
+ * last step while the network stays away.
  */
-class JamRoomClient : KoinComponent {
+class JamRoomClient(httpClientFactory: HttpClientFactory) {
     private val log = Logger.withTag("JamRoomClient")
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    // Nothing here may take the app down: a network failure is a reconnect, not a crash.
+    private val scope = CoroutineScope(
+        SupervisorJob() + Dispatchers.IO +
+            CoroutineExceptionHandler { _, e -> log.w(e) { "Unexpected jam connection failure" } })
     private val json = Json {
         ignoreUnknownKeys = true
         classDiscriminator = "type"
         encodeDefaults = true
     }
+    private val http = httpClientFactory.create {
+        install(WebSockets)
+        install(HttpTimeout) { connectTimeoutMillis = CONNECT_TIMEOUT_MS }
+    }
+    private val plainHttp = httpClientFactory.create {
+        install(HttpTimeout) { requestTimeoutMillis = CONNECT_TIMEOUT_MS }
+    }
 
-    private var client: MqttClient? = null
+    val clock = JamClock()
 
-    private var roomCode: String? = null
-    private var localPresence: JamPresence? = null
+    private var session: DefaultWebSocketSession? = null
+    private var connectionJob: Job? = null
+    private var reader: Deferred<String?>? = null
+    private var pingId = 0
+    /** When the current socket last received anything; a silent socket is a dead one. */
+    private var lastFrameAtMs = 0L
+    /** The room's host as last reported by the server. */
+    private var hostId: String? = null
+
+    /**
+     * Our public participant id in the current room, as the server derived it from our
+     * secret key. Null until the first welcome.
+     */
+    var selfId: String? = null
+        private set
+    private val pongs = MutableStateFlow(0)
 
     private val _isConnected = MutableStateFlow(false)
     val isConnected: StateFlow<Boolean> = _isConnected.asStateFlow()
@@ -89,244 +132,429 @@ class JamRoomClient : KoinComponent {
     private val _connectionError = MutableStateFlow<String?>(null)
     val connectionError: StateFlow<String?> = _connectionError.asStateFlow()
 
-    private val _state = MutableSharedFlow<JamMessage.QueueState>(replay = 1, extraBufferCapacity = 8)
-    val state: SharedFlow<JamMessage.QueueState> = _state.asSharedFlow()
-
-    private val _commands = MutableSharedFlow<JamMessage>(extraBufferCapacity = 32)
-    val commands: SharedFlow<JamMessage> = _commands.asSharedFlow()
-
-    private val _presence = MutableStateFlow<Map<String, JamPresence>>(emptyMap())
-    val presence: StateFlow<Map<String, JamPresence>> = _presence.asStateFlow()
+    private val _events = MutableSharedFlow<JamRoomEvent>(extraBufferCapacity = 64)
+    val events: SharedFlow<JamRoomEvent> = _events.asSharedFlow()
 
     // ---------- Public API ----------
 
-    /** One-off connection check used by the settings screen. Returns latency description. */
-    suspend fun testConnection(broker: JamBroker): Result<String> {
-        if (broker.host.isBlank()) return Result.failure(IllegalArgumentException(getString(Res.string.jam_error_broker_host_empty)))
+    /** Checks that [serverUrl] runs a compatible room server. Returns a latency description. */
+    suspend fun testConnection(serverUrl: String): Result<String> = runCatching {
         val started = kotlin.time.TimeSource.Monotonic.markNow()
-        return runCatching {
-            val client = startClient(broker, clientId = "${broker.clientIdPrefix}-test")
-            try {
-                withTimeout(broker.connectionTimeoutSeconds.seconds) {
-                    client.awaitConnectivity()
-                }
-                getString(Res.string.settings_jam_broker_test_ok, started.elapsedNow().inWholeMilliseconds)
-            } finally {
-                runCatching { client.shutdown(sendDisconnect = true, drain = false) }
-            }
-        }
+        val response = plainHttp.get(healthUrl(serverUrl))
+        if (!response.status.isSuccess()) error(getString(Res.string.jam_error_server_unreachable))
+        val health = json.decodeFromString(Health.serializer(), response.bodyAsText())
+        if (!health.ok || health.v != PROTOCOL_VERSION) error(getString(Res.string.jam_error_server_incompatible))
+        getString(Res.string.settings_jam_server_test_ok, started.elapsedNow().inWholeMilliseconds)
     }
 
-    /** Connects to [code] on [broker] and starts routing room messages. */
+    /**
+     * Opens room [code] on [serverUrl] and syncs the clock. Fails with [JamRoomException]
+     * when the server refuses (code taken, room not found, banned, …). Once connected,
+     * drops are retried in the background until [disconnect] or a refusal.
+     *
+     * [clientKey] is this participant's secret ([jamParticipantKey]): reconnecting with
+     * it makes us the same participant, so it never leaves this device except to the
+     * server. [deviceDigest] ([jamDeviceDigest]) lets a ban cover this device too.
+     */
     suspend fun connect(
-        broker: JamBroker,
+        serverUrl: String,
         code: String,
-        clientId: String,
+        clientKey: String,
         displayName: String,
-        isHost: Boolean): Result<Unit> {
+        create: Boolean,
+        deviceDigest: String? = null): Result<JamRoomEvent.Welcome> {
         disconnect()
-        if (broker.host.isBlank()) {
-            return Result.failure(IllegalArgumentException(getString(Res.string.jam_error_no_broker)))
-        }
-        return runCatching {
-            roomCode = code
-            localPresence = JamPresence(
-                clientId = clientId,
-                displayName = displayName,
-                isHost = isHost,
-                left = false)
-
-            val mqtt = startClient(broker, clientId)
-            client = mqtt
-            try {
-                withTimeout(broker.connectionTimeoutSeconds.seconds) {
-                    // connectionState replays its current value, unlike awaitConnectivity's
-                    // broadcast flow, which loses a CONNACK that lands before it is collected.
-                    mqtt.connectionState.first { it is ConnectionState.Connected }
-                }
-            } catch (e: TimeoutCancellationException) {
-                throw IllegalStateException(
-                    getString(Res.string.jam_error_broker_unreachable, broker.host, broker.port), e)
+        clock.reset()
+        val opener = Opener(serverUrl, code, clientKey, displayName, deviceDigest)
+        val welcome = runCatching { open(opener, create) }
+            .onFailure { e ->
+                log.w(e) { "Failed to open jam room $code" }
+                _connectionError.value = e.message ?: getString(Res.string.jam_error_connection_failed)
             }
-            _connectionError.value = null
-            log.i { "Connected to ${broker.host}:${broker.port} room=$code as $clientId" }
+            .getOrElse { return Result.failure(it) }
 
-            mqtt.connectionState
-                .onEach { onConnectionStateChanged(it) }
-                .launchIn(scope)
-            Unit
-        }.onFailure { e ->
-            log.w(e) { "Failed to connect to jam broker" }
-            _connectionError.value = e.message ?: getString(Res.string.jam_error_connection_failed)
-            _isConnected.value = false
-            runCatching { client?.shutdown(sendDisconnect = true, drain = false) }
-            client = null
+        connectionJob = scope.launch {
+            var current = welcome.second
+            var attempt = 0
+            while (isActive) {
+                val refusal = runCatching { current.await() }.getOrNull()
+                ensureActive()
+                _isConnected.value = false
+                if (refusal != null) {
+                    fail(refusal)
+                    return@launch
+                }
+                _connectionError.value = getString(Res.string.jam_error_connection_lost)
+                // Rejoin: the room exists now, so even a former host comes back with "join".
+                while (isActive) {
+                    delay(RECONNECT_BACKOFF_MS[attempt.coerceAtMost(RECONNECT_BACKOFF_MS.lastIndex)])
+                    attempt++
+                    var reopened = runCatching { open(opener, create = false) }
+                    // Everyone was gone long enough for the room to expire: its host brings it back.
+                    if ((reopened.exceptionOrNull() as? JamRoomException)?.code == "room_not_found" &&
+                        hostId != null && hostId == selfId
+                    ) {
+                        log.i { "Jam room $code expired while offline; recreating it" }
+                        reopened = runCatching { open(opener, create = true) }
+                    }
+                    val error = reopened.exceptionOrNull()
+                    if (error is JamRoomException) {
+                        fail(error.code)
+                        return@launch
+                    }
+                    val (event, socket) = reopened.getOrNull() ?: continue
+                    attempt = 0
+                    current = socket
+                    _events.emit(event)
+                    break
+                }
+            }
         }
+        return Result.success(welcome.first)
     }
 
-    suspend fun publishState(state: JamMessage.QueueState) {
-        val code = roomCode ?: return
-        publishJson(stateTopic(code), json.encodeToString(JamMessage.QueueState.serializer(), state), retain = true)
-    }
+    fun sendQueue(queue: JamQueue) = send(ClientFrame.Queue(queue))
 
-    suspend fun publishCommand(message: JamMessage) {
-        val code = roomCode ?: return
-        publishJson(cmdTopic(code), json.encodeToString(JamMessage.serializer(), message), retain = false)
-    }
+    fun sendAnchor(anchor: JamAnchor) = send(ClientFrame.Anchor(anchor))
 
-    /** Publishes our own (retained) presence. Re-published after every reconnect. */
-    suspend fun publishPresence() {
-        val code = roomCode ?: return
-        val presence = localPresence ?: return
-        publishJson(
-            presenceTopic(code, presence.clientId),
-            json.encodeToString(JamPresence.serializer(), presence),
-            retain = true)
-    }
+    fun sendCommand(command: JamCommand) = send(ClientFrame.Cmd(command))
 
-    /** Marks us as the host in presence (host takeover). */
-    suspend fun claimHost() {
-        val presence = localPresence ?: return
-        localPresence = presence.copy(isHost = true)
-        publishPresence()
-    }
-
-    /** Graceful leave: publish `left = true` before disconnecting. */
-    suspend fun leavePresence() {
-        val presence = localPresence ?: return
-        val code = roomCode ?: return
-        runCatching {
-            publishJson(
-                presenceTopic(code, presence.clientId),
-                json.encodeToString(JamPresence.serializer(), presence.copy(left = true)),
-                retain = true)
-        }
-    }
+    fun kick(participantId: String, ban: Boolean) = send(ClientFrame.Kick(participantId, ban))
 
     suspend fun disconnect() {
-        roomCode = null
-        localPresence = null
+        connectionJob?.cancel()
+        connectionJob = null
+        hostId = null
+        selfId = null
+        reader?.cancel()
+        reader = null
+        val current = session
+        session = null
         _isConnected.value = false
-        _presence.value = emptyMap()
-        val current = client
-        client = null
-        runCatching { current?.shutdown(sendDisconnect = true, drain = false) }
+        _connectionError.value = null
+        runCatching { current?.close() }
     }
 
     // ---------- Internals ----------
 
-    private suspend fun startClient(broker: JamBroker, clientId: String): MqttClient {
-        val connection = MqttConnectionOptions.SocketConnection(
-            host = broker.host,
-            port = broker.port,
-            tlsEnabled = broker.useTls,
-            connectionTimeout = broker.connectionTimeoutSeconds.seconds)
-        val code = roomCode ?: "unset"
-        val will = WillConfig.Enabled(
-            topic = TopicName.fromOrThrow(presenceTopic(code, clientId)),
-            payload = json.encodeToString(
-                JamPresence.serializer(),
-                JamPresence(clientId, localPresence?.displayName ?: clientId, isHost = false, left = true)).toReadBuffer(Charset.UTF8),
-            qos = QualityOfService.AT_LEAST_ONCE,
-            retain = true)
-        val request = ConnectionRequest(
-            clientId = clientId,
-            keepAliveSeconds = broker.keepAliveSeconds,
-            cleanStart = true,
-            userName = broker.username,
-            password = broker.password,
-            will = will)
-        val persistence = request.controlPacketFactory.defaultPersistence(inMemory = true)
-        val brokerRef = persistence.addBroker(connection, request)
-        return MqttClient.start(scope = scope, broker = brokerRef, persistence = persistence)
+    /**
+     * Connects, waits for the welcome (or refusal) and syncs the clock. Returns the welcome
+     * and the socket's reader, which completes with the server's refusal (if any) on close.
+     */
+    /** Everything needed to (re)open one room connection. */
+    private data class Opener(
+        val serverUrl: String,
+        val code: String,
+        val clientKey: String,
+        val displayName: String,
+        val deviceDigest: String?)
+
+    private suspend fun open(opener: Opener, create: Boolean): Pair<JamRoomEvent.Welcome, Deferred<String?>> {
+        val code = opener.code
+        val socket = runCatching { http.webSocketSession(roomUrl(opener, create)) }
+            .getOrElse { throw IllegalStateException(getString(Res.string.jam_error_server_unreachable), it) }
+        try {
+            val welcome = withTimeoutOrNull(CONNECT_TIMEOUT_MS) { awaitWelcome(socket) }
+                ?: throw IllegalStateException(getString(Res.string.jam_error_server_unreachable))
+            if (welcome.v != PROTOCOL_VERSION) {
+                throw IllegalStateException(getString(Res.string.jam_error_server_incompatible))
+            }
+
+            session = socket
+            selfId = welcome.you
+            hostId = welcome.host
+            lastFrameAtMs = now()
+            _isConnected.value = true
+            _connectionError.value = null
+            // Read from here on: a pong's arrival time is part of the clock measurement.
+            val socketReader = scope.async { pump(socket) }
+            reader = socketReader
+            syncClock(socket)
+            log.i { "Joined jam room $code as ${welcome.you} (host=${welcome.host}, rtt=${clock.rttMs}ms)" }
+            return welcome.toEvent() to socketReader
+        } catch (e: Throwable) {
+            runCatching { socket.close() }
+            throw e
+        }
     }
 
-    private fun onConnectionStateChanged(state: ConnectionState) {
-        when (state) {
-            is ConnectionState.Connected -> {
-                _isConnected.value = true
-                _connectionError.value = null
-                scope.launch {
-                    // Every connection (initial + reconnects) must re-establish the
-                    // broker-side subscription (clean session) and re-publish our
-                    // retained presence to clear any Last Will. Re-subscribing with
-                    // the same filter replaces the previous dispatcher handler.
-                    subscribeRoom()
-                    publishPresence()
-                }
-            }
-
-            ConnectionState.Disconnected, ConnectionState.Handshaking -> {
-                _isConnected.value = false
-            }
-
-            else -> {
-                _isConnected.value = false
-                scope.launch {
-                    val message = getString(Res.string.jam_error_connection_lost)
-                    if (!_isConnected.value) _connectionError.value = message
-                }
+    private suspend fun awaitWelcome(socket: DefaultWebSocketSession): ServerFrame.Welcome {
+        while (true) {
+            val frame = socket.incoming.receiveCatching().getOrNull()
+                ?: throw IllegalStateException(getString(Res.string.jam_error_connection_failed))
+            when (val decoded = decode(frame)) {
+                is ServerFrame.Welcome -> return decoded
+                is ServerFrame.Error -> throw JamRoomException(decoded.code, refusalMessage(decoded.code))
+                else -> Unit
             }
         }
     }
 
-    private suspend fun subscribeRoom() {
-        val mqtt = client ?: return
-        val code = roomCode ?: return
-        val operation = mqtt.subscribe(
-            roomFilter(code),
-            OpaquePublishPayloadCodec,
-            QualityOfService.AT_LEAST_ONCE) { publish, payload ->
-            route(publish.topic.toString(), payload)
+    /**
+     * A burst of clock pings (playback can't sync before the clock is known); waits for
+     * their pongs, so the first sync is done when this returns.
+     */
+    private suspend fun syncClock(socket: DefaultWebSocketSession, pings: Int = INITIAL_PINGS) {
+        val target = pongs.value + pings
+        repeat(pings) {
+            ping(socket)
+            delay(PING_SPACING_MS)
         }
-        runCatching { operation.subAck.await() }
-            .onFailure { log.w(it) { "Subscribe ack failed for room $code" } }
+        withTimeoutOrNull(CLOCK_SYNC_TIMEOUT_MS) { pongs.first { it >= target } }
     }
 
-    private fun route(topic: String, payload: com.ditchoom.mqtt.controlpacket.OpaquePublishPayload) {
-        val text = runCatching {
-            val buffer = payload.handle.asReadBuffer()
-            buffer.readString(buffer.remaining(), Charset.UTF8)
-        }.getOrElse { e ->
-            log.w(e) { "Failed to read jam payload on $topic" }
-            return
+    /**
+     * Reads frames until the socket closes or fails (a dropped network surfaces here as
+     * an exception). Returns the server's refusal, if any.
+     */
+    private suspend fun pump(socket: DefaultWebSocketSession): String? = withKeepAlive(socket) {
+        var refusal: String? = null
+        try {
+            for (frame in socket.incoming) {
+                lastFrameAtMs = now()
+                refusal = handle(frame) ?: refusal
+            }
+        } catch (e: Exception) {
+            currentCoroutineContext().ensureActive()
+            log.i { "Jam connection dropped: ${e.message}" }
         }
+        refusal
+    }
 
-        runCatching {
-            when {
-                topic.endsWith("/state") -> {
-                    _state.tryEmit(json.decodeFromString(JamMessage.QueueState.serializer(), text))
+    /**
+     * Keeps the socket alive (and NAT mappings open) with free keep-alives, gives up on a
+     * socket that has gone silent (a half-open connection never errors by itself), and
+     * re-syncs the clock now and then.
+     */
+    private suspend fun <T> withKeepAlive(
+        socket: DefaultWebSocketSession,
+        block: suspend () -> T): T {
+        val keeper = scope.launch {
+            var lastClockSyncMs = now()
+            while (isActive) {
+                delay(KEEPALIVE_INTERVAL_MS)
+                if (now() - lastFrameAtMs > DEAD_AFTER_MS) {
+                    log.i { "Jam connection went silent; reconnecting" }
+                    runCatching { socket.close() }
+                    socket.cancel()
+                    return@launch
                 }
-
-                topic.endsWith("/cmd") -> {
-                    _commands.tryEmit(json.decodeFromString(JamMessage.serializer(), text))
-                }
-
-                topic.contains("/presence/") -> {
-                    val presence = json.decodeFromString(JamPresence.serializer(), text)
-                    _presence.value = _presence.value + (presence.clientId to presence)
+                runCatching { socket.send(Frame.Text(KEEPALIVE_PING)) }
+                if (now() - lastClockSyncMs >= CLOCK_RESYNC_INTERVAL_MS) {
+                    lastClockSyncMs = now()
+                    runCatching { syncClock(socket, RESYNC_PINGS) }
                 }
             }
-        }.onFailure { e ->
-            log.w(e) { "Failed to decode jam message on $topic: $text" }
+        }
+        return try {
+            block()
+        } finally {
+            keeper.cancel()
         }
     }
 
-    private suspend fun publishJson(topic: String, payload: String, retain: Boolean) {
-        val mqtt = client ?: return
-        runCatching {
-            mqtt.publish(
-                topicName = topic,
-                qos = QualityOfService.AT_LEAST_ONCE,
-                payload = payload.toReadBuffer(Charset.UTF8),
-                retain = retain)
-        }.onFailure { e ->
-            log.w(e) { "Failed to publish to $topic" }
+    /** Routes one frame; returns an error code when the server refused us. */
+    private suspend fun handle(frame: Frame): String? {
+        if (frame is Frame.Text && frame.readText() == KEEPALIVE_PONG) return null
+        when (val decoded = decode(frame)) {
+            is ServerFrame.Pong -> {
+                clock.addSample(decoded.c, decoded.s, now())
+                pongs.value++
+            }
+            is ServerFrame.Welcome -> {
+                hostId = decoded.host
+                _events.emit(decoded.toEvent())
+            }
+            is ServerFrame.Presence -> {
+                hostId = decoded.host
+                _events.emit(JamRoomEvent.Presence(decoded.host, decoded.participants.toParticipants(decoded.host)))
+            }
+            is ServerFrame.Queue -> _events.emit(JamRoomEvent.Queue(decoded.body))
+            is ServerFrame.Anchor -> _events.emit(JamRoomEvent.Anchor(decoded.body))
+            is ServerFrame.Cmd -> _events.emit(JamRoomEvent.Command(decoded.from, decoded.body))
+            // Sent too much too fast (a burst of skips, say): not a refusal, just reconnect.
+            is ServerFrame.Error -> return decoded.code.takeIf { it != "rate_limited" }
+            null -> Unit
+        }
+        return null
+    }
+
+    private suspend fun fail(code: String) {
+        val message = refusalMessage(code)
+        log.i { "Jam room closed by the server: $code" }
+        session = null
+        _connectionError.value = message
+        _events.emit(JamRoomEvent.Closed(code, message))
+    }
+
+    private suspend fun ping(socket: DefaultWebSocketSession) {
+        socket.send(Frame.Text(json.encodeToString(ClientFrame.serializer(), ClientFrame.Ping(++pingId, now()))))
+    }
+
+    private fun send(frame: ClientFrame) {
+        val socket = session ?: return
+        val text = json.encodeToString(ClientFrame.serializer(), frame)
+        scope.launch {
+            runCatching { socket.send(Frame.Text(text)) }
+                .onFailure { log.w(it) { "Failed to send jam frame" } }
         }
     }
 
-    private fun stateTopic(code: String) = "spotube/jam/$code/state"
-    private fun cmdTopic(code: String) = "spotube/jam/$code/cmd"
-    private fun presenceTopic(code: String, clientId: String) = "spotube/jam/$code/presence/$clientId"
-    private fun roomFilter(code: String) = "spotube/jam/$code/#"
+    private fun decode(frame: Frame): ServerFrame? {
+        if (frame !is Frame.Text) return null
+        val text = frame.readText()
+        return runCatching { json.decodeFromString(ServerFrame.serializer(), text) }
+            .onFailure { log.w(it) { "Failed to decode jam frame: ${text.take(200)}" } }
+            .getOrNull()
+    }
+
+    private suspend fun refusalMessage(code: String): String = when (code) {
+        "room_not_found" -> getString(Res.string.jam_error_room_not_found)
+        "room_full" -> getString(Res.string.jam_error_room_full)
+        "banned" -> getString(Res.string.jam_error_banned)
+        "kicked" -> getString(Res.string.jam_error_kicked)
+        "replaced" -> getString(Res.string.jam_error_replaced)
+        else -> getString(Res.string.jam_error_connection_failed)
+    }
+
+    private fun roomUrl(opener: Opener, create: Boolean) =
+        URLBuilder(opener.serverUrl.trim()).apply {
+            protocol = if (protocol == URLProtocol.HTTP || protocol == URLProtocol.WS) URLProtocol.WS else URLProtocol.WSS
+            appendPathSegments("v1", "rooms", opener.code)
+            parameters.append("key", opener.clientKey)
+            parameters.append("name", opener.displayName)
+            parameters.append("mode", if (create) "create" else "join")
+            opener.deviceDigest?.let { parameters.append("dev", it) }
+        }.buildString()
+
+    private fun healthUrl(serverUrl: String) =
+        URLBuilder(serverUrl.trim()).apply {
+            if (protocol == URLProtocol.WS) protocol = URLProtocol.HTTP
+            if (protocol == URLProtocol.WSS) protocol = URLProtocol.HTTPS
+            appendPathSegments("v1", "health")
+        }.buildString()
+
+    private fun now(): Long = Clock.System.now().toEpochMilliseconds()
+
+    companion object {
+        const val PROTOCOL_VERSION = 1
+        private const val CONNECT_TIMEOUT_MS = 10_000L
+        private const val INITIAL_PINGS = 6
+        private const val RESYNC_PINGS = 3
+        private const val PING_SPACING_MS = 100L
+        private const val CLOCK_SYNC_TIMEOUT_MS = 3_000L
+        /** Clocks drift by a few ms per minute at most; this keeps sync error well under 50 ms. */
+        private const val CLOCK_RESYNC_INTERVAL_MS = 10 * 60_000L
+        /**
+         * As rare as possible (each one wakes a phone's radio) while staying under the
+         * 100 s idle timeout of Cloudflare's proxy. A dropped idle socket would only cost
+         * a reconnect, so there's no need for margin beyond that.
+         */
+        private const val KEEPALIVE_INTERVAL_MS = 60_000L
+        /** No pong to two keep-alives in a row: the connection is gone. */
+        private const val DEAD_AFTER_MS = 2 * KEEPALIVE_INTERVAL_MS + 10_000L
+        private const val KEEPALIVE_PING = "ping"
+        private const val KEEPALIVE_PONG = "pong"
+        /** Quick at first (most drops are a network switch), then slower to spare the battery. */
+        private val RECONNECT_BACKOFF_MS = longArrayOf(500, 1_000, 2_000, 4_000, 8_000, 8_000, 15_000, 15_000, 30_000, 60_000)
+    }
+}
+
+/** Something that happened in the room, for [JamRoomService]. */
+sealed interface JamRoomEvent {
+    /** (Re)joined the room; carries the retained queue and anchor. */
+    data class Welcome(
+        val you: String,
+        val host: String?,
+        val participants: List<JamParticipant>,
+        val queue: JamQueue?,
+        val anchor: JamAnchor?) : JamRoomEvent
+
+    data class Presence(val host: String?, val participants: List<JamParticipant>) : JamRoomEvent
+    data class Queue(val queue: JamQueue) : JamRoomEvent
+    data class Anchor(val anchor: JamAnchor) : JamRoomEvent
+    data class Command(val from: String, val command: JamCommand) : JamRoomEvent
+
+    /** The server ended our membership ([code]: kicked, banned, …); no retry follows. */
+    data class Closed(val code: String, val message: String) : JamRoomEvent
+}
+
+/** The server refused to let us into the room. */
+class JamRoomException(val code: String, message: String) : Exception(message)
+
+// ---------- Wire frames (see src/protocol.ts in https://github.com/team-spotube/jam-server) ----------
+
+@Serializable
+private data class Health(val ok: Boolean = false, val v: Int = 0)
+
+@Serializable
+private data class WireParticipant(val id: String, val name: String)
+
+private fun List<WireParticipant>.toParticipants(host: String?) =
+    map { JamParticipant(it.id, it.name, isHost = it.id == host) }
+
+@OptIn(ExperimentalSerializationApi::class)
+@Serializable
+@JsonClassDiscriminator("t")
+private sealed class ClientFrame {
+    @Serializable
+    @SerialName("ping")
+    data class Ping(val id: Int, val c: Long) : ClientFrame()
+
+    @Serializable
+    @SerialName("queue")
+    data class Queue(val body: JamQueue) : ClientFrame()
+
+    @Serializable
+    @SerialName("anchor")
+    data class Anchor(val body: JamAnchor) : ClientFrame()
+
+    @Serializable
+    @SerialName("cmd")
+    data class Cmd(val body: JamCommand) : ClientFrame()
+
+    @Serializable
+    @SerialName("kick")
+    data class Kick(val target: String, val ban: Boolean) : ClientFrame()
+}
+
+@OptIn(ExperimentalSerializationApi::class)
+@Serializable
+@JsonClassDiscriminator("t")
+private sealed class ServerFrame {
+    @Serializable
+    @SerialName("welcome")
+    data class Welcome(
+        val v: Int,
+        val you: String,
+        val host: String? = null,
+        val participants: List<WireParticipant> = emptyList(),
+        val queue: JamQueue? = null,
+        val anchor: JamAnchor? = null) : ServerFrame() {
+        fun toEvent() = JamRoomEvent.Welcome(you, host, participants.toParticipants(host), queue, anchor)
+    }
+
+    @Serializable
+    @SerialName("pong")
+    data class Pong(val id: Int, val c: Long, val s: Long) : ServerFrame()
+
+    @Serializable
+    @SerialName("presence")
+    data class Presence(val host: String? = null, val participants: List<WireParticipant> = emptyList()) : ServerFrame()
+
+    @Serializable
+    @SerialName("queue")
+    data class Queue(val body: JamQueue) : ServerFrame()
+
+    @Serializable
+    @SerialName("anchor")
+    data class Anchor(val body: JamAnchor) : ServerFrame()
+
+    @Serializable
+    @SerialName("cmd")
+    data class Cmd(val from: String, val body: JamCommand) : ServerFrame()
+
+    @Serializable
+    @SerialName("error")
+    data class Error(val code: String) : ServerFrame()
 }

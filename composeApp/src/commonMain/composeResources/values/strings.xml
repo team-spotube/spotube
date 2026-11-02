@@ -310,26 +310,18 @@
     <string name="plugin_permissions_capability_webview_title">WebView</string>
     <string name="plugin_permissions_capability_webview_desc">Display web content inside the app</string>
     <string name="settings_section_jam">Group Jam</string>
-    <string name="settings_jam_broker_title">MQTT Broker</string>
-    <string name="settings_jam_broker_host">Broker host</string>
-    <string name="settings_jam_broker_host_subtitle">%1$s:%2$d</string>
-    <string name="settings_jam_broker_port">Broker port</string>
-    <string name="settings_jam_broker_tls">Use TLS</string>
-    <string name="settings_jam_broker_username">Username (optional)</string>
-    <string name="settings_jam_broker_password">Password (optional)</string>
-    <string name="settings_jam_broker_client_id">Client ID prefix</string>
-    <string name="settings_jam_broker_client_id_subtitle">Used to identify this Spotube instance</string>
-    <string name="settings_jam_broker_tls_subtitle">Encrypt the broker connection</string>
-    <string name="settings_jam_broker_diagnostics_subtitle">Check the current broker settings before starting a room.</string>
-    <string name="settings_jam_broker_test">Test connection</string>
-    <string name="settings_jam_broker_testing">Testing…</string>
-    <string name="settings_jam_broker_test_ok">Connected in %1$d ms</string>
-    <string name="settings_jam_broker_test_fail">Failed: %1$s</string>
-    <string name="settings_jam_broker_placeholder_note">Placeholder broker — configure your own to self-host</string>
+    <string name="settings_jam_server_title">Room server</string>
+    <string name="settings_jam_server_url">Server URL</string>
+    <string name="settings_jam_server_url_invalid">Enter a URL starting with https://</string>
+    <string name="settings_jam_server_diagnostics_subtitle">Check the room server before starting a room.</string>
+    <string name="settings_jam_server_note">Jam uses Spotube’s free room server. To self-host, deploy the server from github.com/team-spotube/jam-server and enter its URL.</string>
+    <string name="settings_jam_server_test">Test connection</string>
+    <string name="settings_jam_server_testing">Testing…</string>
+    <string name="settings_jam_server_test_ok">Connected in %1$d ms</string>
+    <string name="settings_jam_server_test_fail">Failed: %1$s</string>
     <string name="settings_jam_section_connection">Connection</string>
-    <string name="settings_jam_section_credentials">Credentials</string>
-    <string name="settings_jam_section_identity">Identity</string>
     <string name="settings_jam_section_diagnostics">Diagnostics</string>
+    <string name="settings_jam_section_you">You</string>
 
     <!-- Group Jam -->
     <string name="jam_screen_title">Group Jam</string>
@@ -341,9 +333,9 @@
     <string name="jam_setup_working">Connecting…</string>
     <string name="jam_setup_code_label">Room code</string>
     <string name="jam_setup_code_placeholder">ABC123</string>
-    <string name="jam_connection_host">Broker: %1$s</string>
-    <string name="jam_connection_missing">Set up a broker in Settings to host or join a room.</string>
-    <string name="jam_connection_settings">Broker settings</string>
+    <string name="jam_connection_host">Server: %1$s</string>
+    <string name="jam_connection_missing">Set a room server in Settings to host or join a room.</string>
+    <string name="jam_connection_settings">Server settings</string>
     <string name="jam_session_connected">Connected</string>
     <string name="jam_session_connecting">Reconnecting…</string>
     <string name="jam_invite_copy">Copy code</string>
@@ -352,6 +344,7 @@
     <string name="jam_participants_heading">Participants (%1$d)</string>
     <string name="jam_participants_host">Host</string>
     <string name="jam_participants_guest">Listener</string>
+    <string name="jam_participants_you">%1$s (you)</string>
     <string name="jam_participants_waiting">Waiting for listeners…</string>
     <string name="jam_participants_remove">Remove</string>
     <string name="jam_participants_ban">Ban</string>
@@ -363,6 +356,145 @@
     <string name="jam_error_join">Failed to join jam session</string>
     <string name="jam_error_invalid_code">Enter a six-character room code using letters and digits.</string>
     <string name="jam_share_message">Join my Spotube Jam with code: %1$s</string>
+    <string name="jam_name_title">Your name</string>
+    <string name="jam_name_subtitle">Others in the jam see you as %1$s</string>
+    <string name="jam_name_description">Shown to everyone in the jam. Leave it empty to use %1$s. A new name applies the next time you start or join a room.</string>
+    <string name="jam_name_too_long">Use at most %1$d characters.</string>
+    <!-- A generated name: adjective, then animal (e.g. "Mellow Otter"). Reorder for your language if needed. -->
+    <string name="jam_name_format">%1$s %2$s</string>
+    <!-- Word lists for generated jam names. Translations may use their own words and any number of them. -->
+    <string-array name="jam_name_adjectives">
+        <item>Brave</item>
+        <item>Bright</item>
+        <item>Calm</item>
+        <item>Cheerful</item>
+        <item>Chill</item>
+        <item>Clever</item>
+        <item>Cosmic</item>
+        <item>Cozy</item>
+        <item>Curious</item>
+        <item>Dapper</item>
+        <item>Dreamy</item>
+        <item>Eager</item>
+        <item>Electric</item>
+        <item>Fancy</item>
+        <item>Fearless</item>
+        <item>Fizzy</item>
+        <item>Fluffy</item>
+        <item>Funky</item>
+        <item>Gentle</item>
+        <item>Giddy</item>
+        <item>Glowing</item>
+        <item>Golden</item>
+        <item>Groovy</item>
+        <item>Happy</item>
+        <item>Humble</item>
+        <item>Jazzy</item>
+        <item>Jolly</item>
+        <item>Jumpy</item>
+        <item>Kind</item>
+        <item>Lively</item>
+        <item>Lucky</item>
+        <item>Lunar</item>
+        <item>Mellow</item>
+        <item>Merry</item>
+        <item>Mighty</item>
+        <item>Misty</item>
+        <item>Nimble</item>
+        <item>Peppy</item>
+        <item>Plucky</item>
+        <item>Polite</item>
+        <item>Quick</item>
+        <item>Quiet</item>
+        <item>Rapid</item>
+        <item>Rhythmic</item>
+        <item>Rosy</item>
+        <item>Silly</item>
+        <item>Sleepy</item>
+        <item>Smooth</item>
+        <item>Snappy</item>
+        <item>Soulful</item>
+        <item>Sparkly</item>
+        <item>Speedy</item>
+        <item>Spicy</item>
+        <item>Sunny</item>
+        <item>Swift</item>
+        <item>Tidy</item>
+        <item>Tiny</item>
+        <item>Vivid</item>
+        <item>Wavy</item>
+        <item>Whistling</item>
+        <item>Witty</item>
+        <item>Zany</item>
+        <item>Zesty</item>
+        <item>Zippy</item>
+    </string-array>
+    <string-array name="jam_name_animals">
+        <item>Alpaca</item>
+        <item>Badger</item>
+        <item>Beaver</item>
+        <item>Bison</item>
+        <item>Bunny</item>
+        <item>Capybara</item>
+        <item>Cheetah</item>
+        <item>Chipmunk</item>
+        <item>Cobra</item>
+        <item>Corgi</item>
+        <item>Coyote</item>
+        <item>Crane</item>
+        <item>Dingo</item>
+        <item>Dolphin</item>
+        <item>Duckling</item>
+        <item>Eagle</item>
+        <item>Falcon</item>
+        <item>Ferret</item>
+        <item>Finch</item>
+        <item>Flamingo</item>
+        <item>Fox</item>
+        <item>Gazelle</item>
+        <item>Gecko</item>
+        <item>Giraffe</item>
+        <item>Hedgehog</item>
+        <item>Heron</item>
+        <item>Hippo</item>
+        <item>Ibis</item>
+        <item>Jaguar</item>
+        <item>Koala</item>
+        <item>Lemur</item>
+        <item>Llama</item>
+        <item>Lynx</item>
+        <item>Magpie</item>
+        <item>Manatee</item>
+        <item>Marmot</item>
+        <item>Meerkat</item>
+        <item>Mongoose</item>
+        <item>Moose</item>
+        <item>Narwhal</item>
+        <item>Ocelot</item>
+        <item>Octopus</item>
+        <item>Orca</item>
+        <item>Otter</item>
+        <item>Owl</item>
+        <item>Panda</item>
+        <item>Pangolin</item>
+        <item>Parrot</item>
+        <item>Pelican</item>
+        <item>Penguin</item>
+        <item>Puffin</item>
+        <item>Quokka</item>
+        <item>Raccoon</item>
+        <item>Raven</item>
+        <item>Robin</item>
+        <item>Seal</item>
+        <item>Sloth</item>
+        <item>Sparrow</item>
+        <item>Squirrel</item>
+        <item>Tapir</item>
+        <item>Tiger</item>
+        <item>Toucan</item>
+        <item>Walrus</item>
+        <item>Wombat</item>
+    </string-array>
 
     <string name="player_go_to_album">Go to album</string>
     <string name="player_sleep_timer">Sleep timer</string>
@@ -549,15 +681,17 @@
     <string name="jam_destination_suggest">Suggest to Jam</string>
 
     <!-- Group Jam: connection errors -->
-    <string name="jam_error_no_broker">No jam broker configured</string>
-    <string name="jam_error_broker_host_empty">Broker host is empty</string>
+    <string name="jam_error_no_server">No jam server configured</string>
+    <string name="jam_error_server_unreachable">Couldn’t reach the jam server. Check your network or the server URL in Settings → Jam.</string>
+    <string name="jam_error_server_incompatible">The jam server runs an incompatible version.</string>
+    <string name="jam_error_room_not_found">No room with that code. Check it and try again.</string>
+    <string name="jam_error_room_full">This room is full.</string>
+    <string name="jam_error_banned">The host banned you from this room.</string>
+    <string name="jam_error_kicked">The host removed you from the room.</string>
+    <string name="jam_error_replaced">This room was opened again on this device, so this connection was closed.</string>
     <string name="jam_error_connection_failed">Connection failed</string>
     <string name="jam_error_connection_lost">Connection lost</string>
-    <string name="jam_error_broker_unreachable">Couldn't reach %1$s:%2$d. Check your network or pick another broker in Settings → Jam.</string>
 
-    <!-- Settings: Group Jam broker -->
-    <string name="settings_jam_broker_content_description">Broker</string>
-    <string name="settings_jam_broker_username_placeholder">anonymous</string>
 
     <!-- Group Jam: queue snackbar -->
     <string name="jam_queue_added_track">Added to the jam queue</string>

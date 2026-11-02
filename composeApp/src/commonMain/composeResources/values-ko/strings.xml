@@ -288,25 +288,11 @@
     <string name="plugin_permissions_capability_webview_title">WebView</string>
     <string name="plugin_permissions_capability_webview_desc">앱 안에 웹 콘텐츠 표시</string>
     <string name="settings_section_jam">그룹 잼</string>
-    <string name="settings_jam_broker_title">MQTT 브로커</string>
-    <string name="settings_jam_broker_host">브로커 호스트</string>
-    <string name="settings_jam_broker_host_subtitle">%1$s:%2$d</string>
-    <string name="settings_jam_broker_port">브로커 포트</string>
-    <string name="settings_jam_broker_tls">TLS 사용</string>
-    <string name="settings_jam_broker_username">사용자 이름(선택 사항)</string>
-    <string name="settings_jam_broker_password">비밀번호(선택 사항)</string>
-    <string name="settings_jam_broker_client_id">클라이언트 ID 접두사</string>
-    <string name="settings_jam_broker_client_id_subtitle">이 Spotube 인스턴스를 식별하는 데 사용돼요</string>
-    <string name="settings_jam_broker_tls_subtitle">브로커 연결 암호화</string>
-    <string name="settings_jam_broker_diagnostics_subtitle">방을 시작하기 전에 현재 브로커 설정을 확인하세요.</string>
-    <string name="settings_jam_broker_test">연결 테스트</string>
-    <string name="settings_jam_broker_testing">테스트 중…</string>
-    <string name="settings_jam_broker_test_ok">%1$d ms 만에 연결됨</string>
-    <string name="settings_jam_broker_test_fail">실패: %1$s</string>
-    <string name="settings_jam_broker_placeholder_note">임시 브로커입니다 — 직접 호스팅하려면 브로커를 설정하세요</string>
+    <string name="settings_jam_server_test">연결 테스트</string>
+    <string name="settings_jam_server_testing">테스트 중…</string>
+    <string name="settings_jam_server_test_ok">%1$d ms 만에 연결됨</string>
+    <string name="settings_jam_server_test_fail">실패: %1$s</string>
     <string name="settings_jam_section_connection">연결</string>
-    <string name="settings_jam_section_credentials">인증 정보</string>
-    <string name="settings_jam_section_identity">식별 정보</string>
     <string name="settings_jam_section_diagnostics">진단</string>
 
     <!-- Group Jam -->
@@ -319,9 +305,6 @@
     <string name="jam_setup_working">연결 중…</string>
     <string name="jam_setup_code_label">방 코드</string>
     <string name="jam_setup_code_placeholder">ABC123</string>
-    <string name="jam_connection_host">브로커: %1$s</string>
-    <string name="jam_connection_missing">방을 만들거나 참여하려면 설정에서 브로커를 설정하세요.</string>
-    <string name="jam_connection_settings">브로커 설정</string>
     <string name="jam_session_connected">연결됨</string>
     <string name="jam_session_connecting">다시 연결 중…</string>
     <string name="jam_invite_copy">코드 복사</string>
@@ -341,6 +324,28 @@
     <string name="jam_error_join">잼 세션에 참여하지 못했어요</string>
     <string name="jam_error_invalid_code">영문자와 숫자로 된 6자리 방 코드를 입력하세요.</string>
     <string name="jam_share_message">내 Spotube 잼에 참여하세요. 코드: %1$s</string>
+    <string name="settings_jam_server_title">방 서버</string>
+    <string name="settings_jam_server_url">서버 URL</string>
+    <string name="settings_jam_server_url_invalid">https://로 시작하는 URL을 입력하세요.</string>
+    <string name="settings_jam_server_diagnostics_subtitle">방을 시작하기 전에 방 서버를 확인하세요.</string>
+    <string name="settings_jam_server_note">잼은 Spotube의 무료 방 서버를 사용합니다. 직접 호스팅하려면 github.com/team-spotube/jam-server의 서버를 배포하고 URL을 입력하세요.</string>
+    <string name="settings_jam_section_you">나</string>
+    <string name="jam_connection_host">서버: %1$s</string>
+    <string name="jam_connection_missing">방을 만들거나 참여하려면 설정에서 방 서버를 지정하세요.</string>
+    <string name="jam_connection_settings">서버 설정</string>
+    <string name="jam_participants_you">%1$s (나)</string>
+    <string name="jam_name_title">내 이름</string>
+    <string name="jam_name_subtitle">잼의 다른 사람들에게 %1$s(으)로 표시됩니다</string>
+    <string name="jam_name_description">잼의 모든 사람에게 표시됩니다. 비워 두면 %1$s을(를) 사용합니다. 새 이름은 다음에 방을 만들거나 참여할 때부터 적용됩니다.</string>
+    <string name="jam_name_too_long">최대 %1$d자까지 입력하세요.</string>
+    <string name="jam_error_no_server">설정된 잼 서버가 없습니다</string>
+    <string name="jam_error_server_unreachable">잼 서버에 연결할 수 없습니다. 네트워크 또는 설정 → 그룹 잼의 서버 URL을 확인하세요.</string>
+    <string name="jam_error_server_incompatible">잼 서버의 버전이 호환되지 않습니다.</string>
+    <string name="jam_error_room_not_found">해당 코드의 방이 없습니다. 코드를 확인하고 다시 시도하세요.</string>
+    <string name="jam_error_room_full">이 방은 가득 찼습니다.</string>
+    <string name="jam_error_banned">호스트가 이 방에서 나를 차단했습니다.</string>
+    <string name="jam_error_kicked">호스트가 나를 방에서 내보냈습니다.</string>
+    <string name="jam_error_replaced">이 기기에서 이 방이 다시 열려 이 연결이 종료되었습니다.</string>
 
     <string name="player_go_to_album">앨범으로 이동</string>
     <string name="player_sleep_timer">취침 타이머</string>
@@ -513,14 +518,9 @@
     <string name="jam_destination_suggest">잼에 추천하기</string>
 
     <!-- Group Jam: connection errors -->
-    <string name="jam_error_no_broker">구성된 잼 브로커가 없어요</string>
-    <string name="jam_error_broker_host_empty">브로커 호스트가 비어 있어요</string>
     <string name="jam_error_connection_failed">연결 실패</string>
     <string name="jam_error_connection_lost">연결 끊김</string>
 
-    <!-- Settings: Group Jam broker -->
-    <string name="settings_jam_broker_content_description">브로커</string>
-    <string name="settings_jam_broker_username_placeholder">익명</string>
 
     <!-- Group Jam: queue snackbar -->
     <string name="jam_queue_added_track">잼 대기열에 추가했어요</string>

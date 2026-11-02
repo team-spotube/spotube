@@ -292,25 +292,11 @@
     <string name="plugin_permissions_capability_webview_title">WebView</string>
     <string name="plugin_permissions_capability_webview_desc">Uygulama içinde web içeriği görüntüleme</string>
     <string name="settings_section_jam">Grup Jam</string>
-    <string name="settings_jam_broker_title">MQTT Aracısı</string>
-    <string name="settings_jam_broker_host">Aracı ana bilgisayarı</string>
-    <string name="settings_jam_broker_host_subtitle">%1$s:%2$d</string>
-    <string name="settings_jam_broker_port">Aracı portu</string>
-    <string name="settings_jam_broker_tls">TLS kullan</string>
-    <string name="settings_jam_broker_username">Kullanıcı adı (isteğe bağlı)</string>
-    <string name="settings_jam_broker_password">Şifre (isteğe bağlı)</string>
-    <string name="settings_jam_broker_client_id">İstemci kimliği ön eki</string>
-    <string name="settings_jam_broker_client_id_subtitle">Bu Spotube örneğini tanımlamak için kullanılır</string>
-    <string name="settings_jam_broker_tls_subtitle">Aracı bağlantısını şifrele</string>
-    <string name="settings_jam_broker_diagnostics_subtitle">Oda başlatmadan önce geçerli aracı ayarlarını kontrol et.</string>
-    <string name="settings_jam_broker_test">Bağlantıyı test et</string>
-    <string name="settings_jam_broker_testing">Test ediliyor…</string>
-    <string name="settings_jam_broker_test_ok">%1$d ms\'de bağlandı</string>
-    <string name="settings_jam_broker_test_fail">Başarısız: %1$s</string>
-    <string name="settings_jam_broker_placeholder_note">Geçici aracı — kendin barındırmak için kendi aracını yapılandır</string>
+    <string name="settings_jam_server_test">Bağlantıyı test et</string>
+    <string name="settings_jam_server_testing">Test ediliyor…</string>
+    <string name="settings_jam_server_test_ok">%1$d ms\'de bağlandı</string>
+    <string name="settings_jam_server_test_fail">Başarısız: %1$s</string>
     <string name="settings_jam_section_connection">Bağlantı</string>
-    <string name="settings_jam_section_credentials">Kimlik bilgileri</string>
-    <string name="settings_jam_section_identity">Kimlik</string>
     <string name="settings_jam_section_diagnostics">Tanılama</string>
 
     <!-- Group Jam -->
@@ -323,9 +309,6 @@
     <string name="jam_setup_working">Bağlanıyor…</string>
     <string name="jam_setup_code_label">Oda kodu</string>
     <string name="jam_setup_code_placeholder">ABC123</string>
-    <string name="jam_connection_host">Aracı: %1$s</string>
-    <string name="jam_connection_missing">Oda açmak veya bir odaya katılmak için Ayarlar\'da bir aracı ayarla.</string>
-    <string name="jam_connection_settings">Aracı ayarları</string>
     <string name="jam_session_connected">Bağlandı</string>
     <string name="jam_session_connecting">Yeniden bağlanıyor…</string>
     <string name="jam_invite_copy">Kodu kopyala</string>
@@ -345,6 +328,28 @@
     <string name="jam_error_join">Jam oturumuna katılınamadı</string>
     <string name="jam_error_invalid_code">Harf ve rakamlardan oluşan altı karakterli bir oda kodu gir.</string>
     <string name="jam_share_message">Spotube Jam\'ime şu kodla katıl: %1$s</string>
+    <string name="settings_jam_server_title">Oda sunucusu</string>
+    <string name="settings_jam_server_url">Sunucu URL’si</string>
+    <string name="settings_jam_server_url_invalid">https:// ile başlayan bir URL gir.</string>
+    <string name="settings_jam_server_diagnostics_subtitle">Oda başlatmadan önce oda sunucusunu kontrol et.</string>
+    <string name="settings_jam_server_note">Jam, Spotube’un ücretsiz oda sunucusunu kullanır. Kendin barındırmak için github.com/team-spotube/jam-server adresindeki sunucuyu kur ve URL’sini gir.</string>
+    <string name="settings_jam_section_you">Sen</string>
+    <string name="jam_connection_host">Sunucu: %1$s</string>
+    <string name="jam_connection_missing">Oda açmak veya bir odaya katılmak için Ayarlar’da bir oda sunucusu belirle.</string>
+    <string name="jam_connection_settings">Sunucu ayarları</string>
+    <string name="jam_participants_you">%1$s (sen)</string>
+    <string name="jam_name_title">Adın</string>
+    <string name="jam_name_subtitle">Jam’deki diğer kişiler seni %1$s olarak görür</string>
+    <string name="jam_name_description">Jam’deki herkese gösterilir. %1$s adını kullanmak için boş bırak. Yeni ad, bir sonraki oda açışında veya katılışında geçerli olur.</string>
+    <string name="jam_name_too_long">En fazla %1$d karakter kullan.</string>
+    <string name="jam_error_no_server">Jam sunucusu ayarlanmamış</string>
+    <string name="jam_error_server_unreachable">Jam sunucusuna ulaşılamadı. Ağını veya Ayarlar → Grup Jam bölümündeki sunucu URL’sini kontrol et.</string>
+    <string name="jam_error_server_incompatible">Jam sunucusu uyumsuz bir sürüm çalıştırıyor.</string>
+    <string name="jam_error_room_not_found">Bu koda sahip bir oda yok. Kodu kontrol edip tekrar dene.</string>
+    <string name="jam_error_room_full">Bu oda dolu.</string>
+    <string name="jam_error_banned">Oda sahibi seni bu odadan engelledi.</string>
+    <string name="jam_error_kicked">Oda sahibi seni odadan çıkardı.</string>
+    <string name="jam_error_replaced">Bu oda bu cihazda yeniden açıldı, bu yüzden bu bağlantı kapatıldı.</string>
 
     <string name="player_go_to_album">Albüme git</string>
     <string name="player_sleep_timer">Uyku zamanlayıcısı</string>
@@ -517,14 +522,9 @@
     <string name="jam_destination_suggest">Jam\'e öner</string>
 
     <!-- Group Jam: connection errors -->
-    <string name="jam_error_no_broker">Jam aracısı yapılandırılmadı</string>
-    <string name="jam_error_broker_host_empty">Aracı ana bilgisayarı boş</string>
     <string name="jam_error_connection_failed">Bağlantı başarısız</string>
     <string name="jam_error_connection_lost">Bağlantı kesildi</string>
 
-    <!-- Settings: Group Jam broker -->
-    <string name="settings_jam_broker_content_description">Aracı</string>
-    <string name="settings_jam_broker_username_placeholder">anonymous</string>
 
     <!-- Group Jam: queue snackbar -->
     <string name="jam_queue_added_track">Jam sırasına eklendi</string>

@@ -289,12 +289,6 @@ kotlin {
                 // DLNA
                 implementation(libs.dns.sd.kt)
 
-                // mqtt client for jam-session
-                implementation(libs.mqtt.client)
-                implementation(libs.mqtt.x.models)
-                implementation(libs.mqtt.buffer)
-                implementation(libs.mqtt.buffer.codec)
-
                 // Markdown renderer
                 implementation(libs.multiplatform.markdown.renderer)
                 implementation(libs.multiplatform.markdown.renderer.m3)
@@ -441,14 +435,6 @@ android {
         isCoreLibraryDesugaringEnabled = true
     }
 
-}
-
-// ditchoom's socket-quic-quiche ships libquiche_jni.so with 4 KB LOAD segment alignment
-// (not 16 KB compatible), even in the latest release. It is only an optional QUIC transport
-// pulled in transitively by mqtt-client, so drop it on Android until upstream fixes it.
-configurations.matching { it.name.startsWith("debug") || it.name.startsWith("release") }.configureEach {
-    exclude(group = "com.ditchoom", module = "socket-quic-quiche")
-    exclude(group = "com.ditchoom", module = "socket-quic-quiche-android")
 }
 
 dependencies {

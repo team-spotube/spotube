@@ -36,8 +36,6 @@ kotlin = "2.4.21"
 kotlinx-coroutines = "1.11.0"
 kotlinx-serialization-json = "1.11.0"
 millennium = "0.1.1"
-mqttClient = "2.1.1"
-mqttBuffer = "6.30.8"
 multiplatformMarkdownRenderer = "0.45.0"
 murmurhash = "0.4.2"
 newpipeextractor = "v0.26.5"
@@ -105,10 +103,6 @@ ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 ktor-server-websockets = { module = "io.ktor:ktor-server-websockets", version.ref = "ktor" }
 ktor-client-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "ktor" }
 millennium = { module = "org.spotube.millennium:millennium", version.ref = "millennium" }
-mqtt-x-models = { module = "com.ditchoom:mqtt-5-models", version.ref = "mqttClient" }
-mqtt-client = { module = "com.ditchoom:mqtt-client", version.ref = "mqttClient" }
-mqtt-buffer = { module = "com.ditchoom:buffer", version.ref = "mqttBuffer" }
-mqtt-buffer-codec = { module = "com.ditchoom:buffer-codec", version.ref = "mqttBuffer" }
 multiplatform-markdown-renderer = { module = "com.mikepenz:multiplatform-markdown-renderer", version.ref = "multiplatformMarkdownRenderer" }
 multiplatform-markdown-renderer-m3 = { module = "com.mikepenz:multiplatform-markdown-renderer-m3", version.ref = "multiplatformMarkdownRenderer" }
 murmurhash = { module = "com.goncalossilva:murmurhash", version.ref = "murmurhash" }
