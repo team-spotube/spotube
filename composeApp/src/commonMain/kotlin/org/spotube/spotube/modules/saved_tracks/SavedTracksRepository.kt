@@ -50,6 +50,14 @@ class SavedTracksRepository(
 
     val savedTracksIdsFlow : StateFlow<Set<String>> = savedTrackIds.asStateFlow()
 
+    /**
+     * Bumped only when the library itself changes (save, remove, re-login). [savedTracksIdsFlow]
+     * also grows while pages and saved-states are fetched, so reloading the list on it restarted
+     * paging on every page (#3200).
+     */
+    private val _libraryChanges = MutableStateFlow(0)
+    val libraryChanges: StateFlow<Int> = _libraryChanges.asStateFlow()
+
     init {
         scope.launch {
             pluginManager.selectedMetadataPlugin
@@ -71,6 +79,7 @@ class SavedTracksRepository(
         savedTracksCache.invalidateAll()
         totalCountCache.invalidateAll()
         savedTrackIds.value = emptySet()
+        _libraryChanges.value++
     }
 
     suspend fun getSavedTracks(paginationStrategy: PaginationStrategy? = null) =
@@ -109,6 +118,7 @@ class SavedTracksRepository(
             savedTracksCache.invalidateAll()
             totalCountCache.invalidateAll()
             savedTrackIds.value += ids.toSet()
+            _libraryChanges.value++
         }
     }
 
@@ -122,6 +132,7 @@ class SavedTracksRepository(
             savedTracksCache.invalidateAll()
             totalCountCache.invalidateAll()
             savedTrackIds.value -= ids.toSet()
+            _libraryChanges.value++
         }
     }
 

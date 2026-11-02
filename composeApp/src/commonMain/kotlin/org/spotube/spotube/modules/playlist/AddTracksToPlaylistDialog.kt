@@ -18,6 +18,7 @@
 package org.spotube.spotube.modules.playlist
 
 
+import org.spotube.spotube.core.ui.misc.itemsWithUniqueKeys
 import org.spotube.spotube.core.ui.component.AdaptiveDialogBottomSheet
 import org.spotube.millennium.composables.MillenniumCircularProgress
 import org.spotube.millennium.composables.MillenniumIcon
@@ -138,7 +139,7 @@ fun AddTracksToPlaylistDialog(
                             .fillMaxWidth()
                             .weight(1f),
                         verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        items(state.results, key = { it.track.id }) { result ->
+                        itemsWithUniqueKeys(state.results, id = { it.track.id }) { result ->
                             TrackSearchResultRow(
                                 track = result.track,
                                 isAdding = result.isAdding,

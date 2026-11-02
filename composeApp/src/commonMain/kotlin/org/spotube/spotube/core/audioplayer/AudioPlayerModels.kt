@@ -21,6 +21,7 @@ import org.spotube.plugin_interfaces.plugin_apis.audio.StreamProtocol
 import org.spotube.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlin.time.Duration
 
 data class MediaItem(
@@ -84,7 +85,9 @@ sealed interface QueueEntry {
         val artists: List<String>,
         val duration: Long,
         val album: String?,
-        val coverBytes: ByteArray?,
+        // Not persisted: the queue is saved on every change and covers made it hundreds of MB
+        // of JSON (#3193). Restore fills them back in from the local media index.
+        @Transient val coverBytes: ByteArray? = null,
         override val url: String,
         override val addedBy: String = "") : QueueEntry {
         override val artworkUrl: String? get() = null

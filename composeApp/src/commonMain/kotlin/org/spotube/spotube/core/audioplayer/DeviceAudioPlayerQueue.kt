@@ -20,8 +20,10 @@ package org.spotube.spotube.core.audioplayer
 import org.spotube.plugin_interfaces.plugin_apis.audio.StreamProtocol
 import org.spotube.spotube.core.di.injectLogger
 import org.spotube.spotube.modules.blacklist.BlacklistRepository
+import org.spotube.spotube.modules.library.local_tracks.media.LocalMediaCacheRepository
 import org.spotube.spotube.modules.plugin.PluginProvider
 import org.spotube.spotube.modules.settings.SettingsProvider
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -37,6 +39,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -130,14 +133,15 @@ class DeviceAudioPlayerQueue(
         startPosition: Int,
         collectionEntry: QueueCollectionEntry?) {
         logger.i { "Loading queue with ${entries.size} entries, autoPlay=$autoPlay, startPosition=$startPosition" }
-        val mediaItems = entries.mapNotNull { it.toMediaItem() }
+        val resolved = resolveMediaItems(entries)
+        val mediaItems = resolved.map { it.first }
         if (mediaItems.isEmpty()) {
             logger.w { "load: no valid media items after filtering blanks" }
         }
         val normalizedStartPosition =
             if (mediaItems.isEmpty()) 0 else startPosition.coerceIn(0, mediaItems.lastIndex)
         logger.d { "Normalized start position: $startPosition -> $normalizedStartPosition" }
-        entryByMediaUrl.value = mediaItems.associate { it.url to entries.firstOrNull { e -> e.toMediaItem()?.url == it.url }!! }
+        entryByMediaUrl.value = entriesByUrl(resolved)
         updateCollectionContext(collectionEntry)
         audioPlayer.load(mediaItems, autoPlay, normalizedStartPosition)
         persistQueueStateIfReady()
@@ -401,19 +405,66 @@ class DeviceAudioPlayerQueue(
             return
         }
 
-        val mediaItems = state.entries.mapNotNull { it.toMediaItem() }
-        if (mediaItems.isEmpty()) {
+        val restored = resolveMediaItems(withLocalCovers(state.entries))
+        if (restored.isEmpty()) {
             logger.w { "restorePersistedState: all entries had blank urls" }
             return
         }
-        entryByMediaUrl.value = mediaItems.associate { it.url to state.entries.firstOrNull { e -> e.toMediaItem()?.url == it.url }!! }
+        val mediaItems = restored.map { it.first }
+        entryByMediaUrl.value = entriesByUrl(restored)
         val normalizedStartPosition = state.currentIndex.coerceIn(0, mediaItems.lastIndex)
         logger.d { "Loading restored playlist with normalized start position: ${state.currentIndex} -> $normalizedStartPosition" }
         audioPlayer.load(mediaItems, autoPlay = false, startPosition = normalizedStartPosition)
         logger.i { "Persisted state restored successfully" }
     }
 
+    /**
+     * Converts each entry once. Looking every item's entry up again by converting the whole list
+     * per item was quadratic: ~900k suspending conversions to start a 1353-track playlist.
+     */
+    private suspend fun resolveMediaItems(entries: List<QueueEntry>): List<Pair<MediaItem, QueueEntry>> =
+        entries.mapNotNull { entry -> entry.toMediaItem()?.let { it to entry } }
+
+    /** First entry wins for a repeated url, as before. */
+    private fun entriesByUrl(resolved: List<Pair<MediaItem, QueueEntry>>): Map<String, QueueEntry> = buildMap {
+        resolved.forEach { (item, entry) -> if (item.url !in this) put(item.url, entry) }
+    }
+
+    /** Local covers aren't persisted with the queue; look them up in the local media index. */
+    private suspend fun withLocalCovers(entries: List<QueueEntry>): List<QueueEntry> {
+        if (entries.none { it is QueueEntry.LocalTrack }) return entries
+        val covers = runCatching {
+            get<LocalMediaCacheRepository>().cacheFlow.first().folders
+                .flatMap { it.tracks }
+                .mapNotNull { track -> track.coverBytes?.let { track.path to it } }
+                .toMap()
+        }.getOrElse {
+            logger.w(it) { "Couldn't read local media index for queue covers" }
+            emptyMap()
+        }
+        if (covers.isEmpty()) return entries
+        return entries.map { entry ->
+            if (entry is QueueEntry.LocalTrack && entry.coverBytes == null) {
+                covers[entry.url]?.let { entry.copy(coverBytes = it) } ?: entry
+            } else entry
+        }
+    }
+
+    /**
+     * Runs from fire-and-forget collectors on a scope without an exception handler, where a
+     * failed write (disk full, I/O error) would otherwise crash the app. Losing one save is fine.
+     */
     private suspend fun persistQueueStateIfReady() {
+        try {
+            persistQueueState()
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            logger.e(e) { "Failed to persist queue state" }
+        }
+    }
+
+    private suspend fun persistQueueState() {
         if (isRestoringPersistedState) {
             logger.v { "Skipping persist: still restoring persisted state" }
             return

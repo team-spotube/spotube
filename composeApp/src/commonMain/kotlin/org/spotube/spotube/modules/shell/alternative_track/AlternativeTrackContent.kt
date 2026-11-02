@@ -18,6 +18,7 @@
 package org.spotube.spotube.modules.shell.alternative_track
 
 
+import org.spotube.spotube.core.ui.misc.itemsWithUniqueKeys
 import org.spotube.millennium.composables.MillenniumSpokeSpinner
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumListTile
@@ -119,9 +120,9 @@ fun AlternativeTrackContent(
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                items(
+                itemsWithUniqueKeys(
                     items = uiState.alternatives,
-                    key = { source -> source.id }) { source ->
+                    id = { source -> source.id }) { source ->
                     AlternativeSourceRow(
                         source = source,
                         isActive = source.id == uiState.activeSourceId,

@@ -61,13 +61,13 @@ class Database(val paths: Paths) {
 
     val audioPlayerQueueDataStore: DataStore<Preferences> by lazy {
         PreferenceDataStoreFactory.createWithPath(
-            produceFile = { "${paths.getApplicationDataDirPath()}/spotube_audio_player_queue.preferences_pb".toPath() }
+            produceFile = { dropIfOversized("${paths.getApplicationDataDirPath()}/spotube_audio_player_queue.preferences_pb".toPath()) }
         )
     }
 
     val localMediaDataStore: DataStore<Preferences> by lazy {
         PreferenceDataStoreFactory.createWithPath(
-            produceFile = { "${paths.getApplicationDataDirPath()}/spotube_local_media.preferences_pb".toPath() }
+            produceFile = { dropIfOversized("${paths.getApplicationDataDirPath()}/spotube_local_media.preferences_pb".toPath()) }
         )
     }
 
@@ -83,7 +83,23 @@ class Database(val paths: Paths) {
         )
     }
 
+    /**
+     * DataStore reads a whole preferences file into the heap. Earlier builds stored full-size
+     * embedded covers as JSON number arrays in the queue and local media stores, growing them to
+     * hundreds of MB and crashing with OutOfMemoryError on load (#3193). Both are rebuildable, so
+     * drop one that is far past any sane size instead of loading it.
+     */
+    private fun dropIfOversized(path: okio.Path): okio.Path {
+        runCatching {
+            val size = FileSystem.SYSTEM.metadataOrNull(path)?.size ?: return path
+            if (size > MAX_CACHE_STORE_BYTES) FileSystem.SYSTEM.delete(path)
+        }
+        return path
+    }
+
     private companion object {
+        const val MAX_CACHE_STORE_BYTES = 8L * 1024 * 1024
+
         /** Preference files written by previous launches; their presence means an upgrade. */
         val EXISTING_INSTALL_PROBE_FILES = listOf(
             "spotube.preferences_pb",
