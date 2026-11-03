@@ -54,7 +54,7 @@ class DeviceAudioPlayerQueue(
     private val blacklistRepository: BlacklistRepository) : AudioPlayerQueue, KoinComponent {
 
     private val logger by injectLogger<DeviceAudioPlayerQueue>()
-    private val streamingUrlRepository by inject<StreamingUrlRepository>()
+    private val streamingUrlRepository = get<StreamingUrlRepository>()
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
