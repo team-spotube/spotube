@@ -18,14 +18,15 @@
 package org.spotube.spotube.core.audioplayer
 
 /**
- * Single-media playback engine implemented in Swift on top of VLCKit (`iosApp/iosApp/VlcPlayerEngine.swift`).
+ * Single-media playback engine implemented in Swift on top of MobileVLCKit
+ * (`iosApp/iosApp/VlcPlayerEngine.swift`).
  *
- * VLCKit ships as a SwiftPM binary target, so it can't be bound with cinterop from Gradle. Swift
- * implements this contract instead and registers it in [NativePlayerRegistry] before the Compose
- * view controller is created. The playlist, loop and shuffle logic stays in Kotlin
+ * MobileVLCKit comes from CocoaPods into the Xcode project, so Gradle can't bind it with cinterop.
+ * Swift implements this contract instead and registers it in [NativePlayerRegistry] before the
+ * Compose view controller is created. The playlist, loop and shuffle logic stays in Kotlin
  * ([AudioPlayer]); the engine only ever plays one URL at a time.
  *
- * Implementations may be called from any thread and must hop to the thread VLCKit needs
+ * Implementations may be called from any thread and must hop to the thread VLC needs
  * themselves. [NativePlayerListener] callbacks may arrive on any thread.
  */
 interface NativePlayerEngine {
@@ -53,9 +54,6 @@ interface NativePlayerListener {
     fun onState(state: NativePlayerState)
     fun onTime(positionMs: Long)
     fun onDuration(durationMs: Long)
-
-    /** Network cache fill of the current media, 0..100. */
-    fun onBuffered(percent: Float)
     fun onError(message: String)
 }
 

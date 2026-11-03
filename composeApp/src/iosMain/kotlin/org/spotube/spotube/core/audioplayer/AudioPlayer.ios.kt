@@ -34,7 +34,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 /**
- * iOS player. Playback is done by VLCKit through [NativePlayerEngine]; AVPlayer misreports the
+ * iOS player. Playback is done by MobileVLCKit through [NativePlayerEngine]; AVPlayer misreports the
  * duration of some fragmented MP4 streams (doubling it, which leaves the second half silent).
  * The engine plays a single URL, so the playlist, loop, shuffle and auto-advance live here.
  */
@@ -108,15 +108,6 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
         override fun onDuration(durationMs: Long) {
             if (disposed || durationMs <= 0) return
             _duration.tryEmit(durationMs.milliseconds)
-        }
-
-        override fun onBuffered(percent: Float) {
-            if (disposed) return
-            val durationMs = _duration.value.inWholeMilliseconds
-            _bufferingPosition.tryEmit(
-                if (durationMs > 0) (durationMs * (percent.coerceIn(0f, 100f) / 100f)).toLong().milliseconds
-                else Duration.ZERO
-            )
         }
 
         override fun onError(message: String) {

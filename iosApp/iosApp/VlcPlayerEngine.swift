@@ -16,9 +16,9 @@
 import AVFoundation
 import ComposeApp
 import Foundation
-import VLCKit
+import MobileVLCKit
 
-/// Registers the VLCKit engine with the shared Kotlin `AudioPlayer`. Call before the first
+/// Registers the MobileVLCKit engine with the shared Kotlin `AudioPlayer`. Call before the first
 /// `ComposeView` is created.
 func registerNativePlayerEngine() {
     NativePlayerRegistry.shared.factory = VlcPlayerEngineFactory()
@@ -30,30 +30,23 @@ final class VlcPlayerEngineFactory: NSObject, NativePlayerEngineFactory {
     }
 }
 
-/// Plays one URL at a time with VLCKit. The Kotlin `AudioPlayer` owns the playlist; see
+/// Plays one URL at a time with MobileVLCKit. The Kotlin `AudioPlayer` owns the playlist; see
 /// `NativePlayerEngine.kt` for the contract.
 ///
-/// Every VLCKit call is made on the main queue, in the order the Kotlin side issued it.
+/// Every VLC call is made on the main queue, in the order the Kotlin side issued it.
 final class VlcPlayerEngine: NSObject, NativePlayerEngine, VLCMediaPlayerDelegate {
     private let player = VLCMediaPlayer()
     private var listener: NativePlayerListener?
-
-    // VLCKit 4 has no "ended" state: reaching the end of a media goes Stopping -> Stopped, the
-    // same as stop(). `stopRequested` marks the stops this class asked for, so any other stop of
-    // a media that had started playing is a natural end.
-    private var stopRequested = false
-    private var hasStarted = false
-    private var finished = false
     private var released = false
 
     private var rate: Float = 1
     private var volumePercent: Int32 = 100
+    private var lastReportedDurationMs: Int64 = 0
+    private var lastReportedState: NativePlayerState?
 
     override init() {
         super.init()
         player.delegate = self
-        player.timeChangeUpdateInterval = 0.25
-        player.minimalTimePeriod = 250_000
         try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
     }
 
@@ -66,19 +59,18 @@ final class VlcPlayerEngine: NSObject, NativePlayerEngine, VLCMediaPlayerDelegat
     func load(url: String, autoPlay: Bool, startPositionMs: Int64) {
         onMain {
             guard !self.released else { return }
-            guard let mediaUrl = URL(string: url), let media = VLCMedia(url: mediaUrl) else {
+            guard let mediaUrl = URL(string: url) else {
                 self.listener?.onError(message: "Invalid URL: \(url)")
                 return
             }
 
-            self.stopCurrentMedia()
-            self.hasStarted = false
-            self.finished = false
+            let media = VLCMedia(url: mediaUrl)
             if startPositionMs > 0 {
                 media.addOption(":start-time=\(Double(startPositionMs) / 1000.0)")
             }
+            self.lastReportedDurationMs = 0
             self.player.media = media
-            self.listener?.onState(state: .opening)
+            self.report(.opening)
             if autoPlay { self.startPlayback() }
         }
     }
@@ -100,7 +92,7 @@ final class VlcPlayerEngine: NSObject, NativePlayerEngine, VLCMediaPlayerDelegat
     func stop() {
         onMain {
             guard !self.released else { return }
-            self.stopCurrentMedia()
+            self.player.stop()
         }
     }
 
@@ -139,25 +131,26 @@ final class VlcPlayerEngine: NSObject, NativePlayerEngine, VLCMediaPlayerDelegat
 
     // MARK: VLCMediaPlayerDelegate
 
-    func mediaPlayerStateChanged(_ newState: VLCMediaPlayerState) {
+    func mediaPlayerStateChanged(_ aNotification: Notification) {
         onMain {
             guard !self.released else { return }
-            switch newState {
+            switch self.player.state {
             case .opening:
-                self.listener?.onState(state: .opening)
+                self.report(.opening)
+            case .buffering, .esAdded:
+                // MobileVLCKit keeps sending these while it plays; only a stall counts as buffering.
+                self.report(self.player.isPlaying ? .playing : .buffering)
             case .playing:
-                self.hasStarted = true
-                self.applyPlaybackSettings()
-                self.reportDuration()
-                self.listener?.onState(state: .playing)
+                self.report(.playing)
             case .paused:
-                self.listener?.onState(state: .paused)
-            case .stopping, .stopped:
-                self.handleStop(isFinalStop: newState == .stopped)
+                self.report(.paused)
+            case .ended:
+                self.report(.ended)
+            case .stopped:
+                self.report(.idle)
             case .error:
-                self.finished = true
                 self.listener?.onError(message: "VLC could not play this media")
-                self.listener?.onState(state: .idle)
+                self.report(.idle)
             default:
                 break
             }
@@ -166,28 +159,12 @@ final class VlcPlayerEngine: NSObject, NativePlayerEngine, VLCMediaPlayerDelegat
 
     func mediaPlayerTimeChanged(_ aNotification: Notification) {
         onMain {
-            guard !self.released, let ms = self.player.time.value?.int64Value, ms >= 0 else { return }
-            self.listener?.onTime(positionMs: ms)
-        }
-    }
-
-    func mediaPlayerLengthChanged(_ length: Int64) {
-        onMain {
             guard !self.released else { return }
-            self.listener?.onDuration(durationMs: length)
-        }
-    }
-
-    func mediaPlayerBufferingChanged(_ progress: Float) {
-        onMain {
-            guard !self.released else { return }
-            self.listener?.onBuffered(percent: progress * 100)
-            // VLC always reports 0 and 1 before the first frame; only mid-playback stalls matter.
-            guard self.hasStarted else { return }
-            if progress < 1 {
-                self.listener?.onState(state: .buffering)
-            } else if self.player.isPlaying {
-                self.listener?.onState(state: .playing)
+            // Time only advances while playing, whatever the last state notification said.
+            if self.player.isPlaying { self.report(.playing) }
+            self.reportDuration()
+            if let ms = self.player.time.value?.int64Value, ms >= 0 {
+                self.listener?.onTime(positionMs: ms)
             }
         }
     }
@@ -196,47 +173,18 @@ final class VlcPlayerEngine: NSObject, NativePlayerEngine, VLCMediaPlayerDelegat
 
     private func startPlayback() {
         try? AVAudioSession.sharedInstance().setActive(true)
-        let wasPaused = player.state == .paused
         player.play()
-        if wasPaused { kickTimeReporting() }
     }
 
-    /// After a pause, VLCKit 4 withholds time updates until libvlc reports a fresh time point, and
-    /// on iOS that report doesn't come after a resume: audio plays but the position stays frozen.
-    /// A seek goes through a different callback that does reset VLCKit's time tracking, so seek
-    /// to where we already are.
-    private func kickTimeReporting() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
-            guard let self, !self.released, self.player.isPlaying, self.player.isSeekable else { return }
-            self.player.time = self.player.time
+    /// Sends [state] to Kotlin unless it was the last one sent.
+    private func report(_ state: NativePlayerState) {
+        guard state != lastReportedState else { return }
+        lastReportedState = state
+        if state == .playing {
+            applyPlaybackSettings()
+            reportDuration()
         }
-    }
-
-    /// Stops the current media and marks the resulting stop events as ours.
-    private func stopCurrentMedia() {
-        switch player.state {
-        case .opening, .playing, .paused, .stopping:
-            stopRequested = true
-            player.stop()
-        default:
-            break
-        }
-    }
-
-    private func handleStop(isFinalStop: Bool) {
-        if stopRequested {
-            if isFinalStop {
-                stopRequested = false
-                listener?.onState(state: .idle)
-            }
-            return
-        }
-        if hasStarted && !finished {
-            finished = true
-            listener?.onState(state: .ended)
-        } else if isFinalStop && !finished {
-            listener?.onState(state: .idle)
-        }
+        listener?.onState(state: state)
     }
 
     private func applyPlaybackSettings() {
@@ -244,10 +192,11 @@ final class VlcPlayerEngine: NSObject, NativePlayerEngine, VLCMediaPlayerDelegat
         if player.rate != rate { player.rate = rate }
     }
 
+    /// MobileVLCKit has no length callback, so the length is read from the media as it plays.
     private func reportDuration() {
-        if let ms = player.media?.length.value?.int64Value, ms > 0 {
-            listener?.onDuration(durationMs: ms)
-        }
+        guard let ms = player.media?.length.value?.int64Value, ms > 0, ms != lastReportedDurationMs else { return }
+        lastReportedDurationMs = ms
+        listener?.onDuration(durationMs: ms)
     }
 
     private func onMain(_ work: @escaping () -> Void) {
