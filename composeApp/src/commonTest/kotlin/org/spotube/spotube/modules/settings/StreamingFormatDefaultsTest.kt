@@ -17,39 +17,19 @@
 
 package org.spotube.spotube.modules.settings
 
-import org.spotube.plugin_interfaces.plugin_apis.audio.AudioFormat
-import org.spotube.spotube.PlatformType
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertSame
 
 class StreamingFormatDefaultsTest {
 
-    private val opusWebm = AudioFormat(codec = "opus", container = "webm", qualities = emptyList())
-
     @Test
-    fun `ios defaults to aac in mp4`() {
-        val format = defaultStreamingMusicFormat(PlatformType.IOS)
-        assertEquals("aac" to "mp4", format.codec to format.container)
+    fun `streaming defaults to opus in webm`() {
+        val format = defaultStreamingMusicFormat()
+        assertEquals("opus" to "webm", format.codec to format.container)
     }
 
     @Test
-    fun `other platforms keep opus in webm`() {
-        listOf(PlatformType.Android, PlatformType.Linux, PlatformType.MacOS, PlatformType.Windows).forEach { platform ->
-            val format = defaultStreamingMusicFormat(platform)
-            assertEquals("opus" to "webm", format.codec to format.container, platform.name)
-        }
-    }
-
-    @Test
-    fun `saved opus webm is moved to aac on ios`() {
-        val migrated = UserSettings(streamingMusicFormat = opusWebm).withPlayableStreamingFormat(PlatformType.IOS)
-        assertEquals("mp4", migrated.streamingMusicFormat.container)
-    }
-
-    @Test
-    fun `saved opus webm is kept off ios`() {
-        val settings = UserSettings(streamingMusicFormat = opusWebm)
-        assertSame(settings, settings.withPlayableStreamingFormat(PlatformType.Linux))
+    fun `user settings default to the streaming default`() {
+        assertEquals(defaultStreamingMusicFormat(), UserSettings().streamingMusicFormat)
     }
 }

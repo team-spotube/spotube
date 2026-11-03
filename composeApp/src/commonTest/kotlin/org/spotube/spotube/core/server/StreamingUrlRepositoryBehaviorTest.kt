@@ -5,7 +5,6 @@ import org.spotube.plugin_interfaces.plugin_apis.audio.AudioSource
 import org.spotube.plugin_interfaces.plugin_apis.audio.AudioStream
 import org.spotube.plugin_interfaces.plugin_apis.audio.StreamProtocol
 import org.spotube.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
-import org.spotube.spotube.PlatformType
 import org.spotube.spotube.core.audioplayer.QueueEntry
 import org.spotube.spotube.modules.settings.UserSettings
 import co.touchlab.kermit.Logger
@@ -100,9 +99,7 @@ class StreamingUrlRepositoryBehaviorTest {
             audioPlayerQueue = queue,
             matchedTracksRepository = matchedTracksRepository,
             settingsRepository = settings,
-            streamUrlCacheTtlMs = cacheTtlMs,
-            // Not the host's platform: Windows and iOS don't prefer opus/webm
-            platform = PlatformType.Linux)
+            streamUrlCacheTtlMs = cacheTtlMs)
 
         fun selectPlugin(pluginId: String, audioAPI: FakeAudioAPI = FakeAudioAPI()): FakeAudioPluginService {
             val service = FakeAudioPluginService(pluginId, audioAPI)
