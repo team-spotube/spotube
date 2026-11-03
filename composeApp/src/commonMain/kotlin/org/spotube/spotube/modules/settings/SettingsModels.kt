@@ -92,7 +92,7 @@ data class UserSettings(
     val lastSupportReminderEpochMs: Long = 0L)
 
 /** The public Group Jam room server. */
-const val DEFAULT_JAM_SERVER_URL = "https://spotube-jam.workers.dev"
+const val DEFAULT_JAM_SERVER_URL = "https://jam.spotube.cc"
 
 /** Whether [url] can be a room server address (http(s), or ws(s) for self-hosters). */
 internal fun isJamServerUrl(url: String): Boolean =
