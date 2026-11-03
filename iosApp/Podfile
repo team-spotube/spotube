@@ -1,0 +1,9 @@
+# MobileVLCKit plays audio on iOS (iosApp/iosApp/VlcPlayerEngine.swift).
+# After `pod install`, open and build iosApp.xcworkspace, not iosApp.xcodeproj.
+platform :ios, '18.2'
+
+target 'iosApp' do
+  use_frameworks!
+
+  pod 'MobileVLCKit', '3.7.5'
+end

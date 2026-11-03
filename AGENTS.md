@@ -8,6 +8,7 @@
 - Desktop/JVM: `composeApp/src/jvmMain/kotlin/org/spotube/spotube/main.kt` (`mainClass = org.spotube.spotube.MainKt`).
 - Android: `composeApp/src/androidMain/kotlin/org/spotube/spotube/MainActivity.kt`.
 - iOS bridge: `composeApp/src/iosMain/kotlin/org/spotube/spotube/MainViewController.kt` and `iosApp/iosApp/ContentView.swift`.
+- iOS audio: MobileVLCKit from CocoaPods (`iosApp/Podfile`), driven by `iosApp/iosApp/VlcPlayerEngine.swift` through `NativePlayerEngine` (iosMain). Run `pod install` in `iosApp/` first, then build `iosApp/iosApp.xcworkspace` (not the `.xcodeproj`, which can't build the Pods). Android Studio's iOS run config must point at the workspace too.
 
 ## High-value commands
 - Use Gradle wrapper (`./gradlew` or `./gradlew.bat`) only.
