@@ -1,17 +1,23 @@
 ﻿$ErrorActionPreference = 'Stop'; # stop on all errors
 $packageArgs = @{
   packageName   = $env:ChocolateyPackageName
-  softwareName  = 'spotube*'
+  softwareName  = 'Spotube*'
   fileType      = 'exe'
-  validExitCodes= @(0, 3010, 1605, 1614, 1641)
-  silentArgs   = '/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-' # Inno Setup
+  validExitCodes= @(0)
 }
 
 [array]$key = Get-UninstallRegistryKey -SoftwareName $packageArgs['softwareName']
 
 if ($key.Count -eq 1) {
   $key | % {
-    $packageArgs['file'] = "$($_.UninstallString)" #NOTE: You may need to split this if it contains spaces, see below
+    # electron-builder writes UninstallString as "<dir>\Uninstall Spotube.exe" /currentuser
+    if ($_.UninstallString -match '^\s*"([^"]+)"\s*(.*)$') {
+      $packageArgs['file'] = $Matches[1]
+      $packageArgs['silentArgs'] = "$($Matches[2]) /S".Trim()
+    } else {
+      $packageArgs['file'] = $_.UninstallString
+      $packageArgs['silentArgs'] = '/S'
+    }
 
     Uninstall-ChocolateyPackage @packageArgs
   }

@@ -47,7 +47,7 @@ kotlin {
 }
 
 zipline {
-    mainFunction.set("dev.krtirtho.js_plugin_example.main")
+    mainFunction.set("org.spotube.js_plugin_example.main")
 }
 
 plugins.withType<YarnPlugin> {

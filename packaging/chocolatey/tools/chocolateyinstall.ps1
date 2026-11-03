@@ -5,13 +5,15 @@ $fileLocation = Join-Path $toolsDir 'Spotube-windows-x86_64-setup.exe'
 
 $packageArgs = @{
   packageName   = $env:ChocolateyPackageName
-  unzipLocation = $toolsDir
-  fileType      = 'exe' #only one of these: exe, msi, msu
-  file         = $fileLocation
+  fileType      = 'exe'
+  file          = $fileLocation
 
-  softwareName  = 'spotube*' #part or all of the Display Name as you see it in Programs and Features. It should be enough to be unique
-  silentArgs   = '/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-' # Inno Setup
+  softwareName  = 'Spotube*'
+  silentArgs    = '/S' # NSIS (electron-builder one-click, per-user)
   validExitCodes= @(0)
 }
 
 Install-ChocolateyInstallPackage @packageArgs
+
+# The installer was only needed to install; don't keep a copy in the package directory
+Remove-Item $fileLocation -Force -ErrorAction SilentlyContinue

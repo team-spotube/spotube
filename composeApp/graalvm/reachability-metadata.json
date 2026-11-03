@@ -1,0 +1,1332 @@
+{
+    "reflection": [
+        {
+            "type": "uk.co.caprica.vlcj.binding.lib.LibVlc",
+            "jniAccessible": true,
+            "allDeclaredMethods": true,
+            "allDeclaredFields": true
+        },
+        {
+            "type": "androidx.compose.ui.platform.GlobalSnapshotManager$Registration"
+        },
+        {
+            "type": "androidx.datastore.preferences.PreferencesProto$PreferenceMap",
+            "fields": [
+                {
+                    "name": "preferences_"
+                }
+            ]
+        },
+        {
+            "type": "androidx.datastore.preferences.PreferencesProto$Value",
+            "fields": [
+                {
+                    "name": "valueCase_"
+                },
+                {
+                    "name": "value_"
+                }
+            ]
+        },
+        {
+            "type": "app.cash.zipline.InterruptHandler",
+            "jniAccessible": true,
+            "methods": [
+                {
+                    "name": "poll",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "app.cash.zipline.QuickJsException",
+            "jniAccessible": true,
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        "java.lang.String",
+                        "java.lang.String"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "app.cash.zipline.internal.bridge.CallChannel",
+            "jniAccessible": true,
+            "methods": [
+                {
+                    "name": "call",
+                    "parameterTypes": [
+                        "java.lang.String"
+                    ]
+                },
+                {
+                    "name": "disconnect",
+                    "parameterTypes": [
+                        "java.lang.String"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "com.sun.crypto.provider.HKDFKeyDerivation$HKDFSHA384",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        "javax.crypto.KDFParameters"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "com.sun.crypto.provider.HmacCore$HmacSHA384",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "com.sun.jna.CallbackReference$AttachOptions",
+            "jniAccessible": true,
+            "fields": [
+                {
+                    "name": "daemon"
+                },
+                {
+                    "name": "detach"
+                },
+                {
+                    "name": "name"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "com.sun.jna.Union"
+        },
+        {
+            "type": "dev.nucleusframework.window.tao.event.TaoSyntheticKeyKt$SyntheticAwtKeyEventSource$1"
+        },
+        {
+            "type": "dev.nucleusframework.window.tao.event.TaoSyntheticMouseWheelEvent$source$1"
+        },
+        {
+            "type": "io.ktor.client.plugins.DefaultRequest"
+        },
+        {
+            "type": "io.ktor.client.plugins.HttpTimeoutConfig"
+        },
+        {
+            "type": "io.ktor.client.plugins.websocket.WebSockets"
+        },
+        {
+            "type": "io.ktor.server.application.PluginInstance"
+        },
+        {
+            "type": "io.ktor.server.plugins.MutableOriginConnectionPoint"
+        },
+        {
+            "type": "io.ktor.utils.io.ByteReadChannel"
+        },
+        {
+            "type": "java.lang.Boolean",
+            "jniAccessible": true,
+            "fields": [
+                {
+                    "name": "TYPE"
+                },
+                {
+                    "name": "value"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        "boolean"
+                    ]
+                },
+                {
+                    "name": "booleanValue",
+                    "parameterTypes": [
+                        
+                    ]
+                },
+                {
+                    "name": "getBoolean",
+                    "parameterTypes": [
+                        "java.lang.String"
+                    ]
+                },
+                {
+                    "name": "valueOf",
+                    "parameterTypes": [
+                        "boolean"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "java.lang.Double",
+            "jniAccessible": true,
+            "fields": [
+                {
+                    "name": "TYPE"
+                },
+                {
+                    "name": "value"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        "double"
+                    ]
+                },
+                {
+                    "name": "valueOf",
+                    "parameterTypes": [
+                        "double"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "java.lang.Integer",
+            "jniAccessible": true,
+            "fields": [
+                {
+                    "name": "TYPE"
+                },
+                {
+                    "name": "value"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        "int"
+                    ]
+                },
+                {
+                    "name": "valueOf",
+                    "parameterTypes": [
+                        "int"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "java.lang.Module",
+            "methods": [
+                {
+                    "name": "getDescriptor",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "java.lang.StackWalker",
+            "methods": [
+                {
+                    "name": "getInstance",
+                    "parameterTypes": [
+                        "java.lang.StackWalker$Option"
+                    ]
+                },
+                {
+                    "name": "walk",
+                    "parameterTypes": [
+                        "java.util.function.Function"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "java.lang.StackWalker$StackFrame",
+            "methods": [
+                {
+                    "name": "getDeclaringClass",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "kotlin.Any"
+        },
+        {
+            "type": "kotlin.Boolean"
+        },
+        {
+            "type": "kotlin.Cloneable"
+        },
+        {
+            "type": "kotlin.Function0"
+        },
+        {
+            "type": "kotlin.Function2"
+        },
+        {
+            "type": "kotlin.Function3"
+        },
+        {
+            "type": "kotlin.Int"
+        },
+        {
+            "type": "kotlin.Long"
+        },
+        {
+            "type": "kotlin.String"
+        },
+        {
+            "type": "kotlin.Throwable"
+        },
+        {
+            "type": "kotlin.collections.List"
+        },
+        {
+            "type": "kotlin.collections.Map"
+        },
+        {
+            "type": "kotlinx.atomicfu.AtomicBoolean"
+        },
+        {
+            "type": "kotlinx.io.Source"
+        },
+        {
+            "type": "org.freedesktop.dbus.connections.impl.DBusConnection",
+            "methods": [
+                {
+                    "name": "addGenericSigHandler",
+                    "parameterTypes": [
+                        "org.freedesktop.dbus.matchrules.DBusMatchRule",
+                        "org.freedesktop.dbus.interfaces.DBusSigHandler"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "org.robolectric.Robolectric"
+        },
+        {
+            "type": "org.spotube.spotube.core.server.StreamProxy",
+            "methods": [
+                {
+                    "name": "respondWithUpstream",
+                    "parameterTypes": [
+                        "io.ktor.server.application.ApplicationCall",
+                        "io.ktor.client.statement.HttpResponse",
+                        "java.lang.String",
+                        "io.ktor.http.HttpMethod",
+                        "kotlin.coroutines.Continuation"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "org.spotube.spotube.core.server.StreamProxy$respondWithUpstream$5"
+        },
+        {
+            "type": "org.spotube.spotube.core.zipline.ZiplinePluginService$use$2",
+            "fields": [
+                {
+                    "name": "label"
+                }
+            ]
+        },
+        {
+            "type": "sun.net.www.protocol.http.Handler",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "sun.net.www.protocol.https.Handler",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "sun.security.rsa.RSASignature$SHA384withRSA",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "sun.text.resources.cldr.FormatData_en"
+        },
+        {
+            "type": "sun.text.resources.cldr.FormatData_en_US"
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.libvlc_callback_t",
+            "jniAccessible": true,
+            "methods": [
+                {
+                    "name": "callback",
+                    "parameterTypes": [
+                        "uk.co.caprica.vlcj.binding.internal.libvlc_event_t",
+                        "com.sun.jna.Pointer"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.libvlc_dialog_id",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.libvlc_equalizer_t",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.libvlc_event_manager_t",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.libvlc_event_t",
+            "fields": [
+                {
+                    "name": "obj"
+                },
+                {
+                    "name": "type"
+                },
+                {
+                    "name": "u"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.libvlc_event_u",
+            "fields": [
+                {
+                    "name": "media_duration_changed"
+                },
+                {
+                    "name": "media_freed"
+                },
+                {
+                    "name": "media_list_item_added"
+                },
+                {
+                    "name": "media_list_item_deleted"
+                },
+                {
+                    "name": "media_list_player_next_item_set"
+                },
+                {
+                    "name": "media_list_will_add_item"
+                },
+                {
+                    "name": "media_list_will_delete_item"
+                },
+                {
+                    "name": "media_meta_changed"
+                },
+                {
+                    "name": "media_parsed_changed"
+                },
+                {
+                    "name": "media_player_audio_device"
+                },
+                {
+                    "name": "media_player_audio_volume"
+                },
+                {
+                    "name": "media_player_buffering"
+                },
+                {
+                    "name": "media_player_chapter_changed"
+                },
+                {
+                    "name": "media_player_es_changed"
+                },
+                {
+                    "name": "media_player_length_changed"
+                },
+                {
+                    "name": "media_player_media_changed"
+                },
+                {
+                    "name": "media_player_pausable_changed"
+                },
+                {
+                    "name": "media_player_position_changed"
+                },
+                {
+                    "name": "media_player_scrambled_changed"
+                },
+                {
+                    "name": "media_player_seekable_changed"
+                },
+                {
+                    "name": "media_player_snapshot_taken"
+                },
+                {
+                    "name": "media_player_time_changed"
+                },
+                {
+                    "name": "media_player_title_changed"
+                },
+                {
+                    "name": "media_player_vout"
+                },
+                {
+                    "name": "media_state_changed"
+                },
+                {
+                    "name": "media_subitem_added"
+                },
+                {
+                    "name": "media_subitemtree_added"
+                },
+                {
+                    "name": "media_thumbnail_generated"
+                },
+                {
+                    "name": "renderer_discoverer_item_added"
+                },
+                {
+                    "name": "renderer_discoverer_item_deleted"
+                },
+                {
+                    "name": "vlm_media_event"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.libvlc_instance_t",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.libvlc_log_t",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.libvlc_media_discoverer_t",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.libvlc_media_list_player_t",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.libvlc_media_list_t",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.libvlc_media_player_t",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.libvlc_media_stats_t",
+            "fields": [
+                {
+                    "name": "f_demux_bitrate"
+                },
+                {
+                    "name": "f_input_bitrate"
+                },
+                {
+                    "name": "f_send_bitrate"
+                },
+                {
+                    "name": "i_decoded_audio"
+                },
+                {
+                    "name": "i_decoded_video"
+                },
+                {
+                    "name": "i_demux_corrupted"
+                },
+                {
+                    "name": "i_demux_discontinuity"
+                },
+                {
+                    "name": "i_demux_read_bytes"
+                },
+                {
+                    "name": "i_displayed_pictures"
+                },
+                {
+                    "name": "i_lost_abuffers"
+                },
+                {
+                    "name": "i_lost_pictures"
+                },
+                {
+                    "name": "i_played_abuffers"
+                },
+                {
+                    "name": "i_read_bytes"
+                },
+                {
+                    "name": "i_sent_bytes"
+                },
+                {
+                    "name": "i_sent_packets"
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.libvlc_media_t",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.libvlc_picture_t",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.libvlc_renderer_discoverer_t",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.libvlc_renderer_item_t",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_duration_changed",
+            "fields": [
+                {
+                    "name": "new_duration"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_freed",
+            "fields": [
+                {
+                    "name": "md"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_list_item_added",
+            "fields": [
+                {
+                    "name": "index"
+                },
+                {
+                    "name": "item"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_list_item_deleted",
+            "fields": [
+                {
+                    "name": "index"
+                },
+                {
+                    "name": "item"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_list_player_next_item_set",
+            "fields": [
+                {
+                    "name": "item"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_list_will_add_item",
+            "fields": [
+                {
+                    "name": "index"
+                },
+                {
+                    "name": "item"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_list_will_delete_item",
+            "fields": [
+                {
+                    "name": "index"
+                },
+                {
+                    "name": "item"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_meta_changed",
+            "fields": [
+                {
+                    "name": "meta_type"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_parsed_changed",
+            "fields": [
+                {
+                    "name": "new_status"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_player_audio_device",
+            "fields": [
+                {
+                    "name": "device"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_player_audio_volume",
+            "fields": [
+                {
+                    "name": "volume"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_player_buffering",
+            "fields": [
+                {
+                    "name": "new_cache"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_player_chapter_changed",
+            "fields": [
+                {
+                    "name": "new_chapter"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_player_es_changed",
+            "fields": [
+                {
+                    "name": "i_id"
+                },
+                {
+                    "name": "i_type"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_player_length_changed",
+            "fields": [
+                {
+                    "name": "new_length"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_player_media_changed",
+            "fields": [
+                {
+                    "name": "md"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_player_pausable_changed",
+            "fields": [
+                {
+                    "name": "new_pausable"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_player_position_changed",
+            "fields": [
+                {
+                    "name": "new_position"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_player_scrambled_changed",
+            "fields": [
+                {
+                    "name": "new_scrambled"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_player_seekable_changed",
+            "fields": [
+                {
+                    "name": "new_seekable"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_player_snapshot_taken",
+            "fields": [
+                {
+                    "name": "filename"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_player_time_changed",
+            "fields": [
+                {
+                    "name": "new_time"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_player_title_changed",
+            "fields": [
+                {
+                    "name": "new_title"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_player_vout",
+            "fields": [
+                {
+                    "name": "new_count"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_state_changed",
+            "fields": [
+                {
+                    "name": "new_state"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_subitem_added",
+            "fields": [
+                {
+                    "name": "new_child"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_subitemtree_added",
+            "fields": [
+                {
+                    "name": "item"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.media_thumbnail_generated",
+            "fields": [
+                {
+                    "name": "p_thumbnail"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.renderer_discoverer_item_added",
+            "fields": [
+                {
+                    "name": "item"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.renderer_discoverer_item_deleted",
+            "fields": [
+                {
+                    "name": "item"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.internal.vlm_media_event",
+            "fields": [
+                {
+                    "name": "psz_instance_name"
+                },
+                {
+                    "name": "psz_media_name"
+                }
+            ],
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.binding.support.types.size_t",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uk.co.caprica.vlcj.support.eventmanager.NativeEventManager$EventCallback"
+        },
+        {
+            "type": "uniffi.compose_app.ForeignBytesStruct",
+            "fields": [
+                {
+                    "name": "data"
+                },
+                {
+                    "name": "len"
+                }
+            ]
+        },
+        {
+            "type": "uniffi.compose_app.ForeignBytesStruct$ByValue",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uniffi.compose_app.IntegrityCheckingUniffiLib"
+        },
+        {
+            "type": "uniffi.compose_app.RustBufferStruct",
+            "fields": [
+                {
+                    "name": "capacity"
+                },
+                {
+                    "name": "data"
+                },
+                {
+                    "name": "len"
+                }
+            ]
+        },
+        {
+            "type": "uniffi.compose_app.RustBufferStruct$ByValue",
+            "methods": [
+                {
+                    "name": "<init>",
+                    "parameterTypes": [
+                        
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "uniffi.compose_app.UniffiLib"
+        },
+        {
+            "type": "uniffi.compose_app.UniffiRustCallStatusStruct",
+            "fields": [
+                {
+                    "name": "code"
+                },
+                {
+                    "name": "errorBuf"
+                }
+            ]
+        },
+        {
+            "type": "uniffi.compose_app.UniffiRustCallStatusStruct$ByReference"
+        }
+    ],
+    "resources": [
+        {
+            "glob": "okhttp3/internal/publicsuffix/PublicSuffixDatabase.list"
+        }
+    ]
+}

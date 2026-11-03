@@ -15,7 +15,8 @@
       ],
       "idiom" : "universal",
       "platform" : "ios",
-      "size" : "1024x1024"
+      "size" : "1024x1024",
+      "filename" : "app-icon-1024-dark.png"
     },
     {
       "appearances" : [
@@ -26,7 +27,8 @@
       ],
       "idiom" : "universal",
       "platform" : "ios",
-      "size" : "1024x1024"
+      "size" : "1024x1024",
+      "filename" : "app-icon-1024-tinted.png"
     }
   ],
   "info" : {

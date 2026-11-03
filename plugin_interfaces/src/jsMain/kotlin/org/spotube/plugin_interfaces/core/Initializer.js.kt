@@ -1,0 +1,34 @@
+/*
+ * Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package org.spotube.plugin_interfaces.core
+
+import app.cash.zipline.Zipline
+import org.spotube.plugin_interfaces.core.browser_apis.polyfill
+
+private val zipline by lazy { Zipline.get() }
+
+class InitializerImpl(private val block: suspend () -> Unit) : Initializer {
+    override suspend fun initialize() {
+        block()
+    }
+}
+
+actual fun runPluginInitialized(block: suspend () -> Unit) {
+    polyfill()
+    zipline.bind<Initializer>(Initializer_SERVICE_NAME, InitializerImpl { block() })
+}

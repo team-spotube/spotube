@@ -1,0 +1,113 @@
+id: org.spotube.spotube
+# GTK 3 and WebKitGTK 4.1 (the webview) come from the GNOME runtime
+runtime: org.gnome.Platform
+runtime-version: '51'
+sdk: org.gnome.Sdk
+command: spotube
+
+finish-args:
+  - --share=ipc
+  - --share=network
+  # The window is a Tao (Wayland/X11) one, so Wayland is used natively and X11 only as a fallback
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --socket=pulseaudio
+  - --device=dri
+  # Downloaded tracks go to ~/Downloads/Spotube; local tracks are scanned from ~/Music and ~/Downloads
+  - --filesystem=xdg-download
+  - --filesystem=xdg-music:ro
+  # Tray icon (StatusNotifierItem)
+  - --talk-name=org.kde.StatusNotifierWatcher
+
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/man
+  - /share/doc
+  - '*.la'
+  - '*.a'
+
+modules:
+  # libvlc for vlcj (the audio player). Audio only: no video outputs, UI or Lua; decoding and demuxing
+  # go through the runtime's FFmpeg (proprietary codecs come from the auto-installed codecs-extra extension).
+  - name: vlc
+    build-options:
+      env:
+        # configure looks for a c99/c11 wrapper for its build-time tools
+        BUILDCC: gcc -std=gnu11
+    config-opts:
+      - --disable-vlc
+      - --disable-qt
+      - --disable-skins2
+      - --disable-ncurses
+      - --disable-lua
+      - --disable-a52
+      - --disable-dbus
+      - --disable-xcb
+      - --disable-xvideo
+      - --disable-wayland
+      - --disable-vdpau
+      - --disable-libva
+      - --disable-gles2
+      - --disable-sdl-image
+      - --disable-chromecast
+      - --disable-udev
+      - --disable-v4l2
+      - --disable-dc1394
+      - --disable-dv1394
+      - --disable-linsys
+      - --disable-dvbpsi
+      - --disable-bluray
+      - --disable-dvdread
+      - --disable-dvdnav
+      - --disable-vcd
+      - --disable-libcddb
+      - --disable-screen
+      - --disable-addonmanagermodules
+      - --disable-update-check
+    cleanup:
+      - /share/applications
+      - /share/icons
+      - /share/kde4
+      - /share/metainfo
+      - /share/solid
+      - /share/vlc
+    sources:
+      - type: archive
+        url: https://download.videolan.org/pub/videolan/vlc/3.0.24/vlc-3.0.24.tar.xz
+        sha256: e7cab503d1d7d5849b89d2cf0e1ee60d0ef6d012407791b644b9cfc0cc225fdf
+        x-checker-data:
+          type: anitya
+          project-id: 6504
+          stable-only: true
+          versions: {<: '4.0'}
+          url-template: https://download.videolan.org/pub/videolan/vlc/$version/vlc-$version.tar.xz
+
+  # The GraalVM native image, repackaged from the release tarball (packaging/package-linux-tarball.sh)
+  - name: spotube
+    buildsystem: simple
+    build-commands:
+      - cp -a app ${FLATPAK_DEST}/lib/spotube
+      - install -d ${FLATPAK_DEST}/bin
+      - ln -s ../lib/spotube/spotube ${FLATPAK_DEST}/bin/spotube
+      - cp -a share/. ${FLATPAK_DEST}/share/
+    sources:
+      - type: archive
+        only-arches: [x86_64]
+        url: {{artifacts.linuxX86_64.url}}
+        sha256: {{artifacts.linuxX86_64.sha256}}
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/team-spotube/spotube/releases/latest
+          version-query: .tag_name | sub("^v"; "")
+          url-query: '"https://github.com/team-spotube/spotube/releases/download/v" + $version + "/spotube-linux-" + $version + "-x86_64.tar.xz"'
+          is-main-source: true
+      - type: archive
+        only-arches: [aarch64]
+        url: {{artifacts.linuxAarch64.url}}
+        sha256: {{artifacts.linuxAarch64.sha256}}
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/team-spotube/spotube/releases/latest
+          version-query: .tag_name | sub("^v"; "")
+          url-query: '"https://github.com/team-spotube/spotube/releases/download/v" + $version + "/spotube-linux-" + $version + "-aarch64.tar.xz"'

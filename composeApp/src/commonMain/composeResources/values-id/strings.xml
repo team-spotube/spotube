@@ -1,0 +1,920 @@
+<!--
+  ~ Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="queue_title">Antrean</string>
+    <string name="queue_clear_queue">Kosongkan Antrean</string>
+    <string name="queue_filter_queue">Filter antrean...</string>
+    <string name="queue_no_queue_entries">Antrean kosong</string>
+
+    <string name="search_placeholder">Cari lagu, artis, album...</string>
+    <string name="search_clear_history">Hapus semua riwayat</string>
+    <string name="search_filter_placeholder">Cari...</string>
+
+    <!-- Library toolbar -->
+    <string name="library_screen_title">Koleksi Kamu</string>
+    <string name="library_toolbar_compact_title">Koleksi</string>
+    <string name="library_tab_playlists">Playlist</string>
+    <string name="library_tab_albums">Album</string>
+    <string name="library_tab_artists">Artis</string>
+    <string name="library_tab_local_tracks">Lagu Lokal</string>
+    <string name="library_tab_downloads">Unduhan</string>
+    <string name="library_filter_playlists">Cari playlist tersimpan…</string>
+    <string name="library_filter_albums">Cari album tersimpan…</string>
+    <string name="library_filter_artists">Cari artis tersimpan…</string>
+    <string name="library_filter_local_tracks">Cari folder atau lagu…</string>
+    <string name="library_action_search">Filter koleksi</string>
+    <string name="library_action_close_search">Tutup filter</string>
+    <string name="library_action_create_playlist">Buat playlist</string>
+    <string name="library_action_refresh_local_tracks">Muat ulang lagu lokal</string>
+    <string name="library_action_grid_view">Beralih ke tampilan petak</string>
+    <string name="library_action_list_view">Beralih ke tampilan daftar</string>
+    <string name="library_playlists_empty">Belum ada playlist tersimpan</string>
+    <string name="library_playlists_no_results">Tidak ada playlist yang cocok dengan “%1$s”</string>
+    <string name="library_albums_empty">Belum ada album tersimpan</string>
+    <string name="library_albums_no_results">Tidak ada album yang cocok dengan “%1$s”</string>
+    <string name="library_artists_empty">Belum ada artis tersimpan</string>
+    <string name="library_artists_no_results">Tidak ada artis yang cocok dengan “%1$s”</string>
+
+    <!-- Local media -->
+    <string name="library_local_folders">Folder</string>
+    <string name="library_local_folder">Folder</string>
+    <string name="library_local_summary">%1$s • %2$s</string>
+    <plurals name="library_local_tracks_count">
+        <item quantity="other">%1$d lagu</item>
+    </plurals>
+    <plurals name="library_local_folders_count">
+        <item quantity="other">%1$d folder</item>
+    </plurals>
+    <string name="library_local_back">Kembali ke folder</string>
+    <string name="library_local_play_folder">Putar folder</string>
+    <string name="library_local_permission_title">Akses audio diperlukan</string>
+    <string name="library_local_permission_description">Izinkan akses audio untuk menjelajahi musik di perangkatmu.</string>
+    <string name="library_local_grant_access">Beri akses</string>
+    <string name="library_local_empty_folders">Tidak ada folder lokal</string>
+    <string name="library_local_empty_tracks">Tidak ada lagu di folder ini</string>
+    <string name="library_local_no_results">Tidak ada folder atau lagu yang cocok</string>
+    <string name="library_local_refresh_failed">Gagal memuat ulang media lokal</string>
+
+    <!-- Downloads -->
+    <string name="downloads_summary">%1$d aktif • %2$d selesai</string>
+    <string name="downloads_clear_completed">Hapus yang selesai</string>
+    <string name="downloads_empty">Belum ada unduhan</string>
+    <string name="downloads_status_downloading">Mengunduh %1$d%</string>
+    <string name="downloads_status_queued">Dalam antrean</string>
+    <string name="downloads_status_completed">Selesai</string>
+    <string name="downloads_status_cancelled">Dibatalkan</string>
+    <string name="downloads_status_failed">Gagal</string>
+    <string name="downloads_status_failed_error">Gagal: %1$s</string>
+    <string name="downloads_action_cancel">Batalkan unduhan</string>
+    <string name="downloads_action_retry">Coba unduh lagi</string>
+    <string name="downloads_action_remove">Hapus unduhan</string>
+
+    <!-- Shared media items -->
+    <string name="media_artist">Artis</string>
+    <string name="media_blacklisted">Diblokir</string>
+    <string name="media_liked_tracks">Lagu yang Disukai</string>
+    <string name="media_saved_songs">Lagu tersimpanmu</string>
+    <string name="media_unknown_artist">Artis tidak dikenal</string>
+    <string name="media_preview_title">Judul lagu</string>
+    <string name="media_preview_subtitle">Nama artis</string>
+
+    <string name="accessibility_selected">Dipilih</string>
+
+    <string name="settings_screen_title">Pengaturan</string>
+
+    <string name="settings_section_plugins">Plugin</string>
+    <string name="settings_section_language_region">Bahasa dan Wilayah</string>
+    <string name="settings_section_appearance">Tampilan</string>
+    <string name="settings_section_playback">Pemutaran</string>
+    <string name="settings_section_downloads">Unduhan</string>
+    <string name="settings_section_caching">Cache</string>
+    <string name="settings_section_desktop">Desktop</string>
+    <string name="settings_section_updates">Pembaruan</string>
+    <string name="settings_section_support">Dukungan</string>
+    <string name="settings_section_about">Tentang</string>
+
+    <string name="common_close">Tutup</string>
+    <string name="common_save">Simpan</string>
+    <string name="common_cancel">Batal</string>
+
+    <string name="settings_language_title">Bahasa</string>
+    <string name="settings_language_subtitle_current">Bahasa antarmuka aplikasi. Saat ini: %1$s</string>
+    <string name="settings_language_system_default">Bawaan sistem</string>
+    <string name="settings_country_title">Negara</string>
+    <string name="settings_country_subtitle_current">Negara untuk konten dan ketersediaan. Saat ini: %1$s</string>
+    <string name="settings_option_name_and_code">%1$s (%2$s)</string>
+
+    <string name="settings_theme_title">Tema</string>
+    <string name="settings_theme_subtitle_current">Pilih cara Spotube menyesuaikan dengan tampilan sistem. Saat ini: %1$s</string>
+    <string name="settings_theme_light">Terang</string>
+    <string name="settings_theme_dark">Gelap</string>
+    <string name="settings_theme_system">Sistem</string>
+
+    <string name="settings_surface_theme_title">Permukaan</string>
+    <string name="settings_surface_theme_subtitle_current">Material latar belakang aplikasi. Saat ini: %1$s</string>
+    <string name="settings_surface_watery">Air</string>
+    <string name="settings_surface_icy">Es</string>
+    <string name="settings_surface_chrome">Krom</string>
+    <string name="settings_surface_acrylic">Akrilik</string>
+    <string name="settings_surface_glass">Kaca</string>
+
+    <string name="settings_accent_title">Warna aksen</string>
+    <string name="settings_accent_subtitle_current">Palet saat ini: %1$s</string>
+    <string name="settings_accent_dialog_title">Warna aksen</string>
+    <string name="settings_accent_dialog_description">Pilih palet aksen dan pratinjau dalam tema terang maupun gelap.</string>
+    <string name="settings_preview_light">Terang</string>
+    <string name="settings_preview_dark">Gelap</string>
+    <string name="settings_preview_label">Pratinjau</string>
+    <string name="settings_preview_button">Tombol</string>
+    <string name="settings_accent_green_goblin">Green Goblin</string>
+    <string name="settings_accent_electric_violet">Ungu Elektrik</string>
+    <string name="settings_accent_oceanic_cyan">Sian Samudra</string>
+    <string name="settings_accent_sunset_orange">Jingga Senja</string>
+    <string name="settings_accent_rose_garden">Taman Mawar</string>
+    <string name="settings_accent_midnight_blue">Biru Tengah Malam</string>
+    <string name="settings_accent_metallic_slate">Batu Metalik</string>
+
+    <string name="settings_appearance_title">Tampilan &amp; nuansa</string>
+    <string name="settings_appearance_subtitle_current">Material permukaan dan aksen. Saat ini: %1$s · %2$s</string>
+    <string name="settings_appearance_dialog_title">Tampilan &amp; nuansa</string>
+    <string name="settings_appearance_dialog_description">Pilih material permukaan, lalu aksen yang serasi. Setiap opsi adalah kombinasi pilihan.</string>
+    <string name="settings_appearance_surface_label">Permukaan</string>
+    <string name="settings_appearance_accent_label">Aksen</string>
+    <string name="settings_preview_secondary">Sekunder</string>
+
+    <string name="settings_palette_title">Palet</string>
+    <string name="settings_palette_subtitle_current">Palet aksen Millennium. Saat ini: %1$s</string>
+    <string name="settings_palette_dialog_title">Palet</string>
+    <string name="settings_palette_dialog_description">Pilih palet aksen Millennium dan pratinjau dalam mode terang dan gelap.</string>
+    <string name="settings_palette_label">Palet</string>
+    <string name="settings_appearance_subtitle_palette">Palet dan aksen Millennium. Saat ini: %1$s</string>
+    <string name="settings_palette_blue">Biru</string>
+    <string name="settings_palette_orange">Jingga</string>
+    <string name="settings_palette_lime">Hijau Limau</string>
+
+    <string name="settings_download_folder_title">Ganti folder unduhan</string>
+    <string name="settings_download_folder_current">Folder saat ini: %1$s</string>
+    <string name="settings_download_folder_description">Biarkan kosong untuk memakai folder musik bawaan.</string>
+    <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
+    <string name="settings_local_media_folders_title">Folder media lokal</string>
+    <string name="settings_local_media_folders_subtitle_current">Folder kustom untuk dipindai di desktop. Ditambahkan: %1$d</string>
+    <string name="settings_local_media_folders_subtitle_empty">Belum ada folder kustom</string>
+    <string name="settings_local_media_folders_description">Folder kustom untuk koleksi musik lokalmu.</string>
+    <string name="settings_local_media_folders_manage">Kelola</string>
+    <string name="settings_local_media_folders_add_action">Tambah folder</string>
+    <string name="settings_local_media_folders_remove_action">Hapus folder</string>
+    <string name="settings_local_media_folders_none_added">Belum ada folder kustom yang ditambahkan.</string>
+    <string name="settings_local_media_folders_remove_named">Hapus %1$s dari daftar pindai</string>
+    <string name="settings_local_media_folders_automatic_both">Folder unduhan dan cache musik disertakan secara otomatis.</string>
+    <string name="settings_local_media_folders_automatic_downloads">Folder unduhanmu disertakan secara otomatis.</string>
+    <string name="settings_local_media_folders_automatic_cache">Folder cache musik disertakan secara otomatis.</string>
+    <string name="settings_local_media_folders_saving">Menyimpan…</string>
+    <string name="settings_local_media_folders_save_error">Gagal menyimpan folder. Perubahanmu masih ada; coba lagi.</string>
+    <plurals name="settings_local_media_folders_count">
+        <item quantity="other">%1$d folder</item>
+    </plurals>
+    <string name="settings_download_format_title">Format unduhan musik</string>
+    <string name="settings_download_format_subtitle_current">Codec dan kontainer pilihan untuk unduhan. Saat ini: %1$s</string>
+    <string name="settings_download_quality_title">Kualitas unduhan musik</string>
+
+    <string name="settings_streaming_format_title">Format streaming musik</string>
+    <string name="settings_streaming_format_subtitle_current">Codec dan kontainer pilihan untuk streaming musik. Saat ini: %1$s</string>
+    <string name="settings_streaming_quality_title">Kualitas streaming musik</string>
+    <string name="settings_subtitle_current">Saat ini: %1$s</string>
+    <string name="settings_enable_music_caching_title">Aktifkan cache musik</string>
+    <string name="settings_enable_music_caching_subtitle">Simpan audio yang di-streaming secara lokal agar pemutaran ulang lebih cepat.</string>
+    <string name="settings_cache_folder_title">Folder cache</string>
+    <string name="settings_cache_folder_current">Saat ini: %1$s</string>
+    <string name="settings_cache_folder_default">Saat ini: cache aplikasi bawaan</string>
+    <string name="settings_cache_size_limit_title">Batas ukuran cache</string>
+    <string name="settings_cache_size_limit_unlimited">Tanpa batas</string>
+    <string name="settings_cache_size_limit_current">Batas saat ini: %1$d MB</string>
+    <string name="settings_cache_size_limit_description">Atur ukuran cache maksimum dalam MB. Masukkan 0 atau kosongkan untuk tanpa batas.</string>
+    <string name="settings_cache_size_limit_placeholder">500</string>
+    <string name="settings_error_cache_size_range">Ukuran harus 0 atau bilangan positif.</string>
+    <string name="settings_enable_endless_playback_title">Aktifkan pemutaran tanpa henti</string>
+    <string name="settings_enable_endless_playback_subtitle">Lanjutkan pemutaran dengan lagu rekomendasi saat antrean habis.</string>
+    <string name="settings_playback_port_title">Port server proxy pemutaran</string>
+    <string name="settings_allow_remote_control_title">Izinkan kontrol jarak jauh</string>
+    <string name="settings_allow_remote_control_subtitle">Izinkan perangkat lain di jaringan yang sama mengontrol pemutaran saat terhubung.</string>
+    <string name="settings_remote_device_name_title">Nama perangkat kontrol jarak jauh</string>
+    <string name="settings_remote_device_name_subtitle">Nama yang dilihat perangkat lain saat menemukan perangkat ini. Saat ini: %1$s</string>
+    <string name="settings_remote_device_name_description">Pilih nama yang mudah dikenali untuk ditampilkan ke perangkat lain di jaringanmu saat mereka menemukan Spotube ini.</string>
+    <string name="settings_remote_device_name_placeholder">mis. Spotube Ruang Tamu</string>
+    <string name="settings_remote_device_name_default">nama host perangkat</string>
+    <string name="settings_playback_port_subtitle_current">Port yang dipakai server proxy pemutaran. Saat ini: %1$d</string>
+    <string name="settings_playback_port_description">Pilih port antara 1 dan 65535.</string>
+    <string name="settings_playback_port_placeholder">14769</string>
+    <string name="settings_error_whole_number">Masukkan bilangan bulat yang valid.</string>
+    <string name="settings_error_port_range">Port harus antara 1 dan 65535.</string>
+
+    <string name="settings_blacklist_title">Daftar blokir</string>
+    <string name="settings_blacklist_subtitle">Kelola lagu dan artis yang diblokir</string>
+
+    <string name="settings_desktop_minimize_title">Minimalkan ke tray</string>
+    <string name="settings_desktop_minimize_subtitle">Biarkan Spotube tetap berjalan di system tray saat jendela diminimalkan.</string>
+    <string name="settings_desktop_discord_title">Discord Rich Presence</string>
+    <string name="settings_desktop_discord_subtitle">Tampilkan status pemutaran saat ini di Discord pada desktop.</string>
+
+    <string name="settings_updates_auto_check_title">Periksa pembaruan otomatis</string>
+    <string name="settings_updates_auto_check_subtitle">Cari rilis Spotube baru di latar belakang.</string>
+
+    <string name="settings_plugins_manage_title">Kelola Plugin</string>
+    <string name="settings_plugins_manage_subtitle">Kelola plugin kamu</string>
+    <string name="settings_plugins_default_ability_title">Plugin %1$s Bawaan</string>
+    <string name="settings_plugins_ability_metadata">Metadata</string>
+    <string name="settings_plugins_ability_audio">Audio</string>
+    <string name="settings_plugins_ability_lyrics">Lirik</string>
+    <string name="settings_plugins_ability_scrobble">Scrobble</string>
+    <string name="settings_plugins_no_selection">Belum ada plugin dipilih</string>
+    <string name="settings_plugins_action_change">Ubah</string>
+    <string name="settings_plugins_action_select">Pilih</string>
+    <string name="settings_plugins_selected">Dipilih</string>
+    <string name="settings_plugins_clear">Hapus pilihan</string>
+    <string name="settings_plugins_no_plugins">Tidak ada plugin tersedia</string>
+    <string name="settings_plugins_plugin_content_description">Plugin %1$s</string>
+    <string name="settings_plugins_clear_content_description">Hapus</string>
+
+    <string name="plugin_configure_title">Konfigurasi</string>
+    <string name="plugin_screen_title">Pengelola Plugin</string>
+    <string name="plugin_error_enter_url">Masukkan URL</string>
+    <string name="plugin_error_url_scheme">URL harus diawali http:// atau https://</string>
+    <string name="plugin_error_download_failed">Gagal mengunduh plugin</string>
+    <string name="plugin_empty_title">Belum ada plugin terpasang</string>
+    <string name="plugin_empty_subtitle">Tempel URL unduhan atau pilih file di atas.</string>
+    <plurals name="plugin_installed_plugins_count">
+        <item quantity="other">%1$d plugin terpasang</item>
+    </plurals>
+    <string name="plugin_install_section_title">Pasang Plugin</string>
+    <string name="plugin_url_placeholder">https://example.com/plugin.smplug</string>
+    <string name="plugin_action_download">Unduh</string>
+    <string name="plugin_action_install_from_file">Pasang dari file (.smplug)</string>
+    <string name="plugin_state_active">Aktif</string>
+    <string name="plugin_version_label">v%1$s</string>
+    <string name="plugin_state_builtin">Bawaan</string>
+    <string name="plugin_action_remove">Hapus plugin</string>
+    <string name="plugin_action_login">Masuk</string>
+    <string name="plugin_action_logout">Keluar</string>
+    <string name="plugin_section_url_title">Unduh dari URL</string>
+    <string name="plugin_section_file_title">Pasang dari file</string>
+    <string name="plugin_section_install">Pasang</string>
+
+    <string name="plugin_permissions_author_version">• %1$s</string>
+    <string name="plugin_permissions_requested_title">Izin yang diminta</string>
+    <string name="plugin_permissions_none">Plugin ini tidak memerlukan izin khusus.</string>
+    <string name="plugin_permissions_compare_title">Terpasang vs diberikan</string>
+    <string name="plugin_permissions_installed_label">Terpasang</string>
+    <string name="plugin_permissions_supplied_label">Diberikan</string>
+    <string name="plugin_permissions_api_diff">API %1$s → %2$s</string>
+    <string name="plugin_permissions_capability_storage_title">Penyimpanan Persisten</string>
+    <string name="plugin_permissions_capability_storage_desc">Membaca dan menulis data ke disk</string>
+    <string name="plugin_permissions_capability_network_title">Permintaan Jaringan</string>
+    <string name="plugin_permissions_capability_network_desc">Mengirim dan menerima data melalui internet</string>
+    <string name="plugin_permissions_capability_webview_title">WebView</string>
+    <string name="plugin_permissions_capability_webview_desc">Menampilkan konten web di dalam aplikasi</string>
+    <string name="settings_section_jam">Jam Grup</string>
+    <string name="settings_jam_server_test">Uji koneksi</string>
+    <string name="settings_jam_server_testing">Menguji…</string>
+    <string name="settings_jam_server_test_ok">Terhubung dalam %1$d ms</string>
+    <string name="settings_jam_server_test_fail">Gagal: %1$s</string>
+    <string name="settings_jam_section_connection">Koneksi</string>
+    <string name="settings_jam_section_diagnostics">Diagnostik</string>
+
+    <!-- Group Jam -->
+    <string name="jam_screen_title">Jam Grup</string>
+    <string name="jam_setup_create_tab">Buat</string>
+    <string name="jam_setup_join_tab">Gabung</string>
+    <string name="jam_setup_create_hint">Buat ruang, lalu bagikan kodenya ke teman-temanmu.</string>
+    <string name="jam_setup_create_button">Buat ruang</string>
+    <string name="jam_setup_join_button">Gabung ke ruang</string>
+    <string name="jam_setup_working">Menghubungkan…</string>
+    <string name="jam_setup_code_label">Kode ruang</string>
+    <string name="jam_setup_code_placeholder">ABC123</string>
+    <string name="jam_session_connected">Terhubung</string>
+    <string name="jam_session_connecting">Menghubungkan ulang…</string>
+    <string name="jam_invite_copy">Salin kode</string>
+    <string name="jam_invite_copied">Disalin!</string>
+    <string name="jam_invite_share">Bagikan</string>
+    <string name="jam_participants_heading">Peserta (%1$d)</string>
+    <string name="jam_participants_host">Host</string>
+    <string name="jam_participants_guest">Pendengar</string>
+    <string name="jam_participants_waiting">Menunggu pendengar…</string>
+    <string name="jam_participants_remove">Keluarkan</string>
+    <string name="jam_participants_ban">Blokir</string>
+    <string name="jam_participants_manage">Kelola</string>
+    <string name="jam_session_leave">Tinggalkan ruang</string>
+    <string name="jam_error_title">Gagal terhubung</string>
+    <string name="jam_error_dismiss">Tutup</string>
+    <string name="jam_error_create">Gagal membuat sesi Jam</string>
+    <string name="jam_error_join">Gagal bergabung ke sesi Jam</string>
+    <string name="jam_error_invalid_code">Masukkan kode ruang enam karakter berisi huruf dan angka.</string>
+    <string name="jam_share_message">Gabung ke Jam Spotube-ku dengan kode: %1$s</string>
+    <string name="settings_jam_server_title">Server ruang</string>
+    <string name="settings_jam_server_url">URL server</string>
+    <string name="settings_jam_server_url_invalid">Masukkan URL yang diawali https://</string>
+    <string name="settings_jam_server_diagnostics_subtitle">Periksa server ruang sebelum memulai ruang.</string>
+    <string name="settings_jam_server_note">Jam memakai server ruang gratis milik Spotube. Untuk meng-host sendiri, deploy server dari github.com/team-spotube/jam-server lalu masukkan URL-nya.</string>
+    <string name="settings_jam_section_you">Kamu</string>
+    <string name="jam_connection_host">Server: %1$s</string>
+    <string name="jam_connection_missing">Atur server ruang di Pengaturan untuk membuat atau bergabung ke ruang.</string>
+    <string name="jam_connection_settings">Pengaturan server</string>
+    <string name="jam_participants_you">%1$s (kamu)</string>
+    <string name="jam_name_title">Namamu</string>
+    <string name="jam_name_subtitle">Orang lain di jam melihatmu sebagai %1$s</string>
+    <string name="jam_name_description">Ditampilkan ke semua orang di jam. Biarkan kosong untuk memakai %1$s. Nama baru berlaku saat kamu berikutnya membuat atau bergabung ke ruang.</string>
+    <string name="jam_name_too_long">Gunakan paling banyak %1$d karakter.</string>
+    <string name="jam_error_no_server">Belum ada server jam yang diatur</string>
+    <string name="jam_error_server_unreachable">Tidak bisa menjangkau server jam. Periksa jaringan atau URL server di Pengaturan → Jam Grup.</string>
+    <string name="jam_error_server_incompatible">Server jam menjalankan versi yang tidak kompatibel.</string>
+    <string name="jam_error_room_not_found">Tidak ada ruang dengan kode itu. Periksa lalu coba lagi.</string>
+    <string name="jam_error_room_full">Ruang ini sudah penuh.</string>
+    <string name="jam_error_banned">Host memblokirmu dari ruang ini.</string>
+    <string name="jam_error_kicked">Host mengeluarkanmu dari ruang.</string>
+    <string name="jam_error_replaced">Ruang ini dibuka lagi di perangkat ini, jadi koneksi ini ditutup.</string>
+
+    <string name="player_go_to_album">Buka album</string>
+    <string name="player_sleep_timer">Timer tidur</string>
+    <string name="player_track_details">Detail lagu</string>
+    <string name="player_play_content_description">Putar</string>
+    <string name="player_pause_content_description">Jeda</string>
+    <string name="player_nothing_playing">Tidak ada yang diputar</string>
+    <string name="player_add_to_queue_content_description">Tambahkan ke antrean</string>
+
+    <string name="update_action_ignore">Abaikan</string>
+    <string name="update_action_update">Perbarui</string>
+    <string name="app_update_dialog_title">Spotube %1$s telah tersedia</string>
+    <string name="app_update_dialog_no_notes">Lihat yang baru di rilis ini pada halaman unduhan Spotube.</string>
+    <string name="plugin_update_dialog_title">%1$s %2$s telah tersedia</string>
+    <string name="plugin_update_dialog_current_version">Terpasang saat ini: %1$s</string>
+    <string name="plugin_update_dialog_no_notes">Lihat yang baru di pembaruan ini pada halaman plugin.</string>
+
+    <string name="welcome_skip">Lewati</string>
+    <string name="welcome_next">Berikutnya</string>
+    <string name="welcome_back">Kembali</string>
+    <string name="welcome_get_started">Mulai</string>
+    <string name="welcome_app_name">Spotube</string>
+    <string name="welcome_brand_freedom">Musik, tanpa ikatan.</string>
+    <string name="welcome_brand_quiet_description">Pemutar open source untuk dunia musik.\nBebas kamu jelajahi. Bebas kamu jadikan milikmu.</string>
+    <string name="welcome_donate_quiet_title">Bantu proyek ini tetap hidup.</string>
+    <string name="welcome_donate_letter">Spotube dibuat oleh orang-orang, bukan bisnis langganan. Jika Spotube menjadi bagian dari keseharianmu, sedikit dukungan membantu kami merawatnya sebagaimana mestinya.\n\nTerima kasih telah memberi ruang bagi perangkat lunak independen.</string>
+    <string name="welcome_plugins_setup_guide">Mulailah dengan plugin katalog untuk menemukan lagu dan playlist. Pilih plugin audio untuk memutarnya. Lirik dan riwayat dengar bersifat opsional. Temukan plugin di bawah, tinjau izinnya, pasang, lalu pilih di sini.</string>
+    <string name="welcome_plugins_discover">Temukan plugin</string>
+    <string name="welcome_plugins_sources">Sumbermu</string>
+    <string name="welcome_plugins_retry">Coba lagi</string>
+    <string name="welcome_plugins_more">Plugin lainnya</string>
+    <string name="welcome_plugins_discovery_empty">Tidak ada plugin baru. Kamu juga bisa memasang plugin dari tautan atau file .smplug di atas.</string>
+    <string name="welcome_plugins_discovery_error">Penemuan plugin sedang tidak tersedia. Coba lagi, atau pasang dari tautan atau file.</string>
+    <string name="welcome_step_welcome">Selamat datang</string>
+    <string name="welcome_step_support">Dukungan</string>
+    <string name="welcome_step_plugins">Plugin</string>
+    <string name="welcome_step_guide">Panduan</string>
+
+    <string name="welcome_guide_title">Cara menggunakan Spotube</string>
+    <string name="welcome_guide_subtitle">Empat langkah singkat dan kamu siap mendengarkan.</string>
+    <string name="welcome_guide_signin_title">Masuk</string>
+    <string name="welcome_guide_signin_desc">Hubungkan akunmu, atau pilih plugin katalogmu sendiri.</string>
+    <string name="welcome_guide_search_title">Cari dan putar</string>
+    <string name="welcome_guide_search_desc">Temukan lagu, album, atau artis apa pun, lalu tekan putar.</string>
+    <string name="welcome_guide_offline_title">Dengarkan offline</string>
+    <string name="welcome_guide_offline_desc">Unduh lagu agar tetap bisa diputar tanpa koneksi.</string>
+    <string name="welcome_guide_lyrics_title">Ikuti liriknya</string>
+    <string name="welcome_guide_lyrics_desc">Buka lirik tersinkron dari pemutar saat lagu diputar.</string>
+
+    <!-- Page 1: branding -->
+    <string name="welcome_brand_tagline">Musikmu. Sumbermu. Aturanmu.</string>
+    <string name="welcome_brand_subtitle">Pemutar musik gratis dan open source yang dibuat oleh komunitas pencinta musik.</string>
+    <string name="welcome_brand_chip_open_source">Open source</string>
+    <string name="welcome_brand_chip_no_ads">Tanpa iklan</string>
+    <string name="welcome_brand_chip_no_tracking">Tanpa telemetri</string>
+    <string name="welcome_brand_chip_plugin_powered">Berbasis plugin</string>
+    <string name="welcome_lets_go">Ayo Mulai</string>
+
+    <!-- Page 2: donations -->
+    <string name="welcome_donate_eyebrow">Pendukung membuat kami terus berjalan</string>
+    <string name="welcome_donate_title">Dibuat dengan semangat. Dihidupkan olehmu.</string>
+    <string name="welcome_donate_message">Spotube 100% gratis, bebas, dan open source — tanpa iklan, tanpa langganan, tanpa pelacakan. Setiap fitur ada karena orang sepertimu memilih untuk membantu kode terus berkembang.</string>
+    <string name="welcome_donate_patreon_title">Patreon</string>
+    <string name="welcome_donate_patreon_tag">Sponsor Bulanan</string>
+    <string name="welcome_donate_patreon_subtitle">Dukung pengembangan dan infrastruktur secara rutin</string>
+    <string name="welcome_donate_bmac_title">Buy Me a Coffee</string>
+    <string name="welcome_donate_bmac_tag">Kopi Sekali Saja</string>
+    <string name="welcome_donate_bmac_subtitle">Beri semangat sesi ngoding larut malam dengan tip singkat</string>
+    <string name="welcome_donate_opencollective_title">Open Collective</string>
+    <string name="welcome_donate_opencollective_tag">Dana Komunitas</string>
+    <string name="welcome_donate_opencollective_subtitle">Dukungan finansial yang transparan dan dikelola komunitas</string>
+    <string name="welcome_donate_thanks">Terima kasih dari lubuk hati kami karena telah percaya pada musik terbuka.</string>
+    <string name="welcome_donate_optional">Dukungan sepenuhnya opsional — Spotube tetap gratis apa pun pilihanmu.</string>
+    <string name="welcome_donate_action">Sponsori</string>
+    <string name="welcome_donate_open_content_description">Buka %1$s</string>
+
+    <!-- Support / donations -->
+    <string name="support_button_label">Dukung Spotube</string>
+    <string name="support_dialog_title">Dukung Spotube</string>
+    <string name="support_dialog_message">Spotube gratis, bebas, dan open source — tanpa iklan, tanpa langganan, tanpa pelacakan. Jika Spotube membuatmu senang, pertimbangkan untuk mendukung proyek ini.</string>
+    <string name="support_dialog_reminder_hint">Kamu bisa mematikan pengingat ini di Pengaturan → Dukungan.</string>
+    <string name="support_dialog_dismiss">Nanti saja</string>
+    <string name="settings_support_reminders_title">Pengingat dukungan</string>
+    <string name="settings_support_reminders_subtitle">Tampilkan pengingat ringan untuk mendukung proyek setiap 7 hari.</string>
+
+    <!-- Page 3: plugins -->
+    <string name="welcome_plugins_eyebrow">Arsitektur Modular</string>
+    <string name="welcome_plugins_title">Pilih dari mana musikmu berasal.</string>
+    <string name="welcome_plugins_subtitle">Spotube memisahkan penemuan katalog, streaming audio, dan lirik tersinkron. Atur mesinmu di bawah atau ganti kapan saja.</string>
+    <string name="welcome_plugins_metadata_title">Mesin Metadata</string>
+    <string name="welcome_plugins_metadata_description">Mendukung penemuan musik, pencarian, daftar lagu, dan playlist.</string>
+    <string name="welcome_plugins_audio_title">Mesin Audio</string>
+    <string name="welcome_plugins_audio_description">Mengambil dan mendekode stream audio yang diputar.</string>
+    <string name="welcome_plugins_lyrics_title">Mesin Lirik</string>
+    <string name="welcome_plugins_lyrics_description">Menampilkan lirik karaoke tersinkron secara real-time.</string>
+    <string name="welcome_plugins_scrobble_title">Mesin Scrobble</string>
+    <string name="welcome_plugins_scrobble_description">Mencatat riwayat dengar ke Last.fm atau ListenBrainz.</string>
+    <string name="welcome_plugins_badge_active">Aktif</string>
+    <string name="welcome_plugins_badge_builtin">Bawaan</string>
+    <string name="welcome_plugins_badge_ready">Siap</string>
+    <string name="welcome_plugins_badge_optional">Opsional</string>
+    <string name="welcome_plugins_none_selected">Pilih mesin</string>
+    <string name="welcome_plugins_installed_section">Mesin Terpasang</string>
+    <string name="welcome_plugins_set_default">Jadikan bawaan</string>
+    <string name="welcome_plugins_builtin_note">NewPipe YouTube dan LRCLib Lyrics sudah bawaan dan siap diputar langsung.</string>
+    <string name="welcome_plugins_tip">Kelola atau tambahkan plugin komunitas kapan saja di Pengaturan → Plugin.</string>
+
+    <!-- Page 4: how it works -->
+    <string name="welcome_how_eyebrow">Arsitektur Retro-Modern</string>
+    <string name="welcome_how_title">Hi-Fi murni, tanpa perantara</string>
+    <string name="welcome_how_subtitle">Begini cara Spotube mengatur pemutaran terdesentralisasi langsung di perangkatmu.</string>
+    <string name="welcome_how_status_badge">PEER-TO-PEER LANGSUNG • 256 KBPS OPUS</string>
+    <string name="welcome_how_mockup_title">Blue hour</string>
+    <string name="welcome_how_mockup_artist">Spotube · demonstrasi pemutar</string>
+    <string name="welcome_how_mockup_lyric">Sedikit musik untuk momen-momen di antaranya.</string>
+    <string name="welcome_how_step_search_title">1. Penemuan Terdesentralisasi</string>
+    <string name="welcome_how_step_search_desc">Pencarian langsung dikirim ke plugin katalog pilihanmu. Spotube tidak pernah memprofilkan selera musikmu.</string>
+    <string name="welcome_how_step_stream_title">2. Resolusi Stream Langsung</string>
+    <string name="welcome_how_step_stream_desc">Audio di-streaming langsung dari server konten ke perangkatmu. Tanpa lompatan proxy atau pengumpulan data jarak jauh.</string>
+    <string name="welcome_how_step_playback_title">3. DSP &amp; Pemutaran Lokal</string>
+    <string name="welcome_how_step_playback_desc">Didekode dan di-cache secara lokal dengan kontrol equalizer dan unduhan offline opsional.</string>
+    <string name="welcome_how_step_lyrics_title">4. Lirik Tersinkron &amp; Jam</string>
+    <string name="welcome_how_step_lyrics_desc">Lirik karaoke mengikuti waktu pemutaran, dengan kontrol jarak jauh via LAN dan Jam Grup.</string>
+    <string name="welcome_how_footer">Tanpa server perantara. Pemutaran terjadi langsung di perangkatmu — privat sejak awal.</string>
+
+    <!-- Devices: play destination picker -->
+    <string name="devices_destination_title">Pilih perangkat</string>
+    <string name="devices_destination_prompt">%1$s: “%2$s”</string>
+    <string name="devices_destination_action_play">Putar</string>
+    <string name="devices_destination_action_add_to_queue">Tambahkan ke antrean</string>
+    <string name="devices_destination_action_play_next">Putar berikutnya</string>
+    <string name="devices_destination_this_device">Perangkat Ini</string>
+    <string name="devices_destination_this_device_subtitle">Di perangkat ini</string>
+    <string name="devices_destination_remote_device">Perangkat Jarak Jauh</string>
+    <string name="devices_destination_remote_device_host">Perangkat Jarak Jauh (%1$s)</string>
+    <string name="devices_destination_remote_subtitle">Di perangkat yang terhubung</string>
+
+    <!-- Devices: connection errors -->
+    <string name="devices_error_connection_failed">Koneksi gagal</string>
+    <string name="devices_error_connection_lost">Koneksi terputus</string>
+    <string name="devices_error_send_failed">Gagal mengirim</string>
+    <string name="devices_error_discovery_failed">Pencarian gagal: %1$s</string>
+    <string name="devices_error_connect_failed">Gagal terhubung: %1$s</string>
+
+    <!-- Devices: discovery screen -->
+    <string name="devices_title">Perangkat</string>
+    <string name="devices_refresh">Muat ulang</string>
+    <string name="devices_disconnect">Putuskan</string>
+    <string name="devices_connecting">Menghubungkan...</string>
+    <string name="devices_searching">Mencari perangkat di jaringan...</string>
+    <string name="devices_empty">Tidak ada perangkat ditemukan</string>
+    <string name="devices_empty_hint">Pastikan perangkat lain telah mengaktifkan \"Izinkan kontrol jarak jauh\" di pengaturan.</string>
+    <string name="devices_unknown_device">Perangkat Tidak Dikenal</string>
+    <string name="devices_resolving">Menyelesaikan...</string>
+
+    <!-- Devices: remote control screen -->
+    <string name="devices_remote_title">Kontrol Jarak Jauh</string>
+    <string name="devices_remote_disconnected">Terputus</string>
+    <string name="devices_remote_connection_error">Kesalahan koneksi: %1$s</string>
+    <string name="devices_remote_unknown_track">Lagu Tidak Dikenal</string>
+    <string name="devices_remote_unknown_artist">Artis Tidak Dikenal</string>
+    <string name="devices_remote_volume">Volume</string>
+    <string name="devices_remote_remove_from_queue">Hapus dari antrean</string>
+    <string name="devices_remote_more_options">Opsi lainnya</string>
+
+    <!-- Group Jam: play destination picker -->
+    <string name="jam_destination_title">Putar di Mana?</string>
+    <string name="jam_destination_message">Kamu sedang dalam sesi Jam. Pilih tempat untuk memutar koleksi ini.</string>
+    <string name="jam_destination_play_here">Putar di sini</string>
+    <string name="jam_destination_suggest">Sarankan ke Jam</string>
+
+    <!-- Group Jam: connection errors -->
+    <string name="jam_error_connection_failed">Koneksi gagal</string>
+    <string name="jam_error_connection_lost">Koneksi terputus</string>
+
+
+    <!-- Group Jam: queue snackbar -->
+    <string name="jam_queue_added_track">Ditambahkan ke antrean Jam</string>
+    <plurals name="jam_queue_added_tracks">
+        <item quantity="other">%1$d ditambahkan ke antrean Jam</item>
+    </plurals>
+
+    <!-- Remote control: connection request dialog -->
+    <string name="remote_request_title">Permintaan Kontrol Jarak Jauh</string>
+    <string name="remote_request_message">\"%1$s\" ingin mengontrol pemutaran di perangkat ini.</string>
+    <string name="remote_request_deny">Tolak</string>
+    <string name="remote_request_allow">Izinkan</string>
+    <string name="remote_request_allow_always">Selalu Izinkan</string>
+
+    <!-- Search -->
+    <string name="search_results_title">Hasil pencarian</string>
+    <string name="search_tab_all">Semua</string>
+    <string name="search_section_tracks">Lagu</string>
+    <string name="search_section_users">Pengguna</string>
+    <string name="search_no_search_types">Tidak ada jenis pencarian tersedia</string>
+    <string name="search_start_typing">Mulai mengetik untuk mencari</string>
+    <string name="search_start_typing_tracks">Mulai mengetik untuk mencari lagu</string>
+    <string name="search_no_results">Tidak ada hasil</string>
+    <string name="search_see_all">Lihat semua</string>
+    <string name="search_searching">Mencari</string>
+    <string name="search_loading_tracks">Memuat lagu...</string>
+    <string name="search_loading_albums">Memuat album...</string>
+    <string name="search_loading_artists">Memuat artis...</string>
+    <string name="search_loading_playlists">Memuat playlist...</string>
+    <string name="search_loading_users">Memuat pengguna...</string>
+    <string name="search_no_albums">Tidak ada album ditemukan</string>
+    <string name="search_no_artists">Tidak ada artis ditemukan</string>
+    <string name="search_no_playlists">Tidak ada playlist ditemukan</string>
+    <string name="search_no_users">Tidak ada pengguna ditemukan</string>
+    <string name="search_warm_crates">Membongkar tumpukan piringan...</string>
+    <string name="search_warm_cosmos">Menjelajahi alam semesta...</string>
+    <string name="search_warm_speakers">Memanaskan speaker...</string>
+    <string name="search_warm_vinyl">Membersihkan debu piringan hitam...</string>
+    <string name="search_warm_music_gods">Bertanya pada dewa musik...</string>
+    <string name="search_warm_antennas">Menyetel antena...</string>
+    <string name="search_warm_records">Membolak-balik koleksi piringan...</string>
+    <string name="search_error_capabilities">Gagal memuat kemampuan pencarian</string>
+    <string name="search_error_search">Gagal mencari</string>
+    <string name="search_error_tracks">Gagal mencari lagu</string>
+    <string name="search_error_albums">Gagal mencari album</string>
+    <string name="search_error_artists">Gagal mencari artis</string>
+    <string name="search_error_playlists">Gagal mencari playlist</string>
+    <string name="search_error_users">Gagal mencari pengguna</string>
+
+    <!-- Home -->
+    <string name="home_title_browse">Jelajahi</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_mode_synced">Tersinkron</string>
+    <string name="lyrics_mode_plain">Biasa</string>
+    <string name="lyrics_no_synced">Lirik tersinkron tidak tersedia</string>
+    <string name="lyrics_no_plain">Lirik biasa tidak tersedia</string>
+
+    <!-- Settings: audio format/quality labels -->
+    <string name="settings_audio_format_label">%1$s dalam %2$s</string>
+    <string name="settings_audio_quality_lossy">%1$d kbps</string>
+    <string name="settings_audio_quality_lossless">%1$s kHz • %2$d ch</string>
+    <string name="search_error_no_metadata_plugin">Belum ada plugin metadata dipilih</string>
+
+    <!-- Common -->
+    <string name="common_back">Kembali</string>
+    <string name="common_retry">Coba lagi</string>
+    <string name="common_close_dialog">Tutup dialog</string>
+    <string name="common_loading">Memuat...</string>
+    <string name="common_unknown">Tidak diketahui</string>
+    <string name="common_unknown_error">Kesalahan tidak diketahui</string>
+
+    <!-- Media cards -->
+    <string name="media_user">Pengguna</string>
+    <string name="media_playlist">Playlist</string>
+
+    <!-- Error display -->
+    <string name="error_title">Kami Mohon Maaf</string>
+    <string name="error_description">Ada yang tidak berfungsi saat ini. Pengalamanmu penting bagi kami, dan kami berusaha sebaik mungkin untuk memperbaikinya. Coba lagi atau periksa detail kesalahan di bawah.</string>
+    <string name="error_details">Detail Kesalahan</string>
+    <string name="error_copy_to_clipboard">Salin ke papan klip</string>
+    <string name="error_view_full_log">Lihat log lengkap</string>
+    <string name="error_full_log_title">Log Kesalahan Lengkap</string>
+
+    <!-- Collection details -->
+    <string name="collection_details_shuffle">Acak</string>
+    <string name="collection_details_shuffle_play">Putar acak</string>
+    <string name="collection_details_follow">Ikuti</string>
+    <string name="collection_details_unfollow">Berhenti mengikuti</string>
+    <string name="collection_details_edit_playlist">Edit playlist</string>
+    <string name="collection_details_by_owner">Oleh %1$s</string>
+
+    <!-- Track options -->
+    <string name="track_options_title">Opsi lagu</string>
+    <string name="track_options_add_to_jam">Tambahkan ke Jam</string>
+    <string name="track_options_start_radio">Mulai radio</string>
+    <string name="track_options_play_next">Putar berikutnya</string>
+    <string name="track_options_move_to_next">Pindahkan ke berikutnya</string>
+    <string name="track_options_remove_from_queue">Hapus dari antrean</string>
+    <string name="track_options_remove_from_favorites">Hapus dari favorit</string>
+    <string name="track_options_save_as_favorite">Simpan sebagai favorit</string>
+    <string name="track_options_add_to_playlist">Tambahkan ke playlist</string>
+    <string name="track_options_download">Unduh</string>
+    <string name="track_options_share">Bagikan</string>
+
+    <!-- Track list -->
+    <string name="track_list_sort_original">Asli</string>
+    <string name="track_list_sort_title">Judul</string>
+    <string name="track_list_sort_artist">Artis</string>
+    <string name="track_list_sort_album">Album</string>
+    <string name="track_list_sort_duration">Durasi</string>
+    <string name="track_list_sort">Urutkan</string>
+    <string name="track_list_no_tracks">Tidak ada lagu ditemukan</string>
+    <string name="track_list_filter_placeholder">Filter</string>
+    <string name="track_list_bulk_actions">Tindakan massal</string>
+    <string name="track_list_download_all">Unduh Semua</string>
+    <string name="track_list_download_count">Unduh %1$d</string>
+    <string name="track_list_add_all_to_queue">Tambahkan Semua ke Antrean</string>
+    <string name="track_list_add_count_to_queue">Tambahkan %1$d ke Antrean</string>
+    <string name="track_list_play_all_next">Putar Semua Berikutnya</string>
+    <string name="track_list_play_count_next">Putar %1$d Berikutnya</string>
+    <string name="track_list_add_all_to_playlist">Tambahkan Semua ke Playlist</string>
+    <string name="track_list_add_count_to_playlist">Tambahkan %1$d ke Playlist</string>
+    <string name="track_list_add_all_to_jam">Tambahkan Semua ke Jam</string>
+    <string name="track_list_add_count_to_jam">Tambahkan %1$d ke Jam</string>
+    <string name="track_list_more_artists">+%1$d lainnya</string>
+
+    <!-- WebView -->
+    <string name="webview_no_url">Tidak ada URL untuk dimuat</string>
+    <string name="webview_go_back">Kembali di riwayat browser</string>
+    <string name="webview_go_forward">Maju di riwayat browser</string>
+
+    <!-- Blacklist -->
+    <string name="blacklist_filter_placeholder">Filter daftar blokir...</string>
+    <string name="blacklist_empty">Tidak ada item yang diblokir</string>
+    <string name="blacklist_no_results">Tidak ada item diblokir yang cocok dengan \'%1$s\'</string>
+    <string name="blacklist_section_tracks">Lagu</string>
+    <string name="blacklist_item_track">Lagu</string>
+    <string name="blacklist_add">Tambahkan ke daftar blokir</string>
+    <string name="blacklist_remove">Hapus dari daftar blokir</string>
+
+    <!-- Downloads -->
+    <string name="downloads_error_no_metadata">Tidak ada metadata lagu</string>
+    <string name="downloads_error_stream_unresolved_short">Tidak dapat menemukan URL stream</string>
+    <string name="downloads_error_stream_unresolved">Tidak dapat menemukan URL stream. Coba putar lagunya terlebih dahulu.</string>
+
+    <!-- Saved tracks -->
+    <string name="saved_tracks_title">Lagu Tersimpan</string>
+    <string name="saved_tracks_owner_you">Kamu</string>
+
+    <!-- Artist -->
+    <string name="artist_following">Mengikuti</string>
+    <string name="artist_top_tracks">Lagu Teratas</string>
+    <string name="artist_play_top_tracks">Putar lagu teratas</string>
+    <string name="artist_add_top_tracks_to_queue">Tambahkan lagu teratas ke antrean</string>
+    <string name="artist_related_artists">Artis Terkait</string>
+    <string name="artist_featured_playlists">Playlist Unggulan</string>
+    <string name="artist_error_load_failed">Gagal memuat ringkasan artis</string>
+    <string name="artist_followers_unavailable">Jumlah pengikut tidak tersedia</string>
+    <string name="artist_followers_thousands">%1$s rb pengikut</string>
+    <string name="artist_followers_millions">%1$s jt pengikut</string>
+    <string name="artist_followers_billions">%1$s M pengikut</string>
+    <plurals name="artist_followers_count">
+        <item quantity="other">%1$d pengikut</item>
+    </plurals>
+
+    <!-- Player -->
+    <string name="player_like_content_description">Suka</string>
+    <string name="player_unlike_content_description">Batal suka</string>
+    <string name="player_fallback_title">Judul lagu kosong</string>
+    <string name="player_fallback_artists">Artis kosong</string>
+    <string name="player_unknown_album">Album Tidak Dikenal</string>
+    <string name="player_seek_label">Cari posisi</string>
+    <string name="player_volume_label">Volume</string>
+    <string name="player_enable_shuffle_content_description">Aktifkan acak</string>
+    <string name="player_disable_shuffle_content_description">Nonaktifkan acak</string>
+    <string name="player_previous_content_description">Sebelumnya</string>
+    <string name="player_next_content_description">Berikutnya</string>
+    <string name="player_play_or_pause_content_description">Putar atau jeda</string>
+    <string name="player_loop_mode_none">Mode ulang nonaktif</string>
+    <string name="player_loop_mode_one">Ulang satu lagu</string>
+    <string name="player_loop_mode_all">Ulang semua</string>
+    <string name="player_mute_content_description">Bisukan</string>
+    <string name="player_unmute_content_description">Bunyikan</string>
+    <string name="player_more_options_content_description">Opsi lainnya</string>
+    <string name="player_options_content_description">Opsi pemutar</string>
+    <string name="player_collapse_content_description">Ciutkan pemutar</string>
+    <string name="player_expand_lyrics_content_description">Perluas lirik</string>
+    <string name="player_now_playing">Sedang Diputar</string>
+    <string name="player_lyrics">Lirik</string>
+    <string name="player_alternative_source">Sumber Alternatif</string>
+    <string name="player_alternative_source_content_description">Sumber alternatif</string>
+    <string name="player_download">Unduh</string>
+    <string name="player_download_status_downloaded">Diunduh</string>
+    <string name="player_download_status_downloading">Mengunduh...</string>
+    <string name="player_download_already_downloaded">Sudah diunduh</string>
+    <string name="player_download_retrying">Mencoba mengunduh lagi...</string>
+    <string name="player_download_started">Mengunduh %1$s</string>
+    <string name="player_sleep_timer_remaining">Pemutaran akan dijeda dalam %1$s.</string>
+    <string name="player_sleep_timer_description">Jeda pemutaran setelah jumlah menit yang dipilih.</string>
+    <string name="player_sleep_timer_minutes_label">Menit</string>
+    <string name="player_sleep_timer_minutes_placeholder">Pilih antara 1 dan 600 menit</string>
+    <string name="player_sleep_timer_cancel">Batalkan timer</string>
+    <string name="player_sleep_timer_start">Mulai</string>
+    <string name="player_track_details_stream_mismatch">URL pemutaran ditentukan dengan pengaturan streaming yang berbeda. Stream yang disorot sesuai dengan preferensimu saat ini; URL aktif akan diperbarui pada permintaan stream berikutnya.</string>
+    <string name="player_track_details_matched_source">Sumber audio yang cocok</string>
+    <string name="player_track_details_loading_source">Memuat sumber yang cocok…</string>
+    <string name="player_track_details_source_not_needed">Sumber jarak jauh yang cocok tidak diperlukan saat memutar file cache lokal.</string>
+    <string name="player_track_details_no_source">Tidak ada sumber yang cocok.</string>
+    <string name="player_track_details_no_cached_source">Tidak ada sumber audio cocok yang di-cache untuk lagu ini.</string>
+    <string name="player_track_details_streams_not_cached">Detail stream belum di-cache. Putar lagunya terlebih dahulu untuk memuatnya.</string>
+    <string name="player_track_details_load_failed">Gagal memuat detail lagu.</string>
+    <string name="player_track_details_available_streams">Stream yang tersedia</string>
+    <string name="player_track_details_served_from_cache_description">Lagu ini diputar dari cache lokal. Varian stream tidak digunakan untuk pemutaran ini.</string>
+    <string name="player_track_details_loading_streams">Memuat stream…</string>
+    <string name="player_track_details_no_streams">Tidak ada stream tersedia untuk sumber ini.</string>
+    <string name="player_track_details_selected_stream_content_description">Stream yang sedang dipilih</string>
+    <string name="player_track_details_matches_preference">Sesuai dengan preferensi format &amp; kualitas streaming-mu</string>
+    <string name="player_track_details_active_url">URL pemutaran aktif</string>
+    <string name="player_track_details_served_from_cache">Diputar dari cache lokal</string>
+    <string name="player_track_details_metadata_track">Metadata lagu</string>
+    <string name="player_track_details_title">Judul</string>
+    <string name="player_track_details_id">ID</string>
+    <string name="player_track_details_album">Album</string>
+    <string name="player_track_details_confidence">Tingkat kecocokan</string>
+    <string name="player_track_details_external_uri">URI Eksternal</string>
+    <string name="player_track_details_album_id">ID Album</string>
+    <string name="player_track_details_album_type">Jenis album</string>
+    <string name="player_track_details_album_release_date">Tanggal rilis album</string>
+    <string name="player_track_details_album_track_count">Jumlah lagu album</string>
+    <string name="player_track_details_album_genres">Genre album</string>
+    <string name="player_track_details_duration">Durasi</string>
+    <string name="player_track_details_track_number">Nomor lagu</string>
+    <string name="player_track_details_disc_number">Nomor disk</string>
+    <string name="player_track_details_explicit">Eksplisit</string>
+    <string name="player_track_details_popularity">Popularitas</string>
+    <string name="player_track_details_isrc">ISRC</string>
+    <string name="player_track_details_thumbnail_urls">URL thumbnail</string>
+
+    <!-- Shell -->
+    <string name="shell_sidebar_toggle_content_description">Tampilkan/Sembunyikan Sidebar</string>
+
+    <!-- Alternative track -->
+    <string name="alternative_track_title">Sumber Alternatif</string>
+    <string name="alternative_track_no_track">Tidak ada lagu yang sedang diputar</string>
+    <string name="alternative_track_searching">Mencari sumber alternatif...</string>
+    <string name="alternative_track_empty">Tidak ada sumber alternatif ditemukan</string>
+    <string name="alternative_track_confidence">Kecocokan: %1$d%</string>
+    <string name="alternative_track_active_source">Sumber aktif</string>
+
+    <!-- Queue -->
+    <string name="queue_participant_kick">Keluarkan</string>
+    <string name="queue_participant_kick_description">Keluarkan mereka dari sesi</string>
+    <string name="queue_participant_ban_description">Keluarkan dan cegah mereka bergabung kembali</string>
+    <string name="queue_participant_remove_suggestions">Hapus saran</string>
+    <string name="queue_participant_remove_suggestions_description">Hapus semua lagu yang mereka tambahkan ke antrean</string>
+    <string name="queue_reorder_content_description">Ubah urutan</string>
+    <string name="queue_remove_from_queue">Hapus dari antrean</string>
+    <string name="queue_item_subtitle_added_by">%1$s • Ditambahkan oleh %2$s</string>
+
+    <!-- Playlist -->
+    <string name="playlist_owner_unknown">Tidak diketahui</string>
+    <string name="playlist_loading_title">Memuat playlist...</string>
+    <string name="playlist_add_tracks_button">Tambah Lagu</string>
+    <string name="playlist_add_tracks_title">Tambahkan Lagu ke Playlist</string>
+    <string name="playlist_add_tracks_search_placeholder">Cari lagu...</string>
+    <string name="playlist_add_tracks_search_content_description">Cari</string>
+    <string name="playlist_add_tracks_no_results">Tidak ada lagu ditemukan</string>
+    <string name="playlist_add_tracks_hint">Cari lagu untuk ditambahkan</string>
+    <string name="playlist_add_tracks_done">Selesai</string>
+    <string name="playlist_add_tracks_add">Tambah</string>
+    <string name="playlist_add_tracks_added_content_description">Ditambahkan</string>
+
+    <!-- Album -->
+    <string name="album_loading_title">Memuat album...</string>
+
+    <!-- Library -->
+    <string name="library_add_to_playlist_title">Tambahkan ke Playlist Kamu</string>
+    <string name="library_add_to_playlist_search_content_description">Cari</string>
+    <string name="library_add_to_playlist_search_placeholder">Cari playlist kamu...</string>
+    <string name="library_add_to_playlist_loading">Memuat playlist kamu...</string>
+    <string name="library_add_to_playlist_empty">Kamu belum punya playlist.\nBuat satu untuk menambahkan lagu.</string>
+    <string name="library_playlist_form_create_title">Buat Playlist</string>
+    <string name="library_playlist_form_edit_title">Edit Playlist</string>
+    <string name="library_playlist_form_create">Buat</string>
+    <string name="library_playlist_form_name_label">Nama</string>
+    <string name="library_playlist_form_name_placeholder">Nama playlist</string>
+    <string name="library_playlist_form_description_label">Deskripsi</string>
+    <string name="library_playlist_form_description_placeholder">Deskripsi (opsional)</string>
+    <string name="library_playlist_form_public">Publik</string>
+    <string name="library_playlist_form_public_description">Siapa saja dapat melihat playlist ini</string>
+    <string name="library_playlist_form_collaborative">Kolaboratif</string>
+    <string name="library_playlist_form_collaborative_description">Orang lain dapat menambahkan lagu ke playlist ini</string>
+    <string name="library_playlist_form_cover_image">Gambar Sampul</string>
+    <string name="library_playlist_form_cover_content_description">Sampul playlist</string>
+    <string name="library_playlist_form_no_image">Tidak ada gambar</string>
+    <string name="library_playlist_form_change_image">Ganti Gambar</string>
+    <string name="library_playlist_form_pick_image">Pilih Gambar</string>
+
+    <!-- Plugin install / errors -->
+    <string name="plugin_action_install">Pasang</string>
+    <string name="plugin_action_replace">Ganti</string>
+    <string name="plugin_error_plugin_json_missing">plugin.json tidak ditemukan di file zip</string>
+    <string name="plugin_error_zipline_manifest_missing">manifest.zipline.json tidak ditemukan di file zip</string>
+    <string name="plugin_error_invalid_plugin_json">Format plugin.json tidak valid: %1$s</string>
+    <string name="plugin_error_read_failed">Gagal membaca plugin: %1$s</string>
+    <string name="plugin_error_install_failed">Gagal memasang plugin: %1$s</string>
+    <string name="plugin_error_update_needs_confirmation">Versi lebih baru dari %1$s tersedia. Konfirmasi pembaruan sebelum memasang.</string>
+    <string name="plugin_error_replace_needs_confirmation">%1$s sudah terpasang. Konfirmasi penggantian sebelum memasang.</string>
+    <string name="plugin_error_builtin_add">Plugin bawaan sudah disertakan dan tidak dapat ditambahkan lagi.</string>
+    <string name="plugin_error_builtin_remove">Plugin bawaan tidak dapat dihapus.</string>
+    <string name="plugin_error_api_version_invalid">%1$s mendeklarasikan apiVersion yang tidak valid (%2$s). Diharapkan semantic versioning yang kompatibel dengan %3$s.</string>
+    <string name="plugin_error_app_api_version_invalid">Versi API plugin Spotube %1$s tidak valid.</string>
+    <string name="plugin_error_api_incompatible">%1$s menargetkan API plugin %2$s, tetapi Spotube mendukung API plugin breaking %3$s. Pasang plugin yang dibuat untuk versi API breaking yang sama.</string>
+
+    <!-- Plugin install prompts -->
+    <string name="plugin_prompt_incompatible_title">API plugin tidak kompatibel</string>
+    <string name="plugin_prompt_install_title">Pasang plugin?</string>
+    <string name="plugin_prompt_install_message">%1$s akan ditambahkan ke plugin terpasang.</string>
+    <string name="plugin_prompt_update_title">Perbarui plugin?</string>
+    <string name="plugin_prompt_update_message">Versi lama terpasang (%1$s). Perbarui ke %2$s?</string>
+    <string name="plugin_prompt_replace_title">Ganti plugin terpasang?</string>
+    <string name="plugin_prompt_replace_invalid_incoming">%1$s menggunakan versi semantik yang tidak valid (%2$s) dan tidak dapat dibandingkan sebagai pembaruan. Tetap ganti plugin terpasang?</string>
+    <string name="plugin_prompt_replace_invalid_installed">Versi terpasang (%1$s) tidak dapat dibandingkan menggunakan semantic versioning. Ganti dengan %2$s?</string>
+    <string name="plugin_prompt_replace_same_version">Versi %1$s sudah terpasang. Ganti plugin yang ada dengan salinan yang diberikan?</string>
+    <string name="plugin_prompt_replace_downgrade">Versi terpasang %1$s lebih baru daripada versi yang diberikan %2$s. Tetap ganti?</string>
+    <string name="plugin_prompt_replace_generic">Ganti plugin terpasang dengan salinan yang diberikan?</string>
+
+    <!-- Plugin info dialog -->
+    <string name="plugin_info_label_format">%1$s:</string>
+    <string name="plugin_info_version">Versi</string>
+    <string name="plugin_info_api_version">Versi API</string>
+    <string name="plugin_info_author">Pembuat</string>
+    <string name="plugin_info_license">Lisensi</string>
+    <string name="plugin_info_capabilities">Kapabilitas</string>
+    <string name="plugin_info_abilities">Kemampuan</string>
+    <string name="plugin_info_repository">Repositori</string>
+    <string name="plugin_info_contact">Kontak</string>
+    <string name="plugin_info_report_bugs">Laporkan Bug</string>
+    <string name="plugin_support_dialog_title">Dukung %1$s</string>
+
+    <!-- Plugin discovery -->
+    <string name="plugin_discover_badge_official">Resmi</string>
+    <string name="plugin_discover_badge_verified">Terverifikasi</string>
+    <string name="plugin_discover_stars_content_description">Bintang GitHub</string>
+    <string name="plugin_discover_repository_content_description">URL repositori GitHub</string>
+
+    <!-- Plugin release install dialog -->
+    <string name="plugin_install_no_releases">Tidak ada rilis ditemukan</string>
+    <string name="plugin_install_select_release_label">Pilih Rilis</string>
+    <string name="plugin_install_select_release_placeholder">Pilih rilis</string>
+    <string name="plugin_install_prerelease">Pra-rilis</string>
+    <string name="plugin_install_release_notes">Catatan Rilis</string>
+
+    <!-- App navigation -->
+    <string name="nav_home">Beranda</string>
+    <string name="nav_search">Cari</string>
+    <string name="nav_group_on_device">Di Perangkat</string>
+    <string name="nav_group_connect">Connect</string>
+    <string name="nav_devices">Perangkat</string>
+
+    <!-- System tray (desktop) -->
+    <string name="tray_hide_window">Sembunyikan Jendela</string>
+    <string name="tray_show_window">Tampilkan Jendela</string>
+    <string name="tray_next_track">Lagu Berikutnya</string>
+    <string name="tray_previous_track">Lagu Sebelumnya</string>
+    <string name="tray_shuffle">Acak</string>
+    <string name="tray_loop">Ulang</string>
+    <string name="tray_loop_off">Ulang: MATI</string>
+    <string name="tray_loop_one">Ulang: SATU</string>
+    <string name="tray_loop_all">Ulang: SEMUA</string>
+    <string name="tray_volume">Volume: %1$d%</string>
+    <string name="tray_volume_up">Volume +</string>
+    <string name="tray_volume_down">Volume -</string>
+    <string name="tray_mute">Bisukan</string>
+    <string name="tray_unmute">Bunyikan</string>
+    <string name="tray_like_track">Sukai Lagu</string>
+    <string name="tray_unlike_track">Batal Sukai Lagu</string>
+    <string name="tray_exit">Keluar</string>
+
+    <!-- Desktop window controls -->
+    <string name="app_window_minimize">Minimalkan</string>
+    <string name="app_window_maximize">Maksimalkan</string>
+    <string name="app_window_restore">Pulihkan</string>
+    <string name="app_window_close">Tutup</string>
+
+    <!-- Android playback notification -->
+    <string name="notification_playback_channel_name">Pemutaran</string>
+    <string name="notification_playback_channel_description">Kontrol pemutaran media</string>
+
+    <!-- Android Auto / media browser -->
+    <string name="media_browser_browse">Jelajahi</string>
+    <string name="media_browser_now_playing">Sedang Diputar</string>
+    <string name="media_browser_featured">Unggulan</string>
+    <string name="media_browser_saved_tracks">Lagu Tersimpan</string>
+    <string name="media_browser_top_tracks">Lagu Teratas</string>
+</resources>

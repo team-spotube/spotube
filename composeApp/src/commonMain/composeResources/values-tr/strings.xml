@@ -1,0 +1,926 @@
+<!--
+  ~ Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="queue_title">Sıra</string>
+    <string name="queue_clear_queue">Sırayı temizle</string>
+    <string name="queue_filter_queue">Sırada filtrele...</string>
+    <string name="queue_no_queue_entries">Sıra boş</string>
+
+    <string name="search_placeholder">Şarkı, sanatçı, albüm ara...</string>
+    <string name="search_clear_history">Tüm geçmişi temizle</string>
+    <string name="search_filter_placeholder">Ara...</string>
+
+    <!-- Library toolbar -->
+    <string name="library_screen_title">Kitaplığın</string>
+    <string name="library_toolbar_compact_title">Kitaplık</string>
+    <string name="library_tab_playlists">Çalma listeleri</string>
+    <string name="library_tab_albums">Albümler</string>
+    <string name="library_tab_artists">Sanatçılar</string>
+    <string name="library_tab_local_tracks">Yerel parçalar</string>
+    <string name="library_tab_downloads">İndirilenler</string>
+    <string name="library_filter_playlists">Kayıtlı çalma listelerinde ara…</string>
+    <string name="library_filter_albums">Kayıtlı albümlerde ara…</string>
+    <string name="library_filter_artists">Kayıtlı sanatçılarda ara…</string>
+    <string name="library_filter_local_tracks">Klasör veya parça ara…</string>
+    <string name="library_action_search">Kitaplığı filtrele</string>
+    <string name="library_action_close_search">Filtreyi kapat</string>
+    <string name="library_action_create_playlist">Çalma listesi oluştur</string>
+    <string name="library_action_refresh_local_tracks">Yerel parçaları yenile</string>
+    <string name="library_action_grid_view">Izgara görünümüne geç</string>
+    <string name="library_action_list_view">Liste görünümüne geç</string>
+    <string name="library_playlists_empty">Kayıtlı çalma listesi yok</string>
+    <string name="library_playlists_no_results">“%1$s” ile eşleşen çalma listesi yok</string>
+    <string name="library_albums_empty">Kayıtlı albüm yok</string>
+    <string name="library_albums_no_results">“%1$s” ile eşleşen albüm yok</string>
+    <string name="library_artists_empty">Kayıtlı sanatçı yok</string>
+    <string name="library_artists_no_results">“%1$s” ile eşleşen sanatçı yok</string>
+
+    <!-- Local media -->
+    <string name="library_local_folders">Klasörler</string>
+    <string name="library_local_folder">Klasör</string>
+    <string name="library_local_summary">%1$s • %2$s</string>
+    <plurals name="library_local_tracks_count">
+        <item quantity="one">%1$d parça</item>
+        <item quantity="other">%1$d parça</item>
+    </plurals>
+    <plurals name="library_local_folders_count">
+        <item quantity="one">%1$d klasör</item>
+        <item quantity="other">%1$d klasör</item>
+    </plurals>
+    <string name="library_local_back">Klasörlere dön</string>
+    <string name="library_local_play_folder">Klasörü çal</string>
+    <string name="library_local_permission_title">Ses erişimi gerekli</string>
+    <string name="library_local_permission_description">Cihazındaki müziklere göz atmak için ses erişimine izin ver.</string>
+    <string name="library_local_grant_access">Erişim izni ver</string>
+    <string name="library_local_empty_folders">Yerel klasör bulunamadı</string>
+    <string name="library_local_empty_tracks">Bu klasörde parça yok</string>
+    <string name="library_local_no_results">Eşleşen klasör veya parça yok</string>
+    <string name="library_local_refresh_failed">Yerel medya yenilenemedi</string>
+
+    <!-- Downloads -->
+    <string name="downloads_summary">%1$d etkin • %2$d tamamlandı</string>
+    <string name="downloads_clear_completed">Tamamlananları temizle</string>
+    <string name="downloads_empty">Henüz indirme yok</string>
+    <string name="downloads_status_downloading">İndiriliyor: %1$d%</string>
+    <string name="downloads_status_queued">Sırada</string>
+    <string name="downloads_status_completed">Tamamlandı</string>
+    <string name="downloads_status_cancelled">İptal edildi</string>
+    <string name="downloads_status_failed">Başarısız</string>
+    <string name="downloads_status_failed_error">Başarısız: %1$s</string>
+    <string name="downloads_action_cancel">İndirmeyi iptal et</string>
+    <string name="downloads_action_retry">İndirmeyi yeniden dene</string>
+    <string name="downloads_action_remove">İndirmeyi kaldır</string>
+
+    <!-- Shared media items -->
+    <string name="media_artist">Sanatçı</string>
+    <string name="media_blacklisted">Kara listede</string>
+    <string name="media_liked_tracks">Beğenilen Şarkılar</string>
+    <string name="media_saved_songs">Kaydettiğin şarkılar</string>
+    <string name="media_unknown_artist">Bilinmeyen sanatçı</string>
+    <string name="media_preview_title">Parça adı</string>
+    <string name="media_preview_subtitle">Sanatçı adı</string>
+
+    <string name="accessibility_selected">Seçili</string>
+
+    <string name="settings_screen_title">Ayarlar</string>
+
+    <string name="settings_section_plugins">Eklentiler</string>
+    <string name="settings_section_language_region">Dil ve Bölge</string>
+    <string name="settings_section_appearance">Görünüm</string>
+    <string name="settings_section_playback">Çalma</string>
+    <string name="settings_section_downloads">İndirmeler</string>
+    <string name="settings_section_caching">Önbellek</string>
+    <string name="settings_section_desktop">Masaüstü</string>
+    <string name="settings_section_updates">Güncellemeler</string>
+    <string name="settings_section_support">Destek</string>
+    <string name="settings_section_about">Hakkında</string>
+
+    <string name="common_close">Kapat</string>
+    <string name="common_save">Kaydet</string>
+    <string name="common_cancel">İptal</string>
+
+    <string name="settings_language_title">Dil</string>
+    <string name="settings_language_subtitle_current">Uygulama arayüzünün dili. Geçerli: %1$s</string>
+    <string name="settings_language_system_default">Sistem varsayılanı</string>
+    <string name="settings_country_title">Ülke</string>
+    <string name="settings_country_subtitle_current">İçerik ve kullanılabilirlik için bölge ülkesi. Geçerli: %1$s</string>
+    <string name="settings_option_name_and_code">%1$s (%2$s)</string>
+
+    <string name="settings_theme_title">Tema</string>
+    <string name="settings_theme_subtitle_current">Spotube\'un sistem görünümüne nasıl uyacağını seç. Geçerli: %1$s</string>
+    <string name="settings_theme_light">Açık</string>
+    <string name="settings_theme_dark">Koyu</string>
+    <string name="settings_theme_system">Sistem</string>
+
+    <string name="settings_surface_theme_title">Yüzey</string>
+    <string name="settings_surface_theme_subtitle_current">Uygulamanın arka plan malzemesi. Geçerli: %1$s</string>
+    <string name="settings_surface_watery">Su</string>
+    <string name="settings_surface_icy">Buz</string>
+    <string name="settings_surface_chrome">Krom</string>
+    <string name="settings_surface_acrylic">Akrilik</string>
+    <string name="settings_surface_glass">Cam</string>
+
+    <string name="settings_accent_title">Vurgu rengi</string>
+    <string name="settings_accent_subtitle_current">Geçerli palet: %1$s</string>
+    <string name="settings_accent_dialog_title">Vurgu rengi</string>
+    <string name="settings_accent_dialog_description">Bir vurgu paleti seç ve hem açık hem koyu temada önizle.</string>
+    <string name="settings_preview_light">Açık</string>
+    <string name="settings_preview_dark">Koyu</string>
+    <string name="settings_preview_label">Önizleme</string>
+    <string name="settings_preview_button">Düğme</string>
+    <string name="settings_accent_green_goblin">Yeşil Goblin</string>
+    <string name="settings_accent_electric_violet">Elektrik Moru</string>
+    <string name="settings_accent_oceanic_cyan">Okyanus Camgöbeği</string>
+    <string name="settings_accent_sunset_orange">Gün Batımı Turuncusu</string>
+    <string name="settings_accent_rose_garden">Gül Bahçesi</string>
+    <string name="settings_accent_midnight_blue">Gece Mavisi</string>
+    <string name="settings_accent_metallic_slate">Metalik Arduvaz</string>
+
+    <string name="settings_appearance_title">Görünüm ve tarz</string>
+    <string name="settings_appearance_subtitle_current">Yüzey malzemesi ve vurgu. Geçerli: %1$s · %2$s</string>
+    <string name="settings_appearance_dialog_title">Görünüm ve tarz</string>
+    <string name="settings_appearance_dialog_description">Önce bir yüzey malzemesi, ardından ona uyan bir vurgu seç. Her seçenek özenle hazırlanmış bir kombinasyon.</string>
+    <string name="settings_appearance_surface_label">Yüzey</string>
+    <string name="settings_appearance_accent_label">Vurgu</string>
+    <string name="settings_preview_secondary">İkincil</string>
+
+    <string name="settings_palette_title">Palet</string>
+    <string name="settings_palette_subtitle_current">Millennium vurgu paleti. Geçerli: %1$s</string>
+    <string name="settings_palette_dialog_title">Palet</string>
+    <string name="settings_palette_dialog_description">Bir Millennium vurgu paleti seç ve açık ile koyu temada önizle.</string>
+    <string name="settings_palette_label">Palet</string>
+    <string name="settings_appearance_subtitle_palette">Millennium paleti ve vurgu. Geçerli: %1$s</string>
+    <string name="settings_palette_blue">Mavi</string>
+    <string name="settings_palette_orange">Turuncu</string>
+    <string name="settings_palette_lime">Limon yeşili</string>
+
+    <string name="settings_download_folder_title">Özel indirme klasörü</string>
+    <string name="settings_download_folder_current">Geçerli klasör: %1$s</string>
+    <string name="settings_download_folder_description">Varsayılan müzik klasörünü kullanmak için boş bırak.</string>
+    <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
+    <string name="settings_local_media_folders_title">Yerel medya klasörleri</string>
+    <string name="settings_local_media_folders_subtitle_current">Masaüstünde taranacak özel klasörler. Eklenen: %1$d</string>
+    <string name="settings_local_media_folders_subtitle_empty">Henüz özel klasör eklenmedi</string>
+    <string name="settings_local_media_folders_description">Yerel müzik kitaplığın için özel klasörler.</string>
+    <string name="settings_local_media_folders_manage">Yönet</string>
+    <string name="settings_local_media_folders_add_action">Klasör ekle</string>
+    <string name="settings_local_media_folders_remove_action">Klasörü kaldır</string>
+    <string name="settings_local_media_folders_none_added">Özel klasör eklenmedi.</string>
+    <string name="settings_local_media_folders_remove_named">%1$s klasörünü tarama listesinden kaldır</string>
+    <string name="settings_local_media_folders_automatic_both">İndirme ve müzik önbelleği klasörleri otomatik olarak dahil edilir.</string>
+    <string name="settings_local_media_folders_automatic_downloads">İndirme klasörün otomatik olarak dahil edilir.</string>
+    <string name="settings_local_media_folders_automatic_cache">Müzik önbelleği klasörü otomatik olarak dahil edilir.</string>
+    <string name="settings_local_media_folders_saving">Kaydediliyor…</string>
+    <string name="settings_local_media_folders_save_error">Klasörler kaydedilemedi. Değişikliklerin duruyor; tekrar dene.</string>
+    <plurals name="settings_local_media_folders_count">
+        <item quantity="one">%1$d klasör</item>
+        <item quantity="other">%1$d klasör</item>
+    </plurals>
+    <string name="settings_download_format_title">İndirme müzik biçimi</string>
+    <string name="settings_download_format_subtitle_current">İndirmeler için tercih edilen kodek ve kapsayıcı. Geçerli: %1$s</string>
+    <string name="settings_download_quality_title">İndirme müzik kalitesi</string>
+
+    <string name="settings_streaming_format_title">Akış müzik biçimi</string>
+    <string name="settings_streaming_format_subtitle_current">Müzik akışı için tercih edilen kodek ve kapsayıcı. Geçerli: %1$s</string>
+    <string name="settings_streaming_quality_title">Akış müzik kalitesi</string>
+    <string name="settings_subtitle_current">Geçerli: %1$s</string>
+    <string name="settings_enable_music_caching_title">Müzik önbelleğini etkinleştir</string>
+    <string name="settings_enable_music_caching_subtitle">Tekrar çalmayı hızlandırmak için akışla gelen sesi cihazda sakla.</string>
+    <string name="settings_cache_folder_title">Önbellek klasörü</string>
+    <string name="settings_cache_folder_current">Geçerli: %1$s</string>
+    <string name="settings_cache_folder_default">Geçerli: varsayılan uygulama önbelleği</string>
+    <string name="settings_cache_size_limit_title">Önbellek boyutu sınırı</string>
+    <string name="settings_cache_size_limit_unlimited">Sınır yok</string>
+    <string name="settings_cache_size_limit_current">Geçerli sınır: %1$d MB</string>
+    <string name="settings_cache_size_limit_description">Maksimum önbellek boyutunu MB cinsinden belirle. Sınır olmaması için 0 gir veya boş bırak.</string>
+    <string name="settings_cache_size_limit_placeholder">500</string>
+    <string name="settings_error_cache_size_range">Boyut 0 veya pozitif bir sayı olmalı.</string>
+    <string name="settings_enable_endless_playback_title">Sonsuz çalmayı etkinleştir</string>
+    <string name="settings_enable_endless_playback_subtitle">Sıran bittiğinde önerilen parçalarla çalmaya devam et.</string>
+    <string name="settings_playback_port_title">Çalma proxy sunucusu portu</string>
+    <string name="settings_allow_remote_control_title">Uzaktan kontrole izin ver</string>
+    <string name="settings_allow_remote_control_subtitle">Aynı ağdaki diğer cihazlar bağlandığında çalmayı kontrol edebilsin.</string>
+    <string name="settings_remote_device_name_title">Uzaktan kontrol cihaz adı</string>
+    <string name="settings_remote_device_name_subtitle">Diğer cihazların bu cihazı bulurken gördüğü ad. Geçerli: %1$s</string>
+    <string name="settings_remote_device_name_description">Ağındaki diğer cihazlar bu Spotube\'u bulduğunda görünecek kolay bir ad seç.</string>
+    <string name="settings_remote_device_name_placeholder">örn. Salon Spotube</string>
+    <string name="settings_remote_device_name_default">cihaz ana bilgisayar adı</string>
+    <string name="settings_playback_port_subtitle_current">Çalma proxy sunucusunun kullandığı port. Geçerli: %1$d</string>
+    <string name="settings_playback_port_description">1 ile 65535 arasında bir port seç.</string>
+    <string name="settings_playback_port_placeholder">14769</string>
+    <string name="settings_error_whole_number">Geçerli bir tam sayı gir.</string>
+    <string name="settings_error_port_range">Port 1 ile 65535 arasında olmalı.</string>
+
+    <string name="settings_blacklist_title">Kara liste</string>
+    <string name="settings_blacklist_subtitle">Kara listedeki parçaları ve sanatçıları yönet</string>
+
+    <string name="settings_desktop_minimize_title">Sistem tepsisine küçült</string>
+    <string name="settings_desktop_minimize_subtitle">Pencere küçültüldüğünde Spotube sistem tepsisinde çalışmaya devam etsin.</string>
+    <string name="settings_desktop_discord_title">Discord Rich Presence</string>
+    <string name="settings_desktop_discord_subtitle">Masaüstünde şu an çalanı Discord\'da göster.</string>
+
+    <string name="settings_updates_auto_check_title">Güncellemeleri otomatik denetle</string>
+    <string name="settings_updates_auto_check_subtitle">Yeni Spotube sürümlerini arka planda ara.</string>
+
+    <string name="settings_plugins_manage_title">Eklentileri Yönet</string>
+    <string name="settings_plugins_manage_subtitle">Eklentilerini yönet</string>
+    <string name="settings_plugins_default_ability_title">Varsayılan %1$s eklentisi</string>
+    <string name="settings_plugins_ability_metadata">Meta veri</string>
+    <string name="settings_plugins_ability_audio">Ses</string>
+    <string name="settings_plugins_ability_lyrics">Şarkı sözleri</string>
+    <string name="settings_plugins_ability_scrobble">Scrobble</string>
+    <string name="settings_plugins_no_selection">Eklenti seçilmedi</string>
+    <string name="settings_plugins_action_change">Değiştir</string>
+    <string name="settings_plugins_action_select">Seç</string>
+    <string name="settings_plugins_selected">Seçili</string>
+    <string name="settings_plugins_clear">Seçimi temizle</string>
+    <string name="settings_plugins_no_plugins">Kullanılabilir eklenti yok</string>
+    <string name="settings_plugins_plugin_content_description">%1$s eklentisi</string>
+    <string name="settings_plugins_clear_content_description">Temizle</string>
+
+    <string name="plugin_configure_title">Yapılandır</string>
+    <string name="plugin_screen_title">Eklenti Yöneticisi</string>
+    <string name="plugin_error_enter_url">Lütfen bir URL gir</string>
+    <string name="plugin_error_url_scheme">URL, http:// veya https:// ile başlamalı</string>
+    <string name="plugin_error_download_failed">Eklenti indirilemedi</string>
+    <string name="plugin_empty_title">Henüz yüklü eklenti yok</string>
+    <string name="plugin_empty_subtitle">Bir indirme URL\'si yapıştır veya yukarıdan bir dosya seç.</string>
+    <plurals name="plugin_installed_plugins_count">
+        <item quantity="one">%1$d eklenti yüklü</item>
+        <item quantity="other">%1$d eklenti yüklü</item>
+    </plurals>
+    <string name="plugin_install_section_title">Eklenti Yükle</string>
+    <string name="plugin_url_placeholder">https://example.com/plugin.smplug</string>
+    <string name="plugin_action_download">İndir</string>
+    <string name="plugin_action_install_from_file">Dosyadan yükle (.smplug)</string>
+    <string name="plugin_state_active">Etkin</string>
+    <string name="plugin_version_label">v%1$s</string>
+    <string name="plugin_state_builtin">Yerleşik</string>
+    <string name="plugin_action_remove">Eklentiyi kaldır</string>
+    <string name="plugin_action_login">Giriş yap</string>
+    <string name="plugin_action_logout">Çıkış yap</string>
+    <string name="plugin_section_url_title">URL\'den indir</string>
+    <string name="plugin_section_file_title">Dosyadan yükle</string>
+    <string name="plugin_section_install">Yükle</string>
+
+    <string name="plugin_permissions_author_version">• %1$s</string>
+    <string name="plugin_permissions_requested_title">İstenen izinler</string>
+    <string name="plugin_permissions_none">Bu eklenti özel bir izin gerektirmiyor.</string>
+    <string name="plugin_permissions_compare_title">Yüklü ve sağlanan</string>
+    <string name="plugin_permissions_installed_label">Yüklü</string>
+    <string name="plugin_permissions_supplied_label">Sağlanan</string>
+    <string name="plugin_permissions_api_diff">API %1$s → %2$s</string>
+    <string name="plugin_permissions_capability_storage_title">Kalıcı Depolama</string>
+    <string name="plugin_permissions_capability_storage_desc">Diske veri okuma ve yazma</string>
+    <string name="plugin_permissions_capability_network_title">Ağ İstekleri</string>
+    <string name="plugin_permissions_capability_network_desc">İnternet üzerinden veri gönderme ve alma</string>
+    <string name="plugin_permissions_capability_webview_title">WebView</string>
+    <string name="plugin_permissions_capability_webview_desc">Uygulama içinde web içeriği görüntüleme</string>
+    <string name="settings_section_jam">Grup Jam</string>
+    <string name="settings_jam_server_test">Bağlantıyı test et</string>
+    <string name="settings_jam_server_testing">Test ediliyor…</string>
+    <string name="settings_jam_server_test_ok">%1$d ms\'de bağlandı</string>
+    <string name="settings_jam_server_test_fail">Başarısız: %1$s</string>
+    <string name="settings_jam_section_connection">Bağlantı</string>
+    <string name="settings_jam_section_diagnostics">Tanılama</string>
+
+    <!-- Group Jam -->
+    <string name="jam_screen_title">Grup Jam</string>
+    <string name="jam_setup_create_tab">Oluştur</string>
+    <string name="jam_setup_join_tab">Katıl</string>
+    <string name="jam_setup_create_hint">Bir oda oluştur, sonra kodunu arkadaşlarınla paylaş.</string>
+    <string name="jam_setup_create_button">Oda oluştur</string>
+    <string name="jam_setup_join_button">Odaya katıl</string>
+    <string name="jam_setup_working">Bağlanıyor…</string>
+    <string name="jam_setup_code_label">Oda kodu</string>
+    <string name="jam_setup_code_placeholder">ABC123</string>
+    <string name="jam_session_connected">Bağlandı</string>
+    <string name="jam_session_connecting">Yeniden bağlanıyor…</string>
+    <string name="jam_invite_copy">Kodu kopyala</string>
+    <string name="jam_invite_copied">Kopyalandı!</string>
+    <string name="jam_invite_share">Paylaş</string>
+    <string name="jam_participants_heading">Katılımcılar (%1$d)</string>
+    <string name="jam_participants_host">Sahip</string>
+    <string name="jam_participants_guest">Dinleyici</string>
+    <string name="jam_participants_waiting">Dinleyiciler bekleniyor…</string>
+    <string name="jam_participants_remove">Çıkar</string>
+    <string name="jam_participants_ban">Engelle</string>
+    <string name="jam_participants_manage">Yönet</string>
+    <string name="jam_session_leave">Odadan ayrıl</string>
+    <string name="jam_error_title">Bağlanılamadı</string>
+    <string name="jam_error_dismiss">Kapat</string>
+    <string name="jam_error_create">Jam oturumu oluşturulamadı</string>
+    <string name="jam_error_join">Jam oturumuna katılınamadı</string>
+    <string name="jam_error_invalid_code">Harf ve rakamlardan oluşan altı karakterli bir oda kodu gir.</string>
+    <string name="jam_share_message">Spotube Jam\'ime şu kodla katıl: %1$s</string>
+    <string name="settings_jam_server_title">Oda sunucusu</string>
+    <string name="settings_jam_server_url">Sunucu URL’si</string>
+    <string name="settings_jam_server_url_invalid">https:// ile başlayan bir URL gir.</string>
+    <string name="settings_jam_server_diagnostics_subtitle">Oda başlatmadan önce oda sunucusunu kontrol et.</string>
+    <string name="settings_jam_server_note">Jam, Spotube’un ücretsiz oda sunucusunu kullanır. Kendin barındırmak için github.com/team-spotube/jam-server adresindeki sunucuyu kur ve URL’sini gir.</string>
+    <string name="settings_jam_section_you">Sen</string>
+    <string name="jam_connection_host">Sunucu: %1$s</string>
+    <string name="jam_connection_missing">Oda açmak veya bir odaya katılmak için Ayarlar’da bir oda sunucusu belirle.</string>
+    <string name="jam_connection_settings">Sunucu ayarları</string>
+    <string name="jam_participants_you">%1$s (sen)</string>
+    <string name="jam_name_title">Adın</string>
+    <string name="jam_name_subtitle">Jam’deki diğer kişiler seni %1$s olarak görür</string>
+    <string name="jam_name_description">Jam’deki herkese gösterilir. %1$s adını kullanmak için boş bırak. Yeni ad, bir sonraki oda açışında veya katılışında geçerli olur.</string>
+    <string name="jam_name_too_long">En fazla %1$d karakter kullan.</string>
+    <string name="jam_error_no_server">Jam sunucusu ayarlanmamış</string>
+    <string name="jam_error_server_unreachable">Jam sunucusuna ulaşılamadı. Ağını veya Ayarlar → Grup Jam bölümündeki sunucu URL’sini kontrol et.</string>
+    <string name="jam_error_server_incompatible">Jam sunucusu uyumsuz bir sürüm çalıştırıyor.</string>
+    <string name="jam_error_room_not_found">Bu koda sahip bir oda yok. Kodu kontrol edip tekrar dene.</string>
+    <string name="jam_error_room_full">Bu oda dolu.</string>
+    <string name="jam_error_banned">Oda sahibi seni bu odadan engelledi.</string>
+    <string name="jam_error_kicked">Oda sahibi seni odadan çıkardı.</string>
+    <string name="jam_error_replaced">Bu oda bu cihazda yeniden açıldı, bu yüzden bu bağlantı kapatıldı.</string>
+
+    <string name="player_go_to_album">Albüme git</string>
+    <string name="player_sleep_timer">Uyku zamanlayıcısı</string>
+    <string name="player_track_details">Parça ayrıntıları</string>
+    <string name="player_play_content_description">Çal</string>
+    <string name="player_pause_content_description">Duraklat</string>
+    <string name="player_nothing_playing">Hiçbir şey çalmıyor</string>
+    <string name="player_add_to_queue_content_description">Sıraya ekle</string>
+
+    <string name="update_action_ignore">Yok say</string>
+    <string name="update_action_update">Güncelle</string>
+    <string name="app_update_dialog_title">Spotube %1$s kullanıma sunuldu</string>
+    <string name="app_update_dialog_no_notes">Bu sürümdeki yenilikleri Spotube indirme sayfasında gör.</string>
+    <string name="plugin_update_dialog_title">%1$s %2$s kullanıma sunuldu</string>
+    <string name="plugin_update_dialog_current_version">Şu an yüklü: %1$s</string>
+    <string name="plugin_update_dialog_no_notes">Bu güncellemedeki yenilikleri eklentinin sayfasında gör.</string>
+
+    <string name="welcome_skip">Atla</string>
+    <string name="welcome_next">İleri</string>
+    <string name="welcome_back">Geri</string>
+    <string name="welcome_get_started">Başla</string>
+    <string name="welcome_app_name">Spotube</string>
+    <string name="welcome_brand_freedom">Müzik, hiçbir kısıtlama olmadan.</string>
+    <string name="welcome_brand_quiet_description">Koca bir müzik dünyası için açık kaynaklı bir oynatıcı.\nKeşfetmesi sana kalmış. Kendine göre şekillendirmesi de.</string>
+    <string name="welcome_donate_quiet_title">Bu projeyi yaşat.</string>
+    <string name="welcome_donate_letter">Spotube\'u bir abonelik şirketi değil, insanlar geliştiriyor. Günlük hayatının bir parçası olduysa, küçük bir destek bile ona hak ettiği özeni göstermemize yardımcı olur.\n\nBağımsız yazılıma yer açtığın için teşekkürler.</string>
+    <string name="welcome_plugins_setup_guide">Şarkı ve çalma listesi bulmak için bir katalog eklentisiyle başla. Onları çalmak için bir ses eklentisi seç. Şarkı sözleri ve dinleme geçmişi isteğe bağlı. Aşağıdan bir eklenti keşfet, izinlerini incele, yükle ve burada seç.</string>
+    <string name="welcome_plugins_discover">Eklentileri keşfet</string>
+    <string name="welcome_plugins_sources">Kaynakların</string>
+    <string name="welcome_plugins_retry">Tekrar dene</string>
+    <string name="welcome_plugins_more">Daha fazla eklenti</string>
+    <string name="welcome_plugins_discovery_empty">Yeni eklenti bulunamadı. Yukarıdan bir bağlantı veya .smplug dosyasıyla da yükleyebilirsin.</string>
+    <string name="welcome_plugins_discovery_error">Eklenti keşfi şu anda kullanılamıyor. Tekrar dene ya da bir bağlantı veya dosyadan yükle.</string>
+    <string name="welcome_step_welcome">Hoş geldin</string>
+    <string name="welcome_step_support">Destek</string>
+    <string name="welcome_step_plugins">Eklentiler</string>
+    <string name="welcome_step_guide">Rehber</string>
+
+    <string name="welcome_guide_title">Spotube nasıl kullanılır</string>
+    <string name="welcome_guide_subtitle">Dört hızlı adım ve dinlemeye başlıyorsun.</string>
+    <string name="welcome_guide_signin_title">Giriş yap</string>
+    <string name="welcome_guide_signin_desc">hesabını bağla veya kendi katalog eklentini seç.</string>
+    <string name="welcome_guide_search_title">Ara ve çal</string>
+    <string name="welcome_guide_search_desc">Herhangi bir şarkıyı, albümü veya sanatçıyı bul, sonra çal\'a bas.</string>
+    <string name="welcome_guide_offline_title">Çevrimdışı dinle</string>
+    <string name="welcome_guide_offline_desc">Bağlantı olmadan dinlemeye devam etmek için parçaları indir.</string>
+    <string name="welcome_guide_lyrics_title">Sözleri takip et</string>
+    <string name="welcome_guide_lyrics_desc">Bir parça çalarken oynatıcıdan senkronize sözleri aç.</string>
+
+    <!-- Page 1: branding -->
+    <string name="welcome_brand_tagline">Senin müziğin. Senin kaynakların. Senin kuralların.</string>
+    <string name="welcome_brand_subtitle">Müziği sadece seven bir topluluğun geliştirdiği ücretsiz, açık kaynaklı bir müzik oynatıcı.</string>
+    <string name="welcome_brand_chip_open_source">Açık kaynak</string>
+    <string name="welcome_brand_chip_no_ads">Reklamsız</string>
+    <string name="welcome_brand_chip_no_tracking">Telemetri yok</string>
+    <string name="welcome_brand_chip_plugin_powered">Eklenti destekli</string>
+    <string name="welcome_lets_go">Hadi Başlayalım</string>
+
+    <!-- Page 2: donations -->
+    <string name="welcome_donate_eyebrow">Destekçilerimiz bizi ayakta tutuyor</string>
+    <string name="welcome_donate_title">Tutkuyla yapıldı. Seninle yaşıyor.</string>
+    <string name="welcome_donate_message">Spotube %100 ücretsiz, özgür ve açık kaynak — reklam yok, abonelik yok, takip yok. Her özellik, kodun akmaya devam etmesine yardım etmeyi seçen senin gibi insanlar sayesinde var.</string>
+    <string name="welcome_donate_patreon_title">Patreon</string>
+    <string name="welcome_donate_patreon_tag">Aylık Sponsor</string>
+    <string name="welcome_donate_patreon_subtitle">Sürekli geliştirmeyi ve altyapıyı destekle</string>
+    <string name="welcome_donate_bmac_title">Buy Me a Coffee</string>
+    <string name="welcome_donate_bmac_tag">Tek Seferlik Kahve</string>
+    <string name="welcome_donate_bmac_subtitle">Küçük bir bahşişle gece yarısı kodlama seansına güç ver</string>
+    <string name="welcome_donate_opencollective_title">Open Collective</string>
+    <string name="welcome_donate_opencollective_tag">Topluluk Fonu</string>
+    <string name="welcome_donate_opencollective_subtitle">Şeffaf, topluluk tarafından yönetilen finansal destek</string>
+    <string name="welcome_donate_thanks">Açık müziğe inandığın için tüm kalbimizle teşekkür ederiz.</string>
+    <string name="welcome_donate_optional">Destek tamamen isteğe bağlı — Spotube her durumda ücretsiz kalır.</string>
+    <string name="welcome_donate_action">Sponsor ol</string>
+    <string name="welcome_donate_open_content_description">%1$s sayfasını aç</string>
+
+    <!-- Support / donations -->
+    <string name="support_button_label">Spotube\'u destekle</string>
+    <string name="support_dialog_title">Spotube\'u destekle</string>
+    <string name="support_dialog_message">Spotube ücretsiz, özgür ve açık kaynak — reklam yok, abonelik yok, takip yok. Sana keyif veriyorsa projeyi desteklemeyi düşünebilirsin.</string>
+    <string name="support_dialog_reminder_hint">Bu hatırlatıcıları Ayarlar → Destek bölümünden kapatabilirsin.</string>
+    <string name="support_dialog_dismiss">Belki sonra</string>
+    <string name="settings_support_reminders_title">Destek hatırlatıcıları</string>
+    <string name="settings_support_reminders_subtitle">Projeyi desteklemek için her 7 günde bir nazik bir hatırlatma göster.</string>
+
+    <!-- Page 3: plugins -->
+    <string name="welcome_plugins_eyebrow">Modüler Mimari</string>
+    <string name="welcome_plugins_title">Müziğinin nereden geleceğini seç.</string>
+    <string name="welcome_plugins_subtitle">Spotube katalog keşfini, ses akışını ve senkronize sözleri birbirinden ayırır. Motorlarını aşağıdan yapılandır veya istediğin zaman değiştir.</string>
+    <string name="welcome_plugins_metadata_title">Meta Veri Motoru</string>
+    <string name="welcome_plugins_metadata_description">Müzik keşfini, aramayı, parça listelerini ve çalma listelerini sağlar.</string>
+    <string name="welcome_plugins_audio_title">Ses Motoru</string>
+    <string name="welcome_plugins_audio_description">Çalınan ses akışlarını getirir ve çözer.</string>
+    <string name="welcome_plugins_lyrics_title">Şarkı Sözü Motoru</string>
+    <string name="welcome_plugins_lyrics_description">Zamanla senkronize karaoke sözlerini gerçek zamanlı olarak sunar.</string>
+    <string name="welcome_plugins_scrobble_title">Scrobble Motoru</string>
+    <string name="welcome_plugins_scrobble_description">Dinleme geçmişini Last.fm veya ListenBrainz\'e kaydeder.</string>
+    <string name="welcome_plugins_badge_active">Etkin</string>
+    <string name="welcome_plugins_badge_builtin">Yerleşik</string>
+    <string name="welcome_plugins_badge_ready">Hazır</string>
+    <string name="welcome_plugins_badge_optional">İsteğe bağlı</string>
+    <string name="welcome_plugins_none_selected">Bir motor seç</string>
+    <string name="welcome_plugins_installed_section">Yüklü Motorlar</string>
+    <string name="welcome_plugins_set_default">Varsayılan yap</string>
+    <string name="welcome_plugins_builtin_note">NewPipe YouTube ve LRCLib Lyrics yerleşiktir ve kutudan çıktığı gibi akışa hazırdır.</string>
+    <string name="welcome_plugins_tip">Topluluk eklentilerini istediğin zaman Ayarlar → Eklentiler bölümünden yönetebilir veya yenilerini ekleyebilirsin.</string>
+
+    <!-- Page 4: how it works -->
+    <string name="welcome_how_eyebrow">Retro-Modern Mimari</string>
+    <string name="welcome_how_title">Saf Hi-Fi, sıfır aracı</string>
+    <string name="welcome_how_subtitle">Spotube\'un merkeziyetsiz çalmayı doğrudan cihazında nasıl yönettiğini gör.</string>
+    <string name="welcome_how_status_badge">DOĞRUDAN EŞLER ARASI • 256 KBPS OPUS</string>
+    <string name="welcome_how_mockup_title">Mavi saat</string>
+    <string name="welcome_how_mockup_artist">Spotube · oynatıcı tanıtımı</string>
+    <string name="welcome_how_mockup_lyric">Aradaki anlar için biraz müzik.</string>
+    <string name="welcome_how_step_search_title">1. Merkeziyetsiz Keşif</string>
+    <string name="welcome_how_step_search_desc">Sorgular doğrudan seçtiğin katalog eklentisine gider. Spotube zevkinin profilini asla çıkarmaz.</string>
+    <string name="welcome_how_step_stream_title">2. Doğrudan Akış Çözümleme</string>
+    <string name="welcome_how_step_stream_desc">Ses, içerik sunucularından doğrudan cihazına akar. Proxy aktarması veya uzaktan veri toplama yok.</string>
+    <string name="welcome_how_step_playback_title">3. Yerel DSP ve Çalma</string>
+    <string name="welcome_how_step_playback_desc">Ekolayzer kontrolleri ve isteğe bağlı çevrimdışı indirme ile cihazında çözülür ve önbelleğe alınır.</string>
+    <string name="welcome_how_step_lyrics_title">4. Senkronize Sözler ve Jam</string>
+    <string name="welcome_how_step_lyrics_desc">Karaoke sözleri çalma zamanını takip eder; LAN üzerinden uzaktan kontrol ve Grup Jam de var.</string>
+    <string name="welcome_how_footer">Aracı sunucu yok. Çalma doğrudan cihazında gerçekleşir — tasarımı gereği gizli.</string>
+
+    <!-- Devices: play destination picker -->
+    <string name="devices_destination_title">Bir cihaz seç</string>
+    <string name="devices_destination_prompt">%1$s: “%2$s”</string>
+    <string name="devices_destination_action_play">Çal</string>
+    <string name="devices_destination_action_add_to_queue">Sıraya ekle</string>
+    <string name="devices_destination_action_play_next">Sonra çal</string>
+    <string name="devices_destination_this_device">Bu Cihaz</string>
+    <string name="devices_destination_this_device_subtitle">Bu cihazda</string>
+    <string name="devices_destination_remote_device">Uzak Cihaz</string>
+    <string name="devices_destination_remote_device_host">Uzak Cihaz (%1$s)</string>
+    <string name="devices_destination_remote_subtitle">Bağlı cihazda</string>
+
+    <!-- Devices: connection errors -->
+    <string name="devices_error_connection_failed">Bağlantı başarısız</string>
+    <string name="devices_error_connection_lost">Bağlantı kesildi</string>
+    <string name="devices_error_send_failed">Gönderilemedi</string>
+    <string name="devices_error_discovery_failed">Keşif başarısız: %1$s</string>
+    <string name="devices_error_connect_failed">Bağlanılamadı: %1$s</string>
+
+    <!-- Devices: discovery screen -->
+    <string name="devices_title">Cihazlar</string>
+    <string name="devices_refresh">Yenile</string>
+    <string name="devices_disconnect">Bağlantıyı kes</string>
+    <string name="devices_connecting">Bağlanıyor...</string>
+    <string name="devices_searching">Ağda cihaz aranıyor...</string>
+    <string name="devices_empty">Cihaz bulunamadı</string>
+    <string name="devices_empty_hint">Diğer cihazın ayarlarında \"Uzaktan kontrole izin ver\" seçeneğinin açık olduğundan emin ol.</string>
+    <string name="devices_unknown_device">Bilinmeyen Cihaz</string>
+    <string name="devices_resolving">Çözümleniyor...</string>
+
+    <!-- Devices: remote control screen -->
+    <string name="devices_remote_title">Uzaktan Kontrol</string>
+    <string name="devices_remote_disconnected">Bağlantı kesildi</string>
+    <string name="devices_remote_connection_error">Bağlantı hatası: %1$s</string>
+    <string name="devices_remote_unknown_track">Bilinmeyen Parça</string>
+    <string name="devices_remote_unknown_artist">Bilinmeyen Sanatçı</string>
+    <string name="devices_remote_volume">Ses düzeyi</string>
+    <string name="devices_remote_remove_from_queue">Sıradan kaldır</string>
+    <string name="devices_remote_more_options">Diğer seçenekler</string>
+
+    <!-- Group Jam: play destination picker -->
+    <string name="jam_destination_title">Nerede Çalınsın?</string>
+    <string name="jam_destination_message">Etkin bir Jam oturumun var. Bu koleksiyonun nerede çalınacağını seç.</string>
+    <string name="jam_destination_play_here">Burada çal</string>
+    <string name="jam_destination_suggest">Jam\'e öner</string>
+
+    <!-- Group Jam: connection errors -->
+    <string name="jam_error_connection_failed">Bağlantı başarısız</string>
+    <string name="jam_error_connection_lost">Bağlantı kesildi</string>
+
+
+    <!-- Group Jam: queue snackbar -->
+    <string name="jam_queue_added_track">Jam sırasına eklendi</string>
+    <plurals name="jam_queue_added_tracks">
+        <item quantity="one">%1$d parça Jam sırasına eklendi</item>
+        <item quantity="other">%1$d parça Jam sırasına eklendi</item>
+    </plurals>
+
+    <!-- Remote control: connection request dialog -->
+    <string name="remote_request_title">Uzaktan Kontrol İsteği</string>
+    <string name="remote_request_message">\"%1$s\" bu cihazda çalmayı kontrol etmek istiyor.</string>
+    <string name="remote_request_deny">Reddet</string>
+    <string name="remote_request_allow">İzin ver</string>
+    <string name="remote_request_allow_always">Her Zaman İzin Ver</string>
+
+    <!-- Search -->
+    <string name="search_results_title">Arama sonuçları</string>
+    <string name="search_tab_all">Tümü</string>
+    <string name="search_section_tracks">Parçalar</string>
+    <string name="search_section_users">Kullanıcılar</string>
+    <string name="search_no_search_types">Kullanılabilir arama türü yok</string>
+    <string name="search_start_typing">Aramak için yazmaya başla</string>
+    <string name="search_start_typing_tracks">Parça aramak için yazmaya başla</string>
+    <string name="search_no_results">Sonuç bulunamadı</string>
+    <string name="search_see_all">Tümünü gör</string>
+    <string name="search_searching">Aranıyor</string>
+    <string name="search_loading_tracks">Parçalar yükleniyor...</string>
+    <string name="search_loading_albums">Albümler yükleniyor...</string>
+    <string name="search_loading_artists">Sanatçılar yükleniyor...</string>
+    <string name="search_loading_playlists">Çalma listeleri yükleniyor...</string>
+    <string name="search_loading_users">Kullanıcılar yükleniyor...</string>
+    <string name="search_no_albums">Albüm bulunamadı</string>
+    <string name="search_no_artists">Sanatçı bulunamadı</string>
+    <string name="search_no_playlists">Çalma listesi bulunamadı</string>
+    <string name="search_no_users">Kullanıcı bulunamadı</string>
+    <string name="search_warm_crates">Plak kasaları karıştırılıyor...</string>
+    <string name="search_warm_cosmos">Evren taranıyor...</string>
+    <string name="search_warm_speakers">Hoparlörler ısınıyor...</string>
+    <string name="search_warm_vinyl">Plakların tozu alınıyor...</string>
+    <string name="search_warm_music_gods">Müzik tanrılarına danışılıyor...</string>
+    <string name="search_warm_antennas">Antenler ayarlanıyor...</string>
+    <string name="search_warm_records">Plaklar karıştırılıyor...</string>
+    <string name="search_error_capabilities">Arama özellikleri yüklenemedi</string>
+    <string name="search_error_search">Arama yapılamadı</string>
+    <string name="search_error_tracks">Parçalar aranamadı</string>
+    <string name="search_error_albums">Albümler aranamadı</string>
+    <string name="search_error_artists">Sanatçılar aranamadı</string>
+    <string name="search_error_playlists">Çalma listeleri aranamadı</string>
+    <string name="search_error_users">Kullanıcılar aranamadı</string>
+
+    <!-- Home -->
+    <string name="home_title_browse">Göz at</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_mode_synced">Senkronize</string>
+    <string name="lyrics_mode_plain">Düz</string>
+    <string name="lyrics_no_synced">Senkronize şarkı sözü yok</string>
+    <string name="lyrics_no_plain">Düz şarkı sözü yok</string>
+
+    <!-- Settings: audio format/quality labels -->
+    <string name="settings_audio_format_label">%2$s içinde %1$s</string>
+    <string name="settings_audio_quality_lossy">%1$d kbps</string>
+    <string name="settings_audio_quality_lossless">%1$s kHz • %2$d kanal</string>
+    <string name="search_error_no_metadata_plugin">Meta veri eklentisi seçilmedi</string>
+
+    <!-- Common -->
+    <string name="common_back">Geri</string>
+    <string name="common_retry">Tekrar dene</string>
+    <string name="common_close_dialog">İletişim kutusunu kapat</string>
+    <string name="common_loading">Yükleniyor...</string>
+    <string name="common_unknown">Bilinmiyor</string>
+    <string name="common_unknown_error">Bilinmeyen hata</string>
+
+    <!-- Media cards -->
+    <string name="media_user">Kullanıcı</string>
+    <string name="media_playlist">Çalma listesi</string>
+
+    <!-- Error display -->
+    <string name="error_title">Gerçekten Üzgünüz</string>
+    <string name="error_description">Şu anda bir şeyler düzgün çalışmıyor. Deneyimin bizim için önemli ve bunu düzeltmek için elimizden geleni yapıyoruz. Lütfen tekrar dene veya aşağıdaki hata ayrıntılarına göz at.</string>
+    <string name="error_details">Hata Ayrıntıları</string>
+    <string name="error_copy_to_clipboard">Panoya kopyala</string>
+    <string name="error_view_full_log">Tam günlüğü görüntüle</string>
+    <string name="error_full_log_title">Tam Hata Günlüğü</string>
+
+    <!-- Collection details -->
+    <string name="collection_details_shuffle">Karıştır</string>
+    <string name="collection_details_shuffle_play">Karışık çal</string>
+    <string name="collection_details_follow">Takip et</string>
+    <string name="collection_details_unfollow">Takibi bırak</string>
+    <string name="collection_details_edit_playlist">Çalma listesini düzenle</string>
+    <string name="collection_details_by_owner">%1$s tarafından</string>
+
+    <!-- Track options -->
+    <string name="track_options_title">Parça seçenekleri</string>
+    <string name="track_options_add_to_jam">Jam\'e ekle</string>
+    <string name="track_options_start_radio">Radyo başlat</string>
+    <string name="track_options_play_next">Sonra çal</string>
+    <string name="track_options_move_to_next">Sıradakine taşı</string>
+    <string name="track_options_remove_from_queue">Sıradan kaldır</string>
+    <string name="track_options_remove_from_favorites">Favorilerden kaldır</string>
+    <string name="track_options_save_as_favorite">Favorilere kaydet</string>
+    <string name="track_options_add_to_playlist">Çalma listesine ekle</string>
+    <string name="track_options_download">İndir</string>
+    <string name="track_options_share">Paylaş</string>
+
+    <!-- Track list -->
+    <string name="track_list_sort_original">Orijinal</string>
+    <string name="track_list_sort_title">Başlık</string>
+    <string name="track_list_sort_artist">Sanatçı</string>
+    <string name="track_list_sort_album">Albüm</string>
+    <string name="track_list_sort_duration">Süre</string>
+    <string name="track_list_sort">Sırala</string>
+    <string name="track_list_no_tracks">Parça bulunamadı</string>
+    <string name="track_list_filter_placeholder">Filtrele</string>
+    <string name="track_list_bulk_actions">Toplu işlemler</string>
+    <string name="track_list_download_all">Tümünü İndir</string>
+    <string name="track_list_download_count">%1$d Parçayı İndir</string>
+    <string name="track_list_add_all_to_queue">Tümünü Sıraya Ekle</string>
+    <string name="track_list_add_count_to_queue">%1$d Parçayı Sıraya Ekle</string>
+    <string name="track_list_play_all_next">Tümünü Sonra Çal</string>
+    <string name="track_list_play_count_next">%1$d Parçayı Sonra Çal</string>
+    <string name="track_list_add_all_to_playlist">Tümünü Çalma Listesine Ekle</string>
+    <string name="track_list_add_count_to_playlist">%1$d Parçayı Çalma Listesine Ekle</string>
+    <string name="track_list_add_all_to_jam">Tümünü Jam\'e Ekle</string>
+    <string name="track_list_add_count_to_jam">%1$d Parçayı Jam\'e Ekle</string>
+    <string name="track_list_more_artists">+%1$d kişi daha</string>
+
+    <!-- WebView -->
+    <string name="webview_no_url">Yüklenecek URL yok</string>
+    <string name="webview_go_back">Tarayıcı geçmişinde geri git</string>
+    <string name="webview_go_forward">Tarayıcı geçmişinde ileri git</string>
+
+    <!-- Blacklist -->
+    <string name="blacklist_filter_placeholder">Kara listeyi filtrele...</string>
+    <string name="blacklist_empty">Kara listede öğe yok</string>
+    <string name="blacklist_no_results">Kara listede \'%1$s\' ile eşleşen öğe yok</string>
+    <string name="blacklist_section_tracks">Parçalar</string>
+    <string name="blacklist_item_track">Parça</string>
+    <string name="blacklist_add">Kara listeye ekle</string>
+    <string name="blacklist_remove">Kara listeden kaldır</string>
+
+    <!-- Downloads -->
+    <string name="downloads_error_no_metadata">Parça meta verisi yok</string>
+    <string name="downloads_error_stream_unresolved_short">Akış URL\'si çözümlenemedi</string>
+    <string name="downloads_error_stream_unresolved">Akış URL\'si çözümlenemedi. Önce parçayı çalmayı dene.</string>
+
+    <!-- Saved tracks -->
+    <string name="saved_tracks_title">Kayıtlı Parçalar</string>
+    <string name="saved_tracks_owner_you">Sen</string>
+
+    <!-- Artist -->
+    <string name="artist_following">Takip ediliyor</string>
+    <string name="artist_top_tracks">Popüler Parçalar</string>
+    <string name="artist_play_top_tracks">Popüler parçaları çal</string>
+    <string name="artist_add_top_tracks_to_queue">Popüler parçaları sıraya ekle</string>
+    <string name="artist_related_artists">Benzer Sanatçılar</string>
+    <string name="artist_featured_playlists">Öne Çıkan Çalma Listeleri</string>
+    <string name="artist_error_load_failed">Sanatçı sayfası yüklenemedi</string>
+    <string name="artist_followers_unavailable">Takipçi sayısı kullanılamıyor</string>
+    <string name="artist_followers_thousands">%1$s B takipçi</string>
+    <string name="artist_followers_millions">%1$s Mn takipçi</string>
+    <string name="artist_followers_billions">%1$s Mr takipçi</string>
+    <plurals name="artist_followers_count">
+        <item quantity="one">%1$d takipçi</item>
+        <item quantity="other">%1$d takipçi</item>
+    </plurals>
+
+    <!-- Player -->
+    <string name="player_like_content_description">Beğen</string>
+    <string name="player_unlike_content_description">Beğenmekten vazgeç</string>
+    <string name="player_fallback_title">Yer tutucu parça adı</string>
+    <string name="player_fallback_artists">Yer tutucu sanatçılar</string>
+    <string name="player_unknown_album">Bilinmeyen Albüm</string>
+    <string name="player_seek_label">Konum</string>
+    <string name="player_volume_label">Ses düzeyi</string>
+    <string name="player_enable_shuffle_content_description">Karıştırmayı aç</string>
+    <string name="player_disable_shuffle_content_description">Karıştırmayı kapat</string>
+    <string name="player_previous_content_description">Önceki</string>
+    <string name="player_next_content_description">Sonraki</string>
+    <string name="player_play_or_pause_content_description">Çal veya duraklat</string>
+    <string name="player_loop_mode_none">Tekrar kapalı</string>
+    <string name="player_loop_mode_one">Bir parçayı tekrarla</string>
+    <string name="player_loop_mode_all">Tümünü tekrarla</string>
+    <string name="player_mute_content_description">Sesi kapat</string>
+    <string name="player_unmute_content_description">Sesi aç</string>
+    <string name="player_more_options_content_description">Diğer seçenekler</string>
+    <string name="player_options_content_description">Oynatıcı seçenekleri</string>
+    <string name="player_collapse_content_description">Oynatıcıyı daralt</string>
+    <string name="player_expand_lyrics_content_description">Sözleri genişlet</string>
+    <string name="player_now_playing">Şu An Çalıyor</string>
+    <string name="player_lyrics">Şarkı Sözleri</string>
+    <string name="player_alternative_source">Alternatif Kaynak</string>
+    <string name="player_alternative_source_content_description">Alternatif kaynak</string>
+    <string name="player_download">İndir</string>
+    <string name="player_download_status_downloaded">İndirildi</string>
+    <string name="player_download_status_downloading">İndiriliyor...</string>
+    <string name="player_download_already_downloaded">Zaten indirildi</string>
+    <string name="player_download_retrying">İndirme yeniden deneniyor...</string>
+    <string name="player_download_started">%1$s indiriliyor</string>
+    <string name="player_sleep_timer_remaining">Çalma %1$s sonra duraklatılacak.</string>
+    <string name="player_sleep_timer_description">Seçilen dakika sayısından sonra çalmayı duraklat.</string>
+    <string name="player_sleep_timer_minutes_label">Dakika</string>
+    <string name="player_sleep_timer_minutes_placeholder">1 ile 600 dakika arasında seç</string>
+    <string name="player_sleep_timer_cancel">Zamanlayıcıyı iptal et</string>
+    <string name="player_sleep_timer_start">Başlat</string>
+    <string name="player_track_details_stream_mismatch">Çalma URL\'si farklı akış ayarlarıyla çözümlendi. Vurgulanan akış geçerli tercihinle eşleşiyor; etkin URL bir sonraki akış isteğinde yenilenir.</string>
+    <string name="player_track_details_matched_source">Eşleşen ses kaynağı</string>
+    <string name="player_track_details_loading_source">Eşleşen kaynak yükleniyor…</string>
+    <string name="player_track_details_source_not_needed">Önbellekteki yerel dosya çalınırken eşleşen bir uzak kaynağa gerek yok.</string>
+    <string name="player_track_details_no_source">Eşleşen kaynak yok.</string>
+    <string name="player_track_details_no_cached_source">Bu parça için önbellekte eşleşen ses kaynağı yok.</string>
+    <string name="player_track_details_streams_not_cached">Akış ayrıntıları henüz önbelleğe alınmadı. Yüklemek için önce parçayı çal.</string>
+    <string name="player_track_details_load_failed">Parça ayrıntıları yüklenemedi.</string>
+    <string name="player_track_details_available_streams">Kullanılabilir akışlar</string>
+    <string name="player_track_details_served_from_cache_description">Bu parça yerel önbellekten çalınıyor. Bu çalma için akış varyantları kullanılmıyor.</string>
+    <string name="player_track_details_loading_streams">Akışlar yükleniyor…</string>
+    <string name="player_track_details_no_streams">Bu kaynak için kullanılabilir akış yok.</string>
+    <string name="player_track_details_selected_stream_content_description">Şu an seçili akış</string>
+    <string name="player_track_details_matches_preference">Akış biçimi ve kalite tercihinle eşleşiyor</string>
+    <string name="player_track_details_active_url">Etkin çalma URL\'si</string>
+    <string name="player_track_details_served_from_cache">Yerel önbellekten</string>
+    <string name="player_track_details_metadata_track">Meta veri parçası</string>
+    <string name="player_track_details_title">Başlık</string>
+    <string name="player_track_details_id">Kimlik</string>
+    <string name="player_track_details_album">Albüm</string>
+    <string name="player_track_details_confidence">Eşleşme güveni</string>
+    <string name="player_track_details_external_uri">Harici URI</string>
+    <string name="player_track_details_album_id">Albüm kimliği</string>
+    <string name="player_track_details_album_type">Albüm türü</string>
+    <string name="player_track_details_album_release_date">Albüm çıkış tarihi</string>
+    <string name="player_track_details_album_track_count">Albümdeki parça sayısı</string>
+    <string name="player_track_details_album_genres">Albüm türleri</string>
+    <string name="player_track_details_duration">Süre</string>
+    <string name="player_track_details_track_number">Parça numarası</string>
+    <string name="player_track_details_disc_number">Disk numarası</string>
+    <string name="player_track_details_explicit">Müstehcen</string>
+    <string name="player_track_details_popularity">Popülerlik</string>
+    <string name="player_track_details_isrc">ISRC</string>
+    <string name="player_track_details_thumbnail_urls">Küçük resim URL\'leri</string>
+
+    <!-- Shell -->
+    <string name="shell_sidebar_toggle_content_description">Kenar çubuğunu aç/kapat</string>
+
+    <!-- Alternative track -->
+    <string name="alternative_track_title">Alternatif Kaynaklar</string>
+    <string name="alternative_track_no_track">Şu anda çalan parça yok</string>
+    <string name="alternative_track_searching">Alternatif kaynaklar aranıyor...</string>
+    <string name="alternative_track_empty">Alternatif kaynak bulunamadı</string>
+    <string name="alternative_track_confidence">Eşleşme: %1$d%</string>
+    <string name="alternative_track_active_source">Etkin kaynak</string>
+
+    <!-- Queue -->
+    <string name="queue_participant_kick">At</string>
+    <string name="queue_participant_kick_description">Oturumdan çıkar</string>
+    <string name="queue_participant_ban_description">At ve yeniden katılmasını engelle</string>
+    <string name="queue_participant_remove_suggestions">Önerileri kaldır</string>
+    <string name="queue_participant_remove_suggestions_description">Sıraya eklediği tüm parçaları kaldır</string>
+    <string name="queue_reorder_content_description">Yeniden sırala</string>
+    <string name="queue_remove_from_queue">Sıradan kaldır</string>
+    <string name="queue_item_subtitle_added_by">%1$s • Ekleyen: %2$s</string>
+
+    <!-- Playlist -->
+    <string name="playlist_owner_unknown">Bilinmiyor</string>
+    <string name="playlist_loading_title">Çalma listesi yükleniyor...</string>
+    <string name="playlist_add_tracks_button">Parça Ekle</string>
+    <string name="playlist_add_tracks_title">Çalma Listesine Parça Ekle</string>
+    <string name="playlist_add_tracks_search_placeholder">Parça ara...</string>
+    <string name="playlist_add_tracks_search_content_description">Ara</string>
+    <string name="playlist_add_tracks_no_results">Parça bulunamadı</string>
+    <string name="playlist_add_tracks_hint">Eklemek için parça ara</string>
+    <string name="playlist_add_tracks_done">Bitti</string>
+    <string name="playlist_add_tracks_add">Ekle</string>
+    <string name="playlist_add_tracks_added_content_description">Eklendi</string>
+
+    <!-- Album -->
+    <string name="album_loading_title">Albüm yükleniyor...</string>
+
+    <!-- Library -->
+    <string name="library_add_to_playlist_title">Çalma Listene Ekle</string>
+    <string name="library_add_to_playlist_search_content_description">Ara</string>
+    <string name="library_add_to_playlist_search_placeholder">Çalma listelerinde ara...</string>
+    <string name="library_add_to_playlist_loading">Çalma listelerin yükleniyor...</string>
+    <string name="library_add_to_playlist_empty">Henüz sana ait bir çalma listesi yok.\nParça eklemek için bir tane oluştur.</string>
+    <string name="library_playlist_form_create_title">Çalma Listesi Oluştur</string>
+    <string name="library_playlist_form_edit_title">Çalma Listesini Düzenle</string>
+    <string name="library_playlist_form_create">Oluştur</string>
+    <string name="library_playlist_form_name_label">Ad</string>
+    <string name="library_playlist_form_name_placeholder">Çalma listesi adı</string>
+    <string name="library_playlist_form_description_label">Açıklama</string>
+    <string name="library_playlist_form_description_placeholder">Açıklama (isteğe bağlı)</string>
+    <string name="library_playlist_form_public">Herkese açık</string>
+    <string name="library_playlist_form_public_description">Bu çalma listesini herkes görebilir</string>
+    <string name="library_playlist_form_collaborative">Ortak</string>
+    <string name="library_playlist_form_collaborative_description">Başkaları bu çalma listesine parça ekleyebilir</string>
+    <string name="library_playlist_form_cover_image">Kapak Görseli</string>
+    <string name="library_playlist_form_cover_content_description">Çalma listesi kapağı</string>
+    <string name="library_playlist_form_no_image">Görsel yok</string>
+    <string name="library_playlist_form_change_image">Görseli Değiştir</string>
+    <string name="library_playlist_form_pick_image">Görsel Seç</string>
+
+    <!-- Plugin install / errors -->
+    <string name="plugin_action_install">Yükle</string>
+    <string name="plugin_action_replace">Değiştir</string>
+    <string name="plugin_error_plugin_json_missing">Zip dosyasında plugin.json bulunamadı</string>
+    <string name="plugin_error_zipline_manifest_missing">Zip dosyasında manifest.zipline.json bulunamadı</string>
+    <string name="plugin_error_invalid_plugin_json">Geçersiz plugin.json biçimi: %1$s</string>
+    <string name="plugin_error_read_failed">Eklenti okunamadı: %1$s</string>
+    <string name="plugin_error_install_failed">Eklenti yüklenemedi: %1$s</string>
+    <string name="plugin_error_update_needs_confirmation">%1$s için daha yeni bir sürüm var. Yüklemeden önce güncellemeyi onayla.</string>
+    <string name="plugin_error_replace_needs_confirmation">%1$s zaten yüklü. Yüklemeden önce değiştirmeyi onayla.</string>
+    <string name="plugin_error_builtin_add">Yerleşik eklentiler zaten dahil ve tekrar eklenemez.</string>
+    <string name="plugin_error_builtin_remove">Yerleşik eklentiler kaldırılamaz.</string>
+    <string name="plugin_error_api_version_invalid">%1$s geçersiz bir apiVersion (%2$s) bildiriyor. %3$s ile uyumlu anlamsal sürümleme bekleniyor.</string>
+    <string name="plugin_error_app_api_version_invalid">Spotube eklenti API sürümü %1$s geçersiz.</string>
+    <string name="plugin_error_api_incompatible">%1$s, eklenti API\'si %2$s hedefliyor ancak Spotube uyumsuz eklenti API\'si %3$s destekliyor. Aynı ana API sürümü için derlenmiş bir eklenti yükle.</string>
+
+    <!-- Plugin install prompts -->
+    <string name="plugin_prompt_incompatible_title">Eklenti API\'si uyumlu değil</string>
+    <string name="plugin_prompt_install_title">Eklenti yüklensin mi?</string>
+    <string name="plugin_prompt_install_message">%1$s yüklü eklentilerine eklenecek.</string>
+    <string name="plugin_prompt_update_title">Eklenti güncellensin mi?</string>
+    <string name="plugin_prompt_update_message">Daha eski bir sürüm yüklü (%1$s). %2$s sürümüne güncellensin mi?</string>
+    <string name="plugin_prompt_replace_title">Yüklü eklenti değiştirilsin mi?</string>
+    <string name="plugin_prompt_replace_invalid_incoming">%1$s geçersiz bir anlamsal sürüm (%2$s) kullanıyor ve güncelleme olarak karşılaştırılamıyor. Yüklü eklenti yine de değiştirilsin mi?</string>
+    <string name="plugin_prompt_replace_invalid_installed">Yüklü sürüm (%1$s) anlamsal sürümlemeyle karşılaştırılamıyor. %2$s ile değiştirilsin mi?</string>
+    <string name="plugin_prompt_replace_same_version">%1$s sürümü zaten yüklü. Mevcut eklenti sağlanan kopyayla değiştirilsin mi?</string>
+    <string name="plugin_prompt_replace_downgrade">Yüklü %1$s sürümü, sağlanan %2$s sürümünden daha yeni. Yine de değiştirilsin mi?</string>
+    <string name="plugin_prompt_replace_generic">Yüklü eklenti sağlanan kopyayla değiştirilsin mi?</string>
+
+    <!-- Plugin info dialog -->
+    <string name="plugin_info_label_format">%1$s:</string>
+    <string name="plugin_info_version">Sürüm</string>
+    <string name="plugin_info_api_version">API Sürümü</string>
+    <string name="plugin_info_author">Geliştirici</string>
+    <string name="plugin_info_license">Lisans</string>
+    <string name="plugin_info_capabilities">Yetenekler</string>
+    <string name="plugin_info_abilities">İşlevler</string>
+    <string name="plugin_info_repository">Depo</string>
+    <string name="plugin_info_contact">İletişim</string>
+    <string name="plugin_info_report_bugs">Hata Bildir</string>
+    <string name="plugin_support_dialog_title">%1$s eklentisini destekle</string>
+
+    <!-- Plugin discovery -->
+    <string name="plugin_discover_badge_official">Resmi</string>
+    <string name="plugin_discover_badge_verified">Doğrulanmış</string>
+    <string name="plugin_discover_stars_content_description">GitHub yıldızları</string>
+    <string name="plugin_discover_repository_content_description">GitHub depo URL\'si</string>
+
+    <!-- Plugin release install dialog -->
+    <string name="plugin_install_no_releases">Sürüm bulunamadı</string>
+    <string name="plugin_install_select_release_label">Sürüm Seç</string>
+    <string name="plugin_install_select_release_placeholder">Bir sürüm seç</string>
+    <string name="plugin_install_prerelease">Ön sürüm</string>
+    <string name="plugin_install_release_notes">Sürüm Notları</string>
+
+    <!-- App navigation -->
+    <string name="nav_home">Ana sayfa</string>
+    <string name="nav_search">Ara</string>
+    <string name="nav_group_on_device">Cihazda</string>
+    <string name="nav_group_connect">Bağlan</string>
+    <string name="nav_devices">Cihazlar</string>
+
+    <!-- System tray (desktop) -->
+    <string name="tray_hide_window">Pencereyi Gizle</string>
+    <string name="tray_show_window">Pencereyi Göster</string>
+    <string name="tray_next_track">Sonraki Parça</string>
+    <string name="tray_previous_track">Önceki Parça</string>
+    <string name="tray_shuffle">Karıştır</string>
+    <string name="tray_loop">Tekrarla</string>
+    <string name="tray_loop_off">Tekrar: KAPALI</string>
+    <string name="tray_loop_one">Tekrar: BİR</string>
+    <string name="tray_loop_all">Tekrar: TÜMÜ</string>
+    <string name="tray_volume">Ses düzeyi: %1$d%</string>
+    <string name="tray_volume_up">Ses +</string>
+    <string name="tray_volume_down">Ses -</string>
+    <string name="tray_mute">Sesi Kapat</string>
+    <string name="tray_unmute">Sesi Aç</string>
+    <string name="tray_like_track">Parçayı Beğen</string>
+    <string name="tray_unlike_track">Beğenmekten Vazgeç</string>
+    <string name="tray_exit">Çıkış</string>
+
+    <!-- Desktop window controls -->
+    <string name="app_window_minimize">Simge durumuna küçült</string>
+    <string name="app_window_maximize">Ekranı kapla</string>
+    <string name="app_window_restore">Önceki boyuta getir</string>
+    <string name="app_window_close">Kapat</string>
+
+    <!-- Android playback notification -->
+    <string name="notification_playback_channel_name">Çalma</string>
+    <string name="notification_playback_channel_description">Medya çalma kontrolleri</string>
+
+    <!-- Android Auto / media browser -->
+    <string name="media_browser_browse">Göz at</string>
+    <string name="media_browser_now_playing">Şu An Çalıyor</string>
+    <string name="media_browser_featured">Öne Çıkanlar</string>
+    <string name="media_browser_saved_tracks">Kayıtlı Parçalar</string>
+    <string name="media_browser_top_tracks">Popüler Parçalar</string>
+</resources>

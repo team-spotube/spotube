@@ -3,6 +3,7 @@
   "mcp": {
     "compose-hot-reload": {
       "enabled": true,
+      "disabled": false,
       "type": "local",
       "command": [
         "./gradlew",
@@ -11,6 +12,10 @@
         "--console=plain",
         "hotMcpServer"
       ]
+    },
+    "studio": {
+      "url": "http://127.0.0.1:64342/stream",
+      "type": "remote"
     }
   }
 }

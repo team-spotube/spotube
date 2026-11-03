@@ -14,12 +14,16 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import SwiftUI
+import ComposeApp
 
 @main
 struct iOSApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .onOpenURL { url in
+                    ExternalUriHandler.shared.onNewUri(uri: url.absoluteString)
+                }
         }
     }
 }

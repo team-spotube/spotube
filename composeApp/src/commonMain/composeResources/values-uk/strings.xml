@@ -1,0 +1,938 @@
+<!--
+  ~ Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="queue_title">Черга</string>
+    <string name="queue_clear_queue">Очистити чергу</string>
+    <string name="queue_filter_queue">Фільтр черги...</string>
+    <string name="queue_no_queue_entries">Черга порожня</string>
+
+    <string name="search_placeholder">Треки, виконавці, альбоми...</string>
+    <string name="search_clear_history">Очистити історію</string>
+    <string name="search_filter_placeholder">Пошук...</string>
+
+    <!-- Library toolbar -->
+    <string name="library_screen_title">Моя бібліотека</string>
+    <string name="library_toolbar_compact_title">Бібліотека</string>
+    <string name="library_tab_playlists">Плейлисти</string>
+    <string name="library_tab_albums">Альбоми</string>
+    <string name="library_tab_artists">Виконавці</string>
+    <string name="library_tab_local_tracks">Локальні треки</string>
+    <string name="library_tab_downloads">Завантаження</string>
+    <string name="library_filter_playlists">Пошук у збережених плейлистах…</string>
+    <string name="library_filter_albums">Пошук у збережених альбомах…</string>
+    <string name="library_filter_artists">Пошук серед збережених виконавців…</string>
+    <string name="library_filter_local_tracks">Пошук папок або треків…</string>
+    <string name="library_action_search">Фільтр бібліотеки</string>
+    <string name="library_action_close_search">Закрити фільтр</string>
+    <string name="library_action_create_playlist">Створити плейлист</string>
+    <string name="library_action_refresh_local_tracks">Оновити локальні треки</string>
+    <string name="library_action_grid_view">Показати сіткою</string>
+    <string name="library_action_list_view">Показати списком</string>
+    <string name="library_playlists_empty">Немає збережених плейлистів</string>
+    <string name="library_playlists_no_results">Немає плейлистів за запитом «%1$s»</string>
+    <string name="library_albums_empty">Немає збережених альбомів</string>
+    <string name="library_albums_no_results">Немає альбомів за запитом «%1$s»</string>
+    <string name="library_artists_empty">Немає збережених виконавців</string>
+    <string name="library_artists_no_results">Немає виконавців за запитом «%1$s»</string>
+
+    <!-- Local media -->
+    <string name="library_local_folders">Папки</string>
+    <string name="library_local_folder">Папка</string>
+    <string name="library_local_summary">%1$s • %2$s</string>
+    <plurals name="library_local_tracks_count">
+        <item quantity="one">%1$d трек</item>
+        <item quantity="few">%1$d треки</item>
+        <item quantity="many">%1$d треків</item>
+        <item quantity="other">%1$d трека</item>
+    </plurals>
+    <plurals name="library_local_folders_count">
+        <item quantity="one">%1$d папка</item>
+        <item quantity="few">%1$d папки</item>
+        <item quantity="many">%1$d папок</item>
+        <item quantity="other">%1$d папки</item>
+    </plurals>
+    <string name="library_local_back">Назад до папок</string>
+    <string name="library_local_play_folder">Слухати папку</string>
+    <string name="library_local_permission_title">Потрібен доступ до аудіо</string>
+    <string name="library_local_permission_description">Дозвольте доступ до аудіо, щоб переглядати музику на пристрої.</string>
+    <string name="library_local_grant_access">Надати доступ</string>
+    <string name="library_local_empty_folders">Локальних папок не знайдено</string>
+    <string name="library_local_empty_tracks">У цій папці немає треків</string>
+    <string name="library_local_no_results">Немає відповідних папок або треків</string>
+    <string name="library_local_refresh_failed">Не вдалося оновити локальні файли</string>
+
+    <!-- Downloads -->
+    <string name="downloads_summary">Активних: %1$d • Завершених: %2$d</string>
+    <string name="downloads_clear_completed">Очистити завершені</string>
+    <string name="downloads_empty">Завантажень поки немає</string>
+    <string name="downloads_status_downloading">Завантаження %1$d%</string>
+    <string name="downloads_status_queued">У черзі</string>
+    <string name="downloads_status_completed">Завершено</string>
+    <string name="downloads_status_cancelled">Скасовано</string>
+    <string name="downloads_status_failed">Помилка</string>
+    <string name="downloads_status_failed_error">Помилка: %1$s</string>
+    <string name="downloads_action_cancel">Скасувати завантаження</string>
+    <string name="downloads_action_retry">Повторити завантаження</string>
+    <string name="downloads_action_remove">Видалити завантаження</string>
+
+    <!-- Shared media items -->
+    <string name="media_artist">Виконавець</string>
+    <string name="media_blacklisted">У чорному списку</string>
+    <string name="media_liked_tracks">Улюблені треки</string>
+    <string name="media_saved_songs">Ваші збережені треки</string>
+    <string name="media_unknown_artist">Невідомий виконавець</string>
+    <string name="media_preview_title">Назва треку</string>
+    <string name="media_preview_subtitle">Ім’я виконавця</string>
+
+    <string name="accessibility_selected">Вибрано</string>
+
+    <string name="settings_screen_title">Налаштування</string>
+
+    <string name="settings_section_plugins">Плагіни</string>
+    <string name="settings_section_language_region">Мова та регіон</string>
+    <string name="settings_section_appearance">Оформлення</string>
+    <string name="settings_section_playback">Відтворення</string>
+    <string name="settings_section_downloads">Завантаження</string>
+    <string name="settings_section_caching">Кешування</string>
+    <string name="settings_section_desktop">Комп’ютер</string>
+    <string name="settings_section_updates">Оновлення</string>
+    <string name="settings_section_support">Підтримка</string>
+    <string name="settings_section_about">Про застосунок</string>
+
+    <string name="common_close">Закрити</string>
+    <string name="common_save">Зберегти</string>
+    <string name="common_cancel">Скасувати</string>
+
+    <string name="settings_language_title">Мова</string>
+    <string name="settings_language_subtitle_current">Мова інтерфейсу застосунку. Зараз: %1$s</string>
+    <string name="settings_language_system_default">Як у системі</string>
+    <string name="settings_country_title">Країна</string>
+    <string name="settings_country_subtitle_current">Країна для контенту та доступності. Зараз: %1$s</string>
+    <string name="settings_option_name_and_code">%1$s (%2$s)</string>
+
+    <string name="settings_theme_title">Тема</string>
+    <string name="settings_theme_subtitle_current">Як Spotube підлаштовується під тему системи. Зараз: %1$s</string>
+    <string name="settings_theme_light">Світла</string>
+    <string name="settings_theme_dark">Темна</string>
+    <string name="settings_theme_system">Системна</string>
+
+    <string name="settings_surface_theme_title">Поверхня</string>
+    <string name="settings_surface_theme_subtitle_current">Фоновий матеріал застосунку. Зараз: %1$s</string>
+    <string name="settings_surface_watery">Вода</string>
+    <string name="settings_surface_icy">Лід</string>
+    <string name="settings_surface_chrome">Хром</string>
+    <string name="settings_surface_acrylic">Акрил</string>
+    <string name="settings_surface_glass">Скло</string>
+
+    <string name="settings_accent_title">Акцентний колір</string>
+    <string name="settings_accent_subtitle_current">Поточна палітра: %1$s</string>
+    <string name="settings_accent_dialog_title">Акцентний колір</string>
+    <string name="settings_accent_dialog_description">Виберіть акцентну палітру й подивіться, як вона виглядає у світлій і темній темах.</string>
+    <string name="settings_preview_light">Світла</string>
+    <string name="settings_preview_dark">Темна</string>
+    <string name="settings_preview_label">Попередній перегляд</string>
+    <string name="settings_preview_button">Кнопка</string>
+    <string name="settings_accent_green_goblin">Зелений гоблін</string>
+    <string name="settings_accent_electric_violet">Електрик-фіолетовий</string>
+    <string name="settings_accent_oceanic_cyan">Океанський ціан</string>
+    <string name="settings_accent_sunset_orange">Помаранчевий захід</string>
+    <string name="settings_accent_rose_garden">Трояндовий сад</string>
+    <string name="settings_accent_midnight_blue">Опівнічний синій</string>
+    <string name="settings_accent_metallic_slate">Металік-графіт</string>
+
+    <string name="settings_appearance_title">Зовнішній вигляд</string>
+    <string name="settings_appearance_subtitle_current">Матеріал поверхні й акцент. Зараз: %1$s · %2$s</string>
+    <string name="settings_appearance_dialog_title">Зовнішній вигляд</string>
+    <string name="settings_appearance_dialog_description">Виберіть матеріал поверхні, а потім відповідний акцент. Кожен варіант — продумане поєднання.</string>
+    <string name="settings_appearance_surface_label">Поверхня</string>
+    <string name="settings_appearance_accent_label">Акцент</string>
+    <string name="settings_preview_secondary">Другорядна</string>
+
+    <string name="settings_palette_title">Палітра</string>
+    <string name="settings_palette_subtitle_current">Акцентна палітра Millennium. Зараз: %1$s</string>
+    <string name="settings_palette_dialog_title">Палітра</string>
+    <string name="settings_palette_dialog_description">Виберіть акцентну палітру Millennium і перегляньте її у світлій і темній темах.</string>
+    <string name="settings_palette_label">Палітра</string>
+    <string name="settings_appearance_subtitle_palette">Палітра Millennium і акцент. Зараз: %1$s</string>
+    <string name="settings_palette_blue">Синя</string>
+    <string name="settings_palette_orange">Помаранчева</string>
+    <string name="settings_palette_lime">Лаймова</string>
+
+    <string name="settings_download_folder_title">Власна папка для завантажень</string>
+    <string name="settings_download_folder_current">Поточна папка: %1$s</string>
+    <string name="settings_download_folder_description">Залиште порожнім, щоб використовувати стандартну папку «Музика».</string>
+    <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
+    <string name="settings_local_media_folders_title">Папки з локальною музикою</string>
+    <string name="settings_local_media_folders_subtitle_current">Додаткові папки для сканування на комп’ютері. Додано: %1$d</string>
+    <string name="settings_local_media_folders_subtitle_empty">Додаткових папок ще не додано</string>
+    <string name="settings_local_media_folders_description">Додаткові папки для вашої локальної бібліотеки.</string>
+    <string name="settings_local_media_folders_manage">Керувати</string>
+    <string name="settings_local_media_folders_add_action">Додати папку</string>
+    <string name="settings_local_media_folders_remove_action">Видалити папку</string>
+    <string name="settings_local_media_folders_none_added">Додаткових папок не додано.</string>
+    <string name="settings_local_media_folders_remove_named">Прибрати %1$s зі списку сканування</string>
+    <string name="settings_local_media_folders_automatic_both">Папки завантажень і музичного кешу додаються автоматично.</string>
+    <string name="settings_local_media_folders_automatic_downloads">Папка завантажень додається автоматично.</string>
+    <string name="settings_local_media_folders_automatic_cache">Папка музичного кешу додається автоматично.</string>
+    <string name="settings_local_media_folders_saving">Збереження…</string>
+    <string name="settings_local_media_folders_save_error">Не вдалося зберегти папки. Зміни не втрачено — спробуйте ще раз.</string>
+    <plurals name="settings_local_media_folders_count">
+        <item quantity="one">%1$d папка</item>
+        <item quantity="few">%1$d папки</item>
+        <item quantity="many">%1$d папок</item>
+        <item quantity="other">%1$d папки</item>
+    </plurals>
+    <string name="settings_download_format_title">Формат завантаження музики</string>
+    <string name="settings_download_format_subtitle_current">Бажаний кодек і контейнер для завантажень. Зараз: %1$s</string>
+    <string name="settings_download_quality_title">Якість завантаження музики</string>
+
+    <string name="settings_streaming_format_title">Формат стримінгу музики</string>
+    <string name="settings_streaming_format_subtitle_current">Бажаний кодек і контейнер для стримінгу. Зараз: %1$s</string>
+    <string name="settings_streaming_quality_title">Якість стримінгу музики</string>
+    <string name="settings_subtitle_current">Зараз: %1$s</string>
+    <string name="settings_enable_music_caching_title">Кешувати музику</string>
+    <string name="settings_enable_music_caching_subtitle">Зберігати прослухане аудіо на пристрої для швидшого повторного відтворення.</string>
+    <string name="settings_cache_folder_title">Папка кешу</string>
+    <string name="settings_cache_folder_current">Зараз: %1$s</string>
+    <string name="settings_cache_folder_default">Зараз: стандартний кеш застосунку</string>
+    <string name="settings_cache_size_limit_title">Ліміт розміру кешу</string>
+    <string name="settings_cache_size_limit_unlimited">Без обмежень</string>
+    <string name="settings_cache_size_limit_current">Поточний ліміт: %1$d MB</string>
+    <string name="settings_cache_size_limit_description">Укажіть максимальний розмір кешу в MB. Введіть 0 або залиште порожнім, щоб зняти обмеження.</string>
+    <string name="settings_cache_size_limit_placeholder">500</string>
+    <string name="settings_error_cache_size_range">Розмір має бути 0 або додатним числом.</string>
+    <string name="settings_enable_endless_playback_title">Безкінечне відтворення</string>
+    <string name="settings_enable_endless_playback_subtitle">Продовжувати відтворення рекомендованими треками, коли черга закінчиться.</string>
+    <string name="settings_playback_port_title">Порт проксі-сервера відтворення</string>
+    <string name="settings_allow_remote_control_title">Дозволити віддалене керування</string>
+    <string name="settings_allow_remote_control_subtitle">Дозволити іншим пристроям у тій самій мережі керувати відтворенням після підключення.</string>
+    <string name="settings_remote_device_name_title">Назва пристрою для віддаленого керування</string>
+    <string name="settings_remote_device_name_subtitle">Назва, яку бачать інші пристрої під час пошуку. Зараз: %1$s</string>
+    <string name="settings_remote_device_name_description">Задайте зрозумілу назву, яку бачитимуть інші пристрої у вашій мережі, коли знайдуть цей Spotube.</string>
+    <string name="settings_remote_device_name_placeholder">наприклад, Spotube у вітальні</string>
+    <string name="settings_remote_device_name_default">ім’я хоста пристрою</string>
+    <string name="settings_playback_port_subtitle_current">Порт проксі-сервера відтворення. Зараз: %1$d</string>
+    <string name="settings_playback_port_description">Укажіть порт від 1 до 65535.</string>
+    <string name="settings_playback_port_placeholder">14769</string>
+    <string name="settings_error_whole_number">Введіть ціле число.</string>
+    <string name="settings_error_port_range">Порт має бути від 1 до 65535.</string>
+
+    <string name="settings_blacklist_title">Чорний список</string>
+    <string name="settings_blacklist_subtitle">Керування заблокованими треками й виконавцями</string>
+
+    <string name="settings_desktop_minimize_title">Згортати в трей</string>
+    <string name="settings_desktop_minimize_subtitle">Залишати Spotube в системному треї, коли вікно згорнуто.</string>
+    <string name="settings_desktop_discord_title">Статус у Discord</string>
+    <string name="settings_desktop_discord_subtitle">Показувати в Discord, що зараз грає (на комп’ютері).</string>
+
+    <string name="settings_updates_auto_check_title">Автоматично перевіряти оновлення</string>
+    <string name="settings_updates_auto_check_subtitle">Шукати нові версії Spotube у фоновому режимі.</string>
+
+    <string name="settings_plugins_manage_title">Керування плагінами</string>
+    <string name="settings_plugins_manage_subtitle">Керуйте своїми плагінами</string>
+    <string name="settings_plugins_default_ability_title">Плагін за замовчуванням: %1$s</string>
+    <string name="settings_plugins_ability_metadata">Метадані</string>
+    <string name="settings_plugins_ability_audio">Аудіо</string>
+    <string name="settings_plugins_ability_lyrics">Тексти пісень</string>
+    <string name="settings_plugins_ability_scrobble">Скроблінг</string>
+    <string name="settings_plugins_no_selection">Плагін не вибрано</string>
+    <string name="settings_plugins_action_change">Змінити</string>
+    <string name="settings_plugins_action_select">Вибрати</string>
+    <string name="settings_plugins_selected">Вибрано</string>
+    <string name="settings_plugins_clear">Скинути вибір</string>
+    <string name="settings_plugins_no_plugins">Немає доступних плагінів</string>
+    <string name="settings_plugins_plugin_content_description">Плагін %1$s</string>
+    <string name="settings_plugins_clear_content_description">Скинути</string>
+
+    <string name="plugin_configure_title">Налаштувати</string>
+    <string name="plugin_screen_title">Менеджер плагінів</string>
+    <string name="plugin_error_enter_url">Введіть URL</string>
+    <string name="plugin_error_url_scheme">URL має починатися з http:// або https://</string>
+    <string name="plugin_error_download_failed">Не вдалося завантажити плагін</string>
+    <string name="plugin_empty_title">Плагіни ще не встановлено</string>
+    <string name="plugin_empty_subtitle">Вставте посилання для завантаження або виберіть файл вище.</string>
+    <plurals name="plugin_installed_plugins_count">
+        <item quantity="one">%1$d плагін встановлено</item>
+        <item quantity="few">%1$d плагіни встановлено</item>
+        <item quantity="many">%1$d плагінів встановлено</item>
+        <item quantity="other">%1$d плагіна встановлено</item>
+    </plurals>
+    <string name="plugin_install_section_title">Встановлення плагіна</string>
+    <string name="plugin_url_placeholder">https://example.com/plugin.smplug</string>
+    <string name="plugin_action_download">Завантажити</string>
+    <string name="plugin_action_install_from_file">Встановити з файлу (.smplug)</string>
+    <string name="plugin_state_active">Активний</string>
+    <string name="plugin_version_label">v%1$s</string>
+    <string name="plugin_state_builtin">Вбудований</string>
+    <string name="plugin_action_remove">Видалити плагін</string>
+    <string name="plugin_action_login">Увійти</string>
+    <string name="plugin_action_logout">Вийти</string>
+    <string name="plugin_section_url_title">Завантажити за URL</string>
+    <string name="plugin_section_file_title">Встановити з файлу</string>
+    <string name="plugin_section_install">Встановити</string>
+
+    <string name="plugin_permissions_author_version">• %1$s</string>
+    <string name="plugin_permissions_requested_title">Запитувані дозволи</string>
+    <string name="plugin_permissions_none">Цьому плагіну не потрібні спеціальні дозволи.</string>
+    <string name="plugin_permissions_compare_title">Встановлений і новий</string>
+    <string name="plugin_permissions_installed_label">Встановлений</string>
+    <string name="plugin_permissions_supplied_label">Новий</string>
+    <string name="plugin_permissions_api_diff">API %1$s → %2$s</string>
+    <string name="plugin_permissions_capability_storage_title">Постійне сховище</string>
+    <string name="plugin_permissions_capability_storage_desc">Читання й запис даних на диск</string>
+    <string name="plugin_permissions_capability_network_title">Мережеві запити</string>
+    <string name="plugin_permissions_capability_network_desc">Надсилання й отримання даних через інтернет</string>
+    <string name="plugin_permissions_capability_webview_title">WebView</string>
+    <string name="plugin_permissions_capability_webview_desc">Показ вебвмісту всередині застосунку</string>
+    <string name="settings_section_jam">Груповий джем</string>
+    <string name="settings_jam_server_test">Перевірити підключення</string>
+    <string name="settings_jam_server_testing">Перевірка…</string>
+    <string name="settings_jam_server_test_ok">Підключено за %1$d мс</string>
+    <string name="settings_jam_server_test_fail">Помилка: %1$s</string>
+    <string name="settings_jam_section_connection">Підключення</string>
+    <string name="settings_jam_section_diagnostics">Діагностика</string>
+
+    <!-- Group Jam -->
+    <string name="jam_screen_title">Груповий джем</string>
+    <string name="jam_setup_create_tab">Створити</string>
+    <string name="jam_setup_join_tab">Приєднатися</string>
+    <string name="jam_setup_create_hint">Створіть кімнату й поділіться її кодом із друзями.</string>
+    <string name="jam_setup_create_button">Створити кімнату</string>
+    <string name="jam_setup_join_button">Увійти в кімнату</string>
+    <string name="jam_setup_working">Підключення…</string>
+    <string name="jam_setup_code_label">Код кімнати</string>
+    <string name="jam_setup_code_placeholder">ABC123</string>
+    <string name="jam_session_connected">Підключено</string>
+    <string name="jam_session_connecting">Повторне підключення…</string>
+    <string name="jam_invite_copy">Копіювати код</string>
+    <string name="jam_invite_copied">Скопійовано!</string>
+    <string name="jam_invite_share">Поділитися</string>
+    <string name="jam_participants_heading">Учасники (%1$d)</string>
+    <string name="jam_participants_host">Організатор</string>
+    <string name="jam_participants_guest">Слухач</string>
+    <string name="jam_participants_waiting">Чекаємо на слухачів…</string>
+    <string name="jam_participants_remove">Видалити</string>
+    <string name="jam_participants_ban">Заблокувати</string>
+    <string name="jam_participants_manage">Керувати</string>
+    <string name="jam_session_leave">Вийти з кімнати</string>
+    <string name="jam_error_title">Не вдалося підключитися</string>
+    <string name="jam_error_dismiss">Закрити</string>
+    <string name="jam_error_create">Не вдалося створити джем</string>
+    <string name="jam_error_join">Не вдалося приєднатися до джему</string>
+    <string name="jam_error_invalid_code">Введіть код кімнати з шести літер і цифр.</string>
+    <string name="jam_share_message">Приєднуйся до мого джему в Spotube за кодом: %1$s</string>
+    <string name="settings_jam_server_title">Сервер кімнат</string>
+    <string name="settings_jam_server_url">URL сервера</string>
+    <string name="settings_jam_server_url_invalid">Введіть URL, що починається з https://</string>
+    <string name="settings_jam_server_diagnostics_subtitle">Перевірте сервер кімнат перед створенням кімнати.</string>
+    <string name="settings_jam_server_note">Джем використовує безкоштовний сервер кімнат Spotube. Щоб розгорнути власний, встановіть сервер із github.com/team-spotube/jam-server і вкажіть його URL.</string>
+    <string name="settings_jam_section_you">Ви</string>
+    <string name="jam_connection_host">Сервер: %1$s</string>
+    <string name="jam_connection_missing">Укажіть сервер кімнат у налаштуваннях, щоб створити кімнату або приєднатися до неї.</string>
+    <string name="jam_connection_settings">Налаштування сервера</string>
+    <string name="jam_participants_you">%1$s (ви)</string>
+    <string name="jam_name_title">Ваше ім’я</string>
+    <string name="jam_name_subtitle">Інші учасники джему бачать вас як %1$s</string>
+    <string name="jam_name_description">Видно всім у джемі. Залиште порожнім, щоб використовувати %1$s. Нове ім’я застосується, коли ви наступного разу створите кімнату або приєднаєтеся до неї.</string>
+    <string name="jam_name_too_long">Не більше %1$d символів.</string>
+    <string name="jam_error_no_server">Сервер джему не налаштовано</string>
+    <string name="jam_error_server_unreachable">Не вдалося підключитися до сервера джему. Перевірте мережу або URL сервера в розділі Налаштування → Груповий джем.</string>
+    <string name="jam_error_server_incompatible">Сервер джему використовує несумісну версію.</string>
+    <string name="jam_error_room_not_found">Кімнати з таким кодом немає. Перевірте код і спробуйте ще раз.</string>
+    <string name="jam_error_room_full">Ця кімната заповнена.</string>
+    <string name="jam_error_banned">Організатор заблокував вас у цій кімнаті.</string>
+    <string name="jam_error_kicked">Організатор видалив вас із кімнати.</string>
+    <string name="jam_error_replaced">Цю кімнату знову відкрито на цьому пристрої, тому це підключення закрито.</string>
+
+    <string name="player_go_to_album">Перейти до альбому</string>
+    <string name="player_sleep_timer">Таймер сну</string>
+    <string name="player_track_details">Відомості про трек</string>
+    <string name="player_play_content_description">Відтворити</string>
+    <string name="player_pause_content_description">Пауза</string>
+    <string name="player_nothing_playing">Зараз нічого не грає</string>
+    <string name="player_add_to_queue_content_description">Додати до черги</string>
+
+    <string name="update_action_ignore">Пропустити</string>
+    <string name="update_action_update">Оновити</string>
+    <string name="app_update_dialog_title">Доступний Spotube %1$s</string>
+    <string name="app_update_dialog_no_notes">Дізнайтеся, що нового в цій версії, на сторінці завантажень Spotube.</string>
+    <string name="plugin_update_dialog_title">Доступний %1$s %2$s</string>
+    <string name="plugin_update_dialog_current_version">Встановлена версія: %1$s</string>
+    <string name="plugin_update_dialog_no_notes">Дізнайтеся, що нового в цьому оновленні, на сторінці плагіна.</string>
+
+    <string name="welcome_skip">Пропустити</string>
+    <string name="welcome_next">Далі</string>
+    <string name="welcome_back">Назад</string>
+    <string name="welcome_get_started">Почати</string>
+    <string name="welcome_app_name">Spotube</string>
+    <string name="welcome_brand_freedom">Музика без зайвих умов.</string>
+    <string name="welcome_brand_quiet_description">Плеєр з відкритим кодом для цілого світу музики.\nДосліджуйте його. Зробіть його своїм.</string>
+    <string name="welcome_donate_quiet_title">Допоможіть проєкту жити.</string>
+    <string name="welcome_donate_letter">Spotube створюють люди, а не бізнес на підписках. Якщо він став частиною вашого життя, навіть невелика підтримка допоможе нам приділяти йому ту увагу, на яку він заслуговує.\n\nДякуємо, що знаходите місце для незалежного софту.</string>
+    <string name="welcome_plugins_setup_guide">Почніть із плагіна каталогу, щоб знаходити треки й плейлисти. Виберіть аудіоплагін для їх відтворення. Тексти пісень та історія прослуховувань — за бажанням. Знайдіть плагін нижче, перегляньте його дозволи, встановіть і виберіть тут.</string>
+    <string name="welcome_plugins_discover">Огляд плагінів</string>
+    <string name="welcome_plugins_sources">Ваші джерела</string>
+    <string name="welcome_plugins_retry">Повторити</string>
+    <string name="welcome_plugins_more">Інші плагіни</string>
+    <string name="welcome_plugins_discovery_empty">Нових плагінів не знайдено. Плагін також можна встановити за посиланням або з файлу .smplug вище.</string>
+    <string name="welcome_plugins_discovery_error">Каталог плагінів зараз недоступний. Повторіть спробу або встановіть плагін за посиланням чи з файлу.</string>
+    <string name="welcome_step_welcome">Вітаємо</string>
+    <string name="welcome_step_support">Підтримка</string>
+    <string name="welcome_step_plugins">Плагіни</string>
+    <string name="welcome_step_guide">Посібник</string>
+
+    <string name="welcome_guide_title">Як користуватися Spotube</string>
+    <string name="welcome_guide_subtitle">Чотири прості кроки — і музика вже грає.</string>
+    <string name="welcome_guide_signin_title">Вхід</string>
+    <string name="welcome_guide_signin_desc">Підключіть акаунт або виберіть власний плагін каталогу.</string>
+    <string name="welcome_guide_search_title">Шукайте й слухайте</string>
+    <string name="welcome_guide_search_desc">Знайдіть будь-який трек, альбом чи виконавця й натисніть «Відтворити».</string>
+    <string name="welcome_guide_offline_title">Слухайте офлайн</string>
+    <string name="welcome_guide_offline_desc">Завантажуйте треки, щоб слухати їх без інтернету.</string>
+    <string name="welcome_guide_lyrics_title">Стежте за текстом</string>
+    <string name="welcome_guide_lyrics_desc">Відкривайте синхронізований текст у плеєрі під час відтворення.</string>
+
+    <!-- Page 1: branding -->
+    <string name="welcome_brand_tagline">Ваша музика. Ваші джерела. Ваші правила.</string>
+    <string name="welcome_brand_subtitle">Безкоштовний музичний плеєр з відкритим кодом від спільноти, яка просто любить музику.</string>
+    <string name="welcome_brand_chip_open_source">Відкритий код</string>
+    <string name="welcome_brand_chip_no_ads">Без реклами</string>
+    <string name="welcome_brand_chip_no_tracking">Без телеметрії</string>
+    <string name="welcome_brand_chip_plugin_powered">На плагінах</string>
+    <string name="welcome_lets_go">Поїхали</string>
+
+    <!-- Page 2: donations -->
+    <string name="welcome_donate_eyebrow">Нас підтримують слухачі</string>
+    <string name="welcome_donate_title">Створено з любов’ю. Живе завдяки вам.</string>
+    <string name="welcome_donate_message">Spotube на 100% безкоштовний, вільний і відкритий — без реклами, підписок і стеження. Кожна функція існує завдяки таким людям, як ви, які допомагають проєкту розвиватися.</string>
+    <string name="welcome_donate_patreon_title">Patreon</string>
+    <string name="welcome_donate_patreon_tag">Щомісячна підтримка</string>
+    <string name="welcome_donate_patreon_subtitle">Підтримайте постійну розробку та інфраструктуру</string>
+    <string name="welcome_donate_bmac_title">Buy Me a Coffee</string>
+    <string name="welcome_donate_bmac_tag">Разова кава</string>
+    <string name="welcome_donate_bmac_subtitle">Підбадьорте нічну сесію програмування невеликим донатом</string>
+    <string name="welcome_donate_opencollective_title">Open Collective</string>
+    <string name="welcome_donate_opencollective_tag">Фонд спільноти</string>
+    <string name="welcome_donate_opencollective_subtitle">Прозоре фінансування під керуванням спільноти</string>
+    <string name="welcome_donate_thanks">Щиро дякуємо, що вірите у відкриту музику.</string>
+    <string name="welcome_donate_optional">Підтримка повністю добровільна — Spotube у будь-якому разі залишиться безкоштовним.</string>
+    <string name="welcome_donate_action">Підтримати</string>
+    <string name="welcome_donate_open_content_description">Відкрити %1$s</string>
+
+    <!-- Support / donations -->
+    <string name="support_button_label">Підтримати Spotube</string>
+    <string name="support_dialog_title">Підтримайте Spotube</string>
+    <string name="support_dialog_message">Spotube безкоштовний, вільний і відкритий — без реклами, підписок і стеження. Якщо він приносить вам радість, підтримайте проєкт.</string>
+    <string name="support_dialog_reminder_hint">Ці нагадування можна вимкнути в розділі «Налаштування → Підтримка».</string>
+    <string name="support_dialog_dismiss">Можливо, пізніше</string>
+    <string name="settings_support_reminders_title">Нагадування про підтримку</string>
+    <string name="settings_support_reminders_subtitle">Раз на 7 днів ненав’язливо нагадувати про підтримку проєкту.</string>
+
+    <!-- Page 3: plugins -->
+    <string name="welcome_plugins_eyebrow">Модульна архітектура</string>
+    <string name="welcome_plugins_title">Виберіть, звідки брати музику.</string>
+    <string name="welcome_plugins_subtitle">У Spotube каталог, стримінг аудіо й синхронізовані тексти працюють окремо. Налаштуйте рушії нижче або змінюйте їх будь-коли.</string>
+    <string name="welcome_plugins_metadata_title">Рушій метаданих</string>
+    <string name="welcome_plugins_metadata_description">Відповідає за пошук музики, списки треків і плейлисти.</string>
+    <string name="welcome_plugins_audio_title">Аудіорушій</string>
+    <string name="welcome_plugins_audio_description">Отримує й декодує аудіопотоки для відтворення.</string>
+    <string name="welcome_plugins_lyrics_title">Рушій текстів</string>
+    <string name="welcome_plugins_lyrics_description">Показує синхронізовані караоке-тексти в реальному часі.</string>
+    <string name="welcome_plugins_scrobble_title">Рушій скроблінгу</string>
+    <string name="welcome_plugins_scrobble_description">Записує історію прослуховувань у Last.fm або ListenBrainz.</string>
+    <string name="welcome_plugins_badge_active">Активний</string>
+    <string name="welcome_plugins_badge_builtin">Вбудований</string>
+    <string name="welcome_plugins_badge_ready">Готовий</string>
+    <string name="welcome_plugins_badge_optional">Необов’язково</string>
+    <string name="welcome_plugins_none_selected">Виберіть рушій</string>
+    <string name="welcome_plugins_installed_section">Встановлені рушії</string>
+    <string name="welcome_plugins_set_default">Зробити основним</string>
+    <string name="welcome_plugins_builtin_note">NewPipe YouTube і LRCLib Lyrics вбудовані й працюють одразу після встановлення.</string>
+    <string name="welcome_plugins_tip">Керувати плагінами спільноти й додавати нові можна будь-коли в розділі «Налаштування → Плагіни».</string>
+
+    <!-- Page 4: how it works -->
+    <string name="welcome_how_eyebrow">Ретромодерн-архітектура</string>
+    <string name="welcome_how_title">Чистий Hi-Fi без посередників</string>
+    <string name="welcome_how_subtitle">Ось як Spotube організовує децентралізоване відтворення просто на вашому пристрої.</string>
+    <string name="welcome_how_status_badge">НАПРЯМУ, P2P • 256 KBPS OPUS</string>
+    <string name="welcome_how_mockup_title">Синя година</string>
+    <string name="welcome_how_mockup_artist">Spotube · демонстрація плеєра</string>
+    <string name="welcome_how_mockup_lyric">Трохи музики для миттєвостей поміж справ.</string>
+    <string name="welcome_how_step_search_title">1. Децентралізований пошук</string>
+    <string name="welcome_how_step_search_desc">Запити надходять безпосередньо до вибраного плагіна каталогу. Spotube ніколи не аналізує ваші смаки.</string>
+    <string name="welcome_how_step_stream_title">2. Пряме отримання потоку</string>
+    <string name="welcome_how_step_stream_desc">Аудіо надходить безпосередньо із серверів контенту на ваш пристрій. Жодних проксі та віддаленого збору даних.</string>
+    <string name="welcome_how_step_playback_title">3. Локальна обробка й відтворення</string>
+    <string name="welcome_how_step_playback_desc">Декодування й кешування на пристрої, еквалайзер і завантаження для офлайн-прослуховування за бажанням.</string>
+    <string name="welcome_how_step_lyrics_title">4. Синхронні тексти й джем</string>
+    <string name="welcome_how_step_lyrics_desc">Караоке-тексти стежать за відтворенням, а ще є віддалене керування через LAN і груповий джем.</string>
+    <string name="welcome_how_footer">Жодних серверів-посередників. Відтворення відбувається просто на вашому пристрої — приватність за замовчуванням.</string>
+
+    <!-- Devices: play destination picker -->
+    <string name="devices_destination_title">Виберіть пристрій</string>
+    <string name="devices_destination_prompt">%1$s: «%2$s»</string>
+    <string name="devices_destination_action_play">Відтворити</string>
+    <string name="devices_destination_action_add_to_queue">Додати до черги</string>
+    <string name="devices_destination_action_play_next">Відтворити наступним</string>
+    <string name="devices_destination_this_device">Цей пристрій</string>
+    <string name="devices_destination_this_device_subtitle">На цьому пристрої</string>
+    <string name="devices_destination_remote_device">Віддалений пристрій</string>
+    <string name="devices_destination_remote_device_host">Віддалений пристрій (%1$s)</string>
+    <string name="devices_destination_remote_subtitle">На підключеному пристрої</string>
+
+    <!-- Devices: connection errors -->
+    <string name="devices_error_connection_failed">Не вдалося підключитися</string>
+    <string name="devices_error_connection_lost">З’єднання втрачено</string>
+    <string name="devices_error_send_failed">Не вдалося надіслати</string>
+    <string name="devices_error_discovery_failed">Помилка пошуку: %1$s</string>
+    <string name="devices_error_connect_failed">Не вдалося підключитися: %1$s</string>
+
+    <!-- Devices: discovery screen -->
+    <string name="devices_title">Пристрої</string>
+    <string name="devices_refresh">Оновити</string>
+    <string name="devices_disconnect">Від’єднатися</string>
+    <string name="devices_connecting">Підключення...</string>
+    <string name="devices_searching">Пошук пристроїв у мережі...</string>
+    <string name="devices_empty">Пристроїв не знайдено</string>
+    <string name="devices_empty_hint">Переконайтеся, що на іншому пристрої в налаштуваннях увімкнено «Дозволити віддалене керування».</string>
+    <string name="devices_unknown_device">Невідомий пристрій</string>
+    <string name="devices_resolving">Визначення адреси...</string>
+
+    <!-- Devices: remote control screen -->
+    <string name="devices_remote_title">Віддалене керування</string>
+    <string name="devices_remote_disconnected">Від’єднано</string>
+    <string name="devices_remote_connection_error">Помилка підключення: %1$s</string>
+    <string name="devices_remote_unknown_track">Невідомий трек</string>
+    <string name="devices_remote_unknown_artist">Невідомий виконавець</string>
+    <string name="devices_remote_volume">Гучність</string>
+    <string name="devices_remote_remove_from_queue">Видалити з черги</string>
+    <string name="devices_remote_more_options">Інші дії</string>
+
+    <!-- Group Jam: play destination picker -->
+    <string name="jam_destination_title">Де відтворити?</string>
+    <string name="jam_destination_message">У вас активний джем. Виберіть, де відтворити цю добірку.</string>
+    <string name="jam_destination_play_here">Відтворити тут</string>
+    <string name="jam_destination_suggest">Запропонувати в джем</string>
+
+    <!-- Group Jam: connection errors -->
+    <string name="jam_error_connection_failed">Не вдалося підключитися</string>
+    <string name="jam_error_connection_lost">З’єднання втрачено</string>
+
+
+    <!-- Group Jam: queue snackbar -->
+    <string name="jam_queue_added_track">Додано до черги джему</string>
+    <plurals name="jam_queue_added_tracks">
+        <item quantity="one">%1$d трек додано до черги джему</item>
+        <item quantity="few">%1$d треки додано до черги джему</item>
+        <item quantity="many">%1$d треків додано до черги джему</item>
+        <item quantity="other">%1$d трека додано до черги джему</item>
+    </plurals>
+
+    <!-- Remote control: connection request dialog -->
+    <string name="remote_request_title">Запит на віддалене керування</string>
+    <string name="remote_request_message">«%1$s» хоче керувати відтворенням на цьому пристрої.</string>
+    <string name="remote_request_deny">Відхилити</string>
+    <string name="remote_request_allow">Дозволити</string>
+    <string name="remote_request_allow_always">Дозволяти завжди</string>
+
+    <!-- Search -->
+    <string name="search_results_title">Результати пошуку</string>
+    <string name="search_tab_all">Усі</string>
+    <string name="search_section_tracks">Треки</string>
+    <string name="search_section_users">Користувачі</string>
+    <string name="search_no_search_types">Немає доступних типів пошуку</string>
+    <string name="search_start_typing">Почніть вводити запит</string>
+    <string name="search_start_typing_tracks">Почніть вводити, щоб знайти треки</string>
+    <string name="search_no_results">Нічого не знайдено</string>
+    <string name="search_see_all">Показати всі</string>
+    <string name="search_searching">Пошук</string>
+    <string name="search_loading_tracks">Завантаження треків...</string>
+    <string name="search_loading_albums">Завантаження альбомів...</string>
+    <string name="search_loading_artists">Завантаження виконавців...</string>
+    <string name="search_loading_playlists">Завантаження плейлистів...</string>
+    <string name="search_loading_users">Завантаження користувачів...</string>
+    <string name="search_no_albums">Альбомів не знайдено</string>
+    <string name="search_no_artists">Виконавців не знайдено</string>
+    <string name="search_no_playlists">Плейлистів не знайдено</string>
+    <string name="search_no_users">Користувачів не знайдено</string>
+    <string name="search_warm_crates">Риємося в ящиках із платівками...</string>
+    <string name="search_warm_cosmos">Шукаємо по всьому всесвіту...</string>
+    <string name="search_warm_speakers">Розігріваємо колонки...</string>
+    <string name="search_warm_vinyl">Здуваємо пил із вінілу...</string>
+    <string name="search_warm_music_gods">Радимося з богами музики...</string>
+    <string name="search_warm_antennas">Налаштовуємо антени...</string>
+    <string name="search_warm_records">Перебираємо платівки...</string>
+    <string name="search_error_capabilities">Не вдалося завантажити можливості пошуку</string>
+    <string name="search_error_search">Не вдалося виконати пошук</string>
+    <string name="search_error_tracks">Не вдалося знайти треки</string>
+    <string name="search_error_albums">Не вдалося знайти альбоми</string>
+    <string name="search_error_artists">Не вдалося знайти виконавців</string>
+    <string name="search_error_playlists">Не вдалося знайти плейлисти</string>
+    <string name="search_error_users">Не вдалося знайти користувачів</string>
+
+    <!-- Home -->
+    <string name="home_title_browse">Огляд</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_mode_synced">Синхронний</string>
+    <string name="lyrics_mode_plain">Простий</string>
+    <string name="lyrics_no_synced">Синхронізований текст недоступний</string>
+    <string name="lyrics_no_plain">Текст недоступний</string>
+
+    <!-- Settings: audio format/quality labels -->
+    <string name="settings_audio_format_label">%1$s у %2$s</string>
+    <string name="settings_audio_quality_lossy">%1$d kbps</string>
+    <string name="settings_audio_quality_lossless">%1$s kHz • %2$d кан.</string>
+    <string name="search_error_no_metadata_plugin">Плагін метаданих не вибрано</string>
+
+    <!-- Common -->
+    <string name="common_back">Назад</string>
+    <string name="common_retry">Повторити</string>
+    <string name="common_close_dialog">Закрити вікно</string>
+    <string name="common_loading">Завантаження...</string>
+    <string name="common_unknown">Невідомо</string>
+    <string name="common_unknown_error">Невідома помилка</string>
+
+    <!-- Media cards -->
+    <string name="media_user">Користувач</string>
+    <string name="media_playlist">Плейлист</string>
+
+    <!-- Error display -->
+    <string name="error_title">Нам дуже прикро</string>
+    <string name="error_description">Щось пішло не так. Нам важливі ваші враження, і ми робимо все, щоб це виправити. Спробуйте ще раз або перегляньте подробиці помилки нижче.</string>
+    <string name="error_details">Подробиці помилки</string>
+    <string name="error_copy_to_clipboard">Копіювати в буфер обміну</string>
+    <string name="error_view_full_log">Показати повний журнал</string>
+    <string name="error_full_log_title">Повний журнал помилки</string>
+
+    <!-- Collection details -->
+    <string name="collection_details_shuffle">Перемішати</string>
+    <string name="collection_details_shuffle_play">Перемішати й слухати</string>
+    <string name="collection_details_follow">Підписатися</string>
+    <string name="collection_details_unfollow">Відписатися</string>
+    <string name="collection_details_edit_playlist">Редагувати плейлист</string>
+    <string name="collection_details_by_owner">Автор: %1$s</string>
+
+    <!-- Track options -->
+    <string name="track_options_title">Дії з треком</string>
+    <string name="track_options_add_to_jam">Додати в джем</string>
+    <string name="track_options_start_radio">Запустити радіо</string>
+    <string name="track_options_play_next">Відтворити наступним</string>
+    <string name="track_options_move_to_next">Зробити наступним</string>
+    <string name="track_options_remove_from_queue">Видалити з черги</string>
+    <string name="track_options_remove_from_favorites">Видалити з улюблених</string>
+    <string name="track_options_save_as_favorite">Додати в улюблені</string>
+    <string name="track_options_add_to_playlist">Додати в плейлист</string>
+    <string name="track_options_download">Завантажити</string>
+    <string name="track_options_share">Поділитися</string>
+
+    <!-- Track list -->
+    <string name="track_list_sort_original">Початковий порядок</string>
+    <string name="track_list_sort_title">Назва</string>
+    <string name="track_list_sort_artist">Виконавець</string>
+    <string name="track_list_sort_album">Альбом</string>
+    <string name="track_list_sort_duration">Тривалість</string>
+    <string name="track_list_sort">Сортування</string>
+    <string name="track_list_no_tracks">Треків не знайдено</string>
+    <string name="track_list_filter_placeholder">Фільтр</string>
+    <string name="track_list_bulk_actions">Дії з вибраними</string>
+    <string name="track_list_download_all">Завантажити всі</string>
+    <string name="track_list_download_count">Завантажити (%1$d)</string>
+    <string name="track_list_add_all_to_queue">Додати всі до черги</string>
+    <string name="track_list_add_count_to_queue">Додати до черги (%1$d)</string>
+    <string name="track_list_play_all_next">Відтворити всі наступними</string>
+    <string name="track_list_play_count_next">Відтворити наступними (%1$d)</string>
+    <string name="track_list_add_all_to_playlist">Додати всі в плейлист</string>
+    <string name="track_list_add_count_to_playlist">Додати в плейлист (%1$d)</string>
+    <string name="track_list_add_all_to_jam">Додати всі в джем</string>
+    <string name="track_list_add_count_to_jam">Додати в джем (%1$d)</string>
+    <string name="track_list_more_artists">і ще %1$d</string>
+
+    <!-- WebView -->
+    <string name="webview_no_url">Немає URL для завантаження</string>
+    <string name="webview_go_back">Назад в історії браузера</string>
+    <string name="webview_go_forward">Уперед в історії браузера</string>
+
+    <!-- Blacklist -->
+    <string name="blacklist_filter_placeholder">Фільтр чорного списку...</string>
+    <string name="blacklist_empty">Чорний список порожній</string>
+    <string name="blacklist_no_results">У чорному списку немає збігів із «%1$s»</string>
+    <string name="blacklist_section_tracks">Треки</string>
+    <string name="blacklist_item_track">Трек</string>
+    <string name="blacklist_add">Додати до чорного списку</string>
+    <string name="blacklist_remove">Видалити з чорного списку</string>
+
+    <!-- Downloads -->
+    <string name="downloads_error_no_metadata">Немає метаданих треку</string>
+    <string name="downloads_error_stream_unresolved_short">Не вдалося отримати URL потоку</string>
+    <string name="downloads_error_stream_unresolved">Не вдалося отримати URL потоку. Спершу спробуйте відтворити трек.</string>
+
+    <!-- Saved tracks -->
+    <string name="saved_tracks_title">Збережені треки</string>
+    <string name="saved_tracks_owner_you">Ви</string>
+
+    <!-- Artist -->
+    <string name="artist_following">Ви підписані</string>
+    <string name="artist_top_tracks">Популярні треки</string>
+    <string name="artist_play_top_tracks">Слухати популярні треки</string>
+    <string name="artist_add_top_tracks_to_queue">Додати популярні треки до черги</string>
+    <string name="artist_related_artists">Схожі виконавці</string>
+    <string name="artist_featured_playlists">Рекомендовані плейлисти</string>
+    <string name="artist_error_load_failed">Не вдалося завантажити сторінку виконавця</string>
+    <string name="artist_followers_unavailable">Кількість підписників недоступна</string>
+    <string name="artist_followers_thousands">Підписників: %1$s тис.</string>
+    <string name="artist_followers_millions">Підписників: %1$s млн</string>
+    <string name="artist_followers_billions">Підписників: %1$s млрд</string>
+    <plurals name="artist_followers_count">
+        <item quantity="one">%1$d підписник</item>
+        <item quantity="few">%1$d підписники</item>
+        <item quantity="many">%1$d підписників</item>
+        <item quantity="other">%1$d підписника</item>
+    </plurals>
+
+    <!-- Player -->
+    <string name="player_like_content_description">Подобається</string>
+    <string name="player_unlike_content_description">Більше не подобається</string>
+    <string name="player_fallback_title">Назва треку-заглушки</string>
+    <string name="player_fallback_artists">Виконавці-заглушки</string>
+    <string name="player_unknown_album">Невідомий альбом</string>
+    <string name="player_seek_label">Перемотування</string>
+    <string name="player_volume_label">Гучність</string>
+    <string name="player_enable_shuffle_content_description">Увімкнути перемішування</string>
+    <string name="player_disable_shuffle_content_description">Вимкнути перемішування</string>
+    <string name="player_previous_content_description">Попередній</string>
+    <string name="player_next_content_description">Наступний</string>
+    <string name="player_play_or_pause_content_description">Відтворити або призупинити</string>
+    <string name="player_loop_mode_none">Повтор вимкнено</string>
+    <string name="player_loop_mode_one">Повтор треку</string>
+    <string name="player_loop_mode_all">Повтор усіх</string>
+    <string name="player_mute_content_description">Вимкнути звук</string>
+    <string name="player_unmute_content_description">Увімкнути звук</string>
+    <string name="player_more_options_content_description">Інші дії</string>
+    <string name="player_options_content_description">Параметри плеєра</string>
+    <string name="player_collapse_content_description">Згорнути плеєр</string>
+    <string name="player_expand_lyrics_content_description">Розгорнути текст</string>
+    <string name="player_now_playing">Зараз грає</string>
+    <string name="player_lyrics">Текст</string>
+    <string name="player_alternative_source">Альтернативне джерело</string>
+    <string name="player_alternative_source_content_description">Альтернативне джерело</string>
+    <string name="player_download">Завантажити</string>
+    <string name="player_download_status_downloaded">Завантажено</string>
+    <string name="player_download_status_downloading">Завантаження...</string>
+    <string name="player_download_already_downloaded">Уже завантажено</string>
+    <string name="player_download_retrying">Повторне завантаження...</string>
+    <string name="player_download_started">Завантаження: %1$s</string>
+    <string name="player_sleep_timer_remaining">Відтворення призупиниться через %1$s.</string>
+    <string name="player_sleep_timer_description">Призупинити відтворення через вибрану кількість хвилин.</string>
+    <string name="player_sleep_timer_minutes_label">Хвилини</string>
+    <string name="player_sleep_timer_minutes_placeholder">Від 1 до 600 хвилин</string>
+    <string name="player_sleep_timer_cancel">Скасувати таймер</string>
+    <string name="player_sleep_timer_start">Запустити</string>
+    <string name="player_track_details_stream_mismatch">URL відтворення отримано з іншими налаштуваннями стримінгу. Виділений потік відповідає вашим поточним налаштуванням; активний URL оновиться під час наступного запиту потоку.</string>
+    <string name="player_track_details_matched_source">Підібране джерело аудіо</string>
+    <string name="player_track_details_loading_source">Завантаження підібраного джерела…</string>
+    <string name="player_track_details_source_not_needed">Віддалене джерело не потрібне, поки відтворюється локальний кешований файл.</string>
+    <string name="player_track_details_no_source">Відповідне джерело недоступне.</string>
+    <string name="player_track_details_no_cached_source">Для цього треку немає кешованого підібраного джерела аудіо.</string>
+    <string name="player_track_details_streams_not_cached">Відомості про потоки ще не кешовано. Спершу відтворіть трек, щоб завантажити їх.</string>
+    <string name="player_track_details_load_failed">Не вдалося завантажити відомості про трек.</string>
+    <string name="player_track_details_available_streams">Доступні потоки</string>
+    <string name="player_track_details_served_from_cache_description">Цей трек відтворюється з локального кешу. Варіанти потоків зараз не використовуються.</string>
+    <string name="player_track_details_loading_streams">Завантаження потоків…</string>
+    <string name="player_track_details_no_streams">Для цього джерела немає доступних потоків.</string>
+    <string name="player_track_details_selected_stream_content_description">Вибраний потік</string>
+    <string name="player_track_details_matches_preference">Відповідає вашим налаштуванням формату та якості стримінгу</string>
+    <string name="player_track_details_active_url">Активний URL відтворення</string>
+    <string name="player_track_details_served_from_cache">З локального кешу</string>
+    <string name="player_track_details_metadata_track">Трек із метаданих</string>
+    <string name="player_track_details_title">Назва</string>
+    <string name="player_track_details_id">ID</string>
+    <string name="player_track_details_album">Альбом</string>
+    <string name="player_track_details_confidence">Точність збігу</string>
+    <string name="player_track_details_external_uri">Зовнішній URI</string>
+    <string name="player_track_details_album_id">ID альбому</string>
+    <string name="player_track_details_album_type">Тип альбому</string>
+    <string name="player_track_details_album_release_date">Дата виходу альбому</string>
+    <string name="player_track_details_album_track_count">Треків в альбомі</string>
+    <string name="player_track_details_album_genres">Жанри альбому</string>
+    <string name="player_track_details_duration">Тривалість</string>
+    <string name="player_track_details_track_number">Номер треку</string>
+    <string name="player_track_details_disc_number">Номер диска</string>
+    <string name="player_track_details_explicit">Відвертий контент</string>
+    <string name="player_track_details_popularity">Популярність</string>
+    <string name="player_track_details_isrc">ISRC</string>
+    <string name="player_track_details_thumbnail_urls">URL мініатюр</string>
+
+    <!-- Shell -->
+    <string name="shell_sidebar_toggle_content_description">Показати або сховати бічну панель</string>
+
+    <!-- Alternative track -->
+    <string name="alternative_track_title">Альтернативні джерела</string>
+    <string name="alternative_track_no_track">Зараз нічого не грає</string>
+    <string name="alternative_track_searching">Пошук альтернативних джерел...</string>
+    <string name="alternative_track_empty">Альтернативних джерел не знайдено</string>
+    <string name="alternative_track_confidence">Збіг: %1$d%</string>
+    <string name="alternative_track_active_source">Поточне джерело</string>
+
+    <!-- Queue -->
+    <string name="queue_participant_kick">Вигнати</string>
+    <string name="queue_participant_kick_description">Видалити учасника із сесії</string>
+    <string name="queue_participant_ban_description">Вигнати й заборонити повертатися</string>
+    <string name="queue_participant_remove_suggestions">Видалити пропозиції</string>
+    <string name="queue_participant_remove_suggestions_description">Видалити всі треки, які учасник додав до черги</string>
+    <string name="queue_reorder_content_description">Змінити порядок</string>
+    <string name="queue_remove_from_queue">Видалити з черги</string>
+    <string name="queue_item_subtitle_added_by">%1$s • Додав(-ла) %2$s</string>
+
+    <!-- Playlist -->
+    <string name="playlist_owner_unknown">Невідомо</string>
+    <string name="playlist_loading_title">Завантаження плейлиста...</string>
+    <string name="playlist_add_tracks_button">Додати треки</string>
+    <string name="playlist_add_tracks_title">Додати треки в плейлист</string>
+    <string name="playlist_add_tracks_search_placeholder">Пошук треків...</string>
+    <string name="playlist_add_tracks_search_content_description">Пошук</string>
+    <string name="playlist_add_tracks_no_results">Треків не знайдено</string>
+    <string name="playlist_add_tracks_hint">Знайдіть треки, щоб додати їх</string>
+    <string name="playlist_add_tracks_done">Готово</string>
+    <string name="playlist_add_tracks_add">Додати</string>
+    <string name="playlist_add_tracks_added_content_description">Додано</string>
+
+    <!-- Album -->
+    <string name="album_loading_title">Завантаження альбому...</string>
+
+    <!-- Library -->
+    <string name="library_add_to_playlist_title">Додати у ваш плейлист</string>
+    <string name="library_add_to_playlist_search_content_description">Пошук</string>
+    <string name="library_add_to_playlist_search_placeholder">Пошук у ваших плейлистах...</string>
+    <string name="library_add_to_playlist_loading">Завантаження ваших плейлистів...</string>
+    <string name="library_add_to_playlist_empty">У вас поки немає власних плейлистів.\nСтворіть плейлист, щоб додавати до нього треки.</string>
+    <string name="library_playlist_form_create_title">Новий плейлист</string>
+    <string name="library_playlist_form_edit_title">Редагувати плейлист</string>
+    <string name="library_playlist_form_create">Створити</string>
+    <string name="library_playlist_form_name_label">Назва</string>
+    <string name="library_playlist_form_name_placeholder">Назва плейлиста</string>
+    <string name="library_playlist_form_description_label">Опис</string>
+    <string name="library_playlist_form_description_placeholder">Опис (необов’язково)</string>
+    <string name="library_playlist_form_public">Публічний</string>
+    <string name="library_playlist_form_public_description">Цей плейлист бачать усі</string>
+    <string name="library_playlist_form_collaborative">Спільний</string>
+    <string name="library_playlist_form_collaborative_description">Інші можуть додавати треки до цього плейлиста</string>
+    <string name="library_playlist_form_cover_image">Обкладинка</string>
+    <string name="library_playlist_form_cover_content_description">Обкладинка плейлиста</string>
+    <string name="library_playlist_form_no_image">Немає зображення</string>
+    <string name="library_playlist_form_change_image">Змінити зображення</string>
+    <string name="library_playlist_form_pick_image">Вибрати зображення</string>
+
+    <!-- Plugin install / errors -->
+    <string name="plugin_action_install">Встановити</string>
+    <string name="plugin_action_replace">Замінити</string>
+    <string name="plugin_error_plugin_json_missing">У zip-архіві не знайдено plugin.json</string>
+    <string name="plugin_error_zipline_manifest_missing">У zip-архіві не знайдено manifest.zipline.json</string>
+    <string name="plugin_error_invalid_plugin_json">Неправильний формат plugin.json: %1$s</string>
+    <string name="plugin_error_read_failed">Не вдалося прочитати плагін: %1$s</string>
+    <string name="plugin_error_install_failed">Не вдалося встановити плагін: %1$s</string>
+    <string name="plugin_error_update_needs_confirmation">Доступна новіша версія %1$s. Підтвердьте оновлення перед встановленням.</string>
+    <string name="plugin_error_replace_needs_confirmation">%1$s уже встановлено. Підтвердьте заміну перед встановленням.</string>
+    <string name="plugin_error_builtin_add">Вбудовані плагіни вже включено, їх не можна додати повторно.</string>
+    <string name="plugin_error_builtin_remove">Вбудовані плагіни не можна видалити.</string>
+    <string name="plugin_error_api_version_invalid">%1$s вказує недійсну apiVersion (%2$s). Очікується семантична версія, сумісна з %3$s.</string>
+    <string name="plugin_error_app_api_version_invalid">Недійсна версія API плагінів Spotube: %1$s.</string>
+    <string name="plugin_error_api_incompatible">%1$s розрахований на API плагінів %2$s, а Spotube підтримує несумісну версію API %3$s. Встановіть плагін, зібраний для тієї самої основної версії API.</string>
+
+    <!-- Plugin install prompts -->
+    <string name="plugin_prompt_incompatible_title">Несумісний API плагіна</string>
+    <string name="plugin_prompt_install_title">Встановити плагін?</string>
+    <string name="plugin_prompt_install_message">%1$s буде додано до встановлених плагінів.</string>
+    <string name="plugin_prompt_update_title">Оновити плагін?</string>
+    <string name="plugin_prompt_update_message">Встановлено старішу версію (%1$s). Оновити до %2$s?</string>
+    <string name="plugin_prompt_replace_title">Замінити встановлений плагін?</string>
+    <string name="plugin_prompt_replace_invalid_incoming">%1$s використовує недійсну семантичну версію (%2$s), тому її не можна порівняти як оновлення. Усе одно замінити встановлений плагін?</string>
+    <string name="plugin_prompt_replace_invalid_installed">Встановлену версію (%1$s) не можна порівняти за правилами семантичного версіонування. Замінити її на %2$s?</string>
+    <string name="plugin_prompt_replace_same_version">Версію %1$s уже встановлено. Замінити наявний плагін новою копією?</string>
+    <string name="plugin_prompt_replace_downgrade">Встановлена версія %1$s новіша за запропоновану версію %2$s. Усе одно замінити?</string>
+    <string name="plugin_prompt_replace_generic">Замінити встановлений плагін новою копією?</string>
+
+    <!-- Plugin info dialog -->
+    <string name="plugin_info_label_format">%1$s:</string>
+    <string name="plugin_info_version">Версія</string>
+    <string name="plugin_info_api_version">Версія API</string>
+    <string name="plugin_info_author">Автор</string>
+    <string name="plugin_info_license">Ліцензія</string>
+    <string name="plugin_info_capabilities">Дозволи</string>
+    <string name="plugin_info_abilities">Функції</string>
+    <string name="plugin_info_repository">Репозиторій</string>
+    <string name="plugin_info_contact">Контакти</string>
+    <string name="plugin_info_report_bugs">Повідомити про помилку</string>
+    <string name="plugin_support_dialog_title">Підтримати %1$s</string>
+
+    <!-- Plugin discovery -->
+    <string name="plugin_discover_badge_official">Офіційний</string>
+    <string name="plugin_discover_badge_verified">Перевірений</string>
+    <string name="plugin_discover_stars_content_description">Зірки на GitHub</string>
+    <string name="plugin_discover_repository_content_description">URL репозиторію на GitHub</string>
+
+    <!-- Plugin release install dialog -->
+    <string name="plugin_install_no_releases">Релізів не знайдено</string>
+    <string name="plugin_install_select_release_label">Виберіть реліз</string>
+    <string name="plugin_install_select_release_placeholder">Виберіть реліз</string>
+    <string name="plugin_install_prerelease">Попередній реліз</string>
+    <string name="plugin_install_release_notes">Примітки до випуску</string>
+
+    <!-- App navigation -->
+    <string name="nav_home">Головна</string>
+    <string name="nav_search">Пошук</string>
+    <string name="nav_group_on_device">На пристрої</string>
+    <string name="nav_group_connect">Підключення</string>
+    <string name="nav_devices">Пристрої</string>
+
+    <!-- System tray (desktop) -->
+    <string name="tray_hide_window">Сховати вікно</string>
+    <string name="tray_show_window">Показати вікно</string>
+    <string name="tray_next_track">Наступний трек</string>
+    <string name="tray_previous_track">Попередній трек</string>
+    <string name="tray_shuffle">Перемішати</string>
+    <string name="tray_loop">Повтор</string>
+    <string name="tray_loop_off">Повтор: ВИМК</string>
+    <string name="tray_loop_one">Повтор: ТРЕК</string>
+    <string name="tray_loop_all">Повтор: УСІ</string>
+    <string name="tray_volume">Гучність: %1$d%</string>
+    <string name="tray_volume_up">Гучність +</string>
+    <string name="tray_volume_down">Гучність -</string>
+    <string name="tray_mute">Вимкнути звук</string>
+    <string name="tray_unmute">Увімкнути звук</string>
+    <string name="tray_like_track">Подобається</string>
+    <string name="tray_unlike_track">Більше не подобається</string>
+    <string name="tray_exit">Вийти</string>
+
+    <!-- Desktop window controls -->
+    <string name="app_window_minimize">Згорнути</string>
+    <string name="app_window_maximize">Розгорнути</string>
+    <string name="app_window_restore">Відновити</string>
+    <string name="app_window_close">Закрити</string>
+
+    <!-- Android playback notification -->
+    <string name="notification_playback_channel_name">Відтворення</string>
+    <string name="notification_playback_channel_description">Керування відтворенням</string>
+
+    <!-- Android Auto / media browser -->
+    <string name="media_browser_browse">Огляд</string>
+    <string name="media_browser_now_playing">Зараз грає</string>
+    <string name="media_browser_featured">Рекомендоване</string>
+    <string name="media_browser_saved_tracks">Збережені треки</string>
+    <string name="media_browser_top_tracks">Популярні треки</string>
+</resources>

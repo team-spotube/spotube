@@ -1,0 +1,37 @@
+{
+  "gradle.autoDetect": "off",
+  "java.gradle.buildServer.enabled": "off",
+  "cmake.configureOnOpen": false,
+  "cSpell.words": [
+    "acousticness",
+    "ambiguate",
+    "Amoled",
+    "Buildless",
+    "configurators",
+    "danceability",
+    "fuzzywuzzy",
+    "gapless",
+    "instrumentalness",
+    "isrc",
+    "Mpris",
+    "RGBO",
+    "riverpod",
+    "Scrobblenaut",
+    "shadcn",
+    "skeletonizer",
+    "songlink",
+    "speechiness",
+    "Spotube",
+    "titlebar",
+    "winget"
+  ],
+  "editor.formatOnSave": true,
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "pubspec.yaml": "pubspec.lock,analysis_options.yaml,.packages,.flutter-plugins,.flutter-plugins-dependencies,flutter_launcher_icons*.yaml,flutter_native_splash*.yaml",
+    "README.md": "LICENSE,CODE_OF_CONDUCT.md,CONTRIBUTING.md,SECURITY.md,CONTRIBUTION.md,CHANGELOG.md,PRIVACY_POLICY.md",
+    "*.dart": "${capture}.g.dart,${capture}.freezed.dart"
+  },
+  "dart.flutterSdkPath": ".fvm/versions/3.35.2",
+  "makefile.configureOnOpen": false
+}

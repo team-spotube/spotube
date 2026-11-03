@@ -10,7 +10,21 @@ on:
         default: 'stable'
         options:
           - stable
+          - beta
           - nightly
+      platform:
+        description: 'Platform to build (nightly only; stable and beta always build everything)'
+        required: true
+        type: choice
+        default: 'all'
+        options:
+          - all
+          - android
+          - linux-x86_64
+          - linux-aarch64
+          - windows
+          - macos
+          - ios
       dry_run:
         description: 'Dry run (build & upload artifacts only, skip creating release)'
         required: false
@@ -22,57 +36,133 @@ on:
         type: boolean
         default: false
 
+# Read-only by default; only create-release gets write access
+permissions:
+  contents: read
+
+# Never cancel a running release when another is dispatched, and let stable, beta and nightly run side by side
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.release_type }}-${{ inputs.platform }}
+  cancel-in-progress: false
 
 env:
-  COMPOSE_WEBVIEW_REPO: kdroidFilter/ComposeNativeWebview
-  COMPOSE_WEBVIEW_COMMIT: 5aeb268a2c37ff4dbfb76924573344a7c4f763ce
-  GRADLE_PLUGIN_REPO: team-spotube/gradle-plugin
-  VLCJ_BUNDLER_REPO: team-spotube/vlcj-bundler-gradle-plugin
+  COMPOSE_WEBVIEW_REPO: KRTirtho/ComposeNativeWebview
+  # fix/linux-wayland-input
+  COMPOSE_WEBVIEW_COMMIT: b11ac748de1219f9432338c067a2c5dafef3072a
 
 jobs:
-  prepare-deps:
-    name: Prepare Dependencies
-    runs-on: macos-latest
+  validate-inputs:
+    name: Validate Inputs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Single platform builds are nightly only
+        if: ${{ inputs.platform != 'all' && inputs.release_type != 'nightly' }}
+        run: |
+          echo "::error::Building a single platform is only supported for nightly releases"
+          exit 1
+
+  # ComposeNativeWebview's JNI backends are gitignored and only built for the host OS, so a
+  # publish from macOS alone ships a jar without the Linux / Windows WebView libraries (the
+  # WebView then renders nothing). Build them on their own OS and hand them to prepare-deps.
+  build-webview-natives:
+    name: WebView Natives (${{ matrix.name }})
+    needs: validate-inputs
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - name: linux-x64
+            os: ubuntu-latest
+          - name: linux-aarch64
+            os: ubuntu-24.04-arm
+          - name: windows-x64
+            os: windows-latest
     steps:
       - name: Checkout ComposeNativeWebview
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: ${{ env.COMPOSE_WEBVIEW_REPO }}
           ref: ${{ env.COMPOSE_WEBVIEW_COMMIT }}
           token: ${{ secrets.GITHUB_TOKEN }}
           path: compose-webview
 
-      - name: Checkout gradle-plugin
-        uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v6
         with:
-          repository: ${{ env.GRADLE_PLUGIN_REPO }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: gradle-plugin
+          distribution: temurin
+          java-version: 21
 
-      - name: Checkout vlcj-bundler
-        uses: actions/checkout@v4
+      - name: Build Linux WebView native library
+        if: runner.os == 'Linux'
+        working-directory: compose-webview
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential pkg-config libgtk-3-dev libcairo2-dev \
+            libsoup-3.0-dev libwebkit2gtk-4.1-dev
+          bash webview-compose/src/jvmMain/native/linux/build.sh
+
+      - name: Build Windows WebView native library
+        if: runner.os == 'Windows'
+        working-directory: compose-webview
+        shell: cmd
+        run: webview-compose\src\jvmMain\native\windows\build.bat
+
+      - name: Verify WebView native library
+        working-directory: compose-webview
+        shell: bash
+        run: |
+          case "${{ matrix.name }}" in
+            linux-*)     files="${{ matrix.name }}/libcompose_webview_linux.so" ;;
+            windows-x64) files="win32-x64/compose_webview_windows.dll win32-x64/WebView2Loader.dll" ;;
+          esac
+          for f in $files; do
+            test -f "webview-compose/src/jvmMain/resources/nucleus/native/$f" || { echo "::error::Missing $f"; exit 1; }
+          done
+
+      - name: Upload WebView native library
+        uses: actions/upload-artifact@v7
         with:
-          repository: ${{ env.VLCJ_BUNDLER_REPO }}
+          name: webview-natives-${{ matrix.name }}
+          path: compose-webview/webview-compose/src/jvmMain/resources/nucleus/native/
+          retention-days: 1
+
+  prepare-deps:
+    name: Prepare Dependencies
+    needs: [validate-inputs, build-webview-natives]
+    runs-on: macos-latest
+    steps:
+      - name: Checkout ComposeNativeWebview
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ env.COMPOSE_WEBVIEW_REPO }}
+          ref: ${{ env.COMPOSE_WEBVIEW_COMMIT }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          path: vlcj-bundler
+          path: compose-webview
+
+      # Downloaded after checkout, so they are newer than the native sources and
+      # the build keeps them instead of trying to rebuild on the wrong OS.
+      - name: Download WebView native libraries
+        uses: actions/download-artifact@v8
+        with:
+          pattern: webview-natives-*
+          merge-multiple: true
+          path: compose-webview/webview-compose/src/jvmMain/resources/nucleus/native
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 21
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
 
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Publish compose-webview to mavenLocal
         working-directory: compose-webview
@@ -80,39 +170,39 @@ jobs:
           chmod +x gradlew
           ./gradlew publishToMavenLocal
 
-      - name: Publish gradle-plugin to mavenLocal
-        working-directory: gradle-plugin
+      - name: Verify published JVM jar carries every WebView backend
         run: |
-          chmod +x gradlew
-          ./gradlew publishToMavenLocal
-
-      - name: Publish vlcj-bundler to mavenLocal
-        working-directory: vlcj-bundler
-        run: |
-          chmod +x gradlew
-          ./gradlew publishToMavenLocal
+          jar=$(ls ~/.m2/repository/dev/nucleusframework/composewebview-jvm/*/composewebview-jvm-*.jar | grep -v -e sources -e javadoc | head -1)
+          contents=$(unzip -l "$jar")
+          for f in linux-x64/libcompose_webview_linux.so linux-aarch64/libcompose_webview_linux.so \
+                   win32-x64/compose_webview_windows.dll win32-x64/WebView2Loader.dll \
+                   darwin-aarch64/libcompose_webview_macos.dylib darwin-x64/libcompose_webview_macos.dylib; do
+            grep -q "nucleus/native/$f" <<< "$contents" || { echo "::error::$jar is missing $f"; exit 1; }
+          done
 
       - name: Upload maven local
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: maven-local
           path: ~/.m2/repository/
 
   build-android:
     name: Android
-    needs: prepare-deps
+    needs: [validate-inputs, prepare-deps]
+    if: ${{ inputs.platform == 'all' || inputs.platform == 'android' }}
+    timeout-minutes: 120
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Download maven local
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: maven-local
           path: ~/.m2/repository/
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 21
@@ -121,35 +211,46 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Make gradlew executable
         run: chmod +x gradlew
 
       - name: Decode keystore
+        env:
+          KEYSTORE: ${{ secrets.KEYSTORE }}
         run: |
-          echo '${{ secrets.KEYSTORE }}' | base64 --decode > "${{ github.workspace }}/composeApp/upload-keystore.jks"
+          echo "$KEYSTORE" | base64 --decode > "${{ github.workspace }}/composeApp/upload-keystore.jks"
 
       - name: Configure Android signing
         working-directory: composeApp
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEYSTORE_KEY_ALIAS: ${{ secrets.KEYSTORE_KEY_ALIAS }}
+          KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
         run: |
           cat >> local.properties <<EOF
           release.signing.storeFile=${{ github.workspace }}/composeApp/upload-keystore.jks
-          release.signing.storePassword=${{ secrets.KEYSTORE_PASSWORD }}
-          release.signing.keyAlias=${{ secrets.KEYSTORE_KEY_ALIAS }}
-          release.signing.keyPassword=${{ secrets.KEYSTORE_KEY_PASSWORD }}
+          release.signing.storePassword=${KEYSTORE_PASSWORD}
+          release.signing.keyAlias=${KEYSTORE_KEY_ALIAS}
+          release.signing.keyPassword=${KEYSTORE_KEY_PASSWORD}
           EOF
 
       - name: Assemble Release
-        run: ./gradlew :composeApp:assembleRelease
+        run: |
+          if [ "${{ inputs.release_type }}" = "nightly" ]; then
+            ./gradlew :composeApp:assembleNightlyRelease -Pnightly=true -PbuildNumber=${{ github.run_number }}
+          else
+            ./gradlew :composeApp:assembleStableRelease
+          fi
 
       - name: Rename APK
         run: |
-          APK_FILE=$(find composeApp/build/outputs/apk/release -name "*.apk" -type f | head -1)
+          APK_FILE=$(find composeApp/build/outputs/apk -path "*elease*" -name "*.apk" -type f | head -1)
           cp "$APK_FILE" Spotube-android-all-arch.apk
 
       - name: Upload APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: android-apk
           path: Spotube-android-all-arch.apk
@@ -162,24 +263,29 @@ jobs:
 
   build-linux:
     name: Linux Desktop
-    needs: prepare-deps
+    needs: [validate-inputs, prepare-deps]
+    if: ${{ inputs.platform == 'all' || inputs.platform == 'linux-x86_64' }}
+    timeout-minutes: 120
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Download maven local
-        uses: actions/download-artifact@v4
+      # Full history: the metainfo's release notes come from git-cliff
+      - uses: actions/checkout@v7
         with:
-          name: maven-local
-          path: ~/.m2/repository/
+          fetch-depth: 0
 
       - name: Install packaging tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y rpm fuse
+          sudo apt-get install -y rpm fuse build-essential zlib1g-dev patchelf zstd
+
+      - name: Download maven local
+        uses: actions/download-artifact@v8
+        with:
+          name: maven-local
+          path: ~/.m2/repository/
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 21
@@ -188,32 +294,201 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Make gradlew executable
         run: chmod +x gradlew
 
+      - name: Cache GraalVM toolchain
+        uses: actions/cache@v6
+        with:
+          path: ~/.gradle/nucleus/graalvm
+          key: graalvm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('gradle/libs.versions.toml', 'composeApp/build.gradle.kts') }}
+          restore-keys: graalvm-${{ runner.os }}-${{ runner.arch }}-
+
       - name: Package Linux
-        run: ./gradlew :composeApp:packageReleaseDeb :composeApp:packageReleaseRpm
+        env:
+          # Nucleus lists GraalVM CE releases via the GitHub API; unauthenticated calls hit the 60/hour limit
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew :composeApp:packageGraalvmDeb :composeApp:packageGraalvmRpm -Pnightly=${{ inputs.release_type == 'nightly' }} -PbuildNumber=${{ github.run_number }}
+
+      # Portable tarball the AUR and Flathub packages install from. Like deb/rpm it uses the system's VLC,
+      # GTK and WebKitGTK, so it is packed from the distributable before the AppImage build replaces it
+      - name: Install git-cliff
+        uses: taiki-e/install-action@v2
+        with:
+          tool: git-cliff
+
+      - name: Package Linux tarball
+        run: |
+          if [ "${{ inputs.release_type }}" = "nightly" ]; then
+            VERSION=nightly
+          else
+            VERSION=$(./gradlew -q :composeApp:printVersion)
+          fi
+          # Desktop entry + metainfo, with the release history from git-cliff
+          ./gradlew :composeApp:renderPackagingLinux -Pnightly=${{ inputs.release_type == 'nightly' }} -PbuildNumber=${{ github.run_number }}
+          packaging/package-linux-tarball.sh "$VERSION" "${{ inputs.release_type == 'nightly' && 'nightly' || 'stable' }}" .
+
+      - name: Upload tarball
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-tarball
+          path: spotube-linux-*-x86_64.tar.xz
+
+      # Only the AppImage bundles VLC, GTK and WebKitGTK; deb/rpm depend on the distro packages
+      - name: Package Linux AppImage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew :composeApp:packageGraalvmAppImage -PappImage=true -Pnightly=${{ inputs.release_type == 'nightly' }} -PbuildNumber=${{ github.run_number }}
 
       - name: Rename Linux artifacts
         run: |
-          DEB_FILE=$(find composeApp/build -name "*.deb" -type f | head -1)
-          RPM_FILE=$(find composeApp/build -name "*.rpm" -type f | head -1)
+          DEB_FILE=$(find composeApp/build/compose/binaries/main/graalvm-deb -maxdepth 1 -name "*.deb" -type f | head -1)
+          RPM_FILE=$(find composeApp/build/compose/binaries/main/graalvm-rpm -maxdepth 1 -name "*.rpm" -type f | head -1)
           cp "$DEB_FILE" Spotube-linux-x86_64.deb
           cp "$RPM_FILE" Spotube-linux-x86_64.rpm
+          APPIMAGE_FILE=$(find composeApp/build/compose/binaries/main -name "*.AppImage" -type f | head -1)
+          cp "$APPIMAGE_FILE" Spotube-linux-x86_64.AppImage
 
       - name: Upload DEB
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: linux-deb
           path: Spotube-linux-x86_64.deb
 
       - name: Upload RPM
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: linux-rpm
           path: Spotube-linux-x86_64.rpm
+
+      - name: Upload AppImage
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-appimage
+          path: Spotube-linux-x86_64.AppImage
+
+      - name: Setup tmate session on failure
+        if: ${{ inputs.debug_ssh && failure() }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+
+  build-linux-arm64:
+    name: Linux Desktop (aarch64)
+    needs: [validate-inputs, prepare-deps]
+    if: ${{ inputs.platform == 'all' || inputs.platform == 'linux-aarch64' }}
+    timeout-minutes: 120
+    runs-on: ubuntu-24.04-arm
+    steps:
+      # Full history: the metainfo's release notes come from git-cliff
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      # The arm64 runner image ships without an Android SDK/NDK, but :composeApp configuration needs both
+      # (Gobley's cargo plugin resolves the NDK directory for the Android Rust targets)
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: tools platform-tools ndk;28.2.13676358
+
+      - name: Install packaging tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rpm fuse build-essential zlib1g-dev patchelf zstd
+
+      - name: Download maven local
+        uses: actions/download-artifact@v8
+        with:
+          name: maven-local
+          path: ~/.m2/repository/
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Cache GraalVM toolchain
+        uses: actions/cache@v6
+        with:
+          path: ~/.gradle/nucleus/graalvm
+          key: graalvm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('gradle/libs.versions.toml', 'composeApp/build.gradle.kts') }}
+          restore-keys: graalvm-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Package Linux
+        env:
+          # Nucleus lists GraalVM CE releases via the GitHub API; unauthenticated calls hit the 60/hour limit
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew :composeApp:packageGraalvmDeb :composeApp:packageGraalvmRpm -Pnightly=${{ inputs.release_type == 'nightly' }} -PbuildNumber=${{ github.run_number }}
+
+      # Portable tarball the AUR and Flathub packages install from. Like deb/rpm it uses the system's VLC,
+      # GTK and WebKitGTK, so it is packed from the distributable before the AppImage build replaces it
+      - name: Install git-cliff
+        uses: taiki-e/install-action@v2
+        with:
+          tool: git-cliff
+
+      - name: Package Linux tarball
+        run: |
+          if [ "${{ inputs.release_type }}" = "nightly" ]; then
+            VERSION=nightly
+          else
+            VERSION=$(./gradlew -q :composeApp:printVersion)
+          fi
+          # Desktop entry + metainfo, with the release history from git-cliff
+          ./gradlew :composeApp:renderPackagingLinux -Pnightly=${{ inputs.release_type == 'nightly' }} -PbuildNumber=${{ github.run_number }}
+          packaging/package-linux-tarball.sh "$VERSION" "${{ inputs.release_type == 'nightly' && 'nightly' || 'stable' }}" .
+
+      - name: Upload tarball
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-tarball-arm64
+          path: spotube-linux-*-aarch64.tar.xz
+
+      # Only the AppImage bundles VLC, GTK and WebKitGTK; deb/rpm depend on the distro packages
+      - name: Package Linux AppImage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew :composeApp:packageGraalvmAppImage -PappImage=true -Pnightly=${{ inputs.release_type == 'nightly' }} -PbuildNumber=${{ github.run_number }}
+
+      - name: Rename Linux artifacts
+        run: |
+          DEB_FILE=$(find composeApp/build/compose/binaries/main/graalvm-deb -maxdepth 1 -name "*.deb" -type f | head -1)
+          RPM_FILE=$(find composeApp/build/compose/binaries/main/graalvm-rpm -maxdepth 1 -name "*.rpm" -type f | head -1)
+          cp "$DEB_FILE" Spotube-linux-aarch64.deb
+          cp "$RPM_FILE" Spotube-linux-aarch64.rpm
+          APPIMAGE_FILE=$(find composeApp/build/compose/binaries/main -name "*.AppImage" -type f | head -1)
+          cp "$APPIMAGE_FILE" Spotube-linux-aarch64.AppImage
+
+      - name: Upload DEB
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-deb-arm64
+          path: Spotube-linux-aarch64.deb
+
+      - name: Upload RPM
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-rpm-arm64
+          path: Spotube-linux-aarch64.rpm
+
+      - name: Upload AppImage
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-appimage-arm64
+          path: Spotube-linux-aarch64.AppImage
 
       - name: Setup tmate session on failure
         if: ${{ inputs.debug_ssh && failure() }}
@@ -223,19 +498,21 @@ jobs:
 
   build-windows:
     name: Windows Desktop
-    needs: prepare-deps
+    needs: [validate-inputs, prepare-deps]
+    if: ${{ inputs.platform == 'all' || inputs.platform == 'windows' }}
+    timeout-minutes: 120
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Download maven local
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: maven-local
           path: ~/.m2/repository/
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 21
@@ -244,19 +521,35 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6
+
+      # native-image links with MSVC
+      - name: Set up MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Cache GraalVM toolchain
+        uses: actions/cache@v6
+        with:
+          path: ~/.gradle/nucleus/graalvm
+          key: graalvm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('gradle/libs.versions.toml', 'composeApp/build.gradle.kts') }}
+          restore-keys: graalvm-${{ runner.os }}-${{ runner.arch }}-
 
       - name: Package EXE
-        run: ./gradlew :composeApp:packageReleaseExe
+        env:
+          # Nucleus lists GraalVM CE releases via the GitHub API; unauthenticated calls hit the 60/hour limit
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew :composeApp:packageGraalvmExe -Pnightly=${{ inputs.release_type == 'nightly' }} -PbuildNumber=${{ github.run_number }}
 
       - name: Rename Windows artifacts
         shell: pwsh
         run: |
-          $EXE_FILE = Get-ChildItem -Path composeApp/build -Filter "*.exe" -Recurse | Select-Object -First 1
+          # Top level only: subfolders hold the unpacked app, and __* are electron-builder helpers
+          $EXE_FILE = Get-ChildItem -Path composeApp/build/compose/binaries/main/graalvm-exe -Filter "*.exe" |
+            Where-Object { $_.Name -notlike '__*' } | Select-Object -First 1
           Copy-Item $EXE_FILE.FullName Spotube-windows-x86_64-setup.exe
 
       - name: Upload EXE
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: windows-exe
           path: Spotube-windows-x86_64-setup.exe
@@ -269,19 +562,21 @@ jobs:
 
   build-macos:
     name: macOS Desktop
-    needs: prepare-deps
+    needs: [validate-inputs, prepare-deps]
+    if: ${{ inputs.platform == 'all' || inputs.platform == 'macos' }}
+    timeout-minutes: 120
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Download maven local
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: maven-local
           path: ~/.m2/repository/
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: 21
@@ -290,21 +585,40 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Make gradlew executable
         run: chmod +x gradlew
 
+      - name: Cache GraalVM toolchain
+        uses: actions/cache@v6
+        with:
+          path: ~/.gradle/nucleus/graalvm
+          key: graalvm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('gradle/libs.versions.toml', 'composeApp/build.gradle.kts') }}
+          restore-keys: graalvm-${{ runner.os }}-${{ runner.arch }}-
+
       - name: Package DMG
-        run: ./gradlew :composeApp:packageReleaseDmg
+        env:
+          # Nucleus lists GraalVM CE releases via the GitHub API; unauthenticated calls hit the 60/hour limit
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # The free macOS runner has 3 cores / 7 GB. With the default 4g Gradle + 3g Kotlin daemons idling,
+        # native-image only gets ~3 GB and spends ~40% of its time in GC (47 min build vs ~15 on Linux).
+        # A single-use daemon with a smaller heap and in-process Kotlin compilation leaves the RAM to it.
+        run: >
+          ./gradlew :composeApp:packageGraalvmDmg
+          --no-daemon
+          -Dorg.gradle.jvmargs="-Xmx3g -XX:MaxMetaspaceSize=1g"
+          -Pkotlin.compiler.execution.strategy=in-process
+          -Pnightly=${{ inputs.release_type == 'nightly' }}
+          -PbuildNumber=${{ github.run_number }}
 
       - name: Rename macOS artifact
         run: |
-          DMG_FILE=$(find composeApp/build -name "*.dmg" -type f | head -1)
+          DMG_FILE=$(find composeApp/build/compose/binaries/main/graalvm-dmg -maxdepth 1 -name "*.dmg" -type f | head -1)
           cp "$DMG_FILE" Spotube-macos-universal.dmg
 
       - name: Upload DMG
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: macos-dmg
           path: Spotube-macos-universal.dmg
@@ -315,30 +629,124 @@ jobs:
         with:
           limit-access-to-actor: true
 
+  build-ios:
+    name: iOS
+    needs: [validate-inputs, prepare-deps]
+    if: ${{ inputs.platform == 'all' || inputs.platform == 'ios' }}
+    timeout-minutes: 120
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Download maven local
+        uses: actions/download-artifact@v8
+        with:
+          name: maven-local
+          path: ~/.m2/repository/
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      # Unsigned on purpose: there is no Apple developer account in CI. The IPA is meant for sideloading
+      # (AltStore, Sideloadly, ...), which re-signs it with the user's own certificate.
+      # The Gradle build phase inside Xcode reads these as project properties.
+      - name: Build unsigned app
+        env:
+          ORG_GRADLE_PROJECT_nightly: ${{ inputs.release_type == 'nightly' }}
+          ORG_GRADLE_PROJECT_buildNumber: ${{ github.run_number }}
+        run: >
+          xcodebuild
+          -project iosApp/iosApp.xcodeproj
+          -scheme iosApp
+          -configuration Release
+          -sdk iphoneos
+          -destination 'generic/platform=iOS'
+          -derivedDataPath build/ios
+          CODE_SIGNING_ALLOWED=NO
+          CODE_SIGNING_REQUIRED=NO
+          CODE_SIGN_IDENTITY=""
+          DEVELOPMENT_TEAM=""
+          build
+
+      - name: Package IPA
+        run: |
+          APP=$(find build/ios/Build/Products/Release-iphoneos -maxdepth 1 -name "*.app" -type d | head -1)
+          mkdir Payload
+          cp -R "$APP" Payload/
+          zip -qry Spotube-ios.ipa Payload
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v7
+        with:
+          name: ios-ipa
+          path: Spotube-ios.ipa
+
+      - name: Setup tmate session on failure
+        if: ${{ inputs.debug_ssh && failure() }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+
   create-release:
     name: Create GitHub Release
-    if: ${{ !inputs.dry_run }}
+    # Skipped platform jobs count as skipped, not failed, so a single platform build still releases
+    if: ${{ !inputs.dry_run && !cancelled() && !contains(needs.*.result, 'failure') }}
     needs:
+      - validate-inputs
+      - prepare-deps
       - build-android
       - build-linux
+      - build-linux-arm64
       - build-windows
       - build-macos
+      - build-ios
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+
+      - name: Download maven local
+        uses: actions/download-artifact@v8
+        with:
+          name: maven-local
+          path: ~/.m2/repository/
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
 
       - name: Set release variables
         id: vars
         run: |
-          if [ "${{ inputs.release_type }}" = "stable" ]; then
-            VERSION=$(grep 'versionName' composeApp/build.gradle.kts | head -1 | sed 's/.*"\(.*\)".*/\1/')
+          if [ "${{ inputs.release_type }}" != "nightly" ]; then
+            chmod +x gradlew
+            # printVersion includes the -beta.N suffix when betaNumber is set in build.gradle.kts
+            VERSION=$(./gradlew -q :composeApp:printVersion)
             TAG="v${VERSION}"
             echo "is_prerelease=false" >> "$GITHUB_OUTPUT"
             echo "is_draft=true" >> "$GITHUB_OUTPUT"
             echo "release_name=Spotube ${TAG}" >> "$GITHUB_OUTPUT"
           else
             TAG="nightly"
-            VERSION="$(date +%Y-%m-%d)"
+            VERSION="$(date +%Y-%m-%d)-${{ github.run_number }}"
             echo "is_prerelease=true" >> "$GITHUB_OUTPUT"
             echo "is_draft=false" >> "$GITHUB_OUTPUT"
             echo "release_name=Nightly ${VERSION}" >> "$GITHUB_OUTPUT"
@@ -346,13 +754,14 @@ jobs:
           echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
 
       - name: Generate release notes
+        if: ${{ inputs.platform == 'all' }}
         run: |
           echo "## Downloads" > release-notes.md
           echo "" >> release-notes.md
-          for dir in android-apk android-aab linux-deb linux-rpm linux-appimage windows-msi windows-exe macos-dmg; do
+          for dir in android-apk linux-deb linux-rpm linux-appimage linux-tarball linux-deb-arm64 linux-rpm-arm64 linux-appimage-arm64 linux-tarball-arm64 windows-exe macos-dmg ios-ipa; do
             if [ -d "$dir" ]; then
               echo "### $dir" >> release-notes.md
               for f in "$dir"/*; do
@@ -363,19 +772,29 @@ jobs:
           done
 
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ steps.vars.outputs.tag }}
-          name: ${{ steps.vars.outputs.release_name }}
-          body_path: release-notes.md
+          # A new tag (stable) would otherwise point at the default branch instead of the built commit
+          target_commitish: ${{ github.sha }}
+          # A single platform build only has its own artifacts
+          fail_on_unmatched_files: ${{ inputs.platform == 'all' }}
+          # A single platform build only replaces that platform's assets (same file names are overwritten),
+          # so leave the existing release's name and notes alone
+          name: ${{ inputs.platform == 'all' && steps.vars.outputs.release_name || '' }}
+          body_path: ${{ inputs.platform == 'all' && 'release-notes.md' || '' }}
           draft: ${{ steps.vars.outputs.is_draft }}
           prerelease: ${{ steps.vars.outputs.is_prerelease }}
           files: |
             android-apk/*.apk
-            android-aab/*.aab
             linux-deb/*.deb
             linux-rpm/*.rpm
             linux-appimage/*.AppImage
-            windows-msi/*.msi
+            linux-tarball/*.tar.xz
+            linux-deb-arm64/*.deb
+            linux-rpm-arm64/*.rpm
+            linux-appimage-arm64/*.AppImage
+            linux-tarball-arm64/*.tar.xz
             windows-exe/*.exe
             macos-dmg/*.dmg
+            ios-ipa/*.ipa

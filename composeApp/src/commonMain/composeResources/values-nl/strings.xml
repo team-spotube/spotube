@@ -1,0 +1,926 @@
+<!--
+  ~ Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="queue_title">Wachtrij</string>
+    <string name="queue_clear_queue">Wachtrij wissen</string>
+    <string name="queue_filter_queue">Wachtrij filteren...</string>
+    <string name="queue_no_queue_entries">Wachtrij is leeg</string>
+
+    <string name="search_placeholder">Zoek nummers, artiesten, albums...</string>
+    <string name="search_clear_history">Alle geschiedenis wissen</string>
+    <string name="search_filter_placeholder">Zoeken...</string>
+
+    <!-- Library toolbar -->
+    <string name="library_screen_title">Jouw bibliotheek</string>
+    <string name="library_toolbar_compact_title">Bibliotheek</string>
+    <string name="library_tab_playlists">Playlists</string>
+    <string name="library_tab_albums">Albums</string>
+    <string name="library_tab_artists">Artiesten</string>
+    <string name="library_tab_local_tracks">Lokale nummers</string>
+    <string name="library_tab_downloads">Downloads</string>
+    <string name="library_filter_playlists">Zoek in opgeslagen playlists…</string>
+    <string name="library_filter_albums">Zoek in opgeslagen albums…</string>
+    <string name="library_filter_artists">Zoek in opgeslagen artiesten…</string>
+    <string name="library_filter_local_tracks">Zoek mappen of nummers…</string>
+    <string name="library_action_search">Bibliotheek filteren</string>
+    <string name="library_action_close_search">Filter sluiten</string>
+    <string name="library_action_create_playlist">Playlist maken</string>
+    <string name="library_action_refresh_local_tracks">Lokale nummers vernieuwen</string>
+    <string name="library_action_grid_view">Rasterweergave</string>
+    <string name="library_action_list_view">Lijstweergave</string>
+    <string name="library_playlists_empty">Geen opgeslagen playlists</string>
+    <string name="library_playlists_no_results">Geen playlists gevonden voor “%1$s”</string>
+    <string name="library_albums_empty">Geen opgeslagen albums</string>
+    <string name="library_albums_no_results">Geen albums gevonden voor “%1$s”</string>
+    <string name="library_artists_empty">Geen opgeslagen artiesten</string>
+    <string name="library_artists_no_results">Geen artiesten gevonden voor “%1$s”</string>
+
+    <!-- Local media -->
+    <string name="library_local_folders">Mappen</string>
+    <string name="library_local_folder">Map</string>
+    <string name="library_local_summary">%1$s • %2$s</string>
+    <plurals name="library_local_tracks_count">
+        <item quantity="one">%1$d nummer</item>
+        <item quantity="other">%1$d nummers</item>
+    </plurals>
+    <plurals name="library_local_folders_count">
+        <item quantity="one">%1$d map</item>
+        <item quantity="other">%1$d mappen</item>
+    </plurals>
+    <string name="library_local_back">Terug naar mappen</string>
+    <string name="library_local_play_folder">Map afspelen</string>
+    <string name="library_local_permission_title">Toegang tot audio vereist</string>
+    <string name="library_local_permission_description">Geef toegang tot audio om muziek op je apparaat te bekijken.</string>
+    <string name="library_local_grant_access">Toegang geven</string>
+    <string name="library_local_empty_folders">Geen lokale mappen gevonden</string>
+    <string name="library_local_empty_tracks">Geen nummers in deze map</string>
+    <string name="library_local_no_results">Geen overeenkomende mappen of nummers</string>
+    <string name="library_local_refresh_failed">Lokale media vernieuwen mislukt</string>
+
+    <!-- Downloads -->
+    <string name="downloads_summary">%1$d actief • %2$d voltooid</string>
+    <string name="downloads_clear_completed">Voltooide wissen</string>
+    <string name="downloads_empty">Nog geen downloads</string>
+    <string name="downloads_status_downloading">Downloaden %1$d%</string>
+    <string name="downloads_status_queued">In wachtrij</string>
+    <string name="downloads_status_completed">Voltooid</string>
+    <string name="downloads_status_cancelled">Geannuleerd</string>
+    <string name="downloads_status_failed">Mislukt</string>
+    <string name="downloads_status_failed_error">Mislukt: %1$s</string>
+    <string name="downloads_action_cancel">Download annuleren</string>
+    <string name="downloads_action_retry">Download opnieuw proberen</string>
+    <string name="downloads_action_remove">Download verwijderen</string>
+
+    <!-- Shared media items -->
+    <string name="media_artist">Artiest</string>
+    <string name="media_blacklisted">Op zwarte lijst</string>
+    <string name="media_liked_tracks">Gelikete nummers</string>
+    <string name="media_saved_songs">Je opgeslagen nummers</string>
+    <string name="media_unknown_artist">Onbekende artiest</string>
+    <string name="media_preview_title">Titel van nummer</string>
+    <string name="media_preview_subtitle">Naam van artiest</string>
+
+    <string name="accessibility_selected">Geselecteerd</string>
+
+    <string name="settings_screen_title">Instellingen</string>
+
+    <string name="settings_section_plugins">Plug-ins</string>
+    <string name="settings_section_language_region">Taal en regio</string>
+    <string name="settings_section_appearance">Weergave</string>
+    <string name="settings_section_playback">Afspelen</string>
+    <string name="settings_section_downloads">Downloads</string>
+    <string name="settings_section_caching">Cache</string>
+    <string name="settings_section_desktop">Desktop</string>
+    <string name="settings_section_updates">Updates</string>
+    <string name="settings_section_support">Steunen</string>
+    <string name="settings_section_about">Over</string>
+
+    <string name="common_close">Sluiten</string>
+    <string name="common_save">Opslaan</string>
+    <string name="common_cancel">Annuleren</string>
+
+    <string name="settings_language_title">Taal</string>
+    <string name="settings_language_subtitle_current">Taal van de app. Huidig: %1$s</string>
+    <string name="settings_language_system_default">Systeemstandaard</string>
+    <string name="settings_country_title">Land</string>
+    <string name="settings_country_subtitle_current">Land voor content en beschikbaarheid. Huidig: %1$s</string>
+    <string name="settings_option_name_and_code">%1$s (%2$s)</string>
+
+    <string name="settings_theme_title">Thema</string>
+    <string name="settings_theme_subtitle_current">Kies hoe Spotube aansluit op de weergave van je systeem. Huidig: %1$s</string>
+    <string name="settings_theme_light">Licht</string>
+    <string name="settings_theme_dark">Donker</string>
+    <string name="settings_theme_system">Systeem</string>
+
+    <string name="settings_surface_theme_title">Oppervlak</string>
+    <string name="settings_surface_theme_subtitle_current">Achtergrondmateriaal van de app. Huidig: %1$s</string>
+    <string name="settings_surface_watery">Waterig</string>
+    <string name="settings_surface_icy">IJzig</string>
+    <string name="settings_surface_chrome">Chroom</string>
+    <string name="settings_surface_acrylic">Acryl</string>
+    <string name="settings_surface_glass">Glas</string>
+
+    <string name="settings_accent_title">Accentkleur</string>
+    <string name="settings_accent_subtitle_current">Huidig palet: %1$s</string>
+    <string name="settings_accent_dialog_title">Accentkleur</string>
+    <string name="settings_accent_dialog_description">Kies een accentpalet en bekijk het in zowel het lichte als het donkere thema.</string>
+    <string name="settings_preview_light">Licht</string>
+    <string name="settings_preview_dark">Donker</string>
+    <string name="settings_preview_label">Voorbeeld</string>
+    <string name="settings_preview_button">Knop</string>
+    <string name="settings_accent_green_goblin">Groene kobold</string>
+    <string name="settings_accent_electric_violet">Elektrisch violet</string>
+    <string name="settings_accent_oceanic_cyan">Oceaancyaan</string>
+    <string name="settings_accent_sunset_orange">Zonsondergangoranje</string>
+    <string name="settings_accent_rose_garden">Rozentuin</string>
+    <string name="settings_accent_midnight_blue">Middernachtblauw</string>
+    <string name="settings_accent_metallic_slate">Metaalgrijs</string>
+
+    <string name="settings_appearance_title">Uiterlijk</string>
+    <string name="settings_appearance_subtitle_current">Oppervlaktemateriaal en accent. Huidig: %1$s · %2$s</string>
+    <string name="settings_appearance_dialog_title">Uiterlijk</string>
+    <string name="settings_appearance_dialog_description">Kies een oppervlaktemateriaal en daarna een accent dat erbij past. Elke optie is een zorgvuldig gekozen combinatie.</string>
+    <string name="settings_appearance_surface_label">Oppervlak</string>
+    <string name="settings_appearance_accent_label">Accent</string>
+    <string name="settings_preview_secondary">Secundair</string>
+
+    <string name="settings_palette_title">Palet</string>
+    <string name="settings_palette_subtitle_current">Millennium-accentpalet. Huidig: %1$s</string>
+    <string name="settings_palette_dialog_title">Palet</string>
+    <string name="settings_palette_dialog_description">Kies een Millennium-accentpalet en bekijk het in licht en donker.</string>
+    <string name="settings_palette_label">Palet</string>
+    <string name="settings_appearance_subtitle_palette">Millennium-palet en accent. Huidig: %1$s</string>
+    <string name="settings_palette_blue">Blauw</string>
+    <string name="settings_palette_orange">Oranje</string>
+    <string name="settings_palette_lime">Limoen</string>
+
+    <string name="settings_download_folder_title">Andere downloadmap</string>
+    <string name="settings_download_folder_current">Huidige map: %1$s</string>
+    <string name="settings_download_folder_description">Laat dit leeg om de standaard muziekmap te gebruiken.</string>
+    <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
+    <string name="settings_local_media_folders_title">Lokale mediamappen</string>
+    <string name="settings_local_media_folders_subtitle_current">Eigen mappen om te scannen op desktop. Toegevoegd: %1$d</string>
+    <string name="settings_local_media_folders_subtitle_empty">Nog geen eigen map toegevoegd</string>
+    <string name="settings_local_media_folders_description">Eigen mappen voor je lokale muziekbibliotheek.</string>
+    <string name="settings_local_media_folders_manage">Beheren</string>
+    <string name="settings_local_media_folders_add_action">Map toevoegen</string>
+    <string name="settings_local_media_folders_remove_action">Map verwijderen</string>
+    <string name="settings_local_media_folders_none_added">Geen eigen mappen toegevoegd.</string>
+    <string name="settings_local_media_folders_remove_named">%1$s verwijderen uit de scanlijst</string>
+    <string name="settings_local_media_folders_automatic_both">De download- en muziekcachemappen worden automatisch meegenomen.</string>
+    <string name="settings_local_media_folders_automatic_downloads">Je downloadmap wordt automatisch meegenomen.</string>
+    <string name="settings_local_media_folders_automatic_cache">De muziekcachemap wordt automatisch meegenomen.</string>
+    <string name="settings_local_media_folders_saving">Opslaan…</string>
+    <string name="settings_local_media_folders_save_error">Kan mappen niet opslaan. Je wijzigingen zijn bewaard; probeer het opnieuw.</string>
+    <plurals name="settings_local_media_folders_count">
+        <item quantity="one">%1$d map</item>
+        <item quantity="other">%1$d mappen</item>
+    </plurals>
+    <string name="settings_download_format_title">Downloadformaat</string>
+    <string name="settings_download_format_subtitle_current">Voorkeurscodec en -container voor downloads. Huidig: %1$s</string>
+    <string name="settings_download_quality_title">Downloadkwaliteit</string>
+
+    <string name="settings_streaming_format_title">Streamingformaat</string>
+    <string name="settings_streaming_format_subtitle_current">Voorkeurscodec en -container voor het streamen van muziek. Huidig: %1$s</string>
+    <string name="settings_streaming_quality_title">Streamingkwaliteit</string>
+    <string name="settings_subtitle_current">Huidig: %1$s</string>
+    <string name="settings_enable_music_caching_title">Muziekcache inschakelen</string>
+    <string name="settings_enable_music_caching_subtitle">Gestreamde audio lokaal opslaan zodat herhaald afspelen sneller gaat.</string>
+    <string name="settings_cache_folder_title">Cachemap</string>
+    <string name="settings_cache_folder_current">Huidig: %1$s</string>
+    <string name="settings_cache_folder_default">Huidig: standaard app-cache</string>
+    <string name="settings_cache_size_limit_title">Maximale cachegrootte</string>
+    <string name="settings_cache_size_limit_unlimited">Geen limiet</string>
+    <string name="settings_cache_size_limit_current">Huidige limiet: %1$d MB</string>
+    <string name="settings_cache_size_limit_description">Stel de maximale cachegrootte in MB in. Vul 0 in of laat leeg voor geen limiet.</string>
+    <string name="settings_cache_size_limit_placeholder">500</string>
+    <string name="settings_error_cache_size_range">Grootte moet 0 of een positief getal zijn.</string>
+    <string name="settings_enable_endless_playback_title">Eindeloos afspelen inschakelen</string>
+    <string name="settings_enable_endless_playback_subtitle">Blijf afspelen met aanbevolen nummers als je wachtrij leeg is.</string>
+    <string name="settings_playback_port_title">Poort van afspeelproxyserver</string>
+    <string name="settings_allow_remote_control_title">Bediening op afstand toestaan</string>
+    <string name="settings_allow_remote_control_subtitle">Laat andere apparaten op hetzelfde netwerk het afspelen bedienen als ze verbinding maken.</string>
+    <string name="settings_remote_device_name_title">Apparaatnaam voor bediening op afstand</string>
+    <string name="settings_remote_device_name_subtitle">De naam die andere apparaten zien als ze dit apparaat vinden. Huidig: %1$s</string>
+    <string name="settings_remote_device_name_description">Kies een herkenbare naam die andere apparaten op je netwerk te zien krijgen als ze deze Spotube-installatie vinden.</string>
+    <string name="settings_remote_device_name_placeholder">bijv. Spotube woonkamer</string>
+    <string name="settings_remote_device_name_default">hostnaam van apparaat</string>
+    <string name="settings_playback_port_subtitle_current">Poort die de afspeelproxyserver gebruikt. Huidig: %1$d</string>
+    <string name="settings_playback_port_description">Kies een poort tussen 1 en 65535.</string>
+    <string name="settings_playback_port_placeholder">14769</string>
+    <string name="settings_error_whole_number">Voer een geldig geheel getal in.</string>
+    <string name="settings_error_port_range">Poort moet tussen 1 en 65535 liggen.</string>
+
+    <string name="settings_blacklist_title">Zwarte lijst</string>
+    <string name="settings_blacklist_subtitle">Nummers en artiesten op de zwarte lijst beheren</string>
+
+    <string name="settings_desktop_minimize_title">Minimaliseren naar systeemvak</string>
+    <string name="settings_desktop_minimize_subtitle">Houd Spotube actief in het systeemvak als het venster wordt geminimaliseerd.</string>
+    <string name="settings_desktop_discord_title">Discord Rich Presence</string>
+    <string name="settings_desktop_discord_subtitle">Toon wat je afspeelt in Discord op desktop.</string>
+
+    <string name="settings_updates_auto_check_title">Automatisch controleren op updates</string>
+    <string name="settings_updates_auto_check_subtitle">Op de achtergrond zoeken naar nieuwe Spotube-versies.</string>
+
+    <string name="settings_plugins_manage_title">Plug-ins beheren</string>
+    <string name="settings_plugins_manage_subtitle">Beheer je plug-ins</string>
+    <string name="settings_plugins_default_ability_title">Standaardplug-in voor %1$s</string>
+    <string name="settings_plugins_ability_metadata">Metadata</string>
+    <string name="settings_plugins_ability_audio">Audio</string>
+    <string name="settings_plugins_ability_lyrics">Songteksten</string>
+    <string name="settings_plugins_ability_scrobble">Scrobbelen</string>
+    <string name="settings_plugins_no_selection">Geen plug-in geselecteerd</string>
+    <string name="settings_plugins_action_change">Wijzigen</string>
+    <string name="settings_plugins_action_select">Selecteren</string>
+    <string name="settings_plugins_selected">Geselecteerd</string>
+    <string name="settings_plugins_clear">Selectie wissen</string>
+    <string name="settings_plugins_no_plugins">Geen plug-ins beschikbaar</string>
+    <string name="settings_plugins_plugin_content_description">Plug-in %1$s</string>
+    <string name="settings_plugins_clear_content_description">Wissen</string>
+
+    <string name="plugin_configure_title">Configureren</string>
+    <string name="plugin_screen_title">Plug-inbeheer</string>
+    <string name="plugin_error_enter_url">Voer een URL in</string>
+    <string name="plugin_error_url_scheme">URL moet beginnen met http:// of https://</string>
+    <string name="plugin_error_download_failed">Plug-in downloaden mislukt</string>
+    <string name="plugin_empty_title">Nog geen plug-ins geïnstalleerd</string>
+    <string name="plugin_empty_subtitle">Plak hierboven een download-URL of kies een bestand.</string>
+    <plurals name="plugin_installed_plugins_count">
+        <item quantity="one">%1$d plug-in geïnstalleerd</item>
+        <item quantity="other">%1$d plug-ins geïnstalleerd</item>
+    </plurals>
+    <string name="plugin_install_section_title">Plug-in installeren</string>
+    <string name="plugin_url_placeholder">https://example.com/plugin.smplug</string>
+    <string name="plugin_action_download">Downloaden</string>
+    <string name="plugin_action_install_from_file">Installeren uit bestand (.smplug)</string>
+    <string name="plugin_state_active">Actief</string>
+    <string name="plugin_version_label">v%1$s</string>
+    <string name="plugin_state_builtin">Ingebouwd</string>
+    <string name="plugin_action_remove">Plug-in verwijderen</string>
+    <string name="plugin_action_login">Inloggen</string>
+    <string name="plugin_action_logout">Uitloggen</string>
+    <string name="plugin_section_url_title">Downloaden via URL</string>
+    <string name="plugin_section_file_title">Installeren uit bestand</string>
+    <string name="plugin_section_install">Installeren</string>
+
+    <string name="plugin_permissions_author_version">• %1$s</string>
+    <string name="plugin_permissions_requested_title">Gevraagde machtigingen</string>
+    <string name="plugin_permissions_none">Deze plug-in heeft geen speciale machtigingen nodig.</string>
+    <string name="plugin_permissions_compare_title">Geïnstalleerd vs. aangeboden</string>
+    <string name="plugin_permissions_installed_label">Geïnstalleerd</string>
+    <string name="plugin_permissions_supplied_label">Aangeboden</string>
+    <string name="plugin_permissions_api_diff">API %1$s → %2$s</string>
+    <string name="plugin_permissions_capability_storage_title">Permanente opslag</string>
+    <string name="plugin_permissions_capability_storage_desc">Gegevens lezen van en schrijven naar schijf</string>
+    <string name="plugin_permissions_capability_network_title">Netwerkverzoeken</string>
+    <string name="plugin_permissions_capability_network_desc">Gegevens verzenden en ontvangen via internet</string>
+    <string name="plugin_permissions_capability_webview_title">WebView</string>
+    <string name="plugin_permissions_capability_webview_desc">Webcontent weergeven in de app</string>
+    <string name="settings_section_jam">Group Jam</string>
+    <string name="settings_jam_server_test">Verbinding testen</string>
+    <string name="settings_jam_server_testing">Testen…</string>
+    <string name="settings_jam_server_test_ok">Verbonden in %1$d ms</string>
+    <string name="settings_jam_server_test_fail">Mislukt: %1$s</string>
+    <string name="settings_jam_section_connection">Verbinding</string>
+    <string name="settings_jam_section_diagnostics">Diagnose</string>
+
+    <!-- Group Jam -->
+    <string name="jam_screen_title">Group Jam</string>
+    <string name="jam_setup_create_tab">Maken</string>
+    <string name="jam_setup_join_tab">Deelnemen</string>
+    <string name="jam_setup_create_hint">Maak een sessie en deel de code met je vrienden.</string>
+    <string name="jam_setup_create_button">Sessie maken</string>
+    <string name="jam_setup_join_button">Deelnemen aan sessie</string>
+    <string name="jam_setup_working">Verbinden…</string>
+    <string name="jam_setup_code_label">Sessiecode</string>
+    <string name="jam_setup_code_placeholder">ABC123</string>
+    <string name="jam_session_connected">Verbonden</string>
+    <string name="jam_session_connecting">Opnieuw verbinden…</string>
+    <string name="jam_invite_copy">Code kopiëren</string>
+    <string name="jam_invite_copied">Gekopieerd!</string>
+    <string name="jam_invite_share">Delen</string>
+    <string name="jam_participants_heading">Deelnemers (%1$d)</string>
+    <string name="jam_participants_host">Host</string>
+    <string name="jam_participants_guest">Luisteraar</string>
+    <string name="jam_participants_waiting">Wachten op luisteraars…</string>
+    <string name="jam_participants_remove">Verwijderen</string>
+    <string name="jam_participants_ban">Blokkeren</string>
+    <string name="jam_participants_manage">Beheren</string>
+    <string name="jam_session_leave">Sessie verlaten</string>
+    <string name="jam_error_title">Kan geen verbinding maken</string>
+    <string name="jam_error_dismiss">Sluiten</string>
+    <string name="jam_error_create">Jam-sessie maken mislukt</string>
+    <string name="jam_error_join">Deelnemen aan Jam-sessie mislukt</string>
+    <string name="jam_error_invalid_code">Voer een sessiecode van zes tekens in met letters en cijfers.</string>
+    <string name="jam_share_message">Doe mee met mijn Spotube Jam met code: %1$s</string>
+    <string name="settings_jam_server_title">Sessieserver</string>
+    <string name="settings_jam_server_url">Server-URL</string>
+    <string name="settings_jam_server_url_invalid">Voer een URL in die begint met https://</string>
+    <string name="settings_jam_server_diagnostics_subtitle">Controleer de sessieserver voordat je een sessie start.</string>
+    <string name="settings_jam_server_note">Jam gebruikt de gratis sessieserver van Spotube. Wil je hem zelf hosten, deploy dan de server van github.com/team-spotube/jam-server en voer de URL in.</string>
+    <string name="settings_jam_section_you">Jij</string>
+    <string name="jam_connection_host">Server: %1$s</string>
+    <string name="jam_connection_missing">Stel in Instellingen een sessieserver in om een sessie te hosten of eraan deel te nemen.</string>
+    <string name="jam_connection_settings">Serverinstellingen</string>
+    <string name="jam_participants_you">%1$s (jij)</string>
+    <string name="jam_name_title">Je naam</string>
+    <string name="jam_name_subtitle">Anderen in de jam zien je als %1$s</string>
+    <string name="jam_name_description">Zichtbaar voor iedereen in de jam. Laat leeg om %1$s te gebruiken. Een nieuwe naam geldt vanaf de volgende keer dat je een sessie start of eraan deelneemt.</string>
+    <string name="jam_name_too_long">Gebruik maximaal %1$d tekens.</string>
+    <string name="jam_error_no_server">Geen jamserver ingesteld</string>
+    <string name="jam_error_server_unreachable">Kan de jamserver niet bereiken. Controleer je netwerk of de server-URL in Instellingen → Group Jam.</string>
+    <string name="jam_error_server_incompatible">De jamserver draait een incompatibele versie.</string>
+    <string name="jam_error_room_not_found">Geen sessie met die code. Controleer de code en probeer het opnieuw.</string>
+    <string name="jam_error_room_full">Deze sessie is vol.</string>
+    <string name="jam_error_banned">De host heeft je uit deze sessie verbannen.</string>
+    <string name="jam_error_kicked">De host heeft je uit de sessie verwijderd.</string>
+    <string name="jam_error_replaced">Deze sessie is opnieuw geopend op dit apparaat, dus deze verbinding is gesloten.</string>
+
+    <string name="player_go_to_album">Naar album</string>
+    <string name="player_sleep_timer">Slaaptimer</string>
+    <string name="player_track_details">Details van nummer</string>
+    <string name="player_play_content_description">Afspelen</string>
+    <string name="player_pause_content_description">Pauzeren</string>
+    <string name="player_nothing_playing">Er wordt niets afgespeeld</string>
+    <string name="player_add_to_queue_content_description">Toevoegen aan wachtrij</string>
+
+    <string name="update_action_ignore">Negeren</string>
+    <string name="update_action_update">Bijwerken</string>
+    <string name="app_update_dialog_title">Spotube %1$s is beschikbaar</string>
+    <string name="app_update_dialog_no_notes">Bekijk wat er nieuw is in deze versie op de downloadpagina van Spotube.</string>
+    <string name="plugin_update_dialog_title">%1$s %2$s is beschikbaar</string>
+    <string name="plugin_update_dialog_current_version">Momenteel geïnstalleerd: %1$s</string>
+    <string name="plugin_update_dialog_no_notes">Bekijk wat er nieuw is in deze update op de pagina van de plug-in.</string>
+
+    <string name="welcome_skip">Overslaan</string>
+    <string name="welcome_next">Volgende</string>
+    <string name="welcome_back">Terug</string>
+    <string name="welcome_get_started">Aan de slag</string>
+    <string name="welcome_app_name">Spotube</string>
+    <string name="welcome_brand_freedom">Muziek, zonder verplichtingen.</string>
+    <string name="welcome_brand_quiet_description">Een opensource-speler voor een wereld vol muziek.\nOm te ontdekken. Om helemaal van jou te maken.</string>
+    <string name="welcome_donate_quiet_title">Houd dit project in leven.</string>
+    <string name="welcome_donate_letter">Spotube wordt gemaakt door mensen, niet door een abonnementsbedrijf. Als het onderdeel wordt van je dagelijks leven, helpt een beetje steun ons om het de zorg te geven die het verdient.\n\nBedankt dat je ruimte maakt voor onafhankelijke software.</string>
+    <string name="welcome_plugins_setup_guide">Begin met een catalogusplug-in om nummers en playlists te vinden. Kies een audioplug-in om ze af te spelen. Songteksten en luistergeschiedenis zijn optioneel. Ontdek hieronder een plug-in, bekijk de machtigingen, installeer hem en selecteer hem hier.</string>
+    <string name="welcome_plugins_discover">Plug-ins ontdekken</string>
+    <string name="welcome_plugins_sources">Je bronnen</string>
+    <string name="welcome_plugins_retry">Opnieuw proberen</string>
+    <string name="welcome_plugins_more">Meer plug-ins</string>
+    <string name="welcome_plugins_discovery_empty">Geen nieuwe plug-ins gevonden. Je kunt er ook hierboven een installeren via een link of een .smplug-bestand.</string>
+    <string name="welcome_plugins_discovery_error">Plug-ins ontdekken is nu niet beschikbaar. Probeer het opnieuw of installeer via een link of bestand.</string>
+    <string name="welcome_step_welcome">Welkom</string>
+    <string name="welcome_step_support">Steunen</string>
+    <string name="welcome_step_plugins">Plug-ins</string>
+    <string name="welcome_step_guide">Uitleg</string>
+
+    <string name="welcome_guide_title">Zo gebruik je Spotube</string>
+    <string name="welcome_guide_subtitle">Vier snelle stappen en je luistert al.</string>
+    <string name="welcome_guide_signin_title">Inloggen</string>
+    <string name="welcome_guide_signin_desc">Koppel je account of kies je eigen catalogusplug-in.</string>
+    <string name="welcome_guide_search_title">Zoeken en afspelen</string>
+    <string name="welcome_guide_search_desc">Vind elk nummer, album of elke artiest en druk op afspelen.</string>
+    <string name="welcome_guide_offline_title">Offline luisteren</string>
+    <string name="welcome_guide_offline_desc">Download nummers om ook zonder verbinding te luisteren.</string>
+    <string name="welcome_guide_lyrics_title">Volg de songtekst</string>
+    <string name="welcome_guide_lyrics_desc">Open gesynchroniseerde songteksten in de speler terwijl een nummer speelt.</string>
+
+    <!-- Page 1: branding -->
+    <string name="welcome_brand_tagline">Jouw muziek. Jouw bronnen. Jouw regels.</string>
+    <string name="welcome_brand_subtitle">Een gratis opensource-muziekspeler, gemaakt door een community die gewoon van muziek houdt.</string>
+    <string name="welcome_brand_chip_open_source">Opensource</string>
+    <string name="welcome_brand_chip_no_ads">Geen advertenties</string>
+    <string name="welcome_brand_chip_no_tracking">Geen telemetrie</string>
+    <string name="welcome_brand_chip_plugin_powered">Werkt met plug-ins</string>
+    <string name="welcome_lets_go">Aan de slag</string>
+
+    <!-- Page 2: donations -->
+    <string name="welcome_donate_eyebrow">Supporters houden ons op gang</string>
+    <string name="welcome_donate_title">Gemaakt met passie. In leven gehouden door jou.</string>
+    <string name="welcome_donate_message">Spotube is 100% gratis, vrij en opensource — geen advertenties, geen abonnementen, geen tracking. Elke functie bestaat omdat mensen zoals jij hebben geholpen de code te laten stromen.</string>
+    <string name="welcome_donate_patreon_title">Patreon</string>
+    <string name="welcome_donate_patreon_tag">Maandelijkse sponsor</string>
+    <string name="welcome_donate_patreon_subtitle">Steun doorlopende ontwikkeling en infrastructuur</string>
+    <string name="welcome_donate_bmac_title">Buy Me a Coffee</string>
+    <string name="welcome_donate_bmac_tag">Eenmalig koffie</string>
+    <string name="welcome_donate_bmac_subtitle">Geef een nachtelijke codeersessie een boost met een kleine fooi</string>
+    <string name="welcome_donate_opencollective_title">Open Collective</string>
+    <string name="welcome_donate_opencollective_tag">Communityfonds</string>
+    <string name="welcome_donate_opencollective_subtitle">Transparante financiële steun, beheerd door de community</string>
+    <string name="welcome_donate_thanks">Uit de grond van ons hart bedankt dat je gelooft in open muziek.</string>
+    <string name="welcome_donate_optional">Steunen is helemaal optioneel — Spotube blijft hoe dan ook gratis.</string>
+    <string name="welcome_donate_action">Sponsoren</string>
+    <string name="welcome_donate_open_content_description">%1$s openen</string>
+
+    <!-- Support / donations -->
+    <string name="support_button_label">Spotube steunen</string>
+    <string name="support_dialog_title">Spotube steunen</string>
+    <string name="support_dialog_message">Spotube is gratis, vrij en opensource — geen advertenties, geen abonnementen, geen tracking. Als je er blij van wordt, overweeg dan het project te steunen.</string>
+    <string name="support_dialog_reminder_hint">Je kunt deze herinneringen uitzetten via Instellingen → Steunen.</string>
+    <string name="support_dialog_dismiss">Misschien later</string>
+    <string name="settings_support_reminders_title">Herinneringen om te steunen</string>
+    <string name="settings_support_reminders_subtitle">Toon elke 7 dagen een vriendelijke herinnering om het project te steunen.</string>
+
+    <!-- Page 3: plugins -->
+    <string name="welcome_plugins_eyebrow">Modulaire architectuur</string>
+    <string name="welcome_plugins_title">Kies waar je muziek vandaan komt.</string>
+    <string name="welcome_plugins_subtitle">Spotube scheidt het ontdekken van de catalogus, het streamen van audio en gesynchroniseerde songteksten. Stel je engines hieronder in of wissel ze op elk moment.</string>
+    <string name="welcome_plugins_metadata_title">Metadata-engine</string>
+    <string name="welcome_plugins_metadata_description">Zorgt voor muziek ontdekken, zoeken, tracklijsten en playlists.</string>
+    <string name="welcome_plugins_audio_title">Audio-engine</string>
+    <string name="welcome_plugins_audio_description">Haalt de audiostreams op die worden afgespeeld en decodeert ze.</string>
+    <string name="welcome_plugins_lyrics_title">Songtekst-engine</string>
+    <string name="welcome_plugins_lyrics_description">Streamt tijdgesynchroniseerde karaokesongteksten in realtime.</string>
+    <string name="welcome_plugins_scrobble_title">Scrobble-engine</string>
+    <string name="welcome_plugins_scrobble_description">Legt je luistergeschiedenis vast op Last.fm of ListenBrainz.</string>
+    <string name="welcome_plugins_badge_active">Actief</string>
+    <string name="welcome_plugins_badge_builtin">Ingebouwd</string>
+    <string name="welcome_plugins_badge_ready">Klaar</string>
+    <string name="welcome_plugins_badge_optional">Optioneel</string>
+    <string name="welcome_plugins_none_selected">Kies een engine</string>
+    <string name="welcome_plugins_installed_section">Geïnstalleerde engines</string>
+    <string name="welcome_plugins_set_default">Instellen als standaard</string>
+    <string name="welcome_plugins_builtin_note">NewPipe YouTube en LRCLib Lyrics zijn ingebouwd en direct klaar om te streamen.</string>
+    <string name="welcome_plugins_tip">Beheer of voeg op elk moment communityplug-ins toe via Instellingen → Plug-ins.</string>
+
+    <!-- Page 4: how it works -->
+    <string name="welcome_how_eyebrow">Retromoderne architectuur</string>
+    <string name="welcome_how_title">Pure hi-fi, geen tussenpersonen</string>
+    <string name="welcome_how_subtitle">Zo regelt Spotube gedecentraliseerd afspelen, rechtstreeks op je apparaat.</string>
+    <string name="welcome_how_status_badge">RECHTSTREEKS PEER-TO-PEER • 256 KBPS OPUS</string>
+    <string name="welcome_how_mockup_title">Blauw uur</string>
+    <string name="welcome_how_mockup_artist">Spotube · demonstratie van de speler</string>
+    <string name="welcome_how_mockup_lyric">Een beetje muziek voor de momenten tussendoor.</string>
+    <string name="welcome_how_step_search_title">1. Gedecentraliseerd ontdekken</string>
+    <string name="welcome_how_step_search_desc">Zoekopdrachten gaan rechtstreeks naar je gekozen catalogusplug-in. Spotube maakt nooit een profiel van je smaak.</string>
+    <string name="welcome_how_step_stream_title">2. Directe streams</string>
+    <string name="welcome_how_step_stream_desc">Audio wordt rechtstreeks van de contentservers naar je apparaat gestreamd. Geen proxy\'s ertussen en geen gegevensverzameling op afstand.</string>
+    <string name="welcome_how_step_playback_title">3. Lokale DSP &amp; afspelen</string>
+    <string name="welcome_how_step_playback_desc">Lokaal gedecodeerd en gecachet, met equalizer en optioneel offline downloaden.</string>
+    <string name="welcome_how_step_lyrics_title">4. Gesynchroniseerde songteksten &amp; Jam</string>
+    <string name="welcome_how_step_lyrics_desc">Karaokesongteksten volgen de afspeelpositie, met bediening op afstand via LAN en Group Jam.</string>
+    <string name="welcome_how_footer">Geen tussenservers. Afspelen gebeurt gewoon op je apparaat — privé vanaf het ontwerp.</string>
+
+    <!-- Devices: play destination picker -->
+    <string name="devices_destination_title">Kies een apparaat</string>
+    <string name="devices_destination_prompt">%1$s: ‘%2$s’</string>
+    <string name="devices_destination_action_play">Afspelen</string>
+    <string name="devices_destination_action_add_to_queue">Toevoegen aan wachtrij</string>
+    <string name="devices_destination_action_play_next">Hierna afspelen</string>
+    <string name="devices_destination_this_device">Dit apparaat</string>
+    <string name="devices_destination_this_device_subtitle">Op dit apparaat</string>
+    <string name="devices_destination_remote_device">Extern apparaat</string>
+    <string name="devices_destination_remote_device_host">Extern apparaat (%1$s)</string>
+    <string name="devices_destination_remote_subtitle">Op het verbonden apparaat</string>
+
+    <!-- Devices: connection errors -->
+    <string name="devices_error_connection_failed">Verbinding mislukt</string>
+    <string name="devices_error_connection_lost">Verbinding verbroken</string>
+    <string name="devices_error_send_failed">Verzenden mislukt</string>
+    <string name="devices_error_discovery_failed">Zoeken mislukt: %1$s</string>
+    <string name="devices_error_connect_failed">Verbinden mislukt: %1$s</string>
+
+    <!-- Devices: discovery screen -->
+    <string name="devices_title">Apparaten</string>
+    <string name="devices_refresh">Vernieuwen</string>
+    <string name="devices_disconnect">Verbinding verbreken</string>
+    <string name="devices_connecting">Verbinden...</string>
+    <string name="devices_searching">Zoeken naar apparaten op het netwerk...</string>
+    <string name="devices_empty">Geen apparaten gevonden</string>
+    <string name="devices_empty_hint">Zorg dat \"Bediening op afstand toestaan\" is ingeschakeld in de instellingen van het andere apparaat.</string>
+    <string name="devices_unknown_device">Onbekend apparaat</string>
+    <string name="devices_resolving">Bezig met ophalen...</string>
+
+    <!-- Devices: remote control screen -->
+    <string name="devices_remote_title">Bediening op afstand</string>
+    <string name="devices_remote_disconnected">Niet verbonden</string>
+    <string name="devices_remote_connection_error">Verbindingsfout: %1$s</string>
+    <string name="devices_remote_unknown_track">Onbekend nummer</string>
+    <string name="devices_remote_unknown_artist">Onbekende artiest</string>
+    <string name="devices_remote_volume">Volume</string>
+    <string name="devices_remote_remove_from_queue">Verwijderen uit wachtrij</string>
+    <string name="devices_remote_more_options">Meer opties</string>
+
+    <!-- Group Jam: play destination picker -->
+    <string name="jam_destination_title">Waar afspelen?</string>
+    <string name="jam_destination_message">Je hebt een actieve Jam-sessie. Kies waar je deze collectie wilt afspelen.</string>
+    <string name="jam_destination_play_here">Hier afspelen</string>
+    <string name="jam_destination_suggest">Voorstellen aan Jam</string>
+
+    <!-- Group Jam: connection errors -->
+    <string name="jam_error_connection_failed">Verbinding mislukt</string>
+    <string name="jam_error_connection_lost">Verbinding verbroken</string>
+
+
+    <!-- Group Jam: queue snackbar -->
+    <string name="jam_queue_added_track">Toegevoegd aan de Jam-wachtrij</string>
+    <plurals name="jam_queue_added_tracks">
+        <item quantity="one">%1$d nummer toegevoegd aan de Jam-wachtrij</item>
+        <item quantity="other">%1$d nummers toegevoegd aan de Jam-wachtrij</item>
+    </plurals>
+
+    <!-- Remote control: connection request dialog -->
+    <string name="remote_request_title">Verzoek voor bediening op afstand</string>
+    <string name="remote_request_message">\"%1$s\" wil het afspelen op dit apparaat bedienen.</string>
+    <string name="remote_request_deny">Weigeren</string>
+    <string name="remote_request_allow">Toestaan</string>
+    <string name="remote_request_allow_always">Altijd toestaan</string>
+
+    <!-- Search -->
+    <string name="search_results_title">Zoekresultaten</string>
+    <string name="search_tab_all">Alles</string>
+    <string name="search_section_tracks">Nummers</string>
+    <string name="search_section_users">Gebruikers</string>
+    <string name="search_no_search_types">Geen zoektypen beschikbaar</string>
+    <string name="search_start_typing">Begin met typen om te zoeken</string>
+    <string name="search_start_typing_tracks">Begin met typen om nummers te zoeken</string>
+    <string name="search_no_results">Geen resultaten gevonden</string>
+    <string name="search_see_all">Alles weergeven</string>
+    <string name="search_searching">Zoeken</string>
+    <string name="search_loading_tracks">Nummers laden...</string>
+    <string name="search_loading_albums">Albums laden...</string>
+    <string name="search_loading_artists">Artiesten laden...</string>
+    <string name="search_loading_playlists">Playlists laden...</string>
+    <string name="search_loading_users">Gebruikers laden...</string>
+    <string name="search_no_albums">Geen albums gevonden</string>
+    <string name="search_no_artists">Geen artiesten gevonden</string>
+    <string name="search_no_playlists">Geen playlists gevonden</string>
+    <string name="search_no_users">Geen gebruikers gevonden</string>
+    <string name="search_warm_crates">Door de platenbakken aan het spitten...</string>
+    <string name="search_warm_cosmos">De kosmos aan het doorzoeken...</string>
+    <string name="search_warm_speakers">De speakers aan het opwarmen...</string>
+    <string name="search_warm_vinyl">Het vinyl aan het afstoffen...</string>
+    <string name="search_warm_music_gods">De muziekgoden aan het raadplegen...</string>
+    <string name="search_warm_antennas">De antennes aan het afstemmen...</string>
+    <string name="search_warm_records">Door de platen aan het bladeren...</string>
+    <string name="search_error_capabilities">Zoekmogelijkheden laden mislukt</string>
+    <string name="search_error_search">Zoeken mislukt</string>
+    <string name="search_error_tracks">Nummers zoeken mislukt</string>
+    <string name="search_error_albums">Albums zoeken mislukt</string>
+    <string name="search_error_artists">Artiesten zoeken mislukt</string>
+    <string name="search_error_playlists">Playlists zoeken mislukt</string>
+    <string name="search_error_users">Gebruikers zoeken mislukt</string>
+
+    <!-- Home -->
+    <string name="home_title_browse">Ontdekken</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_mode_synced">Gesynchroniseerd</string>
+    <string name="lyrics_mode_plain">Platte tekst</string>
+    <string name="lyrics_no_synced">Geen gesynchroniseerde songtekst beschikbaar</string>
+    <string name="lyrics_no_plain">Geen songtekst beschikbaar</string>
+
+    <!-- Settings: audio format/quality labels -->
+    <string name="settings_audio_format_label">%1$s in %2$s</string>
+    <string name="settings_audio_quality_lossy">%1$d kbps</string>
+    <string name="settings_audio_quality_lossless">%1$s kHz • %2$d ch</string>
+    <string name="search_error_no_metadata_plugin">Geen metadataplug-in geselecteerd</string>
+
+    <!-- Common -->
+    <string name="common_back">Terug</string>
+    <string name="common_retry">Opnieuw proberen</string>
+    <string name="common_close_dialog">Dialoogvenster sluiten</string>
+    <string name="common_loading">Laden...</string>
+    <string name="common_unknown">Onbekend</string>
+    <string name="common_unknown_error">Onbekende fout</string>
+
+    <!-- Media cards -->
+    <string name="media_user">Gebruiker</string>
+    <string name="media_playlist">Playlist</string>
+
+    <!-- Error display -->
+    <string name="error_title">Het spijt ons echt</string>
+    <string name="error_description">Er werkt momenteel iets niet goed. Jouw ervaring is belangrijk voor ons en we doen ons best om dit op te lossen. Probeer het opnieuw of bekijk de foutdetails hieronder.</string>
+    <string name="error_details">Foutdetails</string>
+    <string name="error_copy_to_clipboard">Kopiëren naar klembord</string>
+    <string name="error_view_full_log">Volledig logboek bekijken</string>
+    <string name="error_full_log_title">Volledig foutenlogboek</string>
+
+    <!-- Collection details -->
+    <string name="collection_details_shuffle">Shuffle</string>
+    <string name="collection_details_shuffle_play">Shuffle afspelen</string>
+    <string name="collection_details_follow">Volgen</string>
+    <string name="collection_details_unfollow">Ontvolgen</string>
+    <string name="collection_details_edit_playlist">Playlist bewerken</string>
+    <string name="collection_details_by_owner">Van %1$s</string>
+
+    <!-- Track options -->
+    <string name="track_options_title">Opties voor nummer</string>
+    <string name="track_options_add_to_jam">Toevoegen aan Jam</string>
+    <string name="track_options_start_radio">Radio starten</string>
+    <string name="track_options_play_next">Hierna afspelen</string>
+    <string name="track_options_move_to_next">Naar volgende verplaatsen</string>
+    <string name="track_options_remove_from_queue">Verwijderen uit wachtrij</string>
+    <string name="track_options_remove_from_favorites">Verwijderen uit favorieten</string>
+    <string name="track_options_save_as_favorite">Opslaan als favoriet</string>
+    <string name="track_options_add_to_playlist">Toevoegen aan playlist</string>
+    <string name="track_options_download">Downloaden</string>
+    <string name="track_options_share">Delen</string>
+
+    <!-- Track list -->
+    <string name="track_list_sort_original">Oorspronkelijk</string>
+    <string name="track_list_sort_title">Titel</string>
+    <string name="track_list_sort_artist">Artiest</string>
+    <string name="track_list_sort_album">Album</string>
+    <string name="track_list_sort_duration">Duur</string>
+    <string name="track_list_sort">Sorteren</string>
+    <string name="track_list_no_tracks">Geen nummers gevonden</string>
+    <string name="track_list_filter_placeholder">Filteren</string>
+    <string name="track_list_bulk_actions">Bulkacties</string>
+    <string name="track_list_download_all">Alles downloaden</string>
+    <string name="track_list_download_count">%1$d downloaden</string>
+    <string name="track_list_add_all_to_queue">Alles toevoegen aan wachtrij</string>
+    <string name="track_list_add_count_to_queue">%1$d toevoegen aan wachtrij</string>
+    <string name="track_list_play_all_next">Alles hierna afspelen</string>
+    <string name="track_list_play_count_next">%1$d hierna afspelen</string>
+    <string name="track_list_add_all_to_playlist">Alles toevoegen aan playlist</string>
+    <string name="track_list_add_count_to_playlist">%1$d toevoegen aan playlist</string>
+    <string name="track_list_add_all_to_jam">Alles toevoegen aan Jam</string>
+    <string name="track_list_add_count_to_jam">%1$d toevoegen aan Jam</string>
+    <string name="track_list_more_artists">+%1$d meer</string>
+
+    <!-- WebView -->
+    <string name="webview_no_url">Geen URL om te laden</string>
+    <string name="webview_go_back">Terug in browsergeschiedenis</string>
+    <string name="webview_go_forward">Vooruit in browsergeschiedenis</string>
+
+    <!-- Blacklist -->
+    <string name="blacklist_filter_placeholder">Zwarte lijst filteren...</string>
+    <string name="blacklist_empty">Niets op de zwarte lijst</string>
+    <string name="blacklist_no_results">Niets op de zwarte lijst komt overeen met \'%1$s\'</string>
+    <string name="blacklist_section_tracks">Nummers</string>
+    <string name="blacklist_item_track">Nummer</string>
+    <string name="blacklist_add">Toevoegen aan zwarte lijst</string>
+    <string name="blacklist_remove">Verwijderen van zwarte lijst</string>
+
+    <!-- Downloads -->
+    <string name="downloads_error_no_metadata">Geen metadata voor nummer</string>
+    <string name="downloads_error_stream_unresolved_short">Kan stream-URL niet ophalen</string>
+    <string name="downloads_error_stream_unresolved">Kan stream-URL niet ophalen. Speel het nummer eerst af.</string>
+
+    <!-- Saved tracks -->
+    <string name="saved_tracks_title">Opgeslagen nummers</string>
+    <string name="saved_tracks_owner_you">Jij</string>
+
+    <!-- Artist -->
+    <string name="artist_following">Volgend</string>
+    <string name="artist_top_tracks">Populairste nummers</string>
+    <string name="artist_play_top_tracks">Populairste nummers afspelen</string>
+    <string name="artist_add_top_tracks_to_queue">Populairste nummers toevoegen aan wachtrij</string>
+    <string name="artist_related_artists">Vergelijkbare artiesten</string>
+    <string name="artist_featured_playlists">Uitgelichte playlists</string>
+    <string name="artist_error_load_failed">Artiestoverzicht laden mislukt</string>
+    <string name="artist_followers_unavailable">Volgers niet beschikbaar</string>
+    <string name="artist_followers_thousands">%1$sK volgers</string>
+    <string name="artist_followers_millions">%1$s mln. volgers</string>
+    <string name="artist_followers_billions">%1$s mld. volgers</string>
+    <plurals name="artist_followers_count">
+        <item quantity="one">%1$d volger</item>
+        <item quantity="other">%1$d volgers</item>
+    </plurals>
+
+    <!-- Player -->
+    <string name="player_like_content_description">Liken</string>
+    <string name="player_unlike_content_description">Niet meer liken</string>
+    <string name="player_fallback_title">Titel van no-op-nummer</string>
+    <string name="player_fallback_artists">No-op-artiesten</string>
+    <string name="player_unknown_album">Onbekend album</string>
+    <string name="player_seek_label">Zoeken in nummer</string>
+    <string name="player_volume_label">Volume</string>
+    <string name="player_enable_shuffle_content_description">Shuffle aanzetten</string>
+    <string name="player_disable_shuffle_content_description">Shuffle uitzetten</string>
+    <string name="player_previous_content_description">Vorige</string>
+    <string name="player_next_content_description">Volgende</string>
+    <string name="player_play_or_pause_content_description">Afspelen of pauzeren</string>
+    <string name="player_loop_mode_none">Herhalen uit</string>
+    <string name="player_loop_mode_one">Eén nummer herhalen</string>
+    <string name="player_loop_mode_all">Alles herhalen</string>
+    <string name="player_mute_content_description">Dempen</string>
+    <string name="player_unmute_content_description">Dempen opheffen</string>
+    <string name="player_more_options_content_description">Meer opties</string>
+    <string name="player_options_content_description">Speleropties</string>
+    <string name="player_collapse_content_description">Speler inklappen</string>
+    <string name="player_expand_lyrics_content_description">Songtekst uitvouwen</string>
+    <string name="player_now_playing">Nu aan het afspelen</string>
+    <string name="player_lyrics">Songtekst</string>
+    <string name="player_alternative_source">Alternatieve bron</string>
+    <string name="player_alternative_source_content_description">Alternatieve bron</string>
+    <string name="player_download">Downloaden</string>
+    <string name="player_download_status_downloaded">Gedownload</string>
+    <string name="player_download_status_downloading">Downloaden...</string>
+    <string name="player_download_already_downloaded">Al gedownload</string>
+    <string name="player_download_retrying">Download opnieuw proberen...</string>
+    <string name="player_download_started">%1$s downloaden</string>
+    <string name="player_sleep_timer_remaining">Afspelen pauzeert over %1$s.</string>
+    <string name="player_sleep_timer_description">Pauzeer het afspelen na het gekozen aantal minuten.</string>
+    <string name="player_sleep_timer_minutes_label">Minuten</string>
+    <string name="player_sleep_timer_minutes_placeholder">Kies tussen 1 en 600 minuten</string>
+    <string name="player_sleep_timer_cancel">Timer annuleren</string>
+    <string name="player_sleep_timer_start">Starten</string>
+    <string name="player_track_details_stream_mismatch">De afspeel-URL is opgehaald met andere streaminginstellingen. De gemarkeerde stream komt overeen met je huidige voorkeur; de actieve URL wordt vernieuwd bij het volgende streamverzoek.</string>
+    <string name="player_track_details_matched_source">Gekoppelde audiobron</string>
+    <string name="player_track_details_loading_source">Gekoppelde bron laden…</string>
+    <string name="player_track_details_source_not_needed">Een gekoppelde externe bron is niet nodig zolang het lokale cachebestand wordt afgespeeld.</string>
+    <string name="player_track_details_no_source">Er is geen gekoppelde bron beschikbaar.</string>
+    <string name="player_track_details_no_cached_source">Er is geen gekoppelde audiobron gecachet voor dit nummer.</string>
+    <string name="player_track_details_streams_not_cached">Streamdetails zijn nog niet gecachet. Speel het nummer eerst af om ze te laden.</string>
+    <string name="player_track_details_load_failed">Details van nummer laden mislukt.</string>
+    <string name="player_track_details_available_streams">Beschikbare streams</string>
+    <string name="player_track_details_served_from_cache_description">Dit nummer wordt afgespeeld vanuit de lokale cache. Streamvarianten worden voor deze weergave niet gebruikt.</string>
+    <string name="player_track_details_loading_streams">Streams laden…</string>
+    <string name="player_track_details_no_streams">Er zijn geen streams beschikbaar voor deze bron.</string>
+    <string name="player_track_details_selected_stream_content_description">Momenteel geselecteerde stream</string>
+    <string name="player_track_details_matches_preference">Komt overeen met je voorkeur voor streamingformaat &amp; -kwaliteit</string>
+    <string name="player_track_details_active_url">Actieve afspeel-URL</string>
+    <string name="player_track_details_served_from_cache">Afgespeeld vanuit lokale cache</string>
+    <string name="player_track_details_metadata_track">Metadata van nummer</string>
+    <string name="player_track_details_title">Titel</string>
+    <string name="player_track_details_id">ID</string>
+    <string name="player_track_details_album">Album</string>
+    <string name="player_track_details_confidence">Betrouwbaarheid</string>
+    <string name="player_track_details_external_uri">Externe URI</string>
+    <string name="player_track_details_album_id">Album-ID</string>
+    <string name="player_track_details_album_type">Albumtype</string>
+    <string name="player_track_details_album_release_date">Releasedatum album</string>
+    <string name="player_track_details_album_track_count">Aantal nummers op album</string>
+    <string name="player_track_details_album_genres">Albumgenres</string>
+    <string name="player_track_details_duration">Duur</string>
+    <string name="player_track_details_track_number">Nummer op album</string>
+    <string name="player_track_details_disc_number">Schijfnummer</string>
+    <string name="player_track_details_explicit">Expliciet</string>
+    <string name="player_track_details_popularity">Populariteit</string>
+    <string name="player_track_details_isrc">ISRC</string>
+    <string name="player_track_details_thumbnail_urls">Miniatuur-URL\'s</string>
+
+    <!-- Shell -->
+    <string name="shell_sidebar_toggle_content_description">Zijbalk tonen/verbergen</string>
+
+    <!-- Alternative track -->
+    <string name="alternative_track_title">Alternatieve bronnen</string>
+    <string name="alternative_track_no_track">Er wordt nu geen nummer afgespeeld</string>
+    <string name="alternative_track_searching">Zoeken naar alternatieve bronnen...</string>
+    <string name="alternative_track_empty">Geen alternatieve bronnen gevonden</string>
+    <string name="alternative_track_confidence">Betrouwbaarheid: %1$d%</string>
+    <string name="alternative_track_active_source">Actieve bron</string>
+
+    <!-- Queue -->
+    <string name="queue_participant_kick">Verwijderen</string>
+    <string name="queue_participant_kick_description">Verwijder deze persoon uit de sessie</string>
+    <string name="queue_participant_ban_description">Verwijderen en voorkomen dat deze persoon opnieuw deelneemt</string>
+    <string name="queue_participant_remove_suggestions">Suggesties verwijderen</string>
+    <string name="queue_participant_remove_suggestions_description">Verwijder alle nummers die deze persoon aan de wachtrij heeft toegevoegd</string>
+    <string name="queue_reorder_content_description">Volgorde wijzigen</string>
+    <string name="queue_remove_from_queue">Verwijderen uit wachtrij</string>
+    <string name="queue_item_subtitle_added_by">%1$s • Toegevoegd door %2$s</string>
+
+    <!-- Playlist -->
+    <string name="playlist_owner_unknown">Onbekend</string>
+    <string name="playlist_loading_title">Playlist laden...</string>
+    <string name="playlist_add_tracks_button">Nummers toevoegen</string>
+    <string name="playlist_add_tracks_title">Nummers toevoegen aan playlist</string>
+    <string name="playlist_add_tracks_search_placeholder">Nummers zoeken...</string>
+    <string name="playlist_add_tracks_search_content_description">Zoeken</string>
+    <string name="playlist_add_tracks_no_results">Geen nummers gevonden</string>
+    <string name="playlist_add_tracks_hint">Zoek nummers om toe te voegen</string>
+    <string name="playlist_add_tracks_done">Klaar</string>
+    <string name="playlist_add_tracks_add">Toevoegen</string>
+    <string name="playlist_add_tracks_added_content_description">Toegevoegd</string>
+
+    <!-- Album -->
+    <string name="album_loading_title">Album laden...</string>
+
+    <!-- Library -->
+    <string name="library_add_to_playlist_title">Toevoegen aan je playlist</string>
+    <string name="library_add_to_playlist_search_content_description">Zoeken</string>
+    <string name="library_add_to_playlist_search_placeholder">Zoek in je playlists...</string>
+    <string name="library_add_to_playlist_loading">Je playlists laden...</string>
+    <string name="library_add_to_playlist_empty">Je hebt nog geen eigen playlists.\nMaak er een om nummers toe te voegen.</string>
+    <string name="library_playlist_form_create_title">Playlist maken</string>
+    <string name="library_playlist_form_edit_title">Playlist bewerken</string>
+    <string name="library_playlist_form_create">Maken</string>
+    <string name="library_playlist_form_name_label">Naam</string>
+    <string name="library_playlist_form_name_placeholder">Naam van playlist</string>
+    <string name="library_playlist_form_description_label">Beschrijving</string>
+    <string name="library_playlist_form_description_placeholder">Beschrijving (optioneel)</string>
+    <string name="library_playlist_form_public">Openbaar</string>
+    <string name="library_playlist_form_public_description">Iedereen kan deze playlist zien</string>
+    <string name="library_playlist_form_collaborative">Gezamenlijk</string>
+    <string name="library_playlist_form_collaborative_description">Anderen kunnen nummers aan deze playlist toevoegen</string>
+    <string name="library_playlist_form_cover_image">Coverafbeelding</string>
+    <string name="library_playlist_form_cover_content_description">Playlistcover</string>
+    <string name="library_playlist_form_no_image">Geen afbeelding</string>
+    <string name="library_playlist_form_change_image">Afbeelding wijzigen</string>
+    <string name="library_playlist_form_pick_image">Afbeelding kiezen</string>
+
+    <!-- Plugin install / errors -->
+    <string name="plugin_action_install">Installeren</string>
+    <string name="plugin_action_replace">Vervangen</string>
+    <string name="plugin_error_plugin_json_missing">plugin.json niet gevonden in het zip-bestand</string>
+    <string name="plugin_error_zipline_manifest_missing">manifest.zipline.json niet gevonden in het zip-bestand</string>
+    <string name="plugin_error_invalid_plugin_json">Ongeldige indeling van plugin.json: %1$s</string>
+    <string name="plugin_error_read_failed">Plug-in lezen mislukt: %1$s</string>
+    <string name="plugin_error_install_failed">Plug-in installeren mislukt: %1$s</string>
+    <string name="plugin_error_update_needs_confirmation">Er is een nieuwere versie van %1$s beschikbaar. Bevestig de update voordat je installeert.</string>
+    <string name="plugin_error_replace_needs_confirmation">%1$s is al geïnstalleerd. Bevestig het vervangen voordat je installeert.</string>
+    <string name="plugin_error_builtin_add">Ingebouwde plug-ins zijn al inbegrepen en kunnen niet opnieuw worden toegevoegd.</string>
+    <string name="plugin_error_builtin_remove">Ingebouwde plug-ins kunnen niet worden verwijderd.</string>
+    <string name="plugin_error_api_version_invalid">%1$s geeft een ongeldige apiVersion op (%2$s). Verwacht: semantische versie compatibel met %3$s.</string>
+    <string name="plugin_error_app_api_version_invalid">Plug-in-API-versie %1$s van Spotube is ongeldig.</string>
+    <string name="plugin_error_api_incompatible">%1$s is gemaakt voor plug-in-API %2$s, maar Spotube ondersteunt de breaking plug-in-API %3$s. Installeer een plug-in die is gemaakt voor dezelfde breaking API-versie.</string>
+
+    <!-- Plugin install prompts -->
+    <string name="plugin_prompt_incompatible_title">Plug-in-API niet compatibel</string>
+    <string name="plugin_prompt_install_title">Plug-in installeren?</string>
+    <string name="plugin_prompt_install_message">%1$s wordt toegevoegd aan je geïnstalleerde plug-ins.</string>
+    <string name="plugin_prompt_update_title">Plug-in bijwerken?</string>
+    <string name="plugin_prompt_update_message">Er is een oudere versie geïnstalleerd (%1$s). Bijwerken naar %2$s?</string>
+    <string name="plugin_prompt_replace_title">Geïnstalleerde plug-in vervangen?</string>
+    <string name="plugin_prompt_replace_invalid_incoming">%1$s gebruikt een ongeldige semantische versie (%2$s) en kan niet als update worden vergeleken. De geïnstalleerde plug-in toch vervangen?</string>
+    <string name="plugin_prompt_replace_invalid_installed">De geïnstalleerde versie (%1$s) kan niet worden vergeleken met semantische versies. Vervangen door %2$s?</string>
+    <string name="plugin_prompt_replace_same_version">Versie %1$s is al geïnstalleerd. De bestaande plug-in vervangen door de aangeboden kopie?</string>
+    <string name="plugin_prompt_replace_downgrade">De geïnstalleerde versie %1$s is nieuwer dan de aangeboden versie %2$s. Toch vervangen?</string>
+    <string name="plugin_prompt_replace_generic">De geïnstalleerde plug-in vervangen door de aangeboden kopie?</string>
+
+    <!-- Plugin info dialog -->
+    <string name="plugin_info_label_format">%1$s:</string>
+    <string name="plugin_info_version">Versie</string>
+    <string name="plugin_info_api_version">API-versie</string>
+    <string name="plugin_info_author">Auteur</string>
+    <string name="plugin_info_license">Licentie</string>
+    <string name="plugin_info_capabilities">Mogelijkheden</string>
+    <string name="plugin_info_abilities">Functies</string>
+    <string name="plugin_info_repository">Repository</string>
+    <string name="plugin_info_contact">Contact</string>
+    <string name="plugin_info_report_bugs">Bugs melden</string>
+    <string name="plugin_support_dialog_title">%1$s steunen</string>
+
+    <!-- Plugin discovery -->
+    <string name="plugin_discover_badge_official">Officieel</string>
+    <string name="plugin_discover_badge_verified">Geverifieerd</string>
+    <string name="plugin_discover_stars_content_description">GitHub-sterren</string>
+    <string name="plugin_discover_repository_content_description">URL van GitHub-repository</string>
+
+    <!-- Plugin release install dialog -->
+    <string name="plugin_install_no_releases">Geen releases gevonden</string>
+    <string name="plugin_install_select_release_label">Release kiezen</string>
+    <string name="plugin_install_select_release_placeholder">Kies een release</string>
+    <string name="plugin_install_prerelease">Pre-release</string>
+    <string name="plugin_install_release_notes">Release-opmerkingen</string>
+
+    <!-- App navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_search">Zoeken</string>
+    <string name="nav_group_on_device">Op apparaat</string>
+    <string name="nav_group_connect">Verbinden</string>
+    <string name="nav_devices">Apparaten</string>
+
+    <!-- System tray (desktop) -->
+    <string name="tray_hide_window">Venster verbergen</string>
+    <string name="tray_show_window">Venster tonen</string>
+    <string name="tray_next_track">Volgend nummer</string>
+    <string name="tray_previous_track">Vorig nummer</string>
+    <string name="tray_shuffle">Shuffle</string>
+    <string name="tray_loop">Herhalen</string>
+    <string name="tray_loop_off">Herhalen: UIT</string>
+    <string name="tray_loop_one">Herhalen: ÉÉN</string>
+    <string name="tray_loop_all">Herhalen: ALLES</string>
+    <string name="tray_volume">Volume: %1$d%</string>
+    <string name="tray_volume_up">Volume +</string>
+    <string name="tray_volume_down">Volume -</string>
+    <string name="tray_mute">Dempen</string>
+    <string name="tray_unmute">Dempen opheffen</string>
+    <string name="tray_like_track">Nummer liken</string>
+    <string name="tray_unlike_track">Nummer niet meer liken</string>
+    <string name="tray_exit">Afsluiten</string>
+
+    <!-- Desktop window controls -->
+    <string name="app_window_minimize">Minimaliseren</string>
+    <string name="app_window_maximize">Maximaliseren</string>
+    <string name="app_window_restore">Herstellen</string>
+    <string name="app_window_close">Sluiten</string>
+
+    <!-- Android playback notification -->
+    <string name="notification_playback_channel_name">Afspelen</string>
+    <string name="notification_playback_channel_description">Bediening voor media-afspelen</string>
+
+    <!-- Android Auto / media browser -->
+    <string name="media_browser_browse">Ontdekken</string>
+    <string name="media_browser_now_playing">Nu aan het afspelen</string>
+    <string name="media_browser_featured">Uitgelicht</string>
+    <string name="media_browser_saved_tracks">Opgeslagen nummers</string>
+    <string name="media_browser_top_tracks">Populairste nummers</string>
+</resources>

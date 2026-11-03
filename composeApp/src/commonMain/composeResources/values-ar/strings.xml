@@ -1,0 +1,950 @@
+<!--
+  ~ Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="queue_title">قائمة الانتظار</string>
+    <string name="queue_clear_queue">مسح قائمة الانتظار</string>
+    <string name="queue_filter_queue">تصفية قائمة الانتظار...</string>
+    <string name="queue_no_queue_entries">لا توجد عناصر في قائمة الانتظار</string>
+
+    <string name="search_placeholder">ابحث عن أغانٍ وفنانين وألبومات...</string>
+    <string name="search_clear_history">مسح السجل بالكامل</string>
+    <string name="search_filter_placeholder">بحث...</string>
+
+    <!-- Library toolbar -->
+    <string name="library_screen_title">مكتبتك</string>
+    <string name="library_toolbar_compact_title">المكتبة</string>
+    <string name="library_tab_playlists">قوائم التشغيل</string>
+    <string name="library_tab_albums">الألبومات</string>
+    <string name="library_tab_artists">الفنانون</string>
+    <string name="library_tab_local_tracks">المقاطع المحلية</string>
+    <string name="library_tab_downloads">التنزيلات</string>
+    <string name="library_filter_playlists">ابحث في قوائم التشغيل المحفوظة…</string>
+    <string name="library_filter_albums">ابحث في الألبومات المحفوظة…</string>
+    <string name="library_filter_artists">ابحث في الفنانين المحفوظين…</string>
+    <string name="library_filter_local_tracks">ابحث في المجلدات أو المقاطع…</string>
+    <string name="library_action_search">تصفية المكتبة</string>
+    <string name="library_action_close_search">إغلاق التصفية</string>
+    <string name="library_action_create_playlist">إنشاء قائمة تشغيل</string>
+    <string name="library_action_refresh_local_tracks">تحديث المقاطع المحلية</string>
+    <string name="library_action_grid_view">التبديل إلى عرض الشبكة</string>
+    <string name="library_action_list_view">التبديل إلى عرض القائمة</string>
+    <string name="library_playlists_empty">لا توجد قوائم تشغيل محفوظة</string>
+    <string name="library_playlists_no_results">لا توجد قوائم تشغيل تطابق “%1$s”</string>
+    <string name="library_albums_empty">لا توجد ألبومات محفوظة</string>
+    <string name="library_albums_no_results">لا توجد ألبومات تطابق “%1$s”</string>
+    <string name="library_artists_empty">لا يوجد فنانون محفوظون</string>
+    <string name="library_artists_no_results">لا يوجد فنانون يطابقون “%1$s”</string>
+
+    <!-- Local media -->
+    <string name="library_local_folders">المجلدات</string>
+    <string name="library_local_folder">مجلد</string>
+    <string name="library_local_summary">%1$s • %2$s</string>
+    <plurals name="library_local_tracks_count">
+        <item quantity="zero">%1$d مقطع</item>
+        <item quantity="one">مقطع واحد</item>
+        <item quantity="two">%1$d مقطعان</item>
+        <item quantity="few">%1$d مقاطع</item>
+        <item quantity="many">%1$d مقطعًا</item>
+        <item quantity="other">%1$d مقطع</item>
+    </plurals>
+    <plurals name="library_local_folders_count">
+        <item quantity="zero">%1$d مجلد</item>
+        <item quantity="one">مجلد واحد</item>
+        <item quantity="two">%1$d مجلدان</item>
+        <item quantity="few">%1$d مجلدات</item>
+        <item quantity="many">%1$d مجلدًا</item>
+        <item quantity="other">%1$d مجلد</item>
+    </plurals>
+    <string name="library_local_back">العودة إلى المجلدات</string>
+    <string name="library_local_play_folder">تشغيل المجلد</string>
+    <string name="library_local_permission_title">يلزم الوصول إلى الصوت</string>
+    <string name="library_local_permission_description">اسمح بالوصول إلى الصوت لتصفح الموسيقى على جهازك.</string>
+    <string name="library_local_grant_access">منح الإذن</string>
+    <string name="library_local_empty_folders">لم يتم العثور على مجلدات محلية</string>
+    <string name="library_local_empty_tracks">لا توجد مقاطع في هذا المجلد</string>
+    <string name="library_local_no_results">لا توجد مجلدات أو مقاطع مطابقة</string>
+    <string name="library_local_refresh_failed">تعذّر تحديث الوسائط المحلية</string>
+
+    <!-- Downloads -->
+    <string name="downloads_summary">%1$d نشط • %2$d مكتمل</string>
+    <string name="downloads_clear_completed">مسح المكتملة</string>
+    <string name="downloads_empty">لا توجد تنزيلات بعد</string>
+    <string name="downloads_status_downloading">جارٍ التنزيل %1$d%</string>
+    <string name="downloads_status_queued">في قائمة الانتظار</string>
+    <string name="downloads_status_completed">مكتمل</string>
+    <string name="downloads_status_cancelled">ملغى</string>
+    <string name="downloads_status_failed">فشل</string>
+    <string name="downloads_status_failed_error">فشل: %1$s</string>
+    <string name="downloads_action_cancel">إلغاء التنزيل</string>
+    <string name="downloads_action_retry">إعادة محاولة التنزيل</string>
+    <string name="downloads_action_remove">إزالة التنزيل</string>
+
+    <!-- Shared media items -->
+    <string name="media_artist">فنان</string>
+    <string name="media_blacklisted">محظور</string>
+    <string name="media_liked_tracks">المقاطع التي أعجبتك</string>
+    <string name="media_saved_songs">أغانيك المحفوظة</string>
+    <string name="media_unknown_artist">فنان غير معروف</string>
+    <string name="media_preview_title">عنوان المقطع</string>
+    <string name="media_preview_subtitle">اسم الفنان</string>
+
+    <string name="accessibility_selected">محدد</string>
+
+    <string name="settings_screen_title">الإعدادات</string>
+
+    <string name="settings_section_plugins">الإضافات</string>
+    <string name="settings_section_language_region">اللغة والمنطقة</string>
+    <string name="settings_section_appearance">المظهر</string>
+    <string name="settings_section_playback">التشغيل</string>
+    <string name="settings_section_downloads">التنزيلات</string>
+    <string name="settings_section_caching">التخزين المؤقت</string>
+    <string name="settings_section_desktop">سطح المكتب</string>
+    <string name="settings_section_updates">التحديثات</string>
+    <string name="settings_section_support">الدعم</string>
+    <string name="settings_section_about">حول</string>
+
+    <string name="common_close">إغلاق</string>
+    <string name="common_save">حفظ</string>
+    <string name="common_cancel">إلغاء</string>
+
+    <string name="settings_language_title">اللغة</string>
+    <string name="settings_language_subtitle_current">لغة واجهة التطبيق. الحالية: %1$s</string>
+    <string name="settings_language_system_default">افتراضي النظام</string>
+    <string name="settings_country_title">البلد</string>
+    <string name="settings_country_subtitle_current">البلد المستخدم للمحتوى والتوفر. الحالي: %1$s</string>
+    <string name="settings_option_name_and_code">%1$s (%2$s)</string>
+
+    <string name="settings_theme_title">السمة</string>
+    <string name="settings_theme_subtitle_current">اختر كيف يتوافق Spotube مع مظهر نظامك. الحالية: %1$s</string>
+    <string name="settings_theme_light">فاتح</string>
+    <string name="settings_theme_dark">داكن</string>
+    <string name="settings_theme_system">النظام</string>
+
+    <string name="settings_surface_theme_title">السطح</string>
+    <string name="settings_surface_theme_subtitle_current">مادة خلفية التطبيق. الحالية: %1$s</string>
+    <string name="settings_surface_watery">مائي</string>
+    <string name="settings_surface_icy">جليدي</string>
+    <string name="settings_surface_chrome">كروم</string>
+    <string name="settings_surface_acrylic">أكريليك</string>
+    <string name="settings_surface_glass">زجاج</string>
+
+    <string name="settings_accent_title">لون التمييز</string>
+    <string name="settings_accent_subtitle_current">لوحة الألوان الحالية: %1$s</string>
+    <string name="settings_accent_dialog_title">لون التمييز</string>
+    <string name="settings_accent_dialog_description">اختر لوحة ألوان تمييز واعرض معاينتها في السمتين الفاتحة والداكنة.</string>
+    <string name="settings_preview_light">فاتح</string>
+    <string name="settings_preview_dark">داكن</string>
+    <string name="settings_preview_label">معاينة</string>
+    <string name="settings_preview_button">زر</string>
+    <string name="settings_accent_green_goblin">أخضر غوبلن</string>
+    <string name="settings_accent_electric_violet">بنفسجي كهربائي</string>
+    <string name="settings_accent_oceanic_cyan">سماوي محيطي</string>
+    <string name="settings_accent_sunset_orange">برتقالي الغروب</string>
+    <string name="settings_accent_rose_garden">حديقة الورد</string>
+    <string name="settings_accent_midnight_blue">أزرق منتصف الليل</string>
+    <string name="settings_accent_metallic_slate">أردوازي معدني</string>
+
+    <string name="settings_appearance_title">الشكل والمظهر</string>
+    <string name="settings_appearance_subtitle_current">مادة السطح ولون التمييز. الحالي: %1$s · %2$s</string>
+    <string name="settings_appearance_dialog_title">الشكل والمظهر</string>
+    <string name="settings_appearance_dialog_description">اختر مادة السطح، ثم لون تمييز يتناسب معها. كل خيار هو تركيبة منتقاة بعناية.</string>
+    <string name="settings_appearance_surface_label">السطح</string>
+    <string name="settings_appearance_accent_label">لون التمييز</string>
+    <string name="settings_preview_secondary">ثانوي</string>
+
+    <string name="settings_palette_title">لوحة الألوان</string>
+    <string name="settings_palette_subtitle_current">لوحة ألوان تمييز Millennium. الحالية: %1$s</string>
+    <string name="settings_palette_dialog_title">لوحة الألوان</string>
+    <string name="settings_palette_dialog_description">اختر لوحة ألوان تمييز Millennium واعرض معاينتها في الوضعين الفاتح والداكن.</string>
+    <string name="settings_palette_label">لوحة الألوان</string>
+    <string name="settings_appearance_subtitle_palette">لوحة ألوان Millennium ولون التمييز. الحالية: %1$s</string>
+    <string name="settings_palette_blue">أزرق</string>
+    <string name="settings_palette_orange">برتقالي</string>
+    <string name="settings_palette_lime">ليموني</string>
+
+    <string name="settings_download_folder_title">تخصيص مجلد التنزيل</string>
+    <string name="settings_download_folder_current">المجلد الحالي: %1$s</string>
+    <string name="settings_download_folder_description">اتركه فارغًا لاستخدام مجلد الموسيقى الافتراضي.</string>
+    <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
+    <string name="settings_local_media_folders_title">مجلدات الوسائط المحلية</string>
+    <string name="settings_local_media_folders_subtitle_current">مجلدات مخصصة للفحص على سطح المكتب. المضافة: %1$d</string>
+    <string name="settings_local_media_folders_subtitle_empty">لم تتم إضافة أي مجلد مخصص بعد</string>
+    <string name="settings_local_media_folders_description">مجلدات مخصصة لمكتبة موسيقاك المحلية.</string>
+    <string name="settings_local_media_folders_manage">إدارة</string>
+    <string name="settings_local_media_folders_add_action">إضافة مجلد</string>
+    <string name="settings_local_media_folders_remove_action">إزالة المجلد</string>
+    <string name="settings_local_media_folders_none_added">لم تتم إضافة مجلدات مخصصة.</string>
+    <string name="settings_local_media_folders_remove_named">إزالة %1$s من قائمة الفحص</string>
+    <string name="settings_local_media_folders_automatic_both">يتم تضمين مجلد التنزيل ومجلد ذاكرة التخزين المؤقت للموسيقى تلقائيًا.</string>
+    <string name="settings_local_media_folders_automatic_downloads">يتم تضمين مجلد التنزيل تلقائيًا.</string>
+    <string name="settings_local_media_folders_automatic_cache">يتم تضمين مجلد ذاكرة التخزين المؤقت للموسيقى تلقائيًا.</string>
+    <string name="settings_local_media_folders_saving">جارٍ الحفظ…</string>
+    <string name="settings_local_media_folders_save_error">تعذّر حفظ المجلدات. لا تزال تغييراتك موجودة؛ حاول مرة أخرى.</string>
+    <plurals name="settings_local_media_folders_count">
+        <item quantity="zero">%1$d مجلد</item>
+        <item quantity="one">مجلد واحد</item>
+        <item quantity="two">%1$d مجلدان</item>
+        <item quantity="few">%1$d مجلدات</item>
+        <item quantity="many">%1$d مجلدًا</item>
+        <item quantity="other">%1$d مجلد</item>
+    </plurals>
+    <string name="settings_download_format_title">صيغة تنزيل الموسيقى</string>
+    <string name="settings_download_format_subtitle_current">الترميز والحاوية المفضلان للتنزيلات. الحالي: %1$s</string>
+    <string name="settings_download_quality_title">جودة تنزيل الموسيقى</string>
+
+    <string name="settings_streaming_format_title">صيغة بث الموسيقى</string>
+    <string name="settings_streaming_format_subtitle_current">الترميز والحاوية المفضلان لبث الموسيقى. الحالي: %1$s</string>
+    <string name="settings_streaming_quality_title">جودة بث الموسيقى</string>
+    <string name="settings_subtitle_current">الحالي: %1$s</string>
+    <string name="settings_enable_music_caching_title">تفعيل التخزين المؤقت للموسيقى</string>
+    <string name="settings_enable_music_caching_subtitle">خزّن الصوت الذي يتم بثه محليًا لتسريع إعادة التشغيل.</string>
+    <string name="settings_cache_folder_title">مجلد ذاكرة التخزين المؤقت</string>
+    <string name="settings_cache_folder_current">الحالي: %1$s</string>
+    <string name="settings_cache_folder_default">الحالي: ذاكرة التخزين المؤقت الافتراضية للتطبيق</string>
+    <string name="settings_cache_size_limit_title">الحد الأقصى لحجم ذاكرة التخزين المؤقت</string>
+    <string name="settings_cache_size_limit_unlimited">بلا حد</string>
+    <string name="settings_cache_size_limit_current">الحد الحالي: %1$d MB</string>
+    <string name="settings_cache_size_limit_description">حدد الحجم الأقصى لذاكرة التخزين المؤقت بوحدة MB. أدخل 0 أو اتركه فارغًا لعدم وضع حد.</string>
+    <string name="settings_cache_size_limit_placeholder">500</string>
+    <string name="settings_error_cache_size_range">يجب أن يكون الحجم 0 أو رقمًا موجبًا.</string>
+    <string name="settings_enable_endless_playback_title">تفعيل التشغيل اللانهائي</string>
+    <string name="settings_enable_endless_playback_subtitle">واصل التشغيل بمقاطع مقترحة عند انتهاء قائمة الانتظار.</string>
+    <string name="settings_playback_port_title">منفذ خادم وكيل التشغيل</string>
+    <string name="settings_allow_remote_control_title">السماح بالتحكم عن بُعد</string>
+    <string name="settings_allow_remote_control_subtitle">اسمح للأجهزة الأخرى على الشبكة نفسها بالتحكم في التشغيل عند اتصالها.</string>
+    <string name="settings_remote_device_name_title">اسم الجهاز للتحكم عن بُعد</string>
+    <string name="settings_remote_device_name_subtitle">الاسم الذي تراه الأجهزة الأخرى عند اكتشاف هذا الجهاز. الحالي: %1$s</string>
+    <string name="settings_remote_device_name_description">اختر اسمًا مألوفًا يظهر للأجهزة الأخرى على شبكتك عند اكتشافها لنسخة Spotube هذه.</string>
+    <string name="settings_remote_device_name_placeholder">مثال: Spotube غرفة المعيشة</string>
+    <string name="settings_remote_device_name_default">اسم مضيف الجهاز</string>
+    <string name="settings_playback_port_subtitle_current">المنفذ الذي يستخدمه خادم وكيل التشغيل. الحالي: %1$d</string>
+    <string name="settings_playback_port_description">اختر منفذًا بين 1 و65535.</string>
+    <string name="settings_playback_port_placeholder">14769</string>
+    <string name="settings_error_whole_number">أدخل عددًا صحيحًا صالحًا.</string>
+    <string name="settings_error_port_range">يجب أن يكون المنفذ بين 1 و65535.</string>
+
+    <string name="settings_blacklist_title">قائمة الحظر</string>
+    <string name="settings_blacklist_subtitle">إدارة المقاطع والفنانين المحظورين</string>
+
+    <string name="settings_desktop_minimize_title">التصغير إلى شريط النظام</string>
+    <string name="settings_desktop_minimize_subtitle">إبقاء Spotube قيد التشغيل في شريط النظام عند تصغير النافذة.</string>
+    <string name="settings_desktop_discord_title">حالة Discord التفاعلية</string>
+    <string name="settings_desktop_discord_subtitle">اعرض حالة التشغيل الحالية في Discord على سطح المكتب.</string>
+
+    <string name="settings_updates_auto_check_title">التحقق من التحديثات تلقائيًا</string>
+    <string name="settings_updates_auto_check_subtitle">البحث عن إصدارات Spotube الجديدة في الخلفية.</string>
+
+    <string name="settings_plugins_manage_title">إدارة الإضافات</string>
+    <string name="settings_plugins_manage_subtitle">أدِر إضافاتك</string>
+    <string name="settings_plugins_default_ability_title">إضافة %1$s الافتراضية</string>
+    <string name="settings_plugins_ability_metadata">البيانات الوصفية</string>
+    <string name="settings_plugins_ability_audio">الصوت</string>
+    <string name="settings_plugins_ability_lyrics">كلمات الأغاني</string>
+    <string name="settings_plugins_ability_scrobble">تسجيل الاستماع</string>
+    <string name="settings_plugins_no_selection">لم يتم تحديد إضافة</string>
+    <string name="settings_plugins_action_change">تغيير</string>
+    <string name="settings_plugins_action_select">تحديد</string>
+    <string name="settings_plugins_selected">محددة</string>
+    <string name="settings_plugins_clear">مسح التحديد</string>
+    <string name="settings_plugins_no_plugins">لا تتوفر إضافات</string>
+    <string name="settings_plugins_plugin_content_description">إضافة %1$s</string>
+    <string name="settings_plugins_clear_content_description">مسح</string>
+
+    <string name="plugin_configure_title">ضبط</string>
+    <string name="plugin_screen_title">مدير الإضافات</string>
+    <string name="plugin_error_enter_url">يُرجى إدخال URL</string>
+    <string name="plugin_error_url_scheme">يجب أن يبدأ URL بـ http:// أو https://</string>
+    <string name="plugin_error_download_failed">تعذّر تنزيل الإضافة</string>
+    <string name="plugin_empty_title">لم يتم تثبيت أي إضافات بعد</string>
+    <string name="plugin_empty_subtitle">الصق رابط تنزيل أو اختر ملفًا أعلاه.</string>
+    <plurals name="plugin_installed_plugins_count">
+        <item quantity="zero">%1$d إضافة مثبتة</item>
+        <item quantity="one">إضافة واحدة مثبتة</item>
+        <item quantity="two">%1$d إضافتان مثبتتان</item>
+        <item quantity="few">%1$d إضافات مثبتة</item>
+        <item quantity="many">%1$d إضافة مثبتة</item>
+        <item quantity="other">%1$d إضافة مثبتة</item>
+    </plurals>
+    <string name="plugin_install_section_title">تثبيت إضافة</string>
+    <string name="plugin_url_placeholder">https://example.com/plugin.smplug</string>
+    <string name="plugin_action_download">تنزيل</string>
+    <string name="plugin_action_install_from_file">التثبيت من ملف (.smplug)</string>
+    <string name="plugin_state_active">نشطة</string>
+    <string name="plugin_version_label">v%1$s</string>
+    <string name="plugin_state_builtin">مدمجة</string>
+    <string name="plugin_action_remove">إزالة الإضافة</string>
+    <string name="plugin_action_login">تسجيل الدخول</string>
+    <string name="plugin_action_logout">تسجيل الخروج</string>
+    <string name="plugin_section_url_title">التنزيل من URL</string>
+    <string name="plugin_section_file_title">التثبيت من ملف</string>
+    <string name="plugin_section_install">تثبيت</string>
+
+    <string name="plugin_permissions_author_version">• %1$s</string>
+    <string name="plugin_permissions_requested_title">الأذونات المطلوبة</string>
+    <string name="plugin_permissions_none">لا تتطلب هذه الإضافة أي أذونات خاصة.</string>
+    <string name="plugin_permissions_compare_title">المثبتة مقابل المقدَّمة</string>
+    <string name="plugin_permissions_installed_label">المثبتة</string>
+    <string name="plugin_permissions_supplied_label">المقدَّمة</string>
+    <string name="plugin_permissions_api_diff">API %1$s → %2$s</string>
+    <string name="plugin_permissions_capability_storage_title">التخزين الدائم</string>
+    <string name="plugin_permissions_capability_storage_desc">قراءة البيانات وكتابتها على القرص</string>
+    <string name="plugin_permissions_capability_network_title">طلبات الشبكة</string>
+    <string name="plugin_permissions_capability_network_desc">إرسال البيانات واستقبالها عبر الإنترنت</string>
+    <string name="plugin_permissions_capability_webview_title">WebView</string>
+    <string name="plugin_permissions_capability_webview_desc">عرض محتوى الويب داخل التطبيق</string>
+    <string name="settings_section_jam">الجام الجماعي</string>
+    <string name="settings_jam_server_test">اختبار الاتصال</string>
+    <string name="settings_jam_server_testing">جارٍ الاختبار…</string>
+    <string name="settings_jam_server_test_ok">تم الاتصال خلال %1$d ms</string>
+    <string name="settings_jam_server_test_fail">فشل: %1$s</string>
+    <string name="settings_jam_section_connection">الاتصال</string>
+    <string name="settings_jam_section_diagnostics">التشخيص</string>
+
+    <!-- Group Jam -->
+    <string name="jam_screen_title">الجام الجماعي</string>
+    <string name="jam_setup_create_tab">إنشاء</string>
+    <string name="jam_setup_join_tab">انضمام</string>
+    <string name="jam_setup_create_hint">أنشئ غرفة، ثم شارك رمزها مع أصدقائك.</string>
+    <string name="jam_setup_create_button">إنشاء غرفة</string>
+    <string name="jam_setup_join_button">الانضمام إلى غرفة</string>
+    <string name="jam_setup_working">جارٍ الاتصال…</string>
+    <string name="jam_setup_code_label">رمز الغرفة</string>
+    <string name="jam_setup_code_placeholder">ABC123</string>
+    <string name="jam_session_connected">متصل</string>
+    <string name="jam_session_connecting">جارٍ إعادة الاتصال…</string>
+    <string name="jam_invite_copy">نسخ الرمز</string>
+    <string name="jam_invite_copied">تم النسخ!</string>
+    <string name="jam_invite_share">مشاركة</string>
+    <string name="jam_participants_heading">المشاركون (%1$d)</string>
+    <string name="jam_participants_host">المضيف</string>
+    <string name="jam_participants_guest">مستمع</string>
+    <string name="jam_participants_waiting">في انتظار المستمعين…</string>
+    <string name="jam_participants_remove">إزالة</string>
+    <string name="jam_participants_ban">حظر</string>
+    <string name="jam_participants_manage">إدارة</string>
+    <string name="jam_session_leave">مغادرة الغرفة</string>
+    <string name="jam_error_title">تعذّر الاتصال</string>
+    <string name="jam_error_dismiss">تجاهل</string>
+    <string name="jam_error_create">تعذّر إنشاء جلسة الجام</string>
+    <string name="jam_error_join">تعذّر الانضمام إلى جلسة الجام</string>
+    <string name="jam_error_invalid_code">أدخل رمز غرفة مكوّنًا من ستة أحرف وأرقام.</string>
+    <string name="jam_share_message">انضم إلى جام Spotube الخاص بي باستخدام الرمز: %1$s</string>
+    <string name="settings_jam_server_title">خادم الغرف</string>
+    <string name="settings_jam_server_url">رابط الخادم</string>
+    <string name="settings_jam_server_url_invalid">أدخل رابطًا يبدأ بـ https://</string>
+    <string name="settings_jam_server_diagnostics_subtitle">تحقّق من خادم الغرف قبل بدء غرفة.</string>
+    <string name="settings_jam_server_note">يستخدم الجام خادم الغرف المجاني من Spotube. للاستضافة الذاتية، انشر الخادم من github.com/team-spotube/jam-server وأدخل رابطه.</string>
+    <string name="settings_jam_section_you">أنت</string>
+    <string name="jam_connection_host">الخادم: %1$s</string>
+    <string name="jam_connection_missing">حدّد خادم غرف في الإعدادات لاستضافة غرفة أو الانضمام إليها.</string>
+    <string name="jam_connection_settings">إعدادات الخادم</string>
+    <string name="jam_participants_you">%1$s (أنت)</string>
+    <string name="jam_name_title">اسمك</string>
+    <string name="jam_name_subtitle">يراك الآخرون في الجام باسم %1$s</string>
+    <string name="jam_name_description">يظهر لجميع من في الجام. اتركه فارغًا لاستخدام %1$s. يُطبَّق الاسم الجديد في المرة القادمة التي تنشئ فيها غرفة أو تنضم إليها.</string>
+    <string name="jam_name_too_long">استخدم %1$d حرفًا كحد أقصى.</string>
+    <string name="jam_error_no_server">لم يتم إعداد خادم للجام</string>
+    <string name="jam_error_server_unreachable">تعذّر الوصول إلى خادم الجام. تحقّق من الشبكة أو من رابط الخادم في الإعدادات ← الجام الجماعي.</string>
+    <string name="jam_error_server_incompatible">يعمل خادم الجام بإصدار غير متوافق.</string>
+    <string name="jam_error_room_not_found">لا توجد غرفة بهذا الرمز. تحقّق منه وحاول مجددًا.</string>
+    <string name="jam_error_room_full">هذه الغرفة ممتلئة.</string>
+    <string name="jam_error_banned">حظرك المضيف من هذه الغرفة.</string>
+    <string name="jam_error_kicked">أزالك المضيف من الغرفة.</string>
+    <string name="jam_error_replaced">فُتحت هذه الغرفة مجددًا على هذا الجهاز، لذا أُغلق هذا الاتصال.</string>
+
+    <string name="player_go_to_album">الانتقال إلى الألبوم</string>
+    <string name="player_sleep_timer">مؤقت النوم</string>
+    <string name="player_track_details">تفاصيل المقطع</string>
+    <string name="player_play_content_description">تشغيل</string>
+    <string name="player_pause_content_description">إيقاف مؤقت</string>
+    <string name="player_nothing_playing">لا شيء قيد التشغيل</string>
+    <string name="player_add_to_queue_content_description">إضافة إلى قائمة الانتظار</string>
+
+    <string name="update_action_ignore">تجاهل</string>
+    <string name="update_action_update">تحديث</string>
+    <string name="app_update_dialog_title">يتوفر Spotube %1$s</string>
+    <string name="app_update_dialog_no_notes">اطّلع على الجديد في هذا الإصدار في صفحة تنزيلات Spotube.</string>
+    <string name="plugin_update_dialog_title">يتوفر %1$s %2$s</string>
+    <string name="plugin_update_dialog_current_version">المثبت حاليًا: %1$s</string>
+    <string name="plugin_update_dialog_no_notes">اطّلع على الجديد في هذا التحديث في صفحة الإضافة.</string>
+
+    <string name="welcome_skip">تخطٍّ</string>
+    <string name="welcome_next">التالي</string>
+    <string name="welcome_back">رجوع</string>
+    <string name="welcome_get_started">البدء</string>
+    <string name="welcome_app_name">Spotube</string>
+    <string name="welcome_brand_freedom">موسيقى بلا قيود.</string>
+    <string name="welcome_brand_quiet_description">مشغّل مفتوح المصدر لعالم من الموسيقى.\nلك أن تستكشفه. ولك أن تجعله على طريقتك.</string>
+    <string name="welcome_donate_quiet_title">ساعد في استمرار هذا المشروع.</string>
+    <string name="welcome_donate_letter">يبني Spotube أناسٌ حقيقيون، لا شركة اشتراكات. إن أصبح جزءًا من حياتك اليومية، فإن القليل من الدعم يساعدنا على منحه الرعاية التي يستحقها.\n\nشكرًا لإفساحك المجال للبرمجيات المستقلة.</string>
+    <string name="welcome_plugins_setup_guide">ابدأ بإضافة كتالوج للعثور على الأغاني وقوائم التشغيل. اختر إضافة صوت لتشغيلها. كلمات الأغاني وسجل الاستماع اختياريان. اكتشف إضافة أدناه، وراجع أذوناتها، وثبّتها، ثم حدّدها هنا.</string>
+    <string name="welcome_plugins_discover">اكتشاف الإضافات</string>
+    <string name="welcome_plugins_sources">مصادرك</string>
+    <string name="welcome_plugins_retry">إعادة المحاولة</string>
+    <string name="welcome_plugins_more">المزيد من الإضافات</string>
+    <string name="welcome_plugins_discovery_empty">لم يتم العثور على إضافات جديدة. يمكنك أيضًا تثبيت إضافة من رابط أو من ملف .smplug أعلاه.</string>
+    <string name="welcome_plugins_discovery_error">اكتشاف الإضافات غير متاح حاليًا. حاول مرة أخرى، أو ثبّت من رابط أو ملف.</string>
+    <string name="welcome_step_welcome">مرحبًا</string>
+    <string name="welcome_step_support">الدعم</string>
+    <string name="welcome_step_plugins">الإضافات</string>
+    <string name="welcome_step_guide">الدليل</string>
+
+    <string name="welcome_guide_title">كيفية استخدام Spotube</string>
+    <string name="welcome_guide_subtitle">أربع خطوات سريعة وتبدأ الاستماع.</string>
+    <string name="welcome_guide_signin_title">تسجيل الدخول</string>
+    <string name="welcome_guide_signin_desc">اربط حسابك، أو اختر إضافة الكتالوج الخاصة بك.</string>
+    <string name="welcome_guide_search_title">ابحث وشغّل</string>
+    <string name="welcome_guide_search_desc">اعثر على أي أغنية أو ألبوم أو فنان، ثم اضغط تشغيل.</string>
+    <string name="welcome_guide_offline_title">استمع بلا إنترنت</string>
+    <string name="welcome_guide_offline_desc">نزّل المقاطع لمواصلة التشغيل دون اتصال.</string>
+    <string name="welcome_guide_lyrics_title">تابع كلمات الأغاني</string>
+    <string name="welcome_guide_lyrics_desc">افتح كلمات الأغاني المتزامنة من المشغّل أثناء تشغيل المقطع.</string>
+
+    <!-- Page 1: branding -->
+    <string name="welcome_brand_tagline">موسيقاك. مصادرك. قواعدك.</string>
+    <string name="welcome_brand_subtitle">مشغّل موسيقى مجاني ومفتوح المصدر، بناه مجتمع يحب الموسيقى ببساطة.</string>
+    <string name="welcome_brand_chip_open_source">مفتوح المصدر</string>
+    <string name="welcome_brand_chip_no_ads">بلا إعلانات</string>
+    <string name="welcome_brand_chip_no_tracking">بلا قياس عن بُعد</string>
+    <string name="welcome_brand_chip_plugin_powered">مدعوم بالإضافات</string>
+    <string name="welcome_lets_go">هيا بنا</string>
+
+    <!-- Page 2: donations -->
+    <string name="welcome_donate_eyebrow">الداعمون يبقوننا مستمرين</string>
+    <string name="welcome_donate_title">صُنع بشغف. ويستمر بفضلك.</string>
+    <string name="welcome_donate_message">Spotube مجاني 100%، وحر، ومفتوح المصدر — بلا إعلانات، وبلا اشتراكات، وبلا تتبع. كل ميزة موجودة لأن أشخاصًا مثلك اختاروا المساعدة في استمرار تدفق الشيفرة.</string>
+    <string name="welcome_donate_patreon_title">Patreon</string>
+    <string name="welcome_donate_patreon_tag">راعٍ شهري</string>
+    <string name="welcome_donate_patreon_subtitle">ادعم التطوير والبنية التحتية بشكل مستمر</string>
+    <string name="welcome_donate_bmac_title">Buy Me a Coffee</string>
+    <string name="welcome_donate_bmac_tag">قهوة لمرة واحدة</string>
+    <string name="welcome_donate_bmac_subtitle">موّل جلسة برمجة ليلية بإكرامية سريعة</string>
+    <string name="welcome_donate_opencollective_title">Open Collective</string>
+    <string name="welcome_donate_opencollective_tag">صندوق المجتمع</string>
+    <string name="welcome_donate_opencollective_subtitle">دعم مالي شفاف يديره المجتمع</string>
+    <string name="welcome_donate_thanks">نشكرك من أعماق قلوبنا لإيمانك بالموسيقى المفتوحة.</string>
+    <string name="welcome_donate_optional">الدعم اختياري تمامًا — يبقى Spotube مجانيًا في كل الأحوال.</string>
+    <string name="welcome_donate_action">ادعم</string>
+    <string name="welcome_donate_open_content_description">فتح %1$s</string>
+
+    <!-- Support / donations -->
+    <string name="support_button_label">ادعم Spotube</string>
+    <string name="support_dialog_title">ادعم Spotube</string>
+    <string name="support_dialog_message">Spotube مجاني وحر ومفتوح المصدر — بلا إعلانات، وبلا اشتراكات، وبلا تتبع. إن كان يُسعدك، ففكّر في دعم المشروع.</string>
+    <string name="support_dialog_reminder_hint">يمكنك إيقاف هذه التذكيرات من الإعدادات ← الدعم.</string>
+    <string name="support_dialog_dismiss">ربما لاحقًا</string>
+    <string name="settings_support_reminders_title">تذكيرات الدعم</string>
+    <string name="settings_support_reminders_subtitle">عرض تذكير لطيف لدعم المشروع كل 7 أيام.</string>
+
+    <!-- Page 3: plugins -->
+    <string name="welcome_plugins_eyebrow">بنية معيارية</string>
+    <string name="welcome_plugins_title">اختر مصدر موسيقاك.</string>
+    <string name="welcome_plugins_subtitle">يفصل Spotube بين اكتشاف الكتالوج وبث الصوت وكلمات الأغاني المتزامنة. اضبط محركاتك أدناه أو بدّلها في أي وقت.</string>
+    <string name="welcome_plugins_metadata_title">محرك البيانات الوصفية</string>
+    <string name="welcome_plugins_metadata_description">يشغّل اكتشاف الموسيقى والبحث وقوائم المقاطع وقوائم التشغيل.</string>
+    <string name="welcome_plugins_audio_title">محرك الصوت</string>
+    <string name="welcome_plugins_audio_description">يجلب تدفقات الصوت التي يتم تشغيلها ويفك ترميزها.</string>
+    <string name="welcome_plugins_lyrics_title">محرك كلمات الأغاني</string>
+    <string name="welcome_plugins_lyrics_description">يعرض كلمات كاريوكي متزامنة زمنيًا في الوقت الفعلي.</string>
+    <string name="welcome_plugins_scrobble_title">محرك تسجيل الاستماع</string>
+    <string name="welcome_plugins_scrobble_description">يسجّل سجل الاستماع في Last.fm أو ListenBrainz.</string>
+    <string name="welcome_plugins_badge_active">نشط</string>
+    <string name="welcome_plugins_badge_builtin">مدمج</string>
+    <string name="welcome_plugins_badge_ready">جاهز</string>
+    <string name="welcome_plugins_badge_optional">اختياري</string>
+    <string name="welcome_plugins_none_selected">اختر محركًا</string>
+    <string name="welcome_plugins_installed_section">المحركات المثبتة</string>
+    <string name="welcome_plugins_set_default">تعيين كافتراضي</string>
+    <string name="welcome_plugins_builtin_note">NewPipe YouTube وLRCLib Lyrics مدمجان وجاهزان للبث فورًا.</string>
+    <string name="welcome_plugins_tip">أدِر إضافات المجتمع أو أضف إضافات جديدة في أي وقت من الإعدادات ← الإضافات.</string>
+
+    <!-- Page 4: how it works -->
+    <string name="welcome_how_eyebrow">بنية عصرية بروح كلاسيكية</string>
+    <string name="welcome_how_title">صوت Hi-Fi نقي، بلا وسطاء</string>
+    <string name="welcome_how_subtitle">إليك كيف ينسّق Spotube التشغيل اللامركزي مباشرةً على جهازك.</string>
+    <string name="welcome_how_status_badge">اتصال مباشر من نظير إلى نظير • 256 kbps Opus</string>
+    <string name="welcome_how_mockup_title">الساعة الزرقاء</string>
+    <string name="welcome_how_mockup_artist">Spotube · عرض توضيحي للمشغّل</string>
+    <string name="welcome_how_mockup_lyric">قليل من الموسيقى للحظات العابرة.</string>
+    <string name="welcome_how_step_search_title">1. اكتشاف لامركزي</string>
+    <string name="welcome_how_step_search_desc">تذهب الاستعلامات مباشرةً إلى إضافة الكتالوج التي اخترتها. لا ينشئ Spotube أبدًا ملفًا تعريفيًا لذوقك.</string>
+    <string name="welcome_how_step_stream_title">2. تحديد البث المباشر</string>
+    <string name="welcome_how_step_stream_desc">يُبث الصوت مباشرةً من خوادم المحتوى إلى جهازك. بلا قفزات عبر وكلاء ولا جمع للبيانات عن بُعد.</string>
+    <string name="welcome_how_step_playback_title">3. معالجة صوتية وتشغيل محليان</string>
+    <string name="welcome_how_step_playback_desc">يتم فك الترميز والتخزين المؤقت محليًا مع عناصر تحكم في المعادل وخيار التنزيل للاستماع دون اتصال.</string>
+    <string name="welcome_how_step_lyrics_title">4. كلمات متزامنة وجام</string>
+    <string name="welcome_how_step_lyrics_desc">تتبع كلمات الكاريوكي توقيت التشغيل، مع تحكم عن بُعد عبر LAN والجام الجماعي.</string>
+    <string name="welcome_how_footer">لا خوادم وسيطة. يتم التشغيل على جهازك مباشرةً — الخصوصية في صميم التصميم.</string>
+
+    <!-- Devices: play destination picker -->
+    <string name="devices_destination_title">اختر جهازًا</string>
+    <string name="devices_destination_prompt">%1$s: «%2$s»</string>
+    <string name="devices_destination_action_play">تشغيل</string>
+    <string name="devices_destination_action_add_to_queue">إضافة إلى قائمة الانتظار</string>
+    <string name="devices_destination_action_play_next">تشغيل التالي</string>
+    <string name="devices_destination_this_device">هذا الجهاز</string>
+    <string name="devices_destination_this_device_subtitle">على هذا الجهاز</string>
+    <string name="devices_destination_remote_device">جهاز بعيد</string>
+    <string name="devices_destination_remote_device_host">جهاز بعيد (%1$s)</string>
+    <string name="devices_destination_remote_subtitle">على الجهاز المتصل</string>
+
+    <!-- Devices: connection errors -->
+    <string name="devices_error_connection_failed">فشل الاتصال</string>
+    <string name="devices_error_connection_lost">انقطع الاتصال</string>
+    <string name="devices_error_send_failed">فشل الإرسال</string>
+    <string name="devices_error_discovery_failed">فشل الاكتشاف: %1$s</string>
+    <string name="devices_error_connect_failed">تعذّر الاتصال: %1$s</string>
+
+    <!-- Devices: discovery screen -->
+    <string name="devices_title">الأجهزة</string>
+    <string name="devices_refresh">تحديث</string>
+    <string name="devices_disconnect">قطع الاتصال</string>
+    <string name="devices_connecting">جارٍ الاتصال...</string>
+    <string name="devices_searching">جارٍ البحث عن أجهزة على الشبكة...</string>
+    <string name="devices_empty">لم يتم العثور على أجهزة</string>
+    <string name="devices_empty_hint">تأكد من تفعيل \"السماح بالتحكم عن بُعد\" في إعدادات الجهاز الآخر.</string>
+    <string name="devices_unknown_device">جهاز غير معروف</string>
+    <string name="devices_resolving">جارٍ التحديد...</string>
+
+    <!-- Devices: remote control screen -->
+    <string name="devices_remote_title">التحكم عن بُعد</string>
+    <string name="devices_remote_disconnected">غير متصل</string>
+    <string name="devices_remote_connection_error">خطأ في الاتصال: %1$s</string>
+    <string name="devices_remote_unknown_track">مقطع غير معروف</string>
+    <string name="devices_remote_unknown_artist">فنان غير معروف</string>
+    <string name="devices_remote_volume">مستوى الصوت</string>
+    <string name="devices_remote_remove_from_queue">إزالة من قائمة الانتظار</string>
+    <string name="devices_remote_more_options">خيارات إضافية</string>
+
+    <!-- Group Jam: play destination picker -->
+    <string name="jam_destination_title">أين تريد التشغيل؟</string>
+    <string name="jam_destination_message">لديك جلسة جام نشطة. اختر أين تريد تشغيل هذه المجموعة.</string>
+    <string name="jam_destination_play_here">التشغيل هنا</string>
+    <string name="jam_destination_suggest">اقتراح للجام</string>
+
+    <!-- Group Jam: connection errors -->
+    <string name="jam_error_connection_failed">فشل الاتصال</string>
+    <string name="jam_error_connection_lost">انقطع الاتصال</string>
+
+
+    <!-- Group Jam: queue snackbar -->
+    <string name="jam_queue_added_track">تمت الإضافة إلى قائمة انتظار الجام</string>
+    <plurals name="jam_queue_added_tracks">
+        <item quantity="zero">تمت إضافة %1$d مقطع إلى قائمة انتظار الجام</item>
+        <item quantity="one">تمت إضافة مقطع واحد إلى قائمة انتظار الجام</item>
+        <item quantity="two">تمت إضافة %1$d مقطعين إلى قائمة انتظار الجام</item>
+        <item quantity="few">تمت إضافة %1$d مقاطع إلى قائمة انتظار الجام</item>
+        <item quantity="many">تمت إضافة %1$d مقطعًا إلى قائمة انتظار الجام</item>
+        <item quantity="other">تمت إضافة %1$d مقطع إلى قائمة انتظار الجام</item>
+    </plurals>
+
+    <!-- Remote control: connection request dialog -->
+    <string name="remote_request_title">طلب تحكم عن بُعد</string>
+    <string name="remote_request_message">يريد \"%1$s\" التحكم في التشغيل على هذا الجهاز.</string>
+    <string name="remote_request_deny">رفض</string>
+    <string name="remote_request_allow">سماح</string>
+    <string name="remote_request_allow_always">السماح دائمًا</string>
+
+    <!-- Search -->
+    <string name="search_results_title">نتائج البحث</string>
+    <string name="search_tab_all">الكل</string>
+    <string name="search_section_tracks">المقاطع</string>
+    <string name="search_section_users">المستخدمون</string>
+    <string name="search_no_search_types">لا تتوفر أنواع بحث</string>
+    <string name="search_start_typing">ابدأ الكتابة للبحث</string>
+    <string name="search_start_typing_tracks">ابدأ الكتابة للبحث عن مقاطع</string>
+    <string name="search_no_results">لم يتم العثور على نتائج</string>
+    <string name="search_see_all">عرض الكل</string>
+    <string name="search_searching">جارٍ البحث</string>
+    <string name="search_loading_tracks">جارٍ تحميل المقاطع...</string>
+    <string name="search_loading_albums">جارٍ تحميل الألبومات...</string>
+    <string name="search_loading_artists">جارٍ تحميل الفنانين...</string>
+    <string name="search_loading_playlists">جارٍ تحميل قوائم التشغيل...</string>
+    <string name="search_loading_users">جارٍ تحميل المستخدمين...</string>
+    <string name="search_no_albums">لم يتم العثور على ألبومات</string>
+    <string name="search_no_artists">لم يتم العثور على فنانين</string>
+    <string name="search_no_playlists">لم يتم العثور على قوائم تشغيل</string>
+    <string name="search_no_users">لم يتم العثور على مستخدمين</string>
+    <string name="search_warm_crates">نبحث بين صناديق الأسطوانات...</string>
+    <string name="search_warm_cosmos">نبحث في أرجاء الكون...</string>
+    <string name="search_warm_speakers">نُحمّي مكبرات الصوت...</string>
+    <string name="search_warm_vinyl">ننفض الغبار عن الأسطوانات...</string>
+    <string name="search_warm_music_gods">نستشير آلهة الموسيقى...</string>
+    <string name="search_warm_antennas">نضبط الهوائيات...</string>
+    <string name="search_warm_records">نقلّب بين التسجيلات...</string>
+    <string name="search_error_capabilities">تعذّر تحميل إمكانات البحث</string>
+    <string name="search_error_search">تعذّر البحث</string>
+    <string name="search_error_tracks">تعذّر البحث عن المقاطع</string>
+    <string name="search_error_albums">تعذّر البحث عن الألبومات</string>
+    <string name="search_error_artists">تعذّر البحث عن الفنانين</string>
+    <string name="search_error_playlists">تعذّر البحث عن قوائم التشغيل</string>
+    <string name="search_error_users">تعذّر البحث عن المستخدمين</string>
+
+    <!-- Home -->
+    <string name="home_title_browse">تصفّح</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_mode_synced">متزامنة</string>
+    <string name="lyrics_mode_plain">عادية</string>
+    <string name="lyrics_no_synced">لا تتوفر كلمات متزامنة</string>
+    <string name="lyrics_no_plain">لا تتوفر كلمات عادية</string>
+
+    <!-- Settings: audio format/quality labels -->
+    <string name="settings_audio_format_label">%1$s في %2$s</string>
+    <string name="settings_audio_quality_lossy">%1$d kbps</string>
+    <string name="settings_audio_quality_lossless">%1$s kHz • %2$d قناة</string>
+    <string name="search_error_no_metadata_plugin">لم يتم تحديد إضافة بيانات وصفية</string>
+
+    <!-- Common -->
+    <string name="common_back">رجوع</string>
+    <string name="common_retry">إعادة المحاولة</string>
+    <string name="common_close_dialog">إغلاق مربع الحوار</string>
+    <string name="common_loading">جارٍ التحميل...</string>
+    <string name="common_unknown">غير معروف</string>
+    <string name="common_unknown_error">خطأ غير معروف</string>
+
+    <!-- Media cards -->
+    <string name="media_user">مستخدم</string>
+    <string name="media_playlist">قائمة تشغيل</string>
+
+    <!-- Error display -->
+    <string name="error_title">نعتذر بشدة</string>
+    <string name="error_description">هناك خلل ما في الوقت الحالي. تجربتك تهمنا، ونبذل قصارى جهدنا لإصلاح ذلك. يُرجى المحاولة مرة أخرى أو مراجعة تفاصيل الخطأ أدناه.</string>
+    <string name="error_details">تفاصيل الخطأ</string>
+    <string name="error_copy_to_clipboard">نسخ إلى الحافظة</string>
+    <string name="error_view_full_log">عرض السجل الكامل</string>
+    <string name="error_full_log_title">سجل الخطأ الكامل</string>
+
+    <!-- Collection details -->
+    <string name="collection_details_shuffle">ترتيب عشوائي</string>
+    <string name="collection_details_shuffle_play">تشغيل عشوائي</string>
+    <string name="collection_details_follow">متابعة</string>
+    <string name="collection_details_unfollow">إلغاء المتابعة</string>
+    <string name="collection_details_edit_playlist">تعديل قائمة التشغيل</string>
+    <string name="collection_details_by_owner">بواسطة %1$s</string>
+
+    <!-- Track options -->
+    <string name="track_options_title">خيارات المقطع</string>
+    <string name="track_options_add_to_jam">إضافة إلى الجام</string>
+    <string name="track_options_start_radio">بدء الراديو</string>
+    <string name="track_options_play_next">تشغيل التالي</string>
+    <string name="track_options_move_to_next">نقل إلى التالي</string>
+    <string name="track_options_remove_from_queue">إزالة من قائمة الانتظار</string>
+    <string name="track_options_remove_from_favorites">إزالة من المفضلة</string>
+    <string name="track_options_save_as_favorite">حفظ في المفضلة</string>
+    <string name="track_options_add_to_playlist">إضافة إلى قائمة تشغيل</string>
+    <string name="track_options_download">تنزيل</string>
+    <string name="track_options_share">مشاركة</string>
+
+    <!-- Track list -->
+    <string name="track_list_sort_original">الأصلي</string>
+    <string name="track_list_sort_title">العنوان</string>
+    <string name="track_list_sort_artist">الفنان</string>
+    <string name="track_list_sort_album">الألبوم</string>
+    <string name="track_list_sort_duration">المدة</string>
+    <string name="track_list_sort">ترتيب</string>
+    <string name="track_list_no_tracks">لم يتم العثور على مقاطع</string>
+    <string name="track_list_filter_placeholder">تصفية</string>
+    <string name="track_list_bulk_actions">إجراءات جماعية</string>
+    <string name="track_list_download_all">تنزيل الكل</string>
+    <string name="track_list_download_count">تنزيل %1$d</string>
+    <string name="track_list_add_all_to_queue">إضافة الكل إلى قائمة الانتظار</string>
+    <string name="track_list_add_count_to_queue">إضافة %1$d إلى قائمة الانتظار</string>
+    <string name="track_list_play_all_next">تشغيل الكل تاليًا</string>
+    <string name="track_list_play_count_next">تشغيل %1$d تاليًا</string>
+    <string name="track_list_add_all_to_playlist">إضافة الكل إلى قائمة تشغيل</string>
+    <string name="track_list_add_count_to_playlist">إضافة %1$d إلى قائمة تشغيل</string>
+    <string name="track_list_add_all_to_jam">إضافة الكل إلى الجام</string>
+    <string name="track_list_add_count_to_jam">إضافة %1$d إلى الجام</string>
+    <string name="track_list_more_artists">+%1$d آخرين</string>
+
+    <!-- WebView -->
+    <string name="webview_no_url">لا يوجد URL لتحميله</string>
+    <string name="webview_go_back">الرجوع في سجل المتصفح</string>
+    <string name="webview_go_forward">التقدم في سجل المتصفح</string>
+
+    <!-- Blacklist -->
+    <string name="blacklist_filter_placeholder">تصفية قائمة الحظر...</string>
+    <string name="blacklist_empty">لا توجد عناصر محظورة</string>
+    <string name="blacklist_no_results">لا توجد عناصر محظورة تطابق \'%1$s\'</string>
+    <string name="blacklist_section_tracks">المقاطع</string>
+    <string name="blacklist_item_track">مقطع</string>
+    <string name="blacklist_add">إضافة إلى قائمة الحظر</string>
+    <string name="blacklist_remove">إزالة من قائمة الحظر</string>
+
+    <!-- Downloads -->
+    <string name="downloads_error_no_metadata">لا توجد بيانات وصفية للمقطع</string>
+    <string name="downloads_error_stream_unresolved_short">تعذّر تحديد URL البث</string>
+    <string name="downloads_error_stream_unresolved">تعذّر تحديد URL البث. جرّب تشغيل المقطع أولًا.</string>
+
+    <!-- Saved tracks -->
+    <string name="saved_tracks_title">المقاطع المحفوظة</string>
+    <string name="saved_tracks_owner_you">أنت</string>
+
+    <!-- Artist -->
+    <string name="artist_following">تتابعه</string>
+    <string name="artist_top_tracks">أفضل المقاطع</string>
+    <string name="artist_play_top_tracks">تشغيل أفضل المقاطع</string>
+    <string name="artist_add_top_tracks_to_queue">إضافة أفضل المقاطع إلى قائمة الانتظار</string>
+    <string name="artist_related_artists">فنانون مشابهون</string>
+    <string name="artist_featured_playlists">قوائم تشغيل مميزة</string>
+    <string name="artist_error_load_failed">تعذّر تحميل نظرة عامة على الفنان</string>
+    <string name="artist_followers_unavailable">عدد المتابعين غير متاح</string>
+    <string name="artist_followers_thousands">%1$s ألف متابع</string>
+    <string name="artist_followers_millions">%1$s مليون متابع</string>
+    <string name="artist_followers_billions">%1$s مليار متابع</string>
+    <plurals name="artist_followers_count">
+        <item quantity="zero">%1$d متابع</item>
+        <item quantity="one">متابع واحد</item>
+        <item quantity="two">%1$d متابعان</item>
+        <item quantity="few">%1$d متابعين</item>
+        <item quantity="many">%1$d متابعًا</item>
+        <item quantity="other">%1$d متابع</item>
+    </plurals>
+
+    <!-- Player -->
+    <string name="player_like_content_description">إعجاب</string>
+    <string name="player_unlike_content_description">إلغاء الإعجاب</string>
+    <string name="player_fallback_title">عنوان مقطع افتراضي</string>
+    <string name="player_fallback_artists">فنانون افتراضيون</string>
+    <string name="player_unknown_album">ألبوم غير معروف</string>
+    <string name="player_seek_label">التقديم والترجيع</string>
+    <string name="player_volume_label">مستوى الصوت</string>
+    <string name="player_enable_shuffle_content_description">تفعيل الترتيب العشوائي</string>
+    <string name="player_disable_shuffle_content_description">إيقاف الترتيب العشوائي</string>
+    <string name="player_previous_content_description">السابق</string>
+    <string name="player_next_content_description">التالي</string>
+    <string name="player_play_or_pause_content_description">تشغيل أو إيقاف مؤقت</string>
+    <string name="player_loop_mode_none">التكرار متوقف</string>
+    <string name="player_loop_mode_one">تكرار مقطع واحد</string>
+    <string name="player_loop_mode_all">تكرار الكل</string>
+    <string name="player_mute_content_description">كتم الصوت</string>
+    <string name="player_unmute_content_description">إلغاء كتم الصوت</string>
+    <string name="player_more_options_content_description">خيارات إضافية</string>
+    <string name="player_options_content_description">خيارات المشغّل</string>
+    <string name="player_collapse_content_description">طي المشغّل</string>
+    <string name="player_expand_lyrics_content_description">توسيع كلمات الأغنية</string>
+    <string name="player_now_playing">قيد التشغيل الآن</string>
+    <string name="player_lyrics">كلمات الأغنية</string>
+    <string name="player_alternative_source">مصدر بديل</string>
+    <string name="player_alternative_source_content_description">مصدر بديل</string>
+    <string name="player_download">تنزيل</string>
+    <string name="player_download_status_downloaded">تم التنزيل</string>
+    <string name="player_download_status_downloading">جارٍ التنزيل...</string>
+    <string name="player_download_already_downloaded">تم التنزيل مسبقًا</string>
+    <string name="player_download_retrying">جارٍ إعادة محاولة التنزيل...</string>
+    <string name="player_download_started">جارٍ تنزيل %1$s</string>
+    <string name="player_sleep_timer_remaining">سيتوقف التشغيل مؤقتًا بعد %1$s.</string>
+    <string name="player_sleep_timer_description">إيقاف التشغيل مؤقتًا بعد عدد الدقائق المحدد.</string>
+    <string name="player_sleep_timer_minutes_label">الدقائق</string>
+    <string name="player_sleep_timer_minutes_placeholder">اختر بين 1 و600 دقيقة</string>
+    <string name="player_sleep_timer_cancel">إلغاء المؤقت</string>
+    <string name="player_sleep_timer_start">بدء</string>
+    <string name="player_track_details_stream_mismatch">تم تحديد URL التشغيل بإعدادات بث مختلفة. يطابق البث المميز تفضيلك الحالي؛ وسيتم تحديث URL النشط عند طلب البث التالي.</string>
+    <string name="player_track_details_matched_source">مصدر الصوت المطابق</string>
+    <string name="player_track_details_loading_source">جارٍ تحميل المصدر المطابق…</string>
+    <string name="player_track_details_source_not_needed">لا حاجة إلى مصدر بعيد مطابق أثناء تشغيل الملف المخزن مؤقتًا محليًا.</string>
+    <string name="player_track_details_no_source">لا يتوفر مصدر مطابق.</string>
+    <string name="player_track_details_no_cached_source">لا يوجد مصدر صوت مطابق مخزن مؤقتًا لهذا المقطع.</string>
+    <string name="player_track_details_streams_not_cached">لم يتم تخزين تفاصيل البث مؤقتًا بعد. شغّل المقطع أولًا لتحميلها.</string>
+    <string name="player_track_details_load_failed">تعذّر تحميل تفاصيل المقطع.</string>
+    <string name="player_track_details_available_streams">التدفقات المتاحة</string>
+    <string name="player_track_details_served_from_cache_description">يتم تقديم هذا المقطع من ذاكرة التخزين المؤقت المحلية. لا تُستخدم متغيرات البث لهذا التشغيل.</string>
+    <string name="player_track_details_loading_streams">جارٍ تحميل التدفقات…</string>
+    <string name="player_track_details_no_streams">لا تتوفر تدفقات لهذا المصدر.</string>
+    <string name="player_track_details_selected_stream_content_description">البث المحدد حاليًا</string>
+    <string name="player_track_details_matches_preference">يطابق تفضيلات صيغة البث وجودته</string>
+    <string name="player_track_details_active_url">URL التشغيل النشط</string>
+    <string name="player_track_details_served_from_cache">مُقدَّم من ذاكرة التخزين المؤقت المحلية</string>
+    <string name="player_track_details_metadata_track">مقطع البيانات الوصفية</string>
+    <string name="player_track_details_title">العنوان</string>
+    <string name="player_track_details_id">المعرّف</string>
+    <string name="player_track_details_album">الألبوم</string>
+    <string name="player_track_details_confidence">درجة الثقة</string>
+    <string name="player_track_details_external_uri">URI خارجي</string>
+    <string name="player_track_details_album_id">معرّف الألبوم</string>
+    <string name="player_track_details_album_type">نوع الألبوم</string>
+    <string name="player_track_details_album_release_date">تاريخ إصدار الألبوم</string>
+    <string name="player_track_details_album_track_count">عدد مقاطع الألبوم</string>
+    <string name="player_track_details_album_genres">أنواع الألبوم الموسيقية</string>
+    <string name="player_track_details_duration">المدة</string>
+    <string name="player_track_details_track_number">رقم المقطع</string>
+    <string name="player_track_details_disc_number">رقم القرص</string>
+    <string name="player_track_details_explicit">محتوى صريح</string>
+    <string name="player_track_details_popularity">الشعبية</string>
+    <string name="player_track_details_isrc">ISRC</string>
+    <string name="player_track_details_thumbnail_urls">عناوين URL للصور المصغرة</string>
+
+    <!-- Shell -->
+    <string name="shell_sidebar_toggle_content_description">إظهار/إخفاء الشريط الجانبي</string>
+
+    <!-- Alternative track -->
+    <string name="alternative_track_title">مصادر بديلة</string>
+    <string name="alternative_track_no_track">لا يوجد مقطع قيد التشغيل حاليًا</string>
+    <string name="alternative_track_searching">جارٍ البحث عن مصادر بديلة...</string>
+    <string name="alternative_track_empty">لم يتم العثور على مصادر بديلة</string>
+    <string name="alternative_track_confidence">درجة الثقة: %1$d%</string>
+    <string name="alternative_track_active_source">المصدر النشط</string>
+
+    <!-- Queue -->
+    <string name="queue_participant_kick">طرد</string>
+    <string name="queue_participant_kick_description">إزالته من الجلسة</string>
+    <string name="queue_participant_ban_description">طرده ومنعه من الانضمام مجددًا</string>
+    <string name="queue_participant_remove_suggestions">إزالة الاقتراحات</string>
+    <string name="queue_participant_remove_suggestions_description">إزالة كل المقاطع التي أضافها إلى قائمة الانتظار</string>
+    <string name="queue_reorder_content_description">إعادة الترتيب</string>
+    <string name="queue_remove_from_queue">إزالة من قائمة الانتظار</string>
+    <string name="queue_item_subtitle_added_by">%1$s • أضافه %2$s</string>
+
+    <!-- Playlist -->
+    <string name="playlist_owner_unknown">غير معروف</string>
+    <string name="playlist_loading_title">جارٍ تحميل قائمة التشغيل...</string>
+    <string name="playlist_add_tracks_button">إضافة مقاطع</string>
+    <string name="playlist_add_tracks_title">إضافة مقاطع إلى قائمة التشغيل</string>
+    <string name="playlist_add_tracks_search_placeholder">ابحث عن مقاطع...</string>
+    <string name="playlist_add_tracks_search_content_description">بحث</string>
+    <string name="playlist_add_tracks_no_results">لم يتم العثور على مقاطع</string>
+    <string name="playlist_add_tracks_hint">ابحث عن مقاطع لإضافتها</string>
+    <string name="playlist_add_tracks_done">تم</string>
+    <string name="playlist_add_tracks_add">إضافة</string>
+    <string name="playlist_add_tracks_added_content_description">تمت الإضافة</string>
+
+    <!-- Album -->
+    <string name="album_loading_title">جارٍ تحميل الألبوم...</string>
+
+    <!-- Library -->
+    <string name="library_add_to_playlist_title">إضافة إلى قائمة تشغيل خاصة بك</string>
+    <string name="library_add_to_playlist_search_content_description">بحث</string>
+    <string name="library_add_to_playlist_search_placeholder">ابحث في قوائم التشغيل الخاصة بك...</string>
+    <string name="library_add_to_playlist_loading">جارٍ تحميل قوائم التشغيل الخاصة بك...</string>
+    <string name="library_add_to_playlist_empty">لا تملك أي قوائم تشغيل بعد.\nأنشئ واحدة لإضافة المقاطع.</string>
+    <string name="library_playlist_form_create_title">إنشاء قائمة تشغيل</string>
+    <string name="library_playlist_form_edit_title">تعديل قائمة التشغيل</string>
+    <string name="library_playlist_form_create">إنشاء</string>
+    <string name="library_playlist_form_name_label">الاسم</string>
+    <string name="library_playlist_form_name_placeholder">اسم قائمة التشغيل</string>
+    <string name="library_playlist_form_description_label">الوصف</string>
+    <string name="library_playlist_form_description_placeholder">الوصف (اختياري)</string>
+    <string name="library_playlist_form_public">عامة</string>
+    <string name="library_playlist_form_public_description">يمكن للجميع رؤية قائمة التشغيل هذه</string>
+    <string name="library_playlist_form_collaborative">تعاونية</string>
+    <string name="library_playlist_form_collaborative_description">يمكن للآخرين إضافة مقاطع إلى قائمة التشغيل هذه</string>
+    <string name="library_playlist_form_cover_image">صورة الغلاف</string>
+    <string name="library_playlist_form_cover_content_description">غلاف قائمة التشغيل</string>
+    <string name="library_playlist_form_no_image">لا توجد صورة</string>
+    <string name="library_playlist_form_change_image">تغيير الصورة</string>
+    <string name="library_playlist_form_pick_image">اختيار صورة</string>
+
+    <!-- Plugin install / errors -->
+    <string name="plugin_action_install">تثبيت</string>
+    <string name="plugin_action_replace">استبدال</string>
+    <string name="plugin_error_plugin_json_missing">لم يتم العثور على plugin.json في ملف zip</string>
+    <string name="plugin_error_zipline_manifest_missing">لم يتم العثور على manifest.zipline.json في ملف zip</string>
+    <string name="plugin_error_invalid_plugin_json">تنسيق plugin.json غير صالح: %1$s</string>
+    <string name="plugin_error_read_failed">تعذّرت قراءة الإضافة: %1$s</string>
+    <string name="plugin_error_install_failed">تعذّر تثبيت الإضافة: %1$s</string>
+    <string name="plugin_error_update_needs_confirmation">يتوفر إصدار أحدث من %1$s. أكّد التحديث قبل التثبيت.</string>
+    <string name="plugin_error_replace_needs_confirmation">%1$s مثبتة بالفعل. أكّد استبدالها قبل التثبيت.</string>
+    <string name="plugin_error_builtin_add">الإضافات المدمجة مضمّنة بالفعل ولا يمكن إضافتها مرة أخرى.</string>
+    <string name="plugin_error_builtin_remove">لا يمكن إزالة الإضافات المدمجة.</string>
+    <string name="plugin_error_api_version_invalid">تعلن %1$s عن قيمة apiVersion غير صالحة (%2$s). المتوقع إصدار دلالي متوافق مع %3$s.</string>
+    <string name="plugin_error_app_api_version_invalid">إصدار API الإضافات في Spotube %1$s غير صالح.</string>
+    <string name="plugin_error_api_incompatible">تستهدف %1$s إصدار API الإضافات %2$s، لكن Spotube يدعم إصدار API الإضافات الرئيسي %3$s. ثبّت إضافة مبنية لنفس الإصدار الرئيسي من API.</string>
+
+    <!-- Plugin install prompts -->
+    <string name="plugin_prompt_incompatible_title">API الإضافة غير متوافق</string>
+    <string name="plugin_prompt_install_title">تثبيت الإضافة؟</string>
+    <string name="plugin_prompt_install_message">ستتم إضافة %1$s إلى إضافاتك المثبتة.</string>
+    <string name="plugin_prompt_update_title">تحديث الإضافة؟</string>
+    <string name="plugin_prompt_update_message">إصدار أقدم مثبت (%1$s). هل تريد التحديث إلى %2$s؟</string>
+    <string name="plugin_prompt_replace_title">استبدال الإضافة المثبتة؟</string>
+    <string name="plugin_prompt_replace_invalid_incoming">تستخدم %1$s إصدارًا دلاليًا غير صالح (%2$s) ولا يمكن مقارنتها كتحديث. هل تريد استبدال الإضافة المثبتة على أي حال؟</string>
+    <string name="plugin_prompt_replace_invalid_installed">لا يمكن مقارنة الإصدار المثبت (%1$s) باستخدام الإصدار الدلالي. هل تريد استبداله بـ %2$s؟</string>
+    <string name="plugin_prompt_replace_same_version">الإصدار %1$s مثبت بالفعل. هل تريد استبدال الإضافة الحالية بالنسخة المقدَّمة؟</string>
+    <string name="plugin_prompt_replace_downgrade">الإصدار المثبت %1$s أحدث من الإصدار المقدَّم %2$s. هل تريد استبداله على أي حال؟</string>
+    <string name="plugin_prompt_replace_generic">هل تريد استبدال الإضافة المثبتة بالنسخة المقدَّمة؟</string>
+
+    <!-- Plugin info dialog -->
+    <string name="plugin_info_label_format">%1$s:</string>
+    <string name="plugin_info_version">الإصدار</string>
+    <string name="plugin_info_api_version">إصدار API</string>
+    <string name="plugin_info_author">المؤلف</string>
+    <string name="plugin_info_license">الترخيص</string>
+    <string name="plugin_info_capabilities">الإمكانات</string>
+    <string name="plugin_info_abilities">القدرات</string>
+    <string name="plugin_info_repository">المستودع</string>
+    <string name="plugin_info_contact">التواصل</string>
+    <string name="plugin_info_report_bugs">الإبلاغ عن الأخطاء</string>
+    <string name="plugin_support_dialog_title">ادعم %1$s</string>
+
+    <!-- Plugin discovery -->
+    <string name="plugin_discover_badge_official">رسمية</string>
+    <string name="plugin_discover_badge_verified">موثّقة</string>
+    <string name="plugin_discover_stars_content_description">نجوم GitHub</string>
+    <string name="plugin_discover_repository_content_description">URL مستودع GitHub</string>
+
+    <!-- Plugin release install dialog -->
+    <string name="plugin_install_no_releases">لم يتم العثور على إصدارات</string>
+    <string name="plugin_install_select_release_label">اختيار الإصدار</string>
+    <string name="plugin_install_select_release_placeholder">اختر إصدارًا</string>
+    <string name="plugin_install_prerelease">إصدار تجريبي</string>
+    <string name="plugin_install_release_notes">ملاحظات الإصدار</string>
+
+    <!-- App navigation -->
+    <string name="nav_home">الرئيسية</string>
+    <string name="nav_search">بحث</string>
+    <string name="nav_group_on_device">على الجهاز</string>
+    <string name="nav_group_connect">الاتصال</string>
+    <string name="nav_devices">الأجهزة</string>
+
+    <!-- System tray (desktop) -->
+    <string name="tray_hide_window">إخفاء النافذة</string>
+    <string name="tray_show_window">إظهار النافذة</string>
+    <string name="tray_next_track">المقطع التالي</string>
+    <string name="tray_previous_track">المقطع السابق</string>
+    <string name="tray_shuffle">ترتيب عشوائي</string>
+    <string name="tray_loop">تكرار</string>
+    <string name="tray_loop_off">التكرار: متوقف</string>
+    <string name="tray_loop_one">التكرار: مقطع واحد</string>
+    <string name="tray_loop_all">التكرار: الكل</string>
+    <string name="tray_volume">مستوى الصوت: %1$d%</string>
+    <string name="tray_volume_up">رفع الصوت +</string>
+    <string name="tray_volume_down">خفض الصوت -</string>
+    <string name="tray_mute">كتم الصوت</string>
+    <string name="tray_unmute">إلغاء كتم الصوت</string>
+    <string name="tray_like_track">الإعجاب بالمقطع</string>
+    <string name="tray_unlike_track">إلغاء الإعجاب بالمقطع</string>
+    <string name="tray_exit">خروج</string>
+
+    <!-- Desktop window controls -->
+    <string name="app_window_minimize">تصغير</string>
+    <string name="app_window_maximize">تكبير</string>
+    <string name="app_window_restore">استعادة</string>
+    <string name="app_window_close">إغلاق</string>
+
+    <!-- Android playback notification -->
+    <string name="notification_playback_channel_name">التشغيل</string>
+    <string name="notification_playback_channel_description">عناصر التحكم في تشغيل الوسائط</string>
+
+    <!-- Android Auto / media browser -->
+    <string name="media_browser_browse">تصفّح</string>
+    <string name="media_browser_now_playing">قيد التشغيل الآن</string>
+    <string name="media_browser_featured">مميز</string>
+    <string name="media_browser_saved_tracks">المقاطع المحفوظة</string>
+    <string name="media_browser_top_tracks">أفضل المقاطع</string>
+</resources>

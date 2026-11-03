@@ -1,0 +1,920 @@
+<!--
+  ~ Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="queue_title">再生キュー</string>
+    <string name="queue_clear_queue">キューをクリア</string>
+    <string name="queue_filter_queue">キューを絞り込み...</string>
+    <string name="queue_no_queue_entries">キューに曲がありません</string>
+
+    <string name="search_placeholder">曲、アーティスト、アルバムを検索...</string>
+    <string name="search_clear_history">履歴をすべて消去</string>
+    <string name="search_filter_placeholder">検索...</string>
+
+    <!-- Library toolbar -->
+    <string name="library_screen_title">ライブラリ</string>
+    <string name="library_toolbar_compact_title">ライブラリ</string>
+    <string name="library_tab_playlists">プレイリスト</string>
+    <string name="library_tab_albums">アルバム</string>
+    <string name="library_tab_artists">アーティスト</string>
+    <string name="library_tab_local_tracks">ローカルの曲</string>
+    <string name="library_tab_downloads">ダウンロード</string>
+    <string name="library_filter_playlists">保存したプレイリストを検索…</string>
+    <string name="library_filter_albums">保存したアルバムを検索…</string>
+    <string name="library_filter_artists">保存したアーティストを検索…</string>
+    <string name="library_filter_local_tracks">フォルダや曲を検索…</string>
+    <string name="library_action_search">ライブラリを絞り込み</string>
+    <string name="library_action_close_search">絞り込みを閉じる</string>
+    <string name="library_action_create_playlist">プレイリストを作成</string>
+    <string name="library_action_refresh_local_tracks">ローカルの曲を更新</string>
+    <string name="library_action_grid_view">グリッド表示に切り替え</string>
+    <string name="library_action_list_view">リスト表示に切り替え</string>
+    <string name="library_playlists_empty">保存したプレイリストはありません</string>
+    <string name="library_playlists_no_results">「%1$s」に一致するプレイリストはありません</string>
+    <string name="library_albums_empty">保存したアルバムはありません</string>
+    <string name="library_albums_no_results">「%1$s」に一致するアルバムはありません</string>
+    <string name="library_artists_empty">保存したアーティストはありません</string>
+    <string name="library_artists_no_results">「%1$s」に一致するアーティストはありません</string>
+
+    <!-- Local media -->
+    <string name="library_local_folders">フォルダ</string>
+    <string name="library_local_folder">フォルダ</string>
+    <string name="library_local_summary">%1$s • %2$s</string>
+    <plurals name="library_local_tracks_count">
+        <item quantity="other">%1$d曲</item>
+    </plurals>
+    <plurals name="library_local_folders_count">
+        <item quantity="other">%1$d個のフォルダ</item>
+    </plurals>
+    <string name="library_local_back">フォルダ一覧に戻る</string>
+    <string name="library_local_play_folder">フォルダを再生</string>
+    <string name="library_local_permission_title">オーディオへのアクセスが必要です</string>
+    <string name="library_local_permission_description">デバイス内の音楽を表示するには、オーディオへのアクセスを許可してください。</string>
+    <string name="library_local_grant_access">アクセスを許可</string>
+    <string name="library_local_empty_folders">ローカルフォルダが見つかりません</string>
+    <string name="library_local_empty_tracks">このフォルダには曲がありません</string>
+    <string name="library_local_no_results">一致するフォルダや曲はありません</string>
+    <string name="library_local_refresh_failed">ローカルメディアを更新できませんでした</string>
+
+    <!-- Downloads -->
+    <string name="downloads_summary">%1$d件進行中 • %2$d件完了</string>
+    <string name="downloads_clear_completed">完了済みを消去</string>
+    <string name="downloads_empty">ダウンロードはまだありません</string>
+    <string name="downloads_status_downloading">ダウンロード中 %1$d%</string>
+    <string name="downloads_status_queued">待機中</string>
+    <string name="downloads_status_completed">完了</string>
+    <string name="downloads_status_cancelled">キャンセル済み</string>
+    <string name="downloads_status_failed">失敗</string>
+    <string name="downloads_status_failed_error">失敗: %1$s</string>
+    <string name="downloads_action_cancel">ダウンロードをキャンセル</string>
+    <string name="downloads_action_retry">ダウンロードを再試行</string>
+    <string name="downloads_action_remove">ダウンロードを削除</string>
+
+    <!-- Shared media items -->
+    <string name="media_artist">アーティスト</string>
+    <string name="media_blacklisted">ブラックリスト登録済み</string>
+    <string name="media_liked_tracks">お気に入りの曲</string>
+    <string name="media_saved_songs">保存した曲</string>
+    <string name="media_unknown_artist">不明なアーティスト</string>
+    <string name="media_preview_title">曲名</string>
+    <string name="media_preview_subtitle">アーティスト名</string>
+
+    <string name="accessibility_selected">選択済み</string>
+
+    <string name="settings_screen_title">設定</string>
+
+    <string name="settings_section_plugins">プラグイン</string>
+    <string name="settings_section_language_region">言語と地域</string>
+    <string name="settings_section_appearance">外観</string>
+    <string name="settings_section_playback">再生</string>
+    <string name="settings_section_downloads">ダウンロード</string>
+    <string name="settings_section_caching">キャッシュ</string>
+    <string name="settings_section_desktop">デスクトップ</string>
+    <string name="settings_section_updates">アップデート</string>
+    <string name="settings_section_support">サポート</string>
+    <string name="settings_section_about">このアプリについて</string>
+
+    <string name="common_close">閉じる</string>
+    <string name="common_save">保存</string>
+    <string name="common_cancel">キャンセル</string>
+
+    <string name="settings_language_title">言語</string>
+    <string name="settings_language_subtitle_current">アプリの表示言語。現在: %1$s</string>
+    <string name="settings_language_system_default">システムのデフォルト</string>
+    <string name="settings_country_title">国</string>
+    <string name="settings_country_subtitle_current">コンテンツと利用可否に使用する国・地域。現在: %1$s</string>
+    <string name="settings_option_name_and_code">%1$s (%2$s)</string>
+
+    <string name="settings_theme_title">テーマ</string>
+    <string name="settings_theme_subtitle_current">Spotubeをシステムの外観にどう合わせるかを選択します。現在: %1$s</string>
+    <string name="settings_theme_light">ライト</string>
+    <string name="settings_theme_dark">ダーク</string>
+    <string name="settings_theme_system">システム</string>
+
+    <string name="settings_surface_theme_title">サーフェス</string>
+    <string name="settings_surface_theme_subtitle_current">アプリの背景素材。現在: %1$s</string>
+    <string name="settings_surface_watery">ウォーター</string>
+    <string name="settings_surface_icy">アイス</string>
+    <string name="settings_surface_chrome">クローム</string>
+    <string name="settings_surface_acrylic">アクリル</string>
+    <string name="settings_surface_glass">ガラス</string>
+
+    <string name="settings_accent_title">アクセントカラー</string>
+    <string name="settings_accent_subtitle_current">現在のパレット: %1$s</string>
+    <string name="settings_accent_dialog_title">アクセントカラー</string>
+    <string name="settings_accent_dialog_description">アクセントパレットを選び、ライトとダークの両テーマでプレビューできます。</string>
+    <string name="settings_preview_light">ライト</string>
+    <string name="settings_preview_dark">ダーク</string>
+    <string name="settings_preview_label">プレビュー</string>
+    <string name="settings_preview_button">ボタン</string>
+    <string name="settings_accent_green_goblin">グリーンゴブリン</string>
+    <string name="settings_accent_electric_violet">エレクトリックバイオレット</string>
+    <string name="settings_accent_oceanic_cyan">オーシャンシアン</string>
+    <string name="settings_accent_sunset_orange">サンセットオレンジ</string>
+    <string name="settings_accent_rose_garden">ローズガーデン</string>
+    <string name="settings_accent_midnight_blue">ミッドナイトブルー</string>
+    <string name="settings_accent_metallic_slate">メタリックスレート</string>
+
+    <string name="settings_appearance_title">ルック＆フィール</string>
+    <string name="settings_appearance_subtitle_current">サーフェス素材とアクセント。現在: %1$s · %2$s</string>
+    <string name="settings_appearance_dialog_title">ルック＆フィール</string>
+    <string name="settings_appearance_dialog_description">サーフェス素材を選び、それに合うアクセントを選択してください。どの選択肢も厳選された組み合わせです。</string>
+    <string name="settings_appearance_surface_label">サーフェス</string>
+    <string name="settings_appearance_accent_label">アクセント</string>
+    <string name="settings_preview_secondary">セカンダリ</string>
+
+    <string name="settings_palette_title">パレット</string>
+    <string name="settings_palette_subtitle_current">Millenniumアクセントパレット。現在: %1$s</string>
+    <string name="settings_palette_dialog_title">パレット</string>
+    <string name="settings_palette_dialog_description">Millenniumアクセントパレットを選び、ライトとダークでプレビューできます。</string>
+    <string name="settings_palette_label">パレット</string>
+    <string name="settings_appearance_subtitle_palette">Millenniumパレットとアクセント。現在: %1$s</string>
+    <string name="settings_palette_blue">ブルー</string>
+    <string name="settings_palette_orange">オレンジ</string>
+    <string name="settings_palette_lime">ライム</string>
+
+    <string name="settings_download_folder_title">ダウンロードフォルダの変更</string>
+    <string name="settings_download_folder_current">現在のフォルダ: %1$s</string>
+    <string name="settings_download_folder_description">空欄にするとデフォルトの音楽フォルダを使用します。</string>
+    <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
+    <string name="settings_local_media_folders_title">ローカルメディアフォルダ</string>
+    <string name="settings_local_media_folders_subtitle_current">デスクトップでスキャンするカスタムフォルダ。追加済み: %1$d</string>
+    <string name="settings_local_media_folders_subtitle_empty">カスタムフォルダはまだ追加されていません</string>
+    <string name="settings_local_media_folders_description">ローカル音楽ライブラリ用のカスタムフォルダ。</string>
+    <string name="settings_local_media_folders_manage">管理</string>
+    <string name="settings_local_media_folders_add_action">フォルダを追加</string>
+    <string name="settings_local_media_folders_remove_action">フォルダを削除</string>
+    <string name="settings_local_media_folders_none_added">カスタムフォルダは追加されていません。</string>
+    <string name="settings_local_media_folders_remove_named">%1$sをスキャン対象から削除</string>
+    <string name="settings_local_media_folders_automatic_both">ダウンロードフォルダと音楽キャッシュフォルダは自動的に含まれます。</string>
+    <string name="settings_local_media_folders_automatic_downloads">ダウンロードフォルダは自動的に含まれます。</string>
+    <string name="settings_local_media_folders_automatic_cache">音楽キャッシュフォルダは自動的に含まれます。</string>
+    <string name="settings_local_media_folders_saving">保存中…</string>
+    <string name="settings_local_media_folders_save_error">フォルダを保存できませんでした。変更内容は保持されていますので、もう一度お試しください。</string>
+    <plurals name="settings_local_media_folders_count">
+        <item quantity="other">%1$d個のフォルダ</item>
+    </plurals>
+    <string name="settings_download_format_title">ダウンロードの音楽フォーマット</string>
+    <string name="settings_download_format_subtitle_current">ダウンロードに使用するコーデックとコンテナ。現在: %1$s</string>
+    <string name="settings_download_quality_title">ダウンロードの音質</string>
+
+    <string name="settings_streaming_format_title">ストリーミングの音楽フォーマット</string>
+    <string name="settings_streaming_format_subtitle_current">ストリーミング再生に使用するコーデックとコンテナ。現在: %1$s</string>
+    <string name="settings_streaming_quality_title">ストリーミングの音質</string>
+    <string name="settings_subtitle_current">現在: %1$s</string>
+    <string name="settings_enable_music_caching_title">音楽のキャッシュを有効化</string>
+    <string name="settings_enable_music_caching_subtitle">ストリーミングした音声をローカルに保存し、再度の再生を高速化します。</string>
+    <string name="settings_cache_folder_title">キャッシュフォルダ</string>
+    <string name="settings_cache_folder_current">現在: %1$s</string>
+    <string name="settings_cache_folder_default">現在: アプリのデフォルトキャッシュ</string>
+    <string name="settings_cache_size_limit_title">キャッシュサイズの上限</string>
+    <string name="settings_cache_size_limit_unlimited">上限なし</string>
+    <string name="settings_cache_size_limit_current">現在の上限: %1$d MB</string>
+    <string name="settings_cache_size_limit_description">キャッシュの最大サイズをMB単位で設定します。0を入力するか空欄にすると上限なしになります。</string>
+    <string name="settings_cache_size_limit_placeholder">500</string>
+    <string name="settings_error_cache_size_range">サイズは0または正の数で指定してください。</string>
+    <string name="settings_enable_endless_playback_title">エンドレス再生を有効化</string>
+    <string name="settings_enable_endless_playback_subtitle">キューが終わったら、おすすめの曲で再生を続けます。</string>
+    <string name="settings_playback_port_title">再生プロキシサーバーのポート</string>
+    <string name="settings_allow_remote_control_title">リモート操作を許可</string>
+    <string name="settings_allow_remote_control_subtitle">同じネットワーク上の他のデバイスが接続したときに再生を操作できるようにします。</string>
+    <string name="settings_remote_device_name_title">リモート操作用のデバイス名</string>
+    <string name="settings_remote_device_name_subtitle">他のデバイスがこのデバイスを検出したときに表示される名前。現在: %1$s</string>
+    <string name="settings_remote_device_name_description">ネットワーク上の他のデバイスがこのSpotubeを検出したときに表示される、わかりやすい名前を付けてください。</string>
+    <string name="settings_remote_device_name_placeholder">例: リビングのSpotube</string>
+    <string name="settings_remote_device_name_default">デバイスのホスト名</string>
+    <string name="settings_playback_port_subtitle_current">再生プロキシサーバーが使用するポート。現在: %1$d</string>
+    <string name="settings_playback_port_description">1〜65535のポートを選択してください。</string>
+    <string name="settings_playback_port_placeholder">14769</string>
+    <string name="settings_error_whole_number">有効な整数を入力してください。</string>
+    <string name="settings_error_port_range">ポートは1〜65535の範囲で指定してください。</string>
+
+    <string name="settings_blacklist_title">ブラックリスト</string>
+    <string name="settings_blacklist_subtitle">ブラックリストに登録した曲とアーティストを管理</string>
+
+    <string name="settings_desktop_minimize_title">トレイに最小化</string>
+    <string name="settings_desktop_minimize_subtitle">ウィンドウを最小化したとき、Spotubeをシステムトレイで実行し続けます。</string>
+    <string name="settings_desktop_discord_title">Discordリッチプレゼンス</string>
+    <string name="settings_desktop_discord_subtitle">デスクトップで現在の再生状況をDiscordに表示します。</string>
+
+    <string name="settings_updates_auto_check_title">アップデートを自動確認</string>
+    <string name="settings_updates_auto_check_subtitle">Spotubeの新しいリリースをバックグラウンドで確認します。</string>
+
+    <string name="settings_plugins_manage_title">プラグインを管理</string>
+    <string name="settings_plugins_manage_subtitle">プラグインを管理します</string>
+    <string name="settings_plugins_default_ability_title">デフォルトの%1$sプラグイン</string>
+    <string name="settings_plugins_ability_metadata">メタデータ</string>
+    <string name="settings_plugins_ability_audio">オーディオ</string>
+    <string name="settings_plugins_ability_lyrics">歌詞</string>
+    <string name="settings_plugins_ability_scrobble">Scrobble</string>
+    <string name="settings_plugins_no_selection">プラグインが選択されていません</string>
+    <string name="settings_plugins_action_change">変更</string>
+    <string name="settings_plugins_action_select">選択</string>
+    <string name="settings_plugins_selected">選択済み</string>
+    <string name="settings_plugins_clear">選択を解除</string>
+    <string name="settings_plugins_no_plugins">利用できるプラグインはありません</string>
+    <string name="settings_plugins_plugin_content_description">%1$sプラグイン</string>
+    <string name="settings_plugins_clear_content_description">クリア</string>
+
+    <string name="plugin_configure_title">構成</string>
+    <string name="plugin_screen_title">プラグインマネージャー</string>
+    <string name="plugin_error_enter_url">URLを入力してください</string>
+    <string name="plugin_error_url_scheme">URLは http:// または https:// で始まる必要があります</string>
+    <string name="plugin_error_download_failed">プラグインをダウンロードできませんでした</string>
+    <string name="plugin_empty_title">プラグインはまだインストールされていません</string>
+    <string name="plugin_empty_subtitle">上でダウンロードURLを貼り付けるか、ファイルを選択してください。</string>
+    <plurals name="plugin_installed_plugins_count">
+        <item quantity="other">%1$d個のプラグインをインストール済み</item>
+    </plurals>
+    <string name="plugin_install_section_title">プラグインをインストール</string>
+    <string name="plugin_url_placeholder">https://example.com/plugin.smplug</string>
+    <string name="plugin_action_download">ダウンロード</string>
+    <string name="plugin_action_install_from_file">ファイルからインストール (.smplug)</string>
+    <string name="plugin_state_active">有効</string>
+    <string name="plugin_version_label">v%1$s</string>
+    <string name="plugin_state_builtin">内蔵</string>
+    <string name="plugin_action_remove">プラグインを削除</string>
+    <string name="plugin_action_login">ログイン</string>
+    <string name="plugin_action_logout">ログアウト</string>
+    <string name="plugin_section_url_title">URLからダウンロード</string>
+    <string name="plugin_section_file_title">ファイルからインストール</string>
+    <string name="plugin_section_install">インストール</string>
+
+    <string name="plugin_permissions_author_version">• %1$s</string>
+    <string name="plugin_permissions_requested_title">要求される権限</string>
+    <string name="plugin_permissions_none">このプラグインに特別な権限は必要ありません。</string>
+    <string name="plugin_permissions_compare_title">インストール済み vs 提供版</string>
+    <string name="plugin_permissions_installed_label">インストール済み</string>
+    <string name="plugin_permissions_supplied_label">提供版</string>
+    <string name="plugin_permissions_api_diff">API %1$s → %2$s</string>
+    <string name="plugin_permissions_capability_storage_title">永続ストレージ</string>
+    <string name="plugin_permissions_capability_storage_desc">ディスクへのデータの読み書き</string>
+    <string name="plugin_permissions_capability_network_title">ネットワークリクエスト</string>
+    <string name="plugin_permissions_capability_network_desc">インターネット経由でのデータの送受信</string>
+    <string name="plugin_permissions_capability_webview_title">WebView</string>
+    <string name="plugin_permissions_capability_webview_desc">アプリ内でのWebコンテンツの表示</string>
+    <string name="settings_section_jam">グループジャム</string>
+    <string name="settings_jam_server_test">接続をテスト</string>
+    <string name="settings_jam_server_testing">テスト中…</string>
+    <string name="settings_jam_server_test_ok">%1$d msで接続しました</string>
+    <string name="settings_jam_server_test_fail">失敗: %1$s</string>
+    <string name="settings_jam_section_connection">接続</string>
+    <string name="settings_jam_section_diagnostics">診断</string>
+
+    <!-- Group Jam -->
+    <string name="jam_screen_title">グループジャム</string>
+    <string name="jam_setup_create_tab">作成</string>
+    <string name="jam_setup_join_tab">参加</string>
+    <string name="jam_setup_create_hint">ルームを作成して、コードを友達に共有しましょう。</string>
+    <string name="jam_setup_create_button">ルームを作成</string>
+    <string name="jam_setup_join_button">ルームに参加</string>
+    <string name="jam_setup_working">接続中…</string>
+    <string name="jam_setup_code_label">ルームコード</string>
+    <string name="jam_setup_code_placeholder">ABC123</string>
+    <string name="jam_session_connected">接続済み</string>
+    <string name="jam_session_connecting">再接続中…</string>
+    <string name="jam_invite_copy">コードをコピー</string>
+    <string name="jam_invite_copied">コピーしました!</string>
+    <string name="jam_invite_share">共有</string>
+    <string name="jam_participants_heading">参加者 (%1$d)</string>
+    <string name="jam_participants_host">ホスト</string>
+    <string name="jam_participants_guest">リスナー</string>
+    <string name="jam_participants_waiting">リスナーを待っています…</string>
+    <string name="jam_participants_remove">削除</string>
+    <string name="jam_participants_ban">BAN</string>
+    <string name="jam_participants_manage">管理</string>
+    <string name="jam_session_leave">ルームから退出</string>
+    <string name="jam_error_title">接続できませんでした</string>
+    <string name="jam_error_dismiss">閉じる</string>
+    <string name="jam_error_create">ジャムセッションを作成できませんでした</string>
+    <string name="jam_error_join">ジャムセッションに参加できませんでした</string>
+    <string name="jam_error_invalid_code">英数字6文字のルームコードを入力してください。</string>
+    <string name="jam_share_message">コード %1$s で私のSpotubeジャムに参加しよう</string>
+    <string name="settings_jam_server_title">ルームサーバー</string>
+    <string name="settings_jam_server_url">サーバーURL</string>
+    <string name="settings_jam_server_url_invalid">https:// で始まるURLを入力してください。</string>
+    <string name="settings_jam_server_diagnostics_subtitle">ルームを始める前にルームサーバーを確認します。</string>
+    <string name="settings_jam_server_note">ジャムはSpotubeの無料ルームサーバーを使います。自分でホストするには、github.com/team-spotube/jam-server のサーバーをデプロイし、そのURLを入力してください。</string>
+    <string name="settings_jam_section_you">あなた</string>
+    <string name="jam_connection_host">サーバー: %1$s</string>
+    <string name="jam_connection_missing">ルームをホストまたは参加するには、設定でルームサーバーを指定してください。</string>
+    <string name="jam_connection_settings">サーバー設定</string>
+    <string name="jam_participants_you">%1$s（あなた）</string>
+    <string name="jam_name_title">あなたの名前</string>
+    <string name="jam_name_subtitle">ジャムの他の参加者には %1$s と表示されます</string>
+    <string name="jam_name_description">ジャムの全員に表示されます。空欄にすると %1$s を使います。新しい名前は次にルームを作成または参加したときから使われます。</string>
+    <string name="jam_name_too_long">%1$d 文字以内で入力してください。</string>
+    <string name="jam_error_no_server">ジャムサーバーが設定されていません</string>
+    <string name="jam_error_server_unreachable">ジャムサーバーに接続できません。ネットワーク、または 設定 → グループジャム のサーバーURLを確認してください。</string>
+    <string name="jam_error_server_incompatible">ジャムサーバーのバージョンに互換性がありません。</string>
+    <string name="jam_error_room_not_found">そのコードのルームはありません。コードを確認してもう一度お試しください。</string>
+    <string name="jam_error_room_full">このルームは満員です。</string>
+    <string name="jam_error_banned">ホストによってこのルームからBANされました。</string>
+    <string name="jam_error_kicked">ホストによってルームから削除されました。</string>
+    <string name="jam_error_replaced">このデバイスでこのルームが再度開かれたため、この接続は閉じられました。</string>
+
+    <string name="player_go_to_album">アルバムへ移動</string>
+    <string name="player_sleep_timer">スリープタイマー</string>
+    <string name="player_track_details">曲の詳細</string>
+    <string name="player_play_content_description">再生</string>
+    <string name="player_pause_content_description">一時停止</string>
+    <string name="player_nothing_playing">再生中の曲はありません</string>
+    <string name="player_add_to_queue_content_description">キューに追加</string>
+
+    <string name="update_action_ignore">無視</string>
+    <string name="update_action_update">アップデート</string>
+    <string name="app_update_dialog_title">Spotube %1$s が利用可能です</string>
+    <string name="app_update_dialog_no_notes">このリリースの新機能はSpotubeのダウンロードページでご確認ください。</string>
+    <string name="plugin_update_dialog_title">%1$s %2$s が利用可能です</string>
+    <string name="plugin_update_dialog_current_version">インストール済み: %1$s</string>
+    <string name="plugin_update_dialog_no_notes">このアップデートの新機能はプラグインのページでご確認ください。</string>
+
+    <string name="welcome_skip">スキップ</string>
+    <string name="welcome_next">次へ</string>
+    <string name="welcome_back">戻る</string>
+    <string name="welcome_get_started">はじめる</string>
+    <string name="welcome_app_name">Spotube</string>
+    <string name="welcome_brand_freedom">音楽を、しがらみなく。</string>
+    <string name="welcome_brand_quiet_description">音楽の世界へ広がる、オープンソースのプレーヤー。\n自由に探して、自分らしく楽しもう。</string>
+    <string name="welcome_donate_quiet_title">このプロジェクトを支えてください。</string>
+    <string name="welcome_donate_letter">Spotubeはサブスクリプションビジネスではなく、人の手でつくられています。日々の暮らしの一部になったなら、少しのご支援が、このアプリにふさわしい手入れを続ける力になります。\n\n独立したソフトウェアに居場所をつくってくださり、ありがとうございます。</string>
+    <string name="welcome_plugins_setup_guide">まずはカタログプラグインで曲やプレイリストを探せるようにしましょう。次に、再生用のオーディオプラグインを選びます。歌詞と再生履歴は任意です。下からプラグインを見つけて権限を確認し、インストールしてからここで選択してください。</string>
+    <string name="welcome_plugins_discover">プラグインを探す</string>
+    <string name="welcome_plugins_sources">ソース</string>
+    <string name="welcome_plugins_retry">再試行</string>
+    <string name="welcome_plugins_more">その他のプラグイン</string>
+    <string name="welcome_plugins_discovery_empty">新しいプラグインは見つかりませんでした。上のリンクや.smplugファイルからインストールすることもできます。</string>
+    <string name="welcome_plugins_discovery_error">現在プラグインを検索できません。再試行するか、リンクまたはファイルからインストールしてください。</string>
+    <string name="welcome_step_welcome">ようこそ</string>
+    <string name="welcome_step_support">サポート</string>
+    <string name="welcome_step_plugins">プラグイン</string>
+    <string name="welcome_step_guide">ガイド</string>
+
+    <string name="welcome_guide_title">Spotubeの使い方</string>
+    <string name="welcome_guide_subtitle">簡単な4ステップで、すぐに聴けます。</string>
+    <string name="welcome_guide_signin_title">サインイン</string>
+    <string name="welcome_guide_signin_desc">アカウントを連携するか、お好みのカタログプラグインを選んでください。</string>
+    <string name="welcome_guide_search_title">検索して再生</string>
+    <string name="welcome_guide_search_desc">曲、アルバム、アーティストを探して再生しましょう。</string>
+    <string name="welcome_guide_offline_title">オフラインで聴く</string>
+    <string name="welcome_guide_offline_desc">曲をダウンロードすれば、接続がなくても再生できます。</string>
+    <string name="welcome_guide_lyrics_title">歌詞を表示</string>
+    <string name="welcome_guide_lyrics_desc">曲の再生中に、プレーヤーから同期歌詞を開けます。</string>
+
+    <!-- Page 1: branding -->
+    <string name="welcome_brand_tagline">あなたの音楽。あなたのソース。あなたのルール。</string>
+    <string name="welcome_brand_subtitle">音楽を愛するコミュニティがつくった、無料でオープンソースの音楽プレーヤー。</string>
+    <string name="welcome_brand_chip_open_source">オープンソース</string>
+    <string name="welcome_brand_chip_no_ads">広告なし</string>
+    <string name="welcome_brand_chip_no_tracking">テレメトリなし</string>
+    <string name="welcome_brand_chip_plugin_powered">プラグインで拡張</string>
+    <string name="welcome_lets_go">はじめよう</string>
+
+    <!-- Page 2: donations -->
+    <string name="welcome_donate_eyebrow">サポーターの皆さんに支えられています</string>
+    <string name="welcome_donate_title">情熱でつくり、あなたが支える。</string>
+    <string name="welcome_donate_message">Spotubeは100%無料の自由なオープンソースソフトウェアです。広告も、サブスクリプションも、トラッキングもありません。すべての機能は、あなたのような人たちが開発を支えてくれたからこそ存在しています。</string>
+    <string name="welcome_donate_patreon_title">Patreon</string>
+    <string name="welcome_donate_patreon_tag">毎月のスポンサー</string>
+    <string name="welcome_donate_patreon_subtitle">継続的な開発とインフラを支援</string>
+    <string name="welcome_donate_bmac_title">Buy Me a Coffee</string>
+    <string name="welcome_donate_bmac_tag">1回限りのコーヒー</string>
+    <string name="welcome_donate_bmac_subtitle">ちょっとしたチップで深夜のコーディングを応援</string>
+    <string name="welcome_donate_opencollective_title">Open Collective</string>
+    <string name="welcome_donate_opencollective_tag">コミュニティ基金</string>
+    <string name="welcome_donate_opencollective_subtitle">透明性が高く、コミュニティが運営する資金支援</string>
+    <string name="welcome_donate_thanks">オープンな音楽を信じてくださり、心から感謝します。</string>
+    <string name="welcome_donate_optional">支援はまったくの任意です。どちらでもSpotubeは無料のままです。</string>
+    <string name="welcome_donate_action">支援する</string>
+    <string name="welcome_donate_open_content_description">%1$sを開く</string>
+
+    <!-- Support / donations -->
+    <string name="support_button_label">Spotubeを支援</string>
+    <string name="support_dialog_title">Spotubeを支援</string>
+    <string name="support_dialog_message">Spotubeは無料の自由なオープンソースソフトウェアです。広告も、サブスクリプションも、トラッキングもありません。気に入っていただけたら、プロジェクトへのご支援をご検討ください。</string>
+    <string name="support_dialog_reminder_hint">このリマインダーは「設定 → サポート」でオフにできます。</string>
+    <string name="support_dialog_dismiss">あとで</string>
+    <string name="settings_support_reminders_title">支援のリマインダー</string>
+    <string name="settings_support_reminders_subtitle">7日ごとに、プロジェクトへの支援をさりげなくお知らせします。</string>
+
+    <!-- Page 3: plugins -->
+    <string name="welcome_plugins_eyebrow">モジュール式アーキテクチャ</string>
+    <string name="welcome_plugins_title">音楽をどこから届けるか、選びましょう。</string>
+    <string name="welcome_plugins_subtitle">Spotubeはカタログの検索、オーディオのストリーミング、同期歌詞をそれぞれ分離しています。下でエンジンを設定でき、いつでも切り替えられます。</string>
+    <string name="welcome_plugins_metadata_title">メタデータエンジン</string>
+    <string name="welcome_plugins_metadata_description">音楽の発見、検索、曲リスト、プレイリストを担います。</string>
+    <string name="welcome_plugins_audio_title">オーディオエンジン</string>
+    <string name="welcome_plugins_audio_description">再生するオーディオストリームを取得してデコードします。</string>
+    <string name="welcome_plugins_lyrics_title">歌詞エンジン</string>
+    <string name="welcome_plugins_lyrics_description">時間同期されたカラオケ歌詞をリアルタイムで表示します。</string>
+    <string name="welcome_plugins_scrobble_title">Scrobbleエンジン</string>
+    <string name="welcome_plugins_scrobble_description">再生履歴をLast.fmやListenBrainzに記録します。</string>
+    <string name="welcome_plugins_badge_active">有効</string>
+    <string name="welcome_plugins_badge_builtin">内蔵</string>
+    <string name="welcome_plugins_badge_ready">準備完了</string>
+    <string name="welcome_plugins_badge_optional">任意</string>
+    <string name="welcome_plugins_none_selected">エンジンを選択</string>
+    <string name="welcome_plugins_installed_section">インストール済みのエンジン</string>
+    <string name="welcome_plugins_set_default">デフォルトに設定</string>
+    <string name="welcome_plugins_builtin_note">NewPipe YouTubeとLRCLib Lyricsは内蔵されており、すぐにストリーミングできます。</string>
+    <string name="welcome_plugins_tip">コミュニティプラグインの管理や追加は、いつでも「設定 → プラグイン」から行えます。</string>
+
+    <!-- Page 4: how it works -->
+    <string name="welcome_how_eyebrow">レトロモダンなアーキテクチャ</string>
+    <string name="welcome_how_title">純粋なHi-Fi、仲介者ゼロ</string>
+    <string name="welcome_how_subtitle">Spotubeがあなたのマシン上で分散型の再生を直接制御する仕組みをご紹介します。</string>
+    <string name="welcome_how_status_badge">ダイレクトP2P • 256 KBPS OPUS</string>
+    <string name="welcome_how_mockup_title">ブルーアワー</string>
+    <string name="welcome_how_mockup_artist">Spotube · プレーヤーのデモ</string>
+    <string name="welcome_how_mockup_lyric">合間のひとときに、少しの音楽を。</string>
+    <string name="welcome_how_step_search_title">1. 分散型の検索</string>
+    <string name="welcome_how_step_search_desc">検索クエリは選択したカタログプラグインに直接送られます。Spotubeがあなたの好みをプロファイリングすることはありません。</string>
+    <string name="welcome_how_step_stream_title">2. ストリームを直接解決</string>
+    <string name="welcome_how_step_stream_desc">オーディオはコンテンツサーバーからあなたのマシンへ直接ストリーミングされます。プロキシの経由やリモートでのデータ収集はありません。</string>
+    <string name="welcome_how_step_playback_title">3. ローカルDSPと再生</string>
+    <string name="welcome_how_step_playback_desc">ローカルでデコード・キャッシュされ、イコライザーやオフライン用ダウンロード (任意) も使えます。</string>
+    <string name="welcome_how_step_lyrics_title">4. 同期歌詞とジャム</string>
+    <string name="welcome_how_step_lyrics_desc">カラオケ歌詞が再生位置に合わせて流れ、LANでのリモート操作やグループジャムにも対応します。</string>
+    <string name="welcome_how_footer">仲介サーバーはありません。再生はすべてあなたのデバイス上で行われ、設計段階からプライバシーを守ります。</string>
+
+    <!-- Devices: play destination picker -->
+    <string name="devices_destination_title">デバイスを選択</string>
+    <string name="devices_destination_prompt">%1$s:「%2$s」</string>
+    <string name="devices_destination_action_play">再生</string>
+    <string name="devices_destination_action_add_to_queue">キューに追加</string>
+    <string name="devices_destination_action_play_next">次に再生</string>
+    <string name="devices_destination_this_device">このデバイス</string>
+    <string name="devices_destination_this_device_subtitle">このデバイスで</string>
+    <string name="devices_destination_remote_device">リモートデバイス</string>
+    <string name="devices_destination_remote_device_host">リモートデバイス (%1$s)</string>
+    <string name="devices_destination_remote_subtitle">接続中のデバイスで</string>
+
+    <!-- Devices: connection errors -->
+    <string name="devices_error_connection_failed">接続に失敗しました</string>
+    <string name="devices_error_connection_lost">接続が切断されました</string>
+    <string name="devices_error_send_failed">送信に失敗しました</string>
+    <string name="devices_error_discovery_failed">検出に失敗しました: %1$s</string>
+    <string name="devices_error_connect_failed">接続できませんでした: %1$s</string>
+
+    <!-- Devices: discovery screen -->
+    <string name="devices_title">デバイス</string>
+    <string name="devices_refresh">更新</string>
+    <string name="devices_disconnect">切断</string>
+    <string name="devices_connecting">接続中...</string>
+    <string name="devices_searching">ネットワーク上のデバイスを検索中...</string>
+    <string name="devices_empty">デバイスが見つかりません</string>
+    <string name="devices_empty_hint">相手のデバイスの設定で「リモート操作を許可」が有効になっていることを確認してください。</string>
+    <string name="devices_unknown_device">不明なデバイス</string>
+    <string name="devices_resolving">解決中...</string>
+
+    <!-- Devices: remote control screen -->
+    <string name="devices_remote_title">リモート操作</string>
+    <string name="devices_remote_disconnected">切断されました</string>
+    <string name="devices_remote_connection_error">接続エラー: %1$s</string>
+    <string name="devices_remote_unknown_track">不明な曲</string>
+    <string name="devices_remote_unknown_artist">不明なアーティスト</string>
+    <string name="devices_remote_volume">音量</string>
+    <string name="devices_remote_remove_from_queue">キューから削除</string>
+    <string name="devices_remote_more_options">その他のオプション</string>
+
+    <!-- Group Jam: play destination picker -->
+    <string name="jam_destination_title">どこで再生しますか?</string>
+    <string name="jam_destination_message">ジャムセッションが進行中です。このコレクションを再生する場所を選んでください。</string>
+    <string name="jam_destination_play_here">ここで再生</string>
+    <string name="jam_destination_suggest">ジャムに提案</string>
+
+    <!-- Group Jam: connection errors -->
+    <string name="jam_error_connection_failed">接続に失敗しました</string>
+    <string name="jam_error_connection_lost">接続が切断されました</string>
+
+
+    <!-- Group Jam: queue snackbar -->
+    <string name="jam_queue_added_track">ジャムのキューに追加しました</string>
+    <plurals name="jam_queue_added_tracks">
+        <item quantity="other">%1$d曲をジャムのキューに追加しました</item>
+    </plurals>
+
+    <!-- Remote control: connection request dialog -->
+    <string name="remote_request_title">リモート操作のリクエスト</string>
+    <string name="remote_request_message">「%1$s」がこのデバイスの再生を操作しようとしています。</string>
+    <string name="remote_request_deny">拒否</string>
+    <string name="remote_request_allow">許可</string>
+    <string name="remote_request_allow_always">常に許可</string>
+
+    <!-- Search -->
+    <string name="search_results_title">検索結果</string>
+    <string name="search_tab_all">すべて</string>
+    <string name="search_section_tracks">曲</string>
+    <string name="search_section_users">ユーザー</string>
+    <string name="search_no_search_types">利用できる検索タイプはありません</string>
+    <string name="search_start_typing">入力して検索</string>
+    <string name="search_start_typing_tracks">入力して曲を検索</string>
+    <string name="search_no_results">結果が見つかりません</string>
+    <string name="search_see_all">すべて表示</string>
+    <string name="search_searching">検索中</string>
+    <string name="search_loading_tracks">曲を読み込み中...</string>
+    <string name="search_loading_albums">アルバムを読み込み中...</string>
+    <string name="search_loading_artists">アーティストを読み込み中...</string>
+    <string name="search_loading_playlists">プレイリストを読み込み中...</string>
+    <string name="search_loading_users">ユーザーを読み込み中...</string>
+    <string name="search_no_albums">アルバムが見つかりません</string>
+    <string name="search_no_artists">アーティストが見つかりません</string>
+    <string name="search_no_playlists">プレイリストが見つかりません</string>
+    <string name="search_no_users">ユーザーが見つかりません</string>
+    <string name="search_warm_crates">レコード棚を掘り返しています...</string>
+    <string name="search_warm_cosmos">宇宙を探索しています...</string>
+    <string name="search_warm_speakers">スピーカーをウォームアップしています...</string>
+    <string name="search_warm_vinyl">レコードのほこりを払っています...</string>
+    <string name="search_warm_music_gods">音楽の神様にお伺いを立てています...</string>
+    <string name="search_warm_antennas">アンテナを調整しています...</string>
+    <string name="search_warm_records">レコードをめくっています...</string>
+    <string name="search_error_capabilities">検索機能を読み込めませんでした</string>
+    <string name="search_error_search">検索できませんでした</string>
+    <string name="search_error_tracks">曲を検索できませんでした</string>
+    <string name="search_error_albums">アルバムを検索できませんでした</string>
+    <string name="search_error_artists">アーティストを検索できませんでした</string>
+    <string name="search_error_playlists">プレイリストを検索できませんでした</string>
+    <string name="search_error_users">ユーザーを検索できませんでした</string>
+
+    <!-- Home -->
+    <string name="home_title_browse">ブラウズ</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_mode_synced">同期</string>
+    <string name="lyrics_mode_plain">テキスト</string>
+    <string name="lyrics_no_synced">同期歌詞はありません</string>
+    <string name="lyrics_no_plain">テキスト歌詞はありません</string>
+
+    <!-- Settings: audio format/quality labels -->
+    <string name="settings_audio_format_label">%1$s (%2$s)</string>
+    <string name="settings_audio_quality_lossy">%1$d kbps</string>
+    <string name="settings_audio_quality_lossless">%1$s kHz • %2$d ch</string>
+    <string name="search_error_no_metadata_plugin">メタデータプラグインが選択されていません</string>
+
+    <!-- Common -->
+    <string name="common_back">戻る</string>
+    <string name="common_retry">再試行</string>
+    <string name="common_close_dialog">ダイアログを閉じる</string>
+    <string name="common_loading">読み込み中...</string>
+    <string name="common_unknown">不明</string>
+    <string name="common_unknown_error">不明なエラー</string>
+
+    <!-- Media cards -->
+    <string name="media_user">ユーザー</string>
+    <string name="media_playlist">プレイリスト</string>
+
+    <!-- Error display -->
+    <string name="error_title">申し訳ありません</string>
+    <string name="error_description">現在、一部の機能が正しく動作していません。ご不便をおかけして申し訳ありません。解決に全力で取り組んでいます。もう一度お試しいただくか、下のエラー詳細をご確認ください。</string>
+    <string name="error_details">エラーの詳細</string>
+    <string name="error_copy_to_clipboard">クリップボードにコピー</string>
+    <string name="error_view_full_log">ログ全体を表示</string>
+    <string name="error_full_log_title">エラーログ全体</string>
+
+    <!-- Collection details -->
+    <string name="collection_details_shuffle">シャッフル</string>
+    <string name="collection_details_shuffle_play">シャッフル再生</string>
+    <string name="collection_details_follow">フォロー</string>
+    <string name="collection_details_unfollow">フォロー解除</string>
+    <string name="collection_details_edit_playlist">プレイリストを編集</string>
+    <string name="collection_details_by_owner">作成者: %1$s</string>
+
+    <!-- Track options -->
+    <string name="track_options_title">曲のオプション</string>
+    <string name="track_options_add_to_jam">ジャムに追加</string>
+    <string name="track_options_start_radio">ラジオを開始</string>
+    <string name="track_options_play_next">次に再生</string>
+    <string name="track_options_move_to_next">次に移動</string>
+    <string name="track_options_remove_from_queue">キューから削除</string>
+    <string name="track_options_remove_from_favorites">お気に入りから削除</string>
+    <string name="track_options_save_as_favorite">お気に入りに保存</string>
+    <string name="track_options_add_to_playlist">プレイリストに追加</string>
+    <string name="track_options_download">ダウンロード</string>
+    <string name="track_options_share">共有</string>
+
+    <!-- Track list -->
+    <string name="track_list_sort_original">元の順序</string>
+    <string name="track_list_sort_title">タイトル</string>
+    <string name="track_list_sort_artist">アーティスト</string>
+    <string name="track_list_sort_album">アルバム</string>
+    <string name="track_list_sort_duration">再生時間</string>
+    <string name="track_list_sort">並べ替え</string>
+    <string name="track_list_no_tracks">曲が見つかりません</string>
+    <string name="track_list_filter_placeholder">絞り込み</string>
+    <string name="track_list_bulk_actions">一括操作</string>
+    <string name="track_list_download_all">すべてダウンロード</string>
+    <string name="track_list_download_count">%1$d曲をダウンロード</string>
+    <string name="track_list_add_all_to_queue">すべてキューに追加</string>
+    <string name="track_list_add_count_to_queue">%1$d曲をキューに追加</string>
+    <string name="track_list_play_all_next">すべて次に再生</string>
+    <string name="track_list_play_count_next">%1$d曲を次に再生</string>
+    <string name="track_list_add_all_to_playlist">すべてプレイリストに追加</string>
+    <string name="track_list_add_count_to_playlist">%1$d曲をプレイリストに追加</string>
+    <string name="track_list_add_all_to_jam">すべてジャムに追加</string>
+    <string name="track_list_add_count_to_jam">%1$d曲をジャムに追加</string>
+    <string name="track_list_more_artists">他%1$d組</string>
+
+    <!-- WebView -->
+    <string name="webview_no_url">読み込むURLがありません</string>
+    <string name="webview_go_back">ブラウザの履歴を戻る</string>
+    <string name="webview_go_forward">ブラウザの履歴を進む</string>
+
+    <!-- Blacklist -->
+    <string name="blacklist_filter_placeholder">ブラックリストを絞り込み...</string>
+    <string name="blacklist_empty">ブラックリストに登録された項目はありません</string>
+    <string name="blacklist_no_results">「%1$s」に一致するブラックリスト項目はありません</string>
+    <string name="blacklist_section_tracks">曲</string>
+    <string name="blacklist_item_track">曲</string>
+    <string name="blacklist_add">ブラックリストに追加</string>
+    <string name="blacklist_remove">ブラックリストから削除</string>
+
+    <!-- Downloads -->
+    <string name="downloads_error_no_metadata">曲のメタデータがありません</string>
+    <string name="downloads_error_stream_unresolved_short">ストリームURLを解決できませんでした</string>
+    <string name="downloads_error_stream_unresolved">ストリームURLを解決できませんでした。先に曲を再生してみてください。</string>
+
+    <!-- Saved tracks -->
+    <string name="saved_tracks_title">保存した曲</string>
+    <string name="saved_tracks_owner_you">あなた</string>
+
+    <!-- Artist -->
+    <string name="artist_following">フォロー中</string>
+    <string name="artist_top_tracks">人気曲</string>
+    <string name="artist_play_top_tracks">人気曲を再生</string>
+    <string name="artist_add_top_tracks_to_queue">人気曲をキューに追加</string>
+    <string name="artist_related_artists">関連アーティスト</string>
+    <string name="artist_featured_playlists">注目のプレイリスト</string>
+    <string name="artist_error_load_failed">アーティストの概要を読み込めませんでした</string>
+    <string name="artist_followers_unavailable">フォロワー数を取得できません</string>
+    <string name="artist_followers_thousands">フォロワー %1$sK人</string>
+    <string name="artist_followers_millions">フォロワー %1$sM人</string>
+    <string name="artist_followers_billions">フォロワー %1$sB人</string>
+    <plurals name="artist_followers_count">
+        <item quantity="other">フォロワー %1$d人</item>
+    </plurals>
+
+    <!-- Player -->
+    <string name="player_like_content_description">お気に入りに追加</string>
+    <string name="player_unlike_content_description">お気に入りから削除</string>
+    <string name="player_fallback_title">No-op の曲名</string>
+    <string name="player_fallback_artists">No-op のアーティスト</string>
+    <string name="player_unknown_album">不明なアルバム</string>
+    <string name="player_seek_label">シーク</string>
+    <string name="player_volume_label">音量</string>
+    <string name="player_enable_shuffle_content_description">シャッフルをオン</string>
+    <string name="player_disable_shuffle_content_description">シャッフルをオフ</string>
+    <string name="player_previous_content_description">前へ</string>
+    <string name="player_next_content_description">次へ</string>
+    <string name="player_play_or_pause_content_description">再生/一時停止</string>
+    <string name="player_loop_mode_none">リピート: オフ</string>
+    <string name="player_loop_mode_one">リピート: 1曲</string>
+    <string name="player_loop_mode_all">リピート: すべて</string>
+    <string name="player_mute_content_description">ミュート</string>
+    <string name="player_unmute_content_description">ミュート解除</string>
+    <string name="player_more_options_content_description">その他のオプション</string>
+    <string name="player_options_content_description">プレーヤーのオプション</string>
+    <string name="player_collapse_content_description">プレーヤーを折りたたむ</string>
+    <string name="player_expand_lyrics_content_description">歌詞を展開</string>
+    <string name="player_now_playing">再生中</string>
+    <string name="player_lyrics">歌詞</string>
+    <string name="player_alternative_source">代替ソース</string>
+    <string name="player_alternative_source_content_description">代替ソース</string>
+    <string name="player_download">ダウンロード</string>
+    <string name="player_download_status_downloaded">ダウンロード済み</string>
+    <string name="player_download_status_downloading">ダウンロード中...</string>
+    <string name="player_download_already_downloaded">ダウンロード済みです</string>
+    <string name="player_download_retrying">ダウンロードを再試行中...</string>
+    <string name="player_download_started">%1$sをダウンロード中</string>
+    <string name="player_sleep_timer_remaining">%1$s後に再生を一時停止します。</string>
+    <string name="player_sleep_timer_description">選択した時間 (分) が経過したら再生を一時停止します。</string>
+    <string name="player_sleep_timer_minutes_label">分</string>
+    <string name="player_sleep_timer_minutes_placeholder">1〜600分の間で選択</string>
+    <string name="player_sleep_timer_cancel">タイマーをキャンセル</string>
+    <string name="player_sleep_timer_start">開始</string>
+    <string name="player_track_details_stream_mismatch">再生URLは異なるストリーミング設定で解決されました。ハイライトされたストリームが現在の設定に一致しています。有効なURLは次回のストリームリクエスト時に更新されます。</string>
+    <string name="player_track_details_matched_source">一致したオーディオソース</string>
+    <string name="player_track_details_loading_source">一致したソースを読み込み中…</string>
+    <string name="player_track_details_source_not_needed">ローカルのキャッシュファイルを再生中は、一致するリモートソースは不要です。</string>
+    <string name="player_track_details_no_source">一致するソースはありません。</string>
+    <string name="player_track_details_no_cached_source">この曲に一致するオーディオソースはキャッシュされていません。</string>
+    <string name="player_track_details_streams_not_cached">ストリームの詳細はまだキャッシュされていません。読み込むには先に曲を再生してください。</string>
+    <string name="player_track_details_load_failed">曲の詳細を読み込めませんでした。</string>
+    <string name="player_track_details_available_streams">利用可能なストリーム</string>
+    <string name="player_track_details_served_from_cache_description">この曲はローカルキャッシュから再生されています。この再生ではストリームのバリエーションは使用されません。</string>
+    <string name="player_track_details_loading_streams">ストリームを読み込み中…</string>
+    <string name="player_track_details_no_streams">このソースで利用できるストリームはありません。</string>
+    <string name="player_track_details_selected_stream_content_description">現在選択中のストリーム</string>
+    <string name="player_track_details_matches_preference">ストリーミングのフォーマットと音質の設定に一致</string>
+    <string name="player_track_details_active_url">有効な再生URL</string>
+    <string name="player_track_details_served_from_cache">ローカルキャッシュから再生</string>
+    <string name="player_track_details_metadata_track">メタデータの曲</string>
+    <string name="player_track_details_title">タイトル</string>
+    <string name="player_track_details_id">ID</string>
+    <string name="player_track_details_album">アルバム</string>
+    <string name="player_track_details_confidence">一致度</string>
+    <string name="player_track_details_external_uri">外部URI</string>
+    <string name="player_track_details_album_id">アルバムID</string>
+    <string name="player_track_details_album_type">アルバムの種類</string>
+    <string name="player_track_details_album_release_date">アルバムのリリース日</string>
+    <string name="player_track_details_album_track_count">アルバムの曲数</string>
+    <string name="player_track_details_album_genres">アルバムのジャンル</string>
+    <string name="player_track_details_duration">再生時間</string>
+    <string name="player_track_details_track_number">トラック番号</string>
+    <string name="player_track_details_disc_number">ディスク番号</string>
+    <string name="player_track_details_explicit">Explicit</string>
+    <string name="player_track_details_popularity">人気度</string>
+    <string name="player_track_details_isrc">ISRC</string>
+    <string name="player_track_details_thumbnail_urls">サムネイルURL</string>
+
+    <!-- Shell -->
+    <string name="shell_sidebar_toggle_content_description">サイドバーの表示切り替え</string>
+
+    <!-- Alternative track -->
+    <string name="alternative_track_title">代替ソース</string>
+    <string name="alternative_track_no_track">再生中の曲はありません</string>
+    <string name="alternative_track_searching">代替ソースを検索中...</string>
+    <string name="alternative_track_empty">代替ソースが見つかりません</string>
+    <string name="alternative_track_confidence">一致度: %1$d%</string>
+    <string name="alternative_track_active_source">使用中のソース</string>
+
+    <!-- Queue -->
+    <string name="queue_participant_kick">キック</string>
+    <string name="queue_participant_kick_description">セッションから退出させます</string>
+    <string name="queue_participant_ban_description">キックして再参加できないようにします</string>
+    <string name="queue_participant_remove_suggestions">提案を削除</string>
+    <string name="queue_participant_remove_suggestions_description">このユーザーがキューに追加した曲をすべて削除します</string>
+    <string name="queue_reorder_content_description">並べ替え</string>
+    <string name="queue_remove_from_queue">キューから削除</string>
+    <string name="queue_item_subtitle_added_by">%1$s • %2$sが追加</string>
+
+    <!-- Playlist -->
+    <string name="playlist_owner_unknown">不明</string>
+    <string name="playlist_loading_title">プレイリストを読み込み中...</string>
+    <string name="playlist_add_tracks_button">曲を追加</string>
+    <string name="playlist_add_tracks_title">プレイリストに曲を追加</string>
+    <string name="playlist_add_tracks_search_placeholder">曲を検索...</string>
+    <string name="playlist_add_tracks_search_content_description">検索</string>
+    <string name="playlist_add_tracks_no_results">曲が見つかりません</string>
+    <string name="playlist_add_tracks_hint">追加する曲を検索</string>
+    <string name="playlist_add_tracks_done">完了</string>
+    <string name="playlist_add_tracks_add">追加</string>
+    <string name="playlist_add_tracks_added_content_description">追加済み</string>
+
+    <!-- Album -->
+    <string name="album_loading_title">アルバムを読み込み中...</string>
+
+    <!-- Library -->
+    <string name="library_add_to_playlist_title">プレイリストに追加</string>
+    <string name="library_add_to_playlist_search_content_description">検索</string>
+    <string name="library_add_to_playlist_search_placeholder">プレイリストを検索...</string>
+    <string name="library_add_to_playlist_loading">プレイリストを読み込み中...</string>
+    <string name="library_add_to_playlist_empty">所有しているプレイリストはまだありません。\nプレイリストを作成して曲を追加しましょう。</string>
+    <string name="library_playlist_form_create_title">プレイリストを作成</string>
+    <string name="library_playlist_form_edit_title">プレイリストを編集</string>
+    <string name="library_playlist_form_create">作成</string>
+    <string name="library_playlist_form_name_label">名前</string>
+    <string name="library_playlist_form_name_placeholder">プレイリスト名</string>
+    <string name="library_playlist_form_description_label">説明</string>
+    <string name="library_playlist_form_description_placeholder">説明 (任意)</string>
+    <string name="library_playlist_form_public">公開</string>
+    <string name="library_playlist_form_public_description">誰でもこのプレイリストを見られます</string>
+    <string name="library_playlist_form_collaborative">共同編集</string>
+    <string name="library_playlist_form_collaborative_description">他のユーザーもこのプレイリストに曲を追加できます</string>
+    <string name="library_playlist_form_cover_image">カバー画像</string>
+    <string name="library_playlist_form_cover_content_description">プレイリストのカバー</string>
+    <string name="library_playlist_form_no_image">画像なし</string>
+    <string name="library_playlist_form_change_image">画像を変更</string>
+    <string name="library_playlist_form_pick_image">画像を選択</string>
+
+    <!-- Plugin install / errors -->
+    <string name="plugin_action_install">インストール</string>
+    <string name="plugin_action_replace">置き換え</string>
+    <string name="plugin_error_plugin_json_missing">zipファイル内にplugin.jsonが見つかりません</string>
+    <string name="plugin_error_zipline_manifest_missing">zipファイル内にmanifest.zipline.jsonが見つかりません</string>
+    <string name="plugin_error_invalid_plugin_json">plugin.jsonの形式が無効です: %1$s</string>
+    <string name="plugin_error_read_failed">プラグインを読み込めませんでした: %1$s</string>
+    <string name="plugin_error_install_failed">プラグインをインストールできませんでした: %1$s</string>
+    <string name="plugin_error_update_needs_confirmation">%1$sの新しいバージョンがあります。インストールする前にアップデートを確認してください。</string>
+    <string name="plugin_error_replace_needs_confirmation">%1$sはすでにインストールされています。インストールする前に置き換えを確認してください。</string>
+    <string name="plugin_error_builtin_add">内蔵プラグインはすでに含まれているため、再度追加することはできません。</string>
+    <string name="plugin_error_builtin_remove">内蔵プラグインは削除できません。</string>
+    <string name="plugin_error_api_version_invalid">%1$sで宣言されたapiVersion (%2$s) が無効です。%3$sと互換性のあるセマンティックバージョニングが必要です。</string>
+    <string name="plugin_error_app_api_version_invalid">SpotubeのプラグインAPIバージョン %1$s が無効です。</string>
+    <string name="plugin_error_api_incompatible">%1$sはプラグインAPI %2$s を対象としていますが、SpotubeがサポートするのはプラグインAPI %3$s (破壊的変更を含むバージョン) です。同じメジャーAPIバージョン向けにビルドされたプラグインをインストールしてください。</string>
+
+    <!-- Plugin install prompts -->
+    <string name="plugin_prompt_incompatible_title">プラグインAPIに互換性がありません</string>
+    <string name="plugin_prompt_install_title">プラグインをインストールしますか?</string>
+    <string name="plugin_prompt_install_message">%1$sがインストール済みプラグインに追加されます。</string>
+    <string name="plugin_prompt_update_title">プラグインをアップデートしますか?</string>
+    <string name="plugin_prompt_update_message">古いバージョン (%1$s) がインストールされています。%2$sにアップデートしますか?</string>
+    <string name="plugin_prompt_replace_title">インストール済みのプラグインを置き換えますか?</string>
+    <string name="plugin_prompt_replace_invalid_incoming">%1$sは無効なセマンティックバージョン (%2$s) を使用しているため、アップデートとして比較できません。それでもインストール済みのプラグインを置き換えますか?</string>
+    <string name="plugin_prompt_replace_invalid_installed">インストール済みのバージョン (%1$s) はセマンティックバージョニングで比較できません。%2$sで置き換えますか?</string>
+    <string name="plugin_prompt_replace_same_version">バージョン %1$s はすでにインストールされています。既存のプラグインを提供されたものに置き換えますか?</string>
+    <string name="plugin_prompt_replace_downgrade">インストール済みのバージョン %1$s は提供されたバージョン %2$s より新しいです。それでも置き換えますか?</string>
+    <string name="plugin_prompt_replace_generic">インストール済みのプラグインを提供されたものに置き換えますか?</string>
+
+    <!-- Plugin info dialog -->
+    <string name="plugin_info_label_format">%1$s:</string>
+    <string name="plugin_info_version">バージョン</string>
+    <string name="plugin_info_api_version">APIバージョン</string>
+    <string name="plugin_info_author">作者</string>
+    <string name="plugin_info_license">ライセンス</string>
+    <string name="plugin_info_capabilities">権限</string>
+    <string name="plugin_info_abilities">機能</string>
+    <string name="plugin_info_repository">リポジトリ</string>
+    <string name="plugin_info_contact">連絡先</string>
+    <string name="plugin_info_report_bugs">バグを報告</string>
+    <string name="plugin_support_dialog_title">%1$sを支援</string>
+
+    <!-- Plugin discovery -->
+    <string name="plugin_discover_badge_official">公式</string>
+    <string name="plugin_discover_badge_verified">認証済み</string>
+    <string name="plugin_discover_stars_content_description">GitHubのスター</string>
+    <string name="plugin_discover_repository_content_description">GitHubリポジトリのURL</string>
+
+    <!-- Plugin release install dialog -->
+    <string name="plugin_install_no_releases">リリースが見つかりません</string>
+    <string name="plugin_install_select_release_label">リリースを選択</string>
+    <string name="plugin_install_select_release_placeholder">リリースを選択してください</string>
+    <string name="plugin_install_prerelease">プレリリース</string>
+    <string name="plugin_install_release_notes">リリースノート</string>
+
+    <!-- App navigation -->
+    <string name="nav_home">ホーム</string>
+    <string name="nav_search">検索</string>
+    <string name="nav_group_on_device">デバイス内</string>
+    <string name="nav_group_connect">Connect</string>
+    <string name="nav_devices">デバイス</string>
+
+    <!-- System tray (desktop) -->
+    <string name="tray_hide_window">ウィンドウを隠す</string>
+    <string name="tray_show_window">ウィンドウを表示</string>
+    <string name="tray_next_track">次の曲</string>
+    <string name="tray_previous_track">前の曲</string>
+    <string name="tray_shuffle">シャッフル</string>
+    <string name="tray_loop">リピート</string>
+    <string name="tray_loop_off">リピート: オフ</string>
+    <string name="tray_loop_one">リピート: 1曲</string>
+    <string name="tray_loop_all">リピート: すべて</string>
+    <string name="tray_volume">音量: %1$d%</string>
+    <string name="tray_volume_up">音量 +</string>
+    <string name="tray_volume_down">音量 -</string>
+    <string name="tray_mute">ミュート</string>
+    <string name="tray_unmute">ミュート解除</string>
+    <string name="tray_like_track">お気に入りに追加</string>
+    <string name="tray_unlike_track">お気に入りから削除</string>
+    <string name="tray_exit">終了</string>
+
+    <!-- Desktop window controls -->
+    <string name="app_window_minimize">最小化</string>
+    <string name="app_window_maximize">最大化</string>
+    <string name="app_window_restore">元に戻す</string>
+    <string name="app_window_close">閉じる</string>
+
+    <!-- Android playback notification -->
+    <string name="notification_playback_channel_name">再生</string>
+    <string name="notification_playback_channel_description">メディア再生コントロール</string>
+
+    <!-- Android Auto / media browser -->
+    <string name="media_browser_browse">ブラウズ</string>
+    <string name="media_browser_now_playing">再生中</string>
+    <string name="media_browser_featured">注目</string>
+    <string name="media_browser_saved_tracks">保存した曲</string>
+    <string name="media_browser_top_tracks">人気曲</string>
+</resources>

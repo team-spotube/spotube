@@ -1,0 +1,926 @@
+<!--
+  ~ Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="queue_title">صف پخش</string>
+    <string name="queue_clear_queue">پاک کردن صف</string>
+    <string name="queue_filter_queue">فیلتر صف...</string>
+    <string name="queue_no_queue_entries">صف پخش خالی است</string>
+
+    <string name="search_placeholder">جستجوی آهنگ‌ها، هنرمندان، آلبوم‌ها...</string>
+    <string name="search_clear_history">پاک کردن کل تاریخچه</string>
+    <string name="search_filter_placeholder">جستجو...</string>
+
+    <!-- Library toolbar -->
+    <string name="library_screen_title">کتابخانهٔ شما</string>
+    <string name="library_toolbar_compact_title">کتابخانه</string>
+    <string name="library_tab_playlists">پلی‌لیست‌ها</string>
+    <string name="library_tab_albums">آلبوم‌ها</string>
+    <string name="library_tab_artists">هنرمندان</string>
+    <string name="library_tab_local_tracks">آهنگ‌های محلی</string>
+    <string name="library_tab_downloads">دانلودها</string>
+    <string name="library_filter_playlists">جستجو در پلی‌لیست‌های ذخیره‌شده…</string>
+    <string name="library_filter_albums">جستجو در آلبوم‌های ذخیره‌شده…</string>
+    <string name="library_filter_artists">جستجو در هنرمندان ذخیره‌شده…</string>
+    <string name="library_filter_local_tracks">جستجوی پوشه‌ها یا آهنگ‌ها…</string>
+    <string name="library_action_search">فیلتر کتابخانه</string>
+    <string name="library_action_close_search">بستن فیلتر</string>
+    <string name="library_action_create_playlist">ساخت پلی‌لیست</string>
+    <string name="library_action_refresh_local_tracks">به‌روزرسانی آهنگ‌های محلی</string>
+    <string name="library_action_grid_view">نمایش شبکه‌ای</string>
+    <string name="library_action_list_view">نمایش فهرستی</string>
+    <string name="library_playlists_empty">هیچ پلی‌لیست ذخیره‌شده‌ای ندارید</string>
+    <string name="library_playlists_no_results">هیچ پلی‌لیستی با «%1$s» مطابقت ندارد</string>
+    <string name="library_albums_empty">هیچ آلبوم ذخیره‌شده‌ای ندارید</string>
+    <string name="library_albums_no_results">هیچ آلبومی با «%1$s» مطابقت ندارد</string>
+    <string name="library_artists_empty">هیچ هنرمند ذخیره‌شده‌ای ندارید</string>
+    <string name="library_artists_no_results">هیچ هنرمندی با «%1$s» مطابقت ندارد</string>
+
+    <!-- Local media -->
+    <string name="library_local_folders">پوشه‌ها</string>
+    <string name="library_local_folder">پوشه</string>
+    <string name="library_local_summary">%1$s • %2$s</string>
+    <plurals name="library_local_tracks_count">
+        <item quantity="one">%1$d آهنگ</item>
+        <item quantity="other">%1$d آهنگ</item>
+    </plurals>
+    <plurals name="library_local_folders_count">
+        <item quantity="one">%1$d پوشه</item>
+        <item quantity="other">%1$d پوشه</item>
+    </plurals>
+    <string name="library_local_back">بازگشت به پوشه‌ها</string>
+    <string name="library_local_play_folder">پخش پوشه</string>
+    <string name="library_local_permission_title">دسترسی به صدا لازم است</string>
+    <string name="library_local_permission_description">برای مرور موسیقی‌های دستگاهتان، اجازهٔ دسترسی به فایل‌های صوتی را بدهید.</string>
+    <string name="library_local_grant_access">اعطای دسترسی</string>
+    <string name="library_local_empty_folders">هیچ پوشهٔ محلی‌ای پیدا نشد</string>
+    <string name="library_local_empty_tracks">این پوشه آهنگی ندارد</string>
+    <string name="library_local_no_results">هیچ پوشه یا آهنگ مطابقی پیدا نشد</string>
+    <string name="library_local_refresh_failed">به‌روزرسانی رسانه‌های محلی ناموفق بود</string>
+
+    <!-- Downloads -->
+    <string name="downloads_summary">%1$d در حال انجام • %2$d تکمیل‌شده</string>
+    <string name="downloads_clear_completed">پاک کردن تکمیل‌شده‌ها</string>
+    <string name="downloads_empty">هنوز دانلودی ندارید</string>
+    <string name="downloads_status_downloading">در حال دانلود %1$d%</string>
+    <string name="downloads_status_queued">در صف</string>
+    <string name="downloads_status_completed">تکمیل شد</string>
+    <string name="downloads_status_cancelled">لغو شد</string>
+    <string name="downloads_status_failed">ناموفق</string>
+    <string name="downloads_status_failed_error">ناموفق: %1$s</string>
+    <string name="downloads_action_cancel">لغو دانلود</string>
+    <string name="downloads_action_retry">تلاش دوباره برای دانلود</string>
+    <string name="downloads_action_remove">حذف دانلود</string>
+
+    <!-- Shared media items -->
+    <string name="media_artist">هنرمند</string>
+    <string name="media_blacklisted">در فهرست سیاه</string>
+    <string name="media_liked_tracks">آهنگ‌های پسندیده</string>
+    <string name="media_saved_songs">آهنگ‌های ذخیره‌شدهٔ شما</string>
+    <string name="media_unknown_artist">هنرمند ناشناس</string>
+    <string name="media_preview_title">عنوان آهنگ</string>
+    <string name="media_preview_subtitle">نام هنرمند</string>
+
+    <string name="accessibility_selected">انتخاب‌شده</string>
+
+    <string name="settings_screen_title">تنظیمات</string>
+
+    <string name="settings_section_plugins">افزونه‌ها</string>
+    <string name="settings_section_language_region">زبان و منطقه</string>
+    <string name="settings_section_appearance">ظاهر</string>
+    <string name="settings_section_playback">پخش</string>
+    <string name="settings_section_downloads">دانلودها</string>
+    <string name="settings_section_caching">حافظهٔ پنهان</string>
+    <string name="settings_section_desktop">دسکتاپ</string>
+    <string name="settings_section_updates">به‌روزرسانی‌ها</string>
+    <string name="settings_section_support">حمایت</string>
+    <string name="settings_section_about">درباره</string>
+
+    <string name="common_close">بستن</string>
+    <string name="common_save">ذخیره</string>
+    <string name="common_cancel">لغو</string>
+
+    <string name="settings_language_title">زبان</string>
+    <string name="settings_language_subtitle_current">زبان رابط کاربری برنامه. فعلی: %1$s</string>
+    <string name="settings_language_system_default">پیش‌فرض سیستم</string>
+    <string name="settings_country_title">کشور</string>
+    <string name="settings_country_subtitle_current">کشور منطقه برای محتوا و دسترس‌پذیری. فعلی: %1$s</string>
+    <string name="settings_option_name_and_code">%1$s (%2$s)</string>
+
+    <string name="settings_theme_title">پوسته</string>
+    <string name="settings_theme_subtitle_current">انتخاب کنید Spotube چگونه با ظاهر سیستم شما هماهنگ شود. فعلی: %1$s</string>
+    <string name="settings_theme_light">روشن</string>
+    <string name="settings_theme_dark">تیره</string>
+    <string name="settings_theme_system">سیستم</string>
+
+    <string name="settings_surface_theme_title">سطح</string>
+    <string name="settings_surface_theme_subtitle_current">جنس پس‌زمینهٔ برنامه. فعلی: %1$s</string>
+    <string name="settings_surface_watery">آبی‌گون</string>
+    <string name="settings_surface_icy">یخی</string>
+    <string name="settings_surface_chrome">کروم</string>
+    <string name="settings_surface_acrylic">آکریلیک</string>
+    <string name="settings_surface_glass">شیشه</string>
+
+    <string name="settings_accent_title">رنگ تأکیدی</string>
+    <string name="settings_accent_subtitle_current">پالت فعلی: %1$s</string>
+    <string name="settings_accent_dialog_title">رنگ تأکیدی</string>
+    <string name="settings_accent_dialog_description">یک پالت رنگ تأکیدی انتخاب کنید و پیش‌نمایش آن را در پوستهٔ روشن و تیره ببینید.</string>
+    <string name="settings_preview_light">روشن</string>
+    <string name="settings_preview_dark">تیره</string>
+    <string name="settings_preview_label">پیش‌نمایش</string>
+    <string name="settings_preview_button">دکمه</string>
+    <string name="settings_accent_green_goblin">گابلین سبز</string>
+    <string name="settings_accent_electric_violet">بنفش الکتریکی</string>
+    <string name="settings_accent_oceanic_cyan">فیروزه‌ای اقیانوسی</string>
+    <string name="settings_accent_sunset_orange">نارنجی غروب</string>
+    <string name="settings_accent_rose_garden">باغ رز</string>
+    <string name="settings_accent_midnight_blue">آبی نیمه‌شب</string>
+    <string name="settings_accent_metallic_slate">خاکستری فلزی</string>
+
+    <string name="settings_appearance_title">ظاهر و حس</string>
+    <string name="settings_appearance_subtitle_current">جنس سطح و رنگ تأکیدی. فعلی: %1$s · %2$s</string>
+    <string name="settings_appearance_dialog_title">ظاهر و حس</string>
+    <string name="settings_appearance_dialog_description">یک جنس سطح انتخاب کنید، سپس رنگ تأکیدی‌ای که با آن جور باشد. هر گزینه ترکیبی دست‌چین‌شده است.</string>
+    <string name="settings_appearance_surface_label">سطح</string>
+    <string name="settings_appearance_accent_label">رنگ تأکیدی</string>
+    <string name="settings_preview_secondary">ثانویه</string>
+
+    <string name="settings_palette_title">پالت</string>
+    <string name="settings_palette_subtitle_current">پالت رنگ تأکیدی Millennium. فعلی: %1$s</string>
+    <string name="settings_palette_dialog_title">پالت</string>
+    <string name="settings_palette_dialog_description">یک پالت رنگ تأکیدی Millennium انتخاب کنید و پیش‌نمایش آن را در حالت روشن و تیره ببینید.</string>
+    <string name="settings_palette_label">پالت</string>
+    <string name="settings_appearance_subtitle_palette">پالت Millennium و رنگ تأکیدی. فعلی: %1$s</string>
+    <string name="settings_palette_blue">آبی</string>
+    <string name="settings_palette_orange">نارنجی</string>
+    <string name="settings_palette_lime">لیمویی</string>
+
+    <string name="settings_download_folder_title">پوشهٔ دانلود سفارشی</string>
+    <string name="settings_download_folder_current">پوشهٔ فعلی: %1$s</string>
+    <string name="settings_download_folder_description">برای استفاده از پوشهٔ پیش‌فرض موسیقی، این قسمت را خالی بگذارید.</string>
+    <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
+    <string name="settings_local_media_folders_title">پوشه‌های رسانهٔ محلی</string>
+    <string name="settings_local_media_folders_subtitle_current">پوشه‌های سفارشی برای اسکن در دسکتاپ. افزوده‌شده: %1$d</string>
+    <string name="settings_local_media_folders_subtitle_empty">هنوز پوشهٔ سفارشی‌ای اضافه نشده است</string>
+    <string name="settings_local_media_folders_description">پوشه‌های سفارشی برای کتابخانهٔ موسیقی محلی شما.</string>
+    <string name="settings_local_media_folders_manage">مدیریت</string>
+    <string name="settings_local_media_folders_add_action">افزودن پوشه</string>
+    <string name="settings_local_media_folders_remove_action">حذف پوشه</string>
+    <string name="settings_local_media_folders_none_added">هیچ پوشهٔ سفارشی‌ای اضافه نشده است.</string>
+    <string name="settings_local_media_folders_remove_named">حذف %1$s از فهرست اسکن</string>
+    <string name="settings_local_media_folders_automatic_both">پوشه‌های دانلود و حافظهٔ پنهان موسیقی به‌طور خودکار اضافه می‌شوند.</string>
+    <string name="settings_local_media_folders_automatic_downloads">پوشهٔ دانلود شما به‌طور خودکار اضافه می‌شود.</string>
+    <string name="settings_local_media_folders_automatic_cache">پوشهٔ حافظهٔ پنهان موسیقی به‌طور خودکار اضافه می‌شود.</string>
+    <string name="settings_local_media_folders_saving">در حال ذخیره…</string>
+    <string name="settings_local_media_folders_save_error">ذخیرهٔ پوشه‌ها ممکن نشد. تغییرات شما هنوز اینجاست؛ دوباره تلاش کنید.</string>
+    <plurals name="settings_local_media_folders_count">
+        <item quantity="one">%1$d پوشه</item>
+        <item quantity="other">%1$d پوشه</item>
+    </plurals>
+    <string name="settings_download_format_title">قالب دانلود موسیقی</string>
+    <string name="settings_download_format_subtitle_current">کدک و قالب ترجیحی برای دانلودها. فعلی: %1$s</string>
+    <string name="settings_download_quality_title">کیفیت دانلود موسیقی</string>
+
+    <string name="settings_streaming_format_title">قالب پخش آنلاین موسیقی</string>
+    <string name="settings_streaming_format_subtitle_current">کدک و قالب ترجیحی برای پخش آنلاین موسیقی. فعلی: %1$s</string>
+    <string name="settings_streaming_quality_title">کیفیت پخش آنلاین موسیقی</string>
+    <string name="settings_subtitle_current">فعلی: %1$s</string>
+    <string name="settings_enable_music_caching_title">فعال‌سازی حافظهٔ پنهان موسیقی</string>
+    <string name="settings_enable_music_caching_subtitle">صدای پخش‌شده را به‌صورت محلی ذخیره کنید تا پخش دوباره سریع‌تر شود.</string>
+    <string name="settings_cache_folder_title">پوشهٔ حافظهٔ پنهان</string>
+    <string name="settings_cache_folder_current">فعلی: %1$s</string>
+    <string name="settings_cache_folder_default">فعلی: حافظهٔ پنهان پیش‌فرض برنامه</string>
+    <string name="settings_cache_size_limit_title">محدودیت حجم حافظهٔ پنهان</string>
+    <string name="settings_cache_size_limit_unlimited">بدون محدودیت</string>
+    <string name="settings_cache_size_limit_current">محدودیت فعلی: %1$d MB</string>
+    <string name="settings_cache_size_limit_description">حداکثر حجم حافظهٔ پنهان را به MB تعیین کنید. برای نامحدود، 0 وارد کنید یا خالی بگذارید.</string>
+    <string name="settings_cache_size_limit_placeholder">500</string>
+    <string name="settings_error_cache_size_range">حجم باید 0 یا یک عدد مثبت باشد.</string>
+    <string name="settings_enable_endless_playback_title">فعال‌سازی پخش بی‌پایان</string>
+    <string name="settings_enable_endless_playback_subtitle">وقتی صف پخش تمام شد، پخش با آهنگ‌های پیشنهادی ادامه پیدا کند.</string>
+    <string name="settings_playback_port_title">درگاه سرور پراکسی پخش</string>
+    <string name="settings_allow_remote_control_title">اجازهٔ کنترل از راه دور</string>
+    <string name="settings_allow_remote_control_subtitle">به دستگاه‌های دیگر در همان شبکه اجازه دهید هنگام اتصال، پخش را کنترل کنند.</string>
+    <string name="settings_remote_device_name_title">نام دستگاه برای کنترل از راه دور</string>
+    <string name="settings_remote_device_name_subtitle">نامی که دستگاه‌های دیگر هنگام یافتن این دستگاه می‌بینند. فعلی: %1$s</string>
+    <string name="settings_remote_device_name_description">یک نام دوستانه انتخاب کنید تا دستگاه‌های دیگر شبکه هنگام یافتن این نسخه از Spotube آن را ببینند.</string>
+    <string name="settings_remote_device_name_placeholder">مثلاً Spotube اتاق نشیمن</string>
+    <string name="settings_remote_device_name_default">نام میزبان دستگاه</string>
+    <string name="settings_playback_port_subtitle_current">درگاه مورد استفادهٔ سرور پراکسی پخش. فعلی: %1$d</string>
+    <string name="settings_playback_port_description">درگاهی بین 1 و 65535 انتخاب کنید.</string>
+    <string name="settings_playback_port_placeholder">14769</string>
+    <string name="settings_error_whole_number">یک عدد صحیح معتبر وارد کنید.</string>
+    <string name="settings_error_port_range">درگاه باید بین 1 و 65535 باشد.</string>
+
+    <string name="settings_blacklist_title">فهرست سیاه</string>
+    <string name="settings_blacklist_subtitle">مدیریت آهنگ‌ها و هنرمندان فهرست سیاه</string>
+
+    <string name="settings_desktop_minimize_title">کوچک‌سازی به سینی سیستم</string>
+    <string name="settings_desktop_minimize_subtitle">وقتی پنجره کوچک می‌شود، Spotube در سینی سیستم در حال اجرا بماند.</string>
+    <string name="settings_desktop_discord_title">وضعیت Discord</string>
+    <string name="settings_desktop_discord_subtitle">وضعیت پخش فعلی خود را در Discord روی دسکتاپ نمایش دهید.</string>
+
+    <string name="settings_updates_auto_check_title">بررسی خودکار به‌روزرسانی‌ها</string>
+    <string name="settings_updates_auto_check_subtitle">نسخه‌های جدید Spotube را در پس‌زمینه بررسی کنید.</string>
+
+    <string name="settings_plugins_manage_title">مدیریت افزونه‌ها</string>
+    <string name="settings_plugins_manage_subtitle">افزونه‌های خود را مدیریت کنید</string>
+    <string name="settings_plugins_default_ability_title">افزونهٔ پیش‌فرض %1$s</string>
+    <string name="settings_plugins_ability_metadata">فراداده</string>
+    <string name="settings_plugins_ability_audio">صدا</string>
+    <string name="settings_plugins_ability_lyrics">متن آهنگ</string>
+    <string name="settings_plugins_ability_scrobble">اسکراب</string>
+    <string name="settings_plugins_no_selection">هیچ افزونه‌ای انتخاب نشده است</string>
+    <string name="settings_plugins_action_change">تغییر</string>
+    <string name="settings_plugins_action_select">انتخاب</string>
+    <string name="settings_plugins_selected">انتخاب‌شده</string>
+    <string name="settings_plugins_clear">پاک کردن انتخاب</string>
+    <string name="settings_plugins_no_plugins">هیچ افزونه‌ای در دسترس نیست</string>
+    <string name="settings_plugins_plugin_content_description">افزونهٔ %1$s</string>
+    <string name="settings_plugins_clear_content_description">پاک کردن</string>
+
+    <string name="plugin_configure_title">پیکربندی</string>
+    <string name="plugin_screen_title">مدیریت افزونه‌ها</string>
+    <string name="plugin_error_enter_url">لطفاً یک URL وارد کنید</string>
+    <string name="plugin_error_url_scheme">URL باید با http:// یا https:// شروع شود</string>
+    <string name="plugin_error_download_failed">دانلود افزونه ناموفق بود</string>
+    <string name="plugin_empty_title">هنوز افزونه‌ای نصب نشده است</string>
+    <string name="plugin_empty_subtitle">یک URL دانلود وارد کنید یا از بالا فایلی انتخاب کنید.</string>
+    <plurals name="plugin_installed_plugins_count">
+        <item quantity="one">%1$d افزونه نصب‌شده</item>
+        <item quantity="other">%1$d افزونه نصب‌شده</item>
+    </plurals>
+    <string name="plugin_install_section_title">نصب افزونه</string>
+    <string name="plugin_url_placeholder">https://example.com/plugin.smplug</string>
+    <string name="plugin_action_download">دانلود</string>
+    <string name="plugin_action_install_from_file">نصب از فایل (.smplug)</string>
+    <string name="plugin_state_active">فعال</string>
+    <string name="plugin_version_label">v%1$s</string>
+    <string name="plugin_state_builtin">داخلی</string>
+    <string name="plugin_action_remove">حذف افزونه</string>
+    <string name="plugin_action_login">ورود</string>
+    <string name="plugin_action_logout">خروج</string>
+    <string name="plugin_section_url_title">دانلود از URL</string>
+    <string name="plugin_section_file_title">نصب از فایل</string>
+    <string name="plugin_section_install">نصب</string>
+
+    <string name="plugin_permissions_author_version">• %1$s</string>
+    <string name="plugin_permissions_requested_title">مجوزهای درخواستی</string>
+    <string name="plugin_permissions_none">این افزونه به مجوز خاصی نیاز ندارد.</string>
+    <string name="plugin_permissions_compare_title">نصب‌شده در برابر ارائه‌شده</string>
+    <string name="plugin_permissions_installed_label">نصب‌شده</string>
+    <string name="plugin_permissions_supplied_label">ارائه‌شده</string>
+    <string name="plugin_permissions_api_diff">API %1$s → %2$s</string>
+    <string name="plugin_permissions_capability_storage_title">ذخیره‌سازی دائمی</string>
+    <string name="plugin_permissions_capability_storage_desc">خواندن و نوشتن داده روی دیسک</string>
+    <string name="plugin_permissions_capability_network_title">درخواست‌های شبکه</string>
+    <string name="plugin_permissions_capability_network_desc">ارسال و دریافت داده از طریق اینترنت</string>
+    <string name="plugin_permissions_capability_webview_title">WebView</string>
+    <string name="plugin_permissions_capability_webview_desc">نمایش محتوای وب درون برنامه</string>
+    <string name="settings_section_jam">جم گروهی</string>
+    <string name="settings_jam_server_test">آزمایش اتصال</string>
+    <string name="settings_jam_server_testing">در حال آزمایش…</string>
+    <string name="settings_jam_server_test_ok">در %1$d میلی‌ثانیه متصل شد</string>
+    <string name="settings_jam_server_test_fail">ناموفق: %1$s</string>
+    <string name="settings_jam_section_connection">اتصال</string>
+    <string name="settings_jam_section_diagnostics">عیب‌یابی</string>
+
+    <!-- Group Jam -->
+    <string name="jam_screen_title">جم گروهی</string>
+    <string name="jam_setup_create_tab">ساختن</string>
+    <string name="jam_setup_join_tab">پیوستن</string>
+    <string name="jam_setup_create_hint">یک اتاق بسازید و کد آن را با دوستانتان به اشتراک بگذارید.</string>
+    <string name="jam_setup_create_button">ساخت اتاق</string>
+    <string name="jam_setup_join_button">پیوستن به اتاق</string>
+    <string name="jam_setup_working">در حال اتصال…</string>
+    <string name="jam_setup_code_label">کد اتاق</string>
+    <string name="jam_setup_code_placeholder">ABC123</string>
+    <string name="jam_session_connected">متصل</string>
+    <string name="jam_session_connecting">در حال اتصال دوباره…</string>
+    <string name="jam_invite_copy">کپی کد</string>
+    <string name="jam_invite_copied">کپی شد!</string>
+    <string name="jam_invite_share">اشتراک‌گذاری</string>
+    <string name="jam_participants_heading">شرکت‌کنندگان (%1$d)</string>
+    <string name="jam_participants_host">میزبان</string>
+    <string name="jam_participants_guest">شنونده</string>
+    <string name="jam_participants_waiting">در انتظار شنوندگان…</string>
+    <string name="jam_participants_remove">حذف</string>
+    <string name="jam_participants_ban">مسدود کردن</string>
+    <string name="jam_participants_manage">مدیریت</string>
+    <string name="jam_session_leave">ترک اتاق</string>
+    <string name="jam_error_title">اتصال برقرار نشد</string>
+    <string name="jam_error_dismiss">بستن</string>
+    <string name="jam_error_create">ساخت جلسهٔ جم ناموفق بود</string>
+    <string name="jam_error_join">پیوستن به جلسهٔ جم ناموفق بود</string>
+    <string name="jam_error_invalid_code">یک کد اتاق شش‌نویسه‌ای شامل حروف و اعداد وارد کنید.</string>
+    <string name="jam_share_message">با این کد به جم Spotube من بپیوندید: %1$s</string>
+    <string name="settings_jam_server_title">سرور اتاق‌ها</string>
+    <string name="settings_jam_server_url">نشانی سرور</string>
+    <string name="settings_jam_server_url_invalid">نشانی‌ای وارد کنید که با https:// شروع شود</string>
+    <string name="settings_jam_server_diagnostics_subtitle">پیش از شروع اتاق، سرور اتاق‌ها را بررسی کنید.</string>
+    <string name="settings_jam_server_note">جم از سرور رایگان اتاق‌های Spotube استفاده می‌کند. برای میزبانی شخصی، سرور را از github.com/team-spotube/jam-server راه‌اندازی کنید و نشانی آن را وارد کنید.</string>
+    <string name="settings_jam_section_you">شما</string>
+    <string name="jam_connection_host">سرور: %1$s</string>
+    <string name="jam_connection_missing">برای میزبانی یا پیوستن به اتاق، در تنظیمات یک سرور اتاق تعیین کنید.</string>
+    <string name="jam_connection_settings">تنظیمات سرور</string>
+    <string name="jam_participants_you">%1$s (شما)</string>
+    <string name="jam_name_title">نام شما</string>
+    <string name="jam_name_subtitle">دیگران در جم شما را با نام %1$s می‌بینند</string>
+    <string name="jam_name_description">به همه در جم نشان داده می‌شود. برای استفاده از %1$s خالی بگذارید. نام جدید از دفعهٔ بعدی که اتاقی می‌سازید یا به آن می‌پیوندید اعمال می‌شود.</string>
+    <string name="jam_name_too_long">حداکثر %1$d نویسه وارد کنید.</string>
+    <string name="jam_error_no_server">هیچ سرور جمی تنظیم نشده است</string>
+    <string name="jam_error_server_unreachable">دسترسی به سرور جم ممکن نیست. شبکه یا نشانی سرور را در تنظیمات ← جم گروهی بررسی کنید.</string>
+    <string name="jam_error_server_incompatible">سرور جم نسخهٔ ناسازگاری اجرا می‌کند.</string>
+    <string name="jam_error_room_not_found">اتاقی با این کد وجود ندارد. آن را بررسی کنید و دوباره امتحان کنید.</string>
+    <string name="jam_error_room_full">این اتاق پر است.</string>
+    <string name="jam_error_banned">میزبان شما را از این اتاق مسدود کرد.</string>
+    <string name="jam_error_kicked">میزبان شما را از اتاق بیرون کرد.</string>
+    <string name="jam_error_replaced">این اتاق دوباره روی همین دستگاه باز شد، بنابراین این اتصال بسته شد.</string>
+
+    <string name="player_go_to_album">رفتن به آلبوم</string>
+    <string name="player_sleep_timer">زمان‌سنج خواب</string>
+    <string name="player_track_details">جزئیات آهنگ</string>
+    <string name="player_play_content_description">پخش</string>
+    <string name="player_pause_content_description">توقف</string>
+    <string name="player_nothing_playing">چیزی در حال پخش نیست</string>
+    <string name="player_add_to_queue_content_description">افزودن به صف</string>
+
+    <string name="update_action_ignore">نادیده گرفتن</string>
+    <string name="update_action_update">به‌روزرسانی</string>
+    <string name="app_update_dialog_title">Spotube %1$s در دسترس است</string>
+    <string name="app_update_dialog_no_notes">تازه‌های این نسخه را در صفحهٔ دانلود Spotube ببینید.</string>
+    <string name="plugin_update_dialog_title">%1$s %2$s در دسترس است</string>
+    <string name="plugin_update_dialog_current_version">نسخهٔ نصب‌شدهٔ فعلی: %1$s</string>
+    <string name="plugin_update_dialog_no_notes">تازه‌های این به‌روزرسانی را در صفحهٔ افزونه ببینید.</string>
+
+    <string name="welcome_skip">رد شدن</string>
+    <string name="welcome_next">بعدی</string>
+    <string name="welcome_back">بازگشت</string>
+    <string name="welcome_get_started">شروع کنید</string>
+    <string name="welcome_app_name">Spotube</string>
+    <string name="welcome_brand_freedom">موسیقی، بی‌هیچ قید و بندی.</string>
+    <string name="welcome_brand_quiet_description">پخش‌کننده‌ای متن‌باز برای دنیایی از موسیقی.\nبرای کشف کردن. برای از آنِ خود کردن.</string>
+    <string name="welcome_donate_quiet_title">این پروژه را زنده نگه دارید.</string>
+    <string name="welcome_donate_letter">Spotube را آدم‌ها ساخته‌اند، نه یک کسب‌وکار اشتراکی. اگر بخشی از زندگی روزمره‌تان شده، کمی حمایت به ما کمک می‌کند آن‌طور که شایسته است از آن مراقبت کنیم.\n\nسپاس که برای نرم‌افزار مستقل جا باز می‌کنید.</string>
+    <string name="welcome_plugins_setup_guide">با یک افزونهٔ کاتالوگ شروع کنید تا آهنگ‌ها و پلی‌لیست‌ها را پیدا کنید. یک افزونهٔ صوتی برای پخش آن‌ها انتخاب کنید. متن آهنگ و تاریخچهٔ شنیدن اختیاری‌اند. افزونه‌ای را در پایین پیدا کنید، مجوزهایش را بررسی کنید، نصبش کنید و سپس آن را اینجا انتخاب کنید.</string>
+    <string name="welcome_plugins_discover">کشف افزونه‌ها</string>
+    <string name="welcome_plugins_sources">منابع شما</string>
+    <string name="welcome_plugins_retry">تلاش دوباره</string>
+    <string name="welcome_plugins_more">افزونه‌های بیشتر</string>
+    <string name="welcome_plugins_discovery_empty">افزونهٔ جدیدی پیدا نشد. می‌توانید از طریق پیوند یا فایل .smplug در بالا هم افزونه نصب کنید.</string>
+    <string name="welcome_plugins_discovery_error">کشف افزونه‌ها در حال حاضر در دسترس نیست. دوباره تلاش کنید یا از پیوند یا فایل نصب کنید.</string>
+    <string name="welcome_step_welcome">خوش آمدید</string>
+    <string name="welcome_step_support">حمایت</string>
+    <string name="welcome_step_plugins">افزونه‌ها</string>
+    <string name="welcome_step_guide">راهنما</string>
+
+    <string name="welcome_guide_title">نحوهٔ استفاده از Spotube</string>
+    <string name="welcome_guide_subtitle">چهار گام سریع و مشغول شنیدن هستید.</string>
+    <string name="welcome_guide_signin_title">ورود</string>
+    <string name="welcome_guide_signin_desc">حساب خود را متصل کنید یا افزونهٔ کاتالوگ دلخواهتان را انتخاب کنید.</string>
+    <string name="welcome_guide_search_title">جستجو و پخش</string>
+    <string name="welcome_guide_search_desc">هر آهنگ، آلبوم یا هنرمندی را پیدا کنید و پخش را بزنید.</string>
+    <string name="welcome_guide_offline_title">گوش دادن آفلاین</string>
+    <string name="welcome_guide_offline_desc">آهنگ‌ها را دانلود کنید تا بدون اینترنت هم پخش شوند.</string>
+    <string name="welcome_guide_lyrics_title">همراهی با متن آهنگ</string>
+    <string name="welcome_guide_lyrics_desc">هنگام پخش آهنگ، متن همگام‌شده را از پخش‌کننده باز کنید.</string>
+
+    <!-- Page 1: branding -->
+    <string name="welcome_brand_tagline">موسیقی شما. منابع شما. قوانین شما.</string>
+    <string name="welcome_brand_subtitle">پخش‌کننده‌ای رایگان و متن‌باز، ساختهٔ جامعه‌ای که فقط عاشق موسیقی است.</string>
+    <string name="welcome_brand_chip_open_source">متن‌باز</string>
+    <string name="welcome_brand_chip_no_ads">بدون تبلیغات</string>
+    <string name="welcome_brand_chip_no_tracking">بدون ردیابی</string>
+    <string name="welcome_brand_chip_plugin_powered">مبتنی بر افزونه</string>
+    <string name="welcome_lets_go">برویم</string>
+
+    <!-- Page 2: donations -->
+    <string name="welcome_donate_eyebrow">حامیان ما را سرپا نگه می‌دارند</string>
+    <string name="welcome_donate_title">ساخته‌شده با عشق. زنده به لطف شما.</string>
+    <string name="welcome_donate_message">Spotube صددرصد رایگان، آزاد و متن‌باز است — بدون تبلیغات، بدون اشتراک، بدون ردیابی. هر قابلیتی وجود دارد چون کسانی مثل شما تصمیم گرفتند به ادامهٔ توسعه کمک کنند.</string>
+    <string name="welcome_donate_patreon_title">Patreon</string>
+    <string name="welcome_donate_patreon_tag">حامی ماهانه</string>
+    <string name="welcome_donate_patreon_subtitle">از توسعه و زیرساخت مستمر حمایت کنید</string>
+    <string name="welcome_donate_bmac_title">Buy Me a Coffee</string>
+    <string name="welcome_donate_bmac_tag">یک قهوهٔ یک‌باره</string>
+    <string name="welcome_donate_bmac_subtitle">با یک انعام کوچک، به یک جلسهٔ کدنویسی شبانه انرژی بدهید</string>
+    <string name="welcome_donate_opencollective_title">Open Collective</string>
+    <string name="welcome_donate_opencollective_tag">صندوق جامعه</string>
+    <string name="welcome_donate_opencollective_subtitle">پشتیبانی مالی شفاف و تحت مدیریت جامعه</string>
+    <string name="welcome_donate_thanks">از صمیم قلب سپاسگزاریم که به موسیقی آزاد باور دارید.</string>
+    <string name="welcome_donate_optional">حمایت کاملاً اختیاری است — Spotube در هر صورت رایگان می‌ماند.</string>
+    <string name="welcome_donate_action">حمایت</string>
+    <string name="welcome_donate_open_content_description">باز کردن %1$s</string>
+
+    <!-- Support / donations -->
+    <string name="support_button_label">حمایت از Spotube</string>
+    <string name="support_dialog_title">حمایت از Spotube</string>
+    <string name="support_dialog_message">Spotube رایگان، آزاد و متن‌باز است — بدون تبلیغات، بدون اشتراک، بدون ردیابی. اگر برایتان شادی می‌آورد، حمایت از پروژه را در نظر بگیرید.</string>
+    <string name="support_dialog_reminder_hint">می‌توانید این یادآوری‌ها را در تنظیمات → حمایت خاموش کنید.</string>
+    <string name="support_dialog_dismiss">شاید بعداً</string>
+    <string name="settings_support_reminders_title">یادآوری‌های حمایت</string>
+    <string name="settings_support_reminders_subtitle">هر ۷ روز یک یادآوری ملایم برای حمایت از پروژه نمایش داده شود.</string>
+
+    <!-- Page 3: plugins -->
+    <string name="welcome_plugins_eyebrow">معماری ماژولار</string>
+    <string name="welcome_plugins_title">انتخاب کنید موسیقی‌تان از کجا بیاید.</string>
+    <string name="welcome_plugins_subtitle">Spotube کشف کاتالوگ، پخش صدا و متن همگام‌شده را از هم جدا می‌کند. موتورهای خود را در پایین پیکربندی کنید یا هر زمان عوضشان کنید.</string>
+    <string name="welcome_plugins_metadata_title">موتور فراداده</string>
+    <string name="welcome_plugins_metadata_description">کشف موسیقی، جستجو، فهرست آهنگ‌ها و پلی‌لیست‌ها را ممکن می‌کند.</string>
+    <string name="welcome_plugins_audio_title">موتور صدا</string>
+    <string name="welcome_plugins_audio_description">جریان‌های صوتی در حال پخش را دریافت و رمزگشایی می‌کند.</string>
+    <string name="welcome_plugins_lyrics_title">موتور متن آهنگ</string>
+    <string name="welcome_plugins_lyrics_description">متن کارائوکهٔ همگام با زمان را به‌صورت زنده نمایش می‌دهد.</string>
+    <string name="welcome_plugins_scrobble_title">موتور اسکراب</string>
+    <string name="welcome_plugins_scrobble_description">تاریخچهٔ شنیدن را در Last.fm یا ListenBrainz ثبت می‌کند.</string>
+    <string name="welcome_plugins_badge_active">فعال</string>
+    <string name="welcome_plugins_badge_builtin">داخلی</string>
+    <string name="welcome_plugins_badge_ready">آماده</string>
+    <string name="welcome_plugins_badge_optional">اختیاری</string>
+    <string name="welcome_plugins_none_selected">یک موتور انتخاب کنید</string>
+    <string name="welcome_plugins_installed_section">موتورهای نصب‌شده</string>
+    <string name="welcome_plugins_set_default">تنظیم به‌عنوان پیش‌فرض</string>
+    <string name="welcome_plugins_builtin_note">NewPipe YouTube و LRCLib Lyrics داخلی هستند و از همان ابتدا آمادهٔ پخش‌اند.</string>
+    <string name="welcome_plugins_tip">هر زمان در تنظیمات → افزونه‌ها، افزونه‌های جامعه را مدیریت یا اضافه کنید.</string>
+
+    <!-- Page 4: how it works -->
+    <string name="welcome_how_eyebrow">معماری رترو-مدرن</string>
+    <string name="welcome_how_title">Hi-Fi خالص، بدون واسطه</string>
+    <string name="welcome_how_subtitle">این‌گونه Spotube پخش غیرمتمرکز را مستقیماً روی دستگاه شما هماهنگ می‌کند.</string>
+    <string name="welcome_how_status_badge">نظیربه‌نظیر مستقیم • 256 KBPS OPUS</string>
+    <string name="welcome_how_mockup_title">ساعت آبی</string>
+    <string name="welcome_how_mockup_artist">Spotube · نمایش پخش‌کننده</string>
+    <string name="welcome_how_mockup_lyric">کمی موسیقی برای لحظه‌های میان‌راه.</string>
+    <string name="welcome_how_step_search_title">۱. کشف غیرمتمرکز</string>
+    <string name="welcome_how_step_search_desc">جستجوها مستقیماً به افزونهٔ کاتالوگ انتخابی شما می‌روند. Spotube هرگز از سلیقهٔ شما نمایه نمی‌سازد.</string>
+    <string name="welcome_how_step_stream_title">۲. دریافت مستقیم جریان</string>
+    <string name="welcome_how_step_stream_desc">صدا مستقیماً از سرورهای محتوا به دستگاه شما می‌رسد. بدون پراکسی میانی یا جمع‌آوری داده از راه دور.</string>
+    <string name="welcome_how_step_playback_title">۳. پردازش صدا و پخش محلی</string>
+    <string name="welcome_how_step_playback_desc">رمزگشایی و ذخیرهٔ محلی، همراه با اکولایزر و دانلود آفلاین اختیاری.</string>
+    <string name="welcome_how_step_lyrics_title">۴. متن همگام و جم</string>
+    <string name="welcome_how_step_lyrics_desc">متن کارائوکه با زمان پخش همگام می‌شود، همراه با کنترل از راه دور در LAN و جم گروهی.</string>
+    <string name="welcome_how_footer">بدون سرور واسطه. پخش درست روی دستگاه شما انجام می‌شود — خصوصی از پایه.</string>
+
+    <!-- Devices: play destination picker -->
+    <string name="devices_destination_title">یک دستگاه انتخاب کنید</string>
+    <string name="devices_destination_prompt">%1$s: «%2$s»</string>
+    <string name="devices_destination_action_play">پخش</string>
+    <string name="devices_destination_action_add_to_queue">افزودن به صف</string>
+    <string name="devices_destination_action_play_next">پخش بعدی</string>
+    <string name="devices_destination_this_device">همین دستگاه</string>
+    <string name="devices_destination_this_device_subtitle">روی همین دستگاه</string>
+    <string name="devices_destination_remote_device">دستگاه راه دور</string>
+    <string name="devices_destination_remote_device_host">دستگاه راه دور (%1$s)</string>
+    <string name="devices_destination_remote_subtitle">روی دستگاه متصل</string>
+
+    <!-- Devices: connection errors -->
+    <string name="devices_error_connection_failed">اتصال ناموفق بود</string>
+    <string name="devices_error_connection_lost">اتصال قطع شد</string>
+    <string name="devices_error_send_failed">ارسال ناموفق بود</string>
+    <string name="devices_error_discovery_failed">یافتن دستگاه‌ها ناموفق بود: %1$s</string>
+    <string name="devices_error_connect_failed">اتصال ناموفق بود: %1$s</string>
+
+    <!-- Devices: discovery screen -->
+    <string name="devices_title">دستگاه‌ها</string>
+    <string name="devices_refresh">به‌روزرسانی</string>
+    <string name="devices_disconnect">قطع اتصال</string>
+    <string name="devices_connecting">در حال اتصال...</string>
+    <string name="devices_searching">در حال جستجوی دستگاه‌ها در شبکه...</string>
+    <string name="devices_empty">هیچ دستگاهی پیدا نشد</string>
+    <string name="devices_empty_hint">مطمئن شوید گزینهٔ \"اجازهٔ کنترل از راه دور\" در تنظیمات دستگاه دیگر فعال است.</string>
+    <string name="devices_unknown_device">دستگاه ناشناس</string>
+    <string name="devices_resolving">در حال شناسایی...</string>
+
+    <!-- Devices: remote control screen -->
+    <string name="devices_remote_title">کنترل از راه دور</string>
+    <string name="devices_remote_disconnected">قطع شد</string>
+    <string name="devices_remote_connection_error">خطای اتصال: %1$s</string>
+    <string name="devices_remote_unknown_track">آهنگ ناشناس</string>
+    <string name="devices_remote_unknown_artist">هنرمند ناشناس</string>
+    <string name="devices_remote_volume">صدا</string>
+    <string name="devices_remote_remove_from_queue">حذف از صف</string>
+    <string name="devices_remote_more_options">گزینه‌های بیشتر</string>
+
+    <!-- Group Jam: play destination picker -->
+    <string name="jam_destination_title">کجا پخش شود؟</string>
+    <string name="jam_destination_message">یک جلسهٔ جم فعال دارید. انتخاب کنید این مجموعه کجا پخش شود.</string>
+    <string name="jam_destination_play_here">پخش در اینجا</string>
+    <string name="jam_destination_suggest">پیشنهاد به جم</string>
+
+    <!-- Group Jam: connection errors -->
+    <string name="jam_error_connection_failed">اتصال ناموفق بود</string>
+    <string name="jam_error_connection_lost">اتصال قطع شد</string>
+
+
+    <!-- Group Jam: queue snackbar -->
+    <string name="jam_queue_added_track">به صف جم اضافه شد</string>
+    <plurals name="jam_queue_added_tracks">
+        <item quantity="one">%1$d آهنگ به صف جم اضافه شد</item>
+        <item quantity="other">%1$d آهنگ به صف جم اضافه شد</item>
+    </plurals>
+
+    <!-- Remote control: connection request dialog -->
+    <string name="remote_request_title">درخواست کنترل از راه دور</string>
+    <string name="remote_request_message">\"%1$s\" می‌خواهد پخش را روی این دستگاه کنترل کند.</string>
+    <string name="remote_request_deny">رد کردن</string>
+    <string name="remote_request_allow">اجازه دادن</string>
+    <string name="remote_request_allow_always">همیشه اجازه بده</string>
+
+    <!-- Search -->
+    <string name="search_results_title">نتایج جستجو</string>
+    <string name="search_tab_all">همه</string>
+    <string name="search_section_tracks">آهنگ‌ها</string>
+    <string name="search_section_users">کاربران</string>
+    <string name="search_no_search_types">هیچ نوع جستجویی در دسترس نیست</string>
+    <string name="search_start_typing">برای جستجو شروع به تایپ کنید</string>
+    <string name="search_start_typing_tracks">برای جستجوی آهنگ‌ها شروع به تایپ کنید</string>
+    <string name="search_no_results">نتیجه‌ای پیدا نشد</string>
+    <string name="search_see_all">مشاهدهٔ همه</string>
+    <string name="search_searching">در حال جستجو</string>
+    <string name="search_loading_tracks">در حال بارگیری آهنگ‌ها...</string>
+    <string name="search_loading_albums">در حال بارگیری آلبوم‌ها...</string>
+    <string name="search_loading_artists">در حال بارگیری هنرمندان...</string>
+    <string name="search_loading_playlists">در حال بارگیری پلی‌لیست‌ها...</string>
+    <string name="search_loading_users">در حال بارگیری کاربران...</string>
+    <string name="search_no_albums">هیچ آلبومی پیدا نشد</string>
+    <string name="search_no_artists">هیچ هنرمندی پیدا نشد</string>
+    <string name="search_no_playlists">هیچ پلی‌لیستی پیدا نشد</string>
+    <string name="search_no_users">هیچ کاربری پیدا نشد</string>
+    <string name="search_warm_crates">در حال گشتن میان صفحه‌ها...</string>
+    <string name="search_warm_cosmos">در حال جستجوی کیهان...</string>
+    <string name="search_warm_speakers">در حال گرم کردن بلندگوها...</string>
+    <string name="search_warm_vinyl">در حال گردگیری صفحه‌های گرامافون...</string>
+    <string name="search_warm_music_gods">در حال مشورت با خدایان موسیقی...</string>
+    <string name="search_warm_antennas">در حال تنظیم آنتن‌ها...</string>
+    <string name="search_warm_records">در حال ورق زدن آلبوم‌ها...</string>
+    <string name="search_error_capabilities">بارگیری قابلیت‌های جستجو ناموفق بود</string>
+    <string name="search_error_search">جستجو ناموفق بود</string>
+    <string name="search_error_tracks">جستجوی آهنگ‌ها ناموفق بود</string>
+    <string name="search_error_albums">جستجوی آلبوم‌ها ناموفق بود</string>
+    <string name="search_error_artists">جستجوی هنرمندان ناموفق بود</string>
+    <string name="search_error_playlists">جستجوی پلی‌لیست‌ها ناموفق بود</string>
+    <string name="search_error_users">جستجوی کاربران ناموفق بود</string>
+
+    <!-- Home -->
+    <string name="home_title_browse">مرور</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_mode_synced">همگام</string>
+    <string name="lyrics_mode_plain">ساده</string>
+    <string name="lyrics_no_synced">متن همگام‌شده‌ای در دسترس نیست</string>
+    <string name="lyrics_no_plain">متن ساده‌ای در دسترس نیست</string>
+
+    <!-- Settings: audio format/quality labels -->
+    <string name="settings_audio_format_label">%1$s در %2$s</string>
+    <string name="settings_audio_quality_lossy">%1$d kbps</string>
+    <string name="settings_audio_quality_lossless">%1$s kHz • %2$d کانال</string>
+    <string name="search_error_no_metadata_plugin">هیچ افزونهٔ فراداده‌ای انتخاب نشده است</string>
+
+    <!-- Common -->
+    <string name="common_back">بازگشت</string>
+    <string name="common_retry">تلاش دوباره</string>
+    <string name="common_close_dialog">بستن پنجره</string>
+    <string name="common_loading">در حال بارگیری...</string>
+    <string name="common_unknown">ناشناس</string>
+    <string name="common_unknown_error">خطای ناشناخته</string>
+
+    <!-- Media cards -->
+    <string name="media_user">کاربر</string>
+    <string name="media_playlist">پلی‌لیست</string>
+
+    <!-- Error display -->
+    <string name="error_title">واقعاً متأسفیم</string>
+    <string name="error_description">در حال حاضر چیزی درست کار نمی‌کند. تجربهٔ شما برای ما مهم است و تمام تلاشمان را برای رفع آن می‌کنیم. لطفاً دوباره تلاش کنید یا جزئیات خطا را در پایین بررسی کنید.</string>
+    <string name="error_details">جزئیات خطا</string>
+    <string name="error_copy_to_clipboard">کپی در کلیپ‌بورد</string>
+    <string name="error_view_full_log">مشاهدهٔ گزارش کامل</string>
+    <string name="error_full_log_title">گزارش کامل خطا</string>
+
+    <!-- Collection details -->
+    <string name="collection_details_shuffle">پخش تصادفی</string>
+    <string name="collection_details_shuffle_play">پخش تصادفی</string>
+    <string name="collection_details_follow">دنبال کردن</string>
+    <string name="collection_details_unfollow">لغو دنبال کردن</string>
+    <string name="collection_details_edit_playlist">ویرایش پلی‌لیست</string>
+    <string name="collection_details_by_owner">از %1$s</string>
+
+    <!-- Track options -->
+    <string name="track_options_title">گزینه‌های آهنگ</string>
+    <string name="track_options_add_to_jam">افزودن به جم</string>
+    <string name="track_options_start_radio">شروع رادیو</string>
+    <string name="track_options_play_next">پخش بعدی</string>
+    <string name="track_options_move_to_next">انتقال به بعدی</string>
+    <string name="track_options_remove_from_queue">حذف از صف</string>
+    <string name="track_options_remove_from_favorites">حذف از علاقه‌مندی‌ها</string>
+    <string name="track_options_save_as_favorite">افزودن به علاقه‌مندی‌ها</string>
+    <string name="track_options_add_to_playlist">افزودن به پلی‌لیست</string>
+    <string name="track_options_download">دانلود</string>
+    <string name="track_options_share">اشتراک‌گذاری</string>
+
+    <!-- Track list -->
+    <string name="track_list_sort_original">اصلی</string>
+    <string name="track_list_sort_title">عنوان</string>
+    <string name="track_list_sort_artist">هنرمند</string>
+    <string name="track_list_sort_album">آلبوم</string>
+    <string name="track_list_sort_duration">مدت</string>
+    <string name="track_list_sort">مرتب‌سازی</string>
+    <string name="track_list_no_tracks">هیچ آهنگی پیدا نشد</string>
+    <string name="track_list_filter_placeholder">فیلتر</string>
+    <string name="track_list_bulk_actions">کارهای گروهی</string>
+    <string name="track_list_download_all">دانلود همه</string>
+    <string name="track_list_download_count">دانلود %1$d</string>
+    <string name="track_list_add_all_to_queue">افزودن همه به صف</string>
+    <string name="track_list_add_count_to_queue">افزودن %1$d به صف</string>
+    <string name="track_list_play_all_next">پخش همه در ادامه</string>
+    <string name="track_list_play_count_next">پخش %1$d در ادامه</string>
+    <string name="track_list_add_all_to_playlist">افزودن همه به پلی‌لیست</string>
+    <string name="track_list_add_count_to_playlist">افزودن %1$d به پلی‌لیست</string>
+    <string name="track_list_add_all_to_jam">افزودن همه به جم</string>
+    <string name="track_list_add_count_to_jam">افزودن %1$d به جم</string>
+    <string name="track_list_more_artists">+%1$d دیگر</string>
+
+    <!-- WebView -->
+    <string name="webview_no_url">URL برای بارگیری وجود ندارد</string>
+    <string name="webview_go_back">بازگشت در تاریخچهٔ مرورگر</string>
+    <string name="webview_go_forward">رفتن به جلو در تاریخچهٔ مرورگر</string>
+
+    <!-- Blacklist -->
+    <string name="blacklist_filter_placeholder">فیلتر فهرست سیاه...</string>
+    <string name="blacklist_empty">هیچ موردی در فهرست سیاه نیست</string>
+    <string name="blacklist_no_results">هیچ مورد فهرست سیاهی با «%1$s» مطابقت ندارد</string>
+    <string name="blacklist_section_tracks">آهنگ‌ها</string>
+    <string name="blacklist_item_track">آهنگ</string>
+    <string name="blacklist_add">افزودن به فهرست سیاه</string>
+    <string name="blacklist_remove">حذف از فهرست سیاه</string>
+
+    <!-- Downloads -->
+    <string name="downloads_error_no_metadata">فرادادهٔ آهنگ موجود نیست</string>
+    <string name="downloads_error_stream_unresolved_short">URL جریان پیدا نشد</string>
+    <string name="downloads_error_stream_unresolved">URL جریان پیدا نشد. ابتدا آهنگ را پخش کنید.</string>
+
+    <!-- Saved tracks -->
+    <string name="saved_tracks_title">آهنگ‌های ذخیره‌شده</string>
+    <string name="saved_tracks_owner_you">شما</string>
+
+    <!-- Artist -->
+    <string name="artist_following">دنبال می‌کنید</string>
+    <string name="artist_top_tracks">آهنگ‌های برتر</string>
+    <string name="artist_play_top_tracks">پخش آهنگ‌های برتر</string>
+    <string name="artist_add_top_tracks_to_queue">افزودن آهنگ‌های برتر به صف</string>
+    <string name="artist_related_artists">هنرمندان مرتبط</string>
+    <string name="artist_featured_playlists">پلی‌لیست‌های ویژه</string>
+    <string name="artist_error_load_failed">بارگیری نمای کلی هنرمند ناموفق بود</string>
+    <string name="artist_followers_unavailable">تعداد دنبال‌کنندگان در دسترس نیست</string>
+    <string name="artist_followers_thousands">%1$sK دنبال‌کننده</string>
+    <string name="artist_followers_millions">%1$sM دنبال‌کننده</string>
+    <string name="artist_followers_billions">%1$sB دنبال‌کننده</string>
+    <plurals name="artist_followers_count">
+        <item quantity="one">%1$d دنبال‌کننده</item>
+        <item quantity="other">%1$d دنبال‌کننده</item>
+    </plurals>
+
+    <!-- Player -->
+    <string name="player_like_content_description">پسندیدن</string>
+    <string name="player_unlike_content_description">لغو پسند</string>
+    <string name="player_fallback_title">عنوان آهنگ خالی</string>
+    <string name="player_fallback_artists">هنرمندان خالی</string>
+    <string name="player_unknown_album">آلبوم ناشناس</string>
+    <string name="player_seek_label">جابه‌جایی</string>
+    <string name="player_volume_label">صدا</string>
+    <string name="player_enable_shuffle_content_description">فعال کردن پخش تصادفی</string>
+    <string name="player_disable_shuffle_content_description">غیرفعال کردن پخش تصادفی</string>
+    <string name="player_previous_content_description">قبلی</string>
+    <string name="player_next_content_description">بعدی</string>
+    <string name="player_play_or_pause_content_description">پخش یا توقف</string>
+    <string name="player_loop_mode_none">تکرار خاموش</string>
+    <string name="player_loop_mode_one">تکرار یک آهنگ</string>
+    <string name="player_loop_mode_all">تکرار همه</string>
+    <string name="player_mute_content_description">بی‌صدا</string>
+    <string name="player_unmute_content_description">باصدا</string>
+    <string name="player_more_options_content_description">گزینه‌های بیشتر</string>
+    <string name="player_options_content_description">گزینه‌های پخش‌کننده</string>
+    <string name="player_collapse_content_description">جمع کردن پخش‌کننده</string>
+    <string name="player_expand_lyrics_content_description">باز کردن متن آهنگ</string>
+    <string name="player_now_playing">در حال پخش</string>
+    <string name="player_lyrics">متن آهنگ</string>
+    <string name="player_alternative_source">منبع جایگزین</string>
+    <string name="player_alternative_source_content_description">منبع جایگزین</string>
+    <string name="player_download">دانلود</string>
+    <string name="player_download_status_downloaded">دانلود شد</string>
+    <string name="player_download_status_downloading">در حال دانلود...</string>
+    <string name="player_download_already_downloaded">قبلاً دانلود شده است</string>
+    <string name="player_download_retrying">تلاش دوباره برای دانلود...</string>
+    <string name="player_download_started">در حال دانلود %1$s</string>
+    <string name="player_sleep_timer_remaining">پخش تا %1$s دیگر متوقف می‌شود.</string>
+    <string name="player_sleep_timer_description">پخش پس از تعداد دقیقهٔ انتخاب‌شده متوقف شود.</string>
+    <string name="player_sleep_timer_minutes_label">دقیقه</string>
+    <string name="player_sleep_timer_minutes_placeholder">عددی بین 1 تا 600 دقیقه انتخاب کنید</string>
+    <string name="player_sleep_timer_cancel">لغو زمان‌سنج</string>
+    <string name="player_sleep_timer_start">شروع</string>
+    <string name="player_track_details_stream_mismatch">URL پخش با تنظیمات پخش آنلاین متفاوتی به دست آمده است. جریان برجسته‌شده با ترجیح فعلی شما مطابقت دارد؛ URL فعال در درخواست بعدی جریان به‌روز می‌شود.</string>
+    <string name="player_track_details_matched_source">منبع صوتی منطبق</string>
+    <string name="player_track_details_loading_source">در حال بارگیری منبع منطبق…</string>
+    <string name="player_track_details_source_not_needed">هنگام پخش فایل ذخیره‌شدهٔ محلی، به منبع راه دور منطبق نیازی نیست.</string>
+    <string name="player_track_details_no_source">هیچ منبع منطبقی در دسترس نیست.</string>
+    <string name="player_track_details_no_cached_source">هیچ منبع صوتی منطبقی برای این آهنگ در حافظهٔ پنهان نیست.</string>
+    <string name="player_track_details_streams_not_cached">جزئیات جریان هنوز در حافظهٔ پنهان نیست. برای بارگیری آن‌ها ابتدا آهنگ را پخش کنید.</string>
+    <string name="player_track_details_load_failed">بارگیری جزئیات آهنگ ناموفق بود.</string>
+    <string name="player_track_details_available_streams">جریان‌های در دسترس</string>
+    <string name="player_track_details_served_from_cache_description">این آهنگ از حافظهٔ پنهان محلی پخش می‌شود. نسخه‌های جریان برای این پخش استفاده نمی‌شوند.</string>
+    <string name="player_track_details_loading_streams">در حال بارگیری جریان‌ها…</string>
+    <string name="player_track_details_no_streams">هیچ جریانی برای این منبع در دسترس نیست.</string>
+    <string name="player_track_details_selected_stream_content_description">جریان انتخاب‌شدهٔ فعلی</string>
+    <string name="player_track_details_matches_preference">مطابق با قالب و کیفیت پخش آنلاین ترجیحی شما</string>
+    <string name="player_track_details_active_url">URL پخش فعال</string>
+    <string name="player_track_details_served_from_cache">پخش از حافظهٔ پنهان محلی</string>
+    <string name="player_track_details_metadata_track">آهنگ فراداده</string>
+    <string name="player_track_details_title">عنوان</string>
+    <string name="player_track_details_id">شناسه</string>
+    <string name="player_track_details_album">آلبوم</string>
+    <string name="player_track_details_confidence">اطمینان</string>
+    <string name="player_track_details_external_uri">URI خارجی</string>
+    <string name="player_track_details_album_id">شناسهٔ آلبوم</string>
+    <string name="player_track_details_album_type">نوع آلبوم</string>
+    <string name="player_track_details_album_release_date">تاریخ انتشار آلبوم</string>
+    <string name="player_track_details_album_track_count">تعداد آهنگ‌های آلبوم</string>
+    <string name="player_track_details_album_genres">ژانرهای آلبوم</string>
+    <string name="player_track_details_duration">مدت</string>
+    <string name="player_track_details_track_number">شمارهٔ آهنگ</string>
+    <string name="player_track_details_disc_number">شمارهٔ دیسک</string>
+    <string name="player_track_details_explicit">صریح</string>
+    <string name="player_track_details_popularity">محبوبیت</string>
+    <string name="player_track_details_isrc">ISRC</string>
+    <string name="player_track_details_thumbnail_urls">URLهای تصویر بندانگشتی</string>
+
+    <!-- Shell -->
+    <string name="shell_sidebar_toggle_content_description">نمایش/پنهان کردن نوار کناری</string>
+
+    <!-- Alternative track -->
+    <string name="alternative_track_title">منابع جایگزین</string>
+    <string name="alternative_track_no_track">هیچ آهنگی در حال پخش نیست</string>
+    <string name="alternative_track_searching">در حال جستجوی منابع جایگزین...</string>
+    <string name="alternative_track_empty">هیچ منبع جایگزینی پیدا نشد</string>
+    <string name="alternative_track_confidence">اطمینان: %1$d%</string>
+    <string name="alternative_track_active_source">منبع فعال</string>
+
+    <!-- Queue -->
+    <string name="queue_participant_kick">بیرون کردن</string>
+    <string name="queue_participant_kick_description">او را از جلسه حذف کنید</string>
+    <string name="queue_participant_ban_description">بیرون کردن و جلوگیری از پیوستن دوباره</string>
+    <string name="queue_participant_remove_suggestions">حذف پیشنهادها</string>
+    <string name="queue_participant_remove_suggestions_description">حذف همهٔ آهنگ‌هایی که او به صف اضافه کرده است</string>
+    <string name="queue_reorder_content_description">تغییر ترتیب</string>
+    <string name="queue_remove_from_queue">حذف از صف</string>
+    <string name="queue_item_subtitle_added_by">%1$s • افزوده‌شده توسط %2$s</string>
+
+    <!-- Playlist -->
+    <string name="playlist_owner_unknown">ناشناس</string>
+    <string name="playlist_loading_title">در حال بارگیری پلی‌لیست...</string>
+    <string name="playlist_add_tracks_button">افزودن آهنگ</string>
+    <string name="playlist_add_tracks_title">افزودن آهنگ به پلی‌لیست</string>
+    <string name="playlist_add_tracks_search_placeholder">جستجوی آهنگ‌ها...</string>
+    <string name="playlist_add_tracks_search_content_description">جستجو</string>
+    <string name="playlist_add_tracks_no_results">هیچ آهنگی پیدا نشد</string>
+    <string name="playlist_add_tracks_hint">آهنگ‌هایی را برای افزودن جستجو کنید</string>
+    <string name="playlist_add_tracks_done">تمام</string>
+    <string name="playlist_add_tracks_add">افزودن</string>
+    <string name="playlist_add_tracks_added_content_description">اضافه شد</string>
+
+    <!-- Album -->
+    <string name="album_loading_title">در حال بارگیری آلبوم...</string>
+
+    <!-- Library -->
+    <string name="library_add_to_playlist_title">افزودن به پلی‌لیست شما</string>
+    <string name="library_add_to_playlist_search_content_description">جستجو</string>
+    <string name="library_add_to_playlist_search_placeholder">جستجو در پلی‌لیست‌های شما...</string>
+    <string name="library_add_to_playlist_loading">در حال بارگیری پلی‌لیست‌های شما...</string>
+    <string name="library_add_to_playlist_empty">هنوز پلی‌لیستی ندارید.\nبرای افزودن آهنگ، یکی بسازید.</string>
+    <string name="library_playlist_form_create_title">ساخت پلی‌لیست</string>
+    <string name="library_playlist_form_edit_title">ویرایش پلی‌لیست</string>
+    <string name="library_playlist_form_create">ساختن</string>
+    <string name="library_playlist_form_name_label">نام</string>
+    <string name="library_playlist_form_name_placeholder">نام پلی‌لیست</string>
+    <string name="library_playlist_form_description_label">توضیحات</string>
+    <string name="library_playlist_form_description_placeholder">توضیحات (اختیاری)</string>
+    <string name="library_playlist_form_public">عمومی</string>
+    <string name="library_playlist_form_public_description">همه می‌توانند این پلی‌لیست را ببینند</string>
+    <string name="library_playlist_form_collaborative">مشارکتی</string>
+    <string name="library_playlist_form_collaborative_description">دیگران می‌توانند به این پلی‌لیست آهنگ اضافه کنند</string>
+    <string name="library_playlist_form_cover_image">تصویر کاور</string>
+    <string name="library_playlist_form_cover_content_description">کاور پلی‌لیست</string>
+    <string name="library_playlist_form_no_image">بدون تصویر</string>
+    <string name="library_playlist_form_change_image">تغییر تصویر</string>
+    <string name="library_playlist_form_pick_image">انتخاب تصویر</string>
+
+    <!-- Plugin install / errors -->
+    <string name="plugin_action_install">نصب</string>
+    <string name="plugin_action_replace">جایگزینی</string>
+    <string name="plugin_error_plugin_json_missing">plugin.json در فایل zip پیدا نشد</string>
+    <string name="plugin_error_zipline_manifest_missing">manifest.zipline.json در فایل zip پیدا نشد</string>
+    <string name="plugin_error_invalid_plugin_json">قالب plugin.json نامعتبر است: %1$s</string>
+    <string name="plugin_error_read_failed">خواندن افزونه ناموفق بود: %1$s</string>
+    <string name="plugin_error_install_failed">نصب افزونه ناموفق بود: %1$s</string>
+    <string name="plugin_error_update_needs_confirmation">نسخهٔ جدیدتری از %1$s در دسترس است. پیش از نصب، به‌روزرسانی را تأیید کنید.</string>
+    <string name="plugin_error_replace_needs_confirmation">%1$s از قبل نصب شده است. پیش از نصب، جایگزینی آن را تأیید کنید.</string>
+    <string name="plugin_error_builtin_add">افزونه‌های داخلی از قبل وجود دارند و نمی‌توان دوباره اضافه‌شان کرد.</string>
+    <string name="plugin_error_builtin_remove">افزونه‌های داخلی را نمی‌توان حذف کرد.</string>
+    <string name="plugin_error_api_version_invalid">%1$s یک apiVersion نامعتبر (%2$s) اعلام کرده است. نسخه‌بندی معنایی سازگار با %3$s انتظار می‌رود.</string>
+    <string name="plugin_error_app_api_version_invalid">نسخهٔ API افزونهٔ Spotube (%1$s) نامعتبر است.</string>
+    <string name="plugin_error_api_incompatible">%1$s برای API افزونهٔ %2$s ساخته شده، اما Spotube از نسخهٔ اصلی API افزونهٔ %3$s پشتیبانی می‌کند. افزونه‌ای نصب کنید که برای همان نسخهٔ اصلی API ساخته شده باشد.</string>
+
+    <!-- Plugin install prompts -->
+    <string name="plugin_prompt_incompatible_title">API افزونه سازگار نیست</string>
+    <string name="plugin_prompt_install_title">افزونه نصب شود؟</string>
+    <string name="plugin_prompt_install_message">%1$s به افزونه‌های نصب‌شدهٔ شما اضافه می‌شود.</string>
+    <string name="plugin_prompt_update_title">افزونه به‌روز شود؟</string>
+    <string name="plugin_prompt_update_message">نسخهٔ قدیمی‌تری نصب است (%1$s). به %2$s به‌روز شود؟</string>
+    <string name="plugin_prompt_replace_title">افزونهٔ نصب‌شده جایگزین شود؟</string>
+    <string name="plugin_prompt_replace_invalid_incoming">%1$s از یک نسخهٔ معنایی نامعتبر (%2$s) استفاده می‌کند و نمی‌توان آن را به‌عنوان به‌روزرسانی مقایسه کرد. با این حال افزونهٔ نصب‌شده جایگزین شود؟</string>
+    <string name="plugin_prompt_replace_invalid_installed">نسخهٔ نصب‌شده (%1$s) را نمی‌توان با نسخه‌بندی معنایی مقایسه کرد. با %2$s جایگزین شود؟</string>
+    <string name="plugin_prompt_replace_same_version">نسخهٔ %1$s از قبل نصب است. افزونهٔ موجود با نسخهٔ ارائه‌شده جایگزین شود؟</string>
+    <string name="plugin_prompt_replace_downgrade">نسخهٔ نصب‌شدهٔ %1$s از نسخهٔ ارائه‌شدهٔ %2$s جدیدتر است. با این حال جایگزین شود؟</string>
+    <string name="plugin_prompt_replace_generic">افزونهٔ نصب‌شده با نسخهٔ ارائه‌شده جایگزین شود؟</string>
+
+    <!-- Plugin info dialog -->
+    <string name="plugin_info_label_format">%1$s:</string>
+    <string name="plugin_info_version">نسخه</string>
+    <string name="plugin_info_api_version">نسخهٔ API</string>
+    <string name="plugin_info_author">سازنده</string>
+    <string name="plugin_info_license">مجوز</string>
+    <string name="plugin_info_capabilities">قابلیت‌ها</string>
+    <string name="plugin_info_abilities">توانایی‌ها</string>
+    <string name="plugin_info_repository">مخزن</string>
+    <string name="plugin_info_contact">تماس</string>
+    <string name="plugin_info_report_bugs">گزارش اشکال</string>
+    <string name="plugin_support_dialog_title">حمایت از %1$s</string>
+
+    <!-- Plugin discovery -->
+    <string name="plugin_discover_badge_official">رسمی</string>
+    <string name="plugin_discover_badge_verified">تأییدشده</string>
+    <string name="plugin_discover_stars_content_description">ستاره‌های GitHub</string>
+    <string name="plugin_discover_repository_content_description">URL مخزن GitHub</string>
+
+    <!-- Plugin release install dialog -->
+    <string name="plugin_install_no_releases">هیچ نسخه‌ای پیدا نشد</string>
+    <string name="plugin_install_select_release_label">انتخاب نسخه</string>
+    <string name="plugin_install_select_release_placeholder">یک نسخه انتخاب کنید</string>
+    <string name="plugin_install_prerelease">پیش‌انتشار</string>
+    <string name="plugin_install_release_notes">یادداشت‌های انتشار</string>
+
+    <!-- App navigation -->
+    <string name="nav_home">خانه</string>
+    <string name="nav_search">جستجو</string>
+    <string name="nav_group_on_device">روی دستگاه</string>
+    <string name="nav_group_connect">اتصال</string>
+    <string name="nav_devices">دستگاه‌ها</string>
+
+    <!-- System tray (desktop) -->
+    <string name="tray_hide_window">پنهان کردن پنجره</string>
+    <string name="tray_show_window">نمایش پنجره</string>
+    <string name="tray_next_track">آهنگ بعدی</string>
+    <string name="tray_previous_track">آهنگ قبلی</string>
+    <string name="tray_shuffle">پخش تصادفی</string>
+    <string name="tray_loop">تکرار</string>
+    <string name="tray_loop_off">تکرار: خاموش</string>
+    <string name="tray_loop_one">تکرار: یک آهنگ</string>
+    <string name="tray_loop_all">تکرار: همه</string>
+    <string name="tray_volume">صدا: %1$d%</string>
+    <string name="tray_volume_up">صدا +</string>
+    <string name="tray_volume_down">صدا -</string>
+    <string name="tray_mute">بی‌صدا</string>
+    <string name="tray_unmute">باصدا</string>
+    <string name="tray_like_track">پسندیدن آهنگ</string>
+    <string name="tray_unlike_track">لغو پسند آهنگ</string>
+    <string name="tray_exit">خروج</string>
+
+    <!-- Desktop window controls -->
+    <string name="app_window_minimize">کوچک کردن</string>
+    <string name="app_window_maximize">بزرگ کردن</string>
+    <string name="app_window_restore">بازگرداندن</string>
+    <string name="app_window_close">بستن</string>
+
+    <!-- Android playback notification -->
+    <string name="notification_playback_channel_name">پخش</string>
+    <string name="notification_playback_channel_description">کنترل‌های پخش رسانه</string>
+
+    <!-- Android Auto / media browser -->
+    <string name="media_browser_browse">مرور</string>
+    <string name="media_browser_now_playing">در حال پخش</string>
+    <string name="media_browser_featured">ویژه</string>
+    <string name="media_browser_saved_tracks">آهنگ‌های ذخیره‌شده</string>
+    <string name="media_browser_top_tracks">آهنگ‌های برتر</string>
+</resources>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Do not remove this test for UTF-8: if “Ω” doesn’t appear as greek uppercase omega letter
+enclosed in quotation marks, you should use an editor that supports UTF-8, not this one. -->
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <!-- == PACKAGE SPECIFIC SECTION == -->
+    <id>spotube</id>
+    <version>{{version}}</version>
+    <packageSourceUrl>https://github.com/team-spotube/spotube/tree/master/packaging/chocolatey</packageSourceUrl>
+    <owners>Kingkor Roy Tirtho</owners>
+    <!-- ============================== -->
+
+    <!-- == SOFTWARE SPECIFIC SECTION == -->
+    <title>spotube (Install)</title>
+    <authors>Team Spotube</authors>
+    <projectUrl>https://spotube.cc</projectUrl>
+    <iconUrl>
+      https://rawcdn.githack.com/team-spotube/spotube/69a310c78f5ceaf4eab7dfee98f187d38211c9ba/assets/branding/spotube-logo.png</iconUrl>
+    <copyright>2026 Kingkor Roy Tirtho and Spotube Contributors</copyright>
+    <!-- If there is a license Url available, it is required for the community feed -->
+    <licenseUrl>https://github.com/team-spotube/spotube/blob/master/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <projectSourceUrl>https://github.com/team-spotube/spotube</projectSourceUrl>
+    <docsUrl>https://spotube.cc</docsUrl>
+    <bugTrackerUrl>https://github.com/team-spotube/spotube/issues/new</bugTrackerUrl>
+    <tags>spotube music audio music-player streaming lyrics plugins foss</tags>
+    <summary>Open source, plugin powered music streaming client</summary>
+    <description>
+      A cross-platform, extensible, open source music streaming platform. Bring your own music
+      metadata, playlists and audio sources with plugins made by the community or by yourself.
+
+      # Features
+      - Plugin powered: supports any platform or custom music service through plugins
+      - Community driven plugins for popular platforms, or create your own
+      - Freely downloadable tracks with tagged metadata
+      - Time synced lyrics regardless of plugin support
+      - No telemetry, diagnostics or user data collection
+      - Small size, low data usage and native performance
+      - Open source/libre software
+    </description>
+    <releaseNotes>{{release.url}}
+
+{{release.notes}}</releaseNotes>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>

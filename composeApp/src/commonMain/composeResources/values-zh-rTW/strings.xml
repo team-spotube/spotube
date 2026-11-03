@@ -1,0 +1,920 @@
+<!--
+  ~ Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="queue_title">待播清單</string>
+    <string name="queue_clear_queue">清除待播清單</string>
+    <string name="queue_filter_queue">篩選待播清單...</string>
+    <string name="queue_no_queue_entries">待播清單中沒有項目</string>
+
+    <string name="search_placeholder">搜尋歌曲、藝人、專輯...</string>
+    <string name="search_clear_history">清除所有紀錄</string>
+    <string name="search_filter_placeholder">搜尋...</string>
+
+    <!-- Library toolbar -->
+    <string name="library_screen_title">你的音樂庫</string>
+    <string name="library_toolbar_compact_title">音樂庫</string>
+    <string name="library_tab_playlists">播放清單</string>
+    <string name="library_tab_albums">專輯</string>
+    <string name="library_tab_artists">藝人</string>
+    <string name="library_tab_local_tracks">本機曲目</string>
+    <string name="library_tab_downloads">下載</string>
+    <string name="library_filter_playlists">搜尋已儲存的播放清單…</string>
+    <string name="library_filter_albums">搜尋已儲存的專輯…</string>
+    <string name="library_filter_artists">搜尋已儲存的藝人…</string>
+    <string name="library_filter_local_tracks">搜尋資料夾或曲目…</string>
+    <string name="library_action_search">篩選音樂庫</string>
+    <string name="library_action_close_search">關閉篩選</string>
+    <string name="library_action_create_playlist">建立播放清單</string>
+    <string name="library_action_refresh_local_tracks">重新整理本機曲目</string>
+    <string name="library_action_grid_view">切換為格狀檢視</string>
+    <string name="library_action_list_view">切換為清單檢視</string>
+    <string name="library_playlists_empty">沒有已儲存的播放清單</string>
+    <string name="library_playlists_no_results">沒有符合「%1$s」的播放清單</string>
+    <string name="library_albums_empty">沒有已儲存的專輯</string>
+    <string name="library_albums_no_results">沒有符合「%1$s」的專輯</string>
+    <string name="library_artists_empty">沒有已儲存的藝人</string>
+    <string name="library_artists_no_results">沒有符合「%1$s」的藝人</string>
+
+    <!-- Local media -->
+    <string name="library_local_folders">資料夾</string>
+    <string name="library_local_folder">資料夾</string>
+    <string name="library_local_summary">%1$s • %2$s</string>
+    <plurals name="library_local_tracks_count">
+        <item quantity="other">%1$d 首曲目</item>
+    </plurals>
+    <plurals name="library_local_folders_count">
+        <item quantity="other">%1$d 個資料夾</item>
+    </plurals>
+    <string name="library_local_back">返回資料夾</string>
+    <string name="library_local_play_folder">播放資料夾</string>
+    <string name="library_local_permission_title">需要音訊存取權限</string>
+    <string name="library_local_permission_description">允許存取音訊，即可瀏覽裝置上的音樂。</string>
+    <string name="library_local_grant_access">授予權限</string>
+    <string name="library_local_empty_folders">找不到本機資料夾</string>
+    <string name="library_local_empty_tracks">此資料夾中沒有曲目</string>
+    <string name="library_local_no_results">沒有符合的資料夾或曲目</string>
+    <string name="library_local_refresh_failed">無法重新整理本機媒體</string>
+
+    <!-- Downloads -->
+    <string name="downloads_summary">%1$d 個進行中 • %2$d 個已完成</string>
+    <string name="downloads_clear_completed">清除已完成項目</string>
+    <string name="downloads_empty">尚無下載項目</string>
+    <string name="downloads_status_downloading">下載中 %1$d%</string>
+    <string name="downloads_status_queued">等待中</string>
+    <string name="downloads_status_completed">已完成</string>
+    <string name="downloads_status_cancelled">已取消</string>
+    <string name="downloads_status_failed">失敗</string>
+    <string name="downloads_status_failed_error">失敗：%1$s</string>
+    <string name="downloads_action_cancel">取消下載</string>
+    <string name="downloads_action_retry">重試下載</string>
+    <string name="downloads_action_remove">移除下載項目</string>
+
+    <!-- Shared media items -->
+    <string name="media_artist">藝人</string>
+    <string name="media_blacklisted">已封鎖</string>
+    <string name="media_liked_tracks">喜歡的曲目</string>
+    <string name="media_saved_songs">你已儲存的歌曲</string>
+    <string name="media_unknown_artist">未知藝人</string>
+    <string name="media_preview_title">曲目名稱</string>
+    <string name="media_preview_subtitle">藝人名稱</string>
+
+    <string name="accessibility_selected">已選取</string>
+
+    <string name="settings_screen_title">設定</string>
+
+    <string name="settings_section_plugins">外掛程式</string>
+    <string name="settings_section_language_region">語言與地區</string>
+    <string name="settings_section_appearance">外觀</string>
+    <string name="settings_section_playback">播放</string>
+    <string name="settings_section_downloads">下載</string>
+    <string name="settings_section_caching">快取</string>
+    <string name="settings_section_desktop">桌面版</string>
+    <string name="settings_section_updates">更新</string>
+    <string name="settings_section_support">支持</string>
+    <string name="settings_section_about">關於</string>
+
+    <string name="common_close">關閉</string>
+    <string name="common_save">儲存</string>
+    <string name="common_cancel">取消</string>
+
+    <string name="settings_language_title">語言</string>
+    <string name="settings_language_subtitle_current">應用程式介面的語言。目前：%1$s</string>
+    <string name="settings_language_system_default">跟隨系統</string>
+    <string name="settings_country_title">國家/地區</string>
+    <string name="settings_country_subtitle_current">用於內容與可用性的國家/地區。目前：%1$s</string>
+    <string name="settings_option_name_and_code">%1$s（%2$s）</string>
+
+    <string name="settings_theme_title">主題</string>
+    <string name="settings_theme_subtitle_current">選擇 Spotube 如何配合系統外觀。目前：%1$s</string>
+    <string name="settings_theme_light">淺色</string>
+    <string name="settings_theme_dark">深色</string>
+    <string name="settings_theme_system">跟隨系統</string>
+
+    <string name="settings_surface_theme_title">表面材質</string>
+    <string name="settings_surface_theme_subtitle_current">應用程式的背景材質。目前：%1$s</string>
+    <string name="settings_surface_watery">水波</string>
+    <string name="settings_surface_icy">冰晶</string>
+    <string name="settings_surface_chrome">金屬鉻</string>
+    <string name="settings_surface_acrylic">壓克力</string>
+    <string name="settings_surface_glass">玻璃</string>
+
+    <string name="settings_accent_title">強調色</string>
+    <string name="settings_accent_subtitle_current">目前色盤：%1$s</string>
+    <string name="settings_accent_dialog_title">強調色</string>
+    <string name="settings_accent_dialog_description">選擇強調色盤，並在淺色與深色主題中預覽效果。</string>
+    <string name="settings_preview_light">淺色</string>
+    <string name="settings_preview_dark">深色</string>
+    <string name="settings_preview_label">預覽</string>
+    <string name="settings_preview_button">按鈕</string>
+    <string name="settings_accent_green_goblin">妖精綠</string>
+    <string name="settings_accent_electric_violet">電光紫</string>
+    <string name="settings_accent_oceanic_cyan">海洋青</string>
+    <string name="settings_accent_sunset_orange">夕陽橘</string>
+    <string name="settings_accent_rose_garden">玫瑰園</string>
+    <string name="settings_accent_midnight_blue">午夜藍</string>
+    <string name="settings_accent_metallic_slate">金屬石板灰</string>
+
+    <string name="settings_appearance_title">外觀與風格</string>
+    <string name="settings_appearance_subtitle_current">表面材質與強調色。目前：%1$s · %2$s</string>
+    <string name="settings_appearance_dialog_title">外觀與風格</string>
+    <string name="settings_appearance_dialog_description">先選擇表面材質，再挑選與之搭配的強調色。每個選項都是精心調配的組合。</string>
+    <string name="settings_appearance_surface_label">表面材質</string>
+    <string name="settings_appearance_accent_label">強調色</string>
+    <string name="settings_preview_secondary">次要</string>
+
+    <string name="settings_palette_title">色盤</string>
+    <string name="settings_palette_subtitle_current">Millennium 強調色盤。目前：%1$s</string>
+    <string name="settings_palette_dialog_title">色盤</string>
+    <string name="settings_palette_dialog_description">選擇 Millennium 強調色盤，並在淺色與深色模式中預覽。</string>
+    <string name="settings_palette_label">色盤</string>
+    <string name="settings_appearance_subtitle_palette">Millennium 色盤與強調色。目前：%1$s</string>
+    <string name="settings_palette_blue">藍色</string>
+    <string name="settings_palette_orange">橘色</string>
+    <string name="settings_palette_lime">萊姆綠</string>
+
+    <string name="settings_download_folder_title">自訂下載資料夾</string>
+    <string name="settings_download_folder_current">目前資料夾：%1$s</string>
+    <string name="settings_download_folder_description">留空即使用預設音樂資料夾。</string>
+    <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
+    <string name="settings_local_media_folders_title">本機媒體資料夾</string>
+    <string name="settings_local_media_folders_subtitle_current">桌面版要掃描的自訂資料夾。已新增：%1$d</string>
+    <string name="settings_local_media_folders_subtitle_empty">尚未新增自訂資料夾</string>
+    <string name="settings_local_media_folders_description">本機音樂庫的自訂資料夾。</string>
+    <string name="settings_local_media_folders_manage">管理</string>
+    <string name="settings_local_media_folders_add_action">新增資料夾</string>
+    <string name="settings_local_media_folders_remove_action">移除資料夾</string>
+    <string name="settings_local_media_folders_none_added">尚未新增自訂資料夾。</string>
+    <string name="settings_local_media_folders_remove_named">從掃描清單中移除 %1$s</string>
+    <string name="settings_local_media_folders_automatic_both">下載資料夾與音樂快取資料夾會自動納入。</string>
+    <string name="settings_local_media_folders_automatic_downloads">你的下載資料夾會自動納入。</string>
+    <string name="settings_local_media_folders_automatic_cache">音樂快取資料夾會自動納入。</string>
+    <string name="settings_local_media_folders_saving">儲存中…</string>
+    <string name="settings_local_media_folders_save_error">無法儲存資料夾。你的變更仍保留在此，請再試一次。</string>
+    <plurals name="settings_local_media_folders_count">
+        <item quantity="other">%1$d 個資料夾</item>
+    </plurals>
+    <string name="settings_download_format_title">下載音樂格式</string>
+    <string name="settings_download_format_subtitle_current">下載時偏好的編碼與封裝格式。目前：%1$s</string>
+    <string name="settings_download_quality_title">下載音樂品質</string>
+
+    <string name="settings_streaming_format_title">串流音樂格式</string>
+    <string name="settings_streaming_format_subtitle_current">串流音樂時偏好的編碼與封裝格式。目前：%1$s</string>
+    <string name="settings_streaming_quality_title">串流音樂品質</string>
+    <string name="settings_subtitle_current">目前：%1$s</string>
+    <string name="settings_enable_music_caching_title">啟用音樂快取</string>
+    <string name="settings_enable_music_caching_subtitle">將串流音訊儲存在本機，加快重複播放的速度。</string>
+    <string name="settings_cache_folder_title">快取資料夾</string>
+    <string name="settings_cache_folder_current">目前：%1$s</string>
+    <string name="settings_cache_folder_default">目前：預設應用程式快取</string>
+    <string name="settings_cache_size_limit_title">快取大小上限</string>
+    <string name="settings_cache_size_limit_unlimited">無上限</string>
+    <string name="settings_cache_size_limit_current">目前上限：%1$d MB</string>
+    <string name="settings_cache_size_limit_description">設定快取大小上限（MB）。輸入 0 或留空表示無上限。</string>
+    <string name="settings_cache_size_limit_placeholder">500</string>
+    <string name="settings_error_cache_size_range">大小必須為 0 或正數。</string>
+    <string name="settings_enable_endless_playback_title">啟用無限播放</string>
+    <string name="settings_enable_endless_playback_subtitle">待播清單播完後，以推薦曲目繼續播放。</string>
+    <string name="settings_playback_port_title">播放代理伺服器連接埠</string>
+    <string name="settings_allow_remote_control_title">允許遠端控制</string>
+    <string name="settings_allow_remote_control_subtitle">讓同一網路中的其他裝置在連線後控制播放。</string>
+    <string name="settings_remote_device_name_title">遠端控制裝置名稱</string>
+    <string name="settings_remote_device_name_subtitle">其他裝置搜尋到此裝置時所顯示的名稱。目前：%1$s</string>
+    <string name="settings_remote_device_name_description">選擇一個好記的名稱，讓網路上的其他裝置找到這個 Spotube 時顯示。</string>
+    <string name="settings_remote_device_name_placeholder">例如：客廳的 Spotube</string>
+    <string name="settings_remote_device_name_default">裝置主機名稱</string>
+    <string name="settings_playback_port_subtitle_current">播放代理伺服器使用的連接埠。目前：%1$d</string>
+    <string name="settings_playback_port_description">請選擇 1 到 65535 之間的連接埠。</string>
+    <string name="settings_playback_port_placeholder">14769</string>
+    <string name="settings_error_whole_number">請輸入有效的整數。</string>
+    <string name="settings_error_port_range">連接埠必須介於 1 到 65535 之間。</string>
+
+    <string name="settings_blacklist_title">封鎖清單</string>
+    <string name="settings_blacklist_subtitle">管理已封鎖的曲目與藝人</string>
+
+    <string name="settings_desktop_minimize_title">最小化至系統匣</string>
+    <string name="settings_desktop_minimize_subtitle">視窗最小化時，讓 Spotube 在系統匣中繼續執行。</string>
+    <string name="settings_desktop_discord_title">Discord 動態狀態</string>
+    <string name="settings_desktop_discord_subtitle">在桌面版的 Discord 中顯示目前播放狀態。</string>
+
+    <string name="settings_updates_auto_check_title">自動檢查更新</string>
+    <string name="settings_updates_auto_check_subtitle">在背景檢查 Spotube 的新版本。</string>
+
+    <string name="settings_plugins_manage_title">管理外掛程式</string>
+    <string name="settings_plugins_manage_subtitle">管理你的外掛程式</string>
+    <string name="settings_plugins_default_ability_title">預設%1$s外掛程式</string>
+    <string name="settings_plugins_ability_metadata">中繼資料</string>
+    <string name="settings_plugins_ability_audio">音訊</string>
+    <string name="settings_plugins_ability_lyrics">歌詞</string>
+    <string name="settings_plugins_ability_scrobble">收聽紀錄</string>
+    <string name="settings_plugins_no_selection">未選取外掛程式</string>
+    <string name="settings_plugins_action_change">變更</string>
+    <string name="settings_plugins_action_select">選取</string>
+    <string name="settings_plugins_selected">已選取</string>
+    <string name="settings_plugins_clear">清除選取</string>
+    <string name="settings_plugins_no_plugins">沒有可用的外掛程式</string>
+    <string name="settings_plugins_plugin_content_description">%1$s 外掛程式</string>
+    <string name="settings_plugins_clear_content_description">清除</string>
+
+    <string name="plugin_configure_title">設定</string>
+    <string name="plugin_screen_title">外掛程式管理員</string>
+    <string name="plugin_error_enter_url">請輸入 URL</string>
+    <string name="plugin_error_url_scheme">URL 必須以 http:// 或 https:// 開頭</string>
+    <string name="plugin_error_download_failed">無法下載外掛程式</string>
+    <string name="plugin_empty_title">尚未安裝任何外掛程式</string>
+    <string name="plugin_empty_subtitle">請貼上下載 URL，或從上方選擇檔案。</string>
+    <plurals name="plugin_installed_plugins_count">
+        <item quantity="other">已安裝 %1$d 個外掛程式</item>
+    </plurals>
+    <string name="plugin_install_section_title">安裝外掛程式</string>
+    <string name="plugin_url_placeholder">https://example.com/plugin.smplug</string>
+    <string name="plugin_action_download">下載</string>
+    <string name="plugin_action_install_from_file">從檔案安裝（.smplug）</string>
+    <string name="plugin_state_active">使用中</string>
+    <string name="plugin_version_label">v%1$s</string>
+    <string name="plugin_state_builtin">內建</string>
+    <string name="plugin_action_remove">移除外掛程式</string>
+    <string name="plugin_action_login">登入</string>
+    <string name="plugin_action_logout">登出</string>
+    <string name="plugin_section_url_title">從 URL 下載</string>
+    <string name="plugin_section_file_title">從檔案安裝</string>
+    <string name="plugin_section_install">安裝</string>
+
+    <string name="plugin_permissions_author_version">• %1$s</string>
+    <string name="plugin_permissions_requested_title">要求的權限</string>
+    <string name="plugin_permissions_none">此外掛程式不需要任何特殊權限。</string>
+    <string name="plugin_permissions_compare_title">已安裝與提供版本比較</string>
+    <string name="plugin_permissions_installed_label">已安裝</string>
+    <string name="plugin_permissions_supplied_label">提供的版本</string>
+    <string name="plugin_permissions_api_diff">API %1$s → %2$s</string>
+    <string name="plugin_permissions_capability_storage_title">永久儲存空間</string>
+    <string name="plugin_permissions_capability_storage_desc">讀取及寫入磁碟資料</string>
+    <string name="plugin_permissions_capability_network_title">網路要求</string>
+    <string name="plugin_permissions_capability_network_desc">透過網際網路傳送及接收資料</string>
+    <string name="plugin_permissions_capability_webview_title">WebView</string>
+    <string name="plugin_permissions_capability_webview_desc">在應用程式內顯示網頁內容</string>
+    <string name="settings_section_jam">群組 Jam</string>
+    <string name="settings_jam_server_test">測試連線</string>
+    <string name="settings_jam_server_testing">測試中…</string>
+    <string name="settings_jam_server_test_ok">已連線，耗時 %1$d 毫秒</string>
+    <string name="settings_jam_server_test_fail">失敗：%1$s</string>
+    <string name="settings_jam_section_connection">連線</string>
+    <string name="settings_jam_section_diagnostics">診斷</string>
+
+    <!-- Group Jam -->
+    <string name="jam_screen_title">群組 Jam</string>
+    <string name="jam_setup_create_tab">建立</string>
+    <string name="jam_setup_join_tab">加入</string>
+    <string name="jam_setup_create_hint">建立房間，然後將代碼分享給朋友。</string>
+    <string name="jam_setup_create_button">建立房間</string>
+    <string name="jam_setup_join_button">加入房間</string>
+    <string name="jam_setup_working">連線中…</string>
+    <string name="jam_setup_code_label">房間代碼</string>
+    <string name="jam_setup_code_placeholder">ABC123</string>
+    <string name="jam_session_connected">已連線</string>
+    <string name="jam_session_connecting">重新連線中…</string>
+    <string name="jam_invite_copy">複製代碼</string>
+    <string name="jam_invite_copied">已複製！</string>
+    <string name="jam_invite_share">分享</string>
+    <string name="jam_participants_heading">參與者（%1$d）</string>
+    <string name="jam_participants_host">主持人</string>
+    <string name="jam_participants_guest">聽眾</string>
+    <string name="jam_participants_waiting">正在等待聽眾加入…</string>
+    <string name="jam_participants_remove">移除</string>
+    <string name="jam_participants_ban">封鎖</string>
+    <string name="jam_participants_manage">管理</string>
+    <string name="jam_session_leave">離開房間</string>
+    <string name="jam_error_title">無法連線</string>
+    <string name="jam_error_dismiss">關閉</string>
+    <string name="jam_error_create">無法建立 Jam</string>
+    <string name="jam_error_join">無法加入 Jam</string>
+    <string name="jam_error_invalid_code">請輸入由英文字母和數字組成的六位房間代碼。</string>
+    <string name="jam_share_message">用代碼 %1$s 加入我的 Spotube Jam</string>
+    <string name="settings_jam_server_title">房間伺服器</string>
+    <string name="settings_jam_server_url">伺服器網址</string>
+    <string name="settings_jam_server_url_invalid">請輸入以 https:// 開頭的網址</string>
+    <string name="settings_jam_server_diagnostics_subtitle">建立房間前先檢查房間伺服器。</string>
+    <string name="settings_jam_server_note">Jam 使用 Spotube 的免費房間伺服器。若要自行架設，請部署 github.com/team-spotube/jam-server 中的伺服器並輸入其網址。</string>
+    <string name="settings_jam_section_you">你</string>
+    <string name="jam_connection_host">伺服器：%1$s</string>
+    <string name="jam_connection_missing">請在設定中指定房間伺服器，以建立或加入房間。</string>
+    <string name="jam_connection_settings">伺服器設定</string>
+    <string name="jam_participants_you">%1$s（你）</string>
+    <string name="jam_name_title">你的名稱</string>
+    <string name="jam_name_subtitle">Jam 裡的其他人會看到你是 %1$s</string>
+    <string name="jam_name_description">Jam 裡的每個人都看得到。留空即使用 %1$s。新名稱會在你下次建立或加入房間時生效。</string>
+    <string name="jam_name_too_long">最多 %1$d 個字元。</string>
+    <string name="jam_error_no_server">尚未設定 Jam 伺服器</string>
+    <string name="jam_error_server_unreachable">無法連線到 Jam 伺服器。請檢查網路，或 設定 → 群組 Jam 中的伺服器網址。</string>
+    <string name="jam_error_server_incompatible">Jam 伺服器的版本不相容。</string>
+    <string name="jam_error_room_not_found">沒有使用此代碼的房間。請檢查後再試一次。</string>
+    <string name="jam_error_room_full">此房間已滿。</string>
+    <string name="jam_error_banned">主持人已將你從此房間封鎖。</string>
+    <string name="jam_error_kicked">主持人已將你移出房間。</string>
+    <string name="jam_error_replaced">此房間已在這部裝置上再次開啟，因此這個連線已關閉。</string>
+
+    <string name="player_go_to_album">前往專輯</string>
+    <string name="player_sleep_timer">睡眠定時器</string>
+    <string name="player_track_details">曲目詳細資料</string>
+    <string name="player_play_content_description">播放</string>
+    <string name="player_pause_content_description">暫停</string>
+    <string name="player_nothing_playing">目前沒有播放內容</string>
+    <string name="player_add_to_queue_content_description">加入待播清單</string>
+
+    <string name="update_action_ignore">略過</string>
+    <string name="update_action_update">更新</string>
+    <string name="app_update_dialog_title">Spotube %1$s 已推出</string>
+    <string name="app_update_dialog_no_notes">前往 Spotube 下載頁面查看此版本的新功能。</string>
+    <string name="plugin_update_dialog_title">%1$s %2$s 已推出</string>
+    <string name="plugin_update_dialog_current_version">目前安裝版本：%1$s</string>
+    <string name="plugin_update_dialog_no_notes">前往外掛程式頁面查看此更新的新功能。</string>
+
+    <string name="welcome_skip">略過</string>
+    <string name="welcome_next">下一步</string>
+    <string name="welcome_back">上一步</string>
+    <string name="welcome_get_started">開始使用</string>
+    <string name="welcome_app_name">Spotube</string>
+    <string name="welcome_brand_freedom">音樂，無拘無束。</string>
+    <string name="welcome_brand_quiet_description">一款開放原始碼的播放器，帶你走進音樂的世界。\n任你探索，由你打造。</string>
+    <string name="welcome_donate_quiet_title">讓這個專案延續下去。</string>
+    <string name="welcome_donate_letter">Spotube 是由一群人打造的，而不是靠訂閱賺錢的企業。如果它已成為你日常生活的一部分，一點點支持就能幫助我們給予它應有的照顧。\n\n感謝你為獨立軟體留出一席之地。</string>
+    <string name="welcome_plugins_setup_guide">先從目錄外掛程式開始，用來尋找歌曲與播放清單。接著選擇音訊外掛程式來播放。歌詞與收聽紀錄為選用項目。在下方探索外掛程式，檢視其權限並安裝，然後在這裡選取。</string>
+    <string name="welcome_plugins_discover">探索外掛程式</string>
+    <string name="welcome_plugins_sources">你的來源</string>
+    <string name="welcome_plugins_retry">再試一次</string>
+    <string name="welcome_plugins_more">更多外掛程式</string>
+    <string name="welcome_plugins_discovery_empty">找不到新的外掛程式。你也可以從上方透過連結或 .smplug 檔案安裝。</string>
+    <string name="welcome_plugins_discovery_error">目前無法探索外掛程式。請再試一次，或透過連結或檔案安裝。</string>
+    <string name="welcome_step_welcome">歡迎</string>
+    <string name="welcome_step_support">支持</string>
+    <string name="welcome_step_plugins">外掛程式</string>
+    <string name="welcome_step_guide">指南</string>
+
+    <string name="welcome_guide_title">如何使用 Spotube</string>
+    <string name="welcome_guide_subtitle">只要四個簡單步驟，就能開始聆聽。</string>
+    <string name="welcome_guide_signin_title">登入</string>
+    <string name="welcome_guide_signin_desc">連結你的帳戶，或選擇你自己的目錄外掛程式。</string>
+    <string name="welcome_guide_search_title">搜尋並播放</string>
+    <string name="welcome_guide_search_desc">找到任何歌曲、專輯或藝人，然後按下播放。</string>
+    <string name="welcome_guide_offline_title">離線聆聽</string>
+    <string name="welcome_guide_offline_desc">下載曲目，沒有網路也能繼續播放。</string>
+    <string name="welcome_guide_lyrics_title">跟著歌詞唱</string>
+    <string name="welcome_guide_lyrics_desc">播放曲目時，從播放器開啟同步歌詞。</string>
+
+    <!-- Page 1: branding -->
+    <string name="welcome_brand_tagline">你的音樂，你的來源，你的規則。</string>
+    <string name="welcome_brand_subtitle">一款免費、開放原始碼的音樂播放器，由熱愛音樂的社群打造。</string>
+    <string name="welcome_brand_chip_open_source">開放原始碼</string>
+    <string name="welcome_brand_chip_no_ads">無廣告</string>
+    <string name="welcome_brand_chip_no_tracking">無遙測</string>
+    <string name="welcome_brand_chip_plugin_powered">外掛程式驅動</string>
+    <string name="welcome_lets_go">出發吧</string>
+
+    <!-- Page 2: donations -->
+    <string name="welcome_donate_eyebrow">支持者讓我們走下去</string>
+    <string name="welcome_donate_title">以熱情打造，因你而延續。</string>
+    <string name="welcome_donate_message">Spotube 百分之百免費、自由且開放原始碼 — 沒有廣告、沒有訂閱、沒有追蹤。每一項功能的存在，都是因為像你這樣的人選擇支持程式碼持續前進。</string>
+    <string name="welcome_donate_patreon_title">Patreon</string>
+    <string name="welcome_donate_patreon_tag">每月贊助</string>
+    <string name="welcome_donate_patreon_subtitle">支持持續的開發與基礎設施</string>
+    <string name="welcome_donate_bmac_title">Buy Me a Coffee</string>
+    <string name="welcome_donate_bmac_tag">請喝一杯咖啡</string>
+    <string name="welcome_donate_bmac_subtitle">小小打賞，為深夜寫程式加點油</string>
+    <string name="welcome_donate_opencollective_title">Open Collective</string>
+    <string name="welcome_donate_opencollective_tag">社群基金</string>
+    <string name="welcome_donate_opencollective_subtitle">透明、由社群治理的資金支持</string>
+    <string name="welcome_donate_thanks">衷心感謝你相信開放的音樂。</string>
+    <string name="welcome_donate_optional">支持完全是自願的 — 無論如何，Spotube 都會保持免費。</string>
+    <string name="welcome_donate_action">贊助</string>
+    <string name="welcome_donate_open_content_description">開啟 %1$s</string>
+
+    <!-- Support / donations -->
+    <string name="support_button_label">支持 Spotube</string>
+    <string name="support_dialog_title">支持 Spotube</string>
+    <string name="support_dialog_message">Spotube 免費、自由且開放原始碼 — 沒有廣告、沒有訂閱、沒有追蹤。如果它為你帶來快樂，歡迎考慮支持這個專案。</string>
+    <string name="support_dialog_reminder_hint">你可以在「設定 → 支持」中關閉這些提醒。</string>
+    <string name="support_dialog_dismiss">稍後再說</string>
+    <string name="settings_support_reminders_title">支持提醒</string>
+    <string name="settings_support_reminders_subtitle">每 7 天顯示一次溫和的提醒，邀請你支持這個專案。</string>
+
+    <!-- Page 3: plugins -->
+    <string name="welcome_plugins_eyebrow">模組化架構</string>
+    <string name="welcome_plugins_title">選擇你的音樂來源。</string>
+    <string name="welcome_plugins_subtitle">Spotube 將目錄探索、音訊串流與同步歌詞分開處理。在下方設定你的引擎，或隨時切換。</string>
+    <string name="welcome_plugins_metadata_title">中繼資料引擎</string>
+    <string name="welcome_plugins_metadata_description">負責音樂探索、搜尋、曲目清單與播放清單。</string>
+    <string name="welcome_plugins_audio_title">音訊引擎</string>
+    <string name="welcome_plugins_audio_description">取得並解碼要播放的音訊串流。</string>
+    <string name="welcome_plugins_lyrics_title">歌詞引擎</string>
+    <string name="welcome_plugins_lyrics_description">即時串流與時間同步的卡拉 OK 歌詞。</string>
+    <string name="welcome_plugins_scrobble_title">收聽紀錄引擎</string>
+    <string name="welcome_plugins_scrobble_description">將收聽紀錄傳送至 Last.fm 或 ListenBrainz。</string>
+    <string name="welcome_plugins_badge_active">使用中</string>
+    <string name="welcome_plugins_badge_builtin">內建</string>
+    <string name="welcome_plugins_badge_ready">就緒</string>
+    <string name="welcome_plugins_badge_optional">選用</string>
+    <string name="welcome_plugins_none_selected">選擇引擎</string>
+    <string name="welcome_plugins_installed_section">已安裝的引擎</string>
+    <string name="welcome_plugins_set_default">設為預設</string>
+    <string name="welcome_plugins_builtin_note">NewPipe YouTube 與 LRCLib Lyrics 皆為內建，安裝後即可直接串流。</string>
+    <string name="welcome_plugins_tip">隨時可在「設定 → 外掛程式」中管理或新增社群外掛程式。</string>
+
+    <!-- Page 4: how it works -->
+    <string name="welcome_how_eyebrow">復古摩登架構</string>
+    <string name="welcome_how_title">純粹 Hi-Fi，沒有中間人</string>
+    <string name="welcome_how_subtitle">以下說明 Spotube 如何直接在你的裝置上協調去中心化的播放。</string>
+    <string name="welcome_how_status_badge">直接點對點 • 256 KBPS OPUS</string>
+    <string name="welcome_how_mockup_title">藍調時刻</string>
+    <string name="welcome_how_mockup_artist">Spotube · 播放器示範</string>
+    <string name="welcome_how_mockup_lyric">為片刻之間的時光，送上一點音樂。</string>
+    <string name="welcome_how_step_search_title">1. 去中心化探索</string>
+    <string name="welcome_how_step_search_desc">查詢會直接送到你選擇的目錄外掛程式。Spotube 絕不分析你的喜好。</string>
+    <string name="welcome_how_step_stream_title">2. 直接解析串流</string>
+    <string name="welcome_how_step_stream_desc">音訊直接從內容伺服器串流到你的裝置。沒有代理轉送，也沒有遠端資料蒐集。</string>
+    <string name="welcome_how_step_playback_title">3. 本機 DSP 與播放</string>
+    <string name="welcome_how_step_playback_desc">在本機解碼並快取，提供等化器控制及選用的離線下載。</string>
+    <string name="welcome_how_step_lyrics_title">4. 同步歌詞與 Jam</string>
+    <string name="welcome_how_step_lyrics_desc">卡拉 OK 歌詞跟隨播放時間軸，並支援 LAN 遠端控制與群組 Jam。</string>
+    <string name="welcome_how_footer">沒有中間伺服器。播放直接在你的裝置上進行 — 隱私從設計開始。</string>
+
+    <!-- Devices: play destination picker -->
+    <string name="devices_destination_title">選擇裝置</string>
+    <string name="devices_destination_prompt">%1$s：「%2$s」</string>
+    <string name="devices_destination_action_play">播放</string>
+    <string name="devices_destination_action_add_to_queue">加入待播清單</string>
+    <string name="devices_destination_action_play_next">下一首播放</string>
+    <string name="devices_destination_this_device">這部裝置</string>
+    <string name="devices_destination_this_device_subtitle">在這部裝置上</string>
+    <string name="devices_destination_remote_device">遠端裝置</string>
+    <string name="devices_destination_remote_device_host">遠端裝置（%1$s）</string>
+    <string name="devices_destination_remote_subtitle">在已連線的裝置上</string>
+
+    <!-- Devices: connection errors -->
+    <string name="devices_error_connection_failed">連線失敗</string>
+    <string name="devices_error_connection_lost">連線中斷</string>
+    <string name="devices_error_send_failed">傳送失敗</string>
+    <string name="devices_error_discovery_failed">搜尋失敗：%1$s</string>
+    <string name="devices_error_connect_failed">無法連線：%1$s</string>
+
+    <!-- Devices: discovery screen -->
+    <string name="devices_title">裝置</string>
+    <string name="devices_refresh">重新整理</string>
+    <string name="devices_disconnect">中斷連線</string>
+    <string name="devices_connecting">連線中...</string>
+    <string name="devices_searching">正在搜尋網路上的裝置...</string>
+    <string name="devices_empty">找不到裝置</string>
+    <string name="devices_empty_hint">請確認另一部裝置已在設定中啟用「允許遠端控制」。</string>
+    <string name="devices_unknown_device">未知裝置</string>
+    <string name="devices_resolving">解析中...</string>
+
+    <!-- Devices: remote control screen -->
+    <string name="devices_remote_title">遠端控制</string>
+    <string name="devices_remote_disconnected">已中斷連線</string>
+    <string name="devices_remote_connection_error">連線錯誤：%1$s</string>
+    <string name="devices_remote_unknown_track">未知曲目</string>
+    <string name="devices_remote_unknown_artist">未知藝人</string>
+    <string name="devices_remote_volume">音量</string>
+    <string name="devices_remote_remove_from_queue">從待播清單移除</string>
+    <string name="devices_remote_more_options">更多選項</string>
+
+    <!-- Group Jam: play destination picker -->
+    <string name="jam_destination_title">要在哪裡播放？</string>
+    <string name="jam_destination_message">你有一個進行中的 Jam。請選擇要在哪裡播放這個合輯。</string>
+    <string name="jam_destination_play_here">在這裡播放</string>
+    <string name="jam_destination_suggest">推薦到 Jam</string>
+
+    <!-- Group Jam: connection errors -->
+    <string name="jam_error_connection_failed">連線失敗</string>
+    <string name="jam_error_connection_lost">連線中斷</string>
+
+
+    <!-- Group Jam: queue snackbar -->
+    <string name="jam_queue_added_track">已加入 Jam 待播清單</string>
+    <plurals name="jam_queue_added_tracks">
+        <item quantity="other">已將 %1$d 首加入 Jam 待播清單</item>
+    </plurals>
+
+    <!-- Remote control: connection request dialog -->
+    <string name="remote_request_title">遠端控制要求</string>
+    <string name="remote_request_message">「%1$s」想要控制這部裝置上的播放。</string>
+    <string name="remote_request_deny">拒絕</string>
+    <string name="remote_request_allow">允許</string>
+    <string name="remote_request_allow_always">一律允許</string>
+
+    <!-- Search -->
+    <string name="search_results_title">搜尋結果</string>
+    <string name="search_tab_all">全部</string>
+    <string name="search_section_tracks">曲目</string>
+    <string name="search_section_users">使用者</string>
+    <string name="search_no_search_types">沒有可用的搜尋類型</string>
+    <string name="search_start_typing">輸入文字開始搜尋</string>
+    <string name="search_start_typing_tracks">輸入文字開始搜尋曲目</string>
+    <string name="search_no_results">找不到結果</string>
+    <string name="search_see_all">查看全部</string>
+    <string name="search_searching">搜尋中</string>
+    <string name="search_loading_tracks">正在載入曲目...</string>
+    <string name="search_loading_albums">正在載入專輯...</string>
+    <string name="search_loading_artists">正在載入藝人...</string>
+    <string name="search_loading_playlists">正在載入播放清單...</string>
+    <string name="search_loading_users">正在載入使用者...</string>
+    <string name="search_no_albums">找不到專輯</string>
+    <string name="search_no_artists">找不到藝人</string>
+    <string name="search_no_playlists">找不到播放清單</string>
+    <string name="search_no_users">找不到使用者</string>
+    <string name="search_warm_crates">正在翻找唱片箱...</string>
+    <string name="search_warm_cosmos">正在搜尋宇宙...</string>
+    <string name="search_warm_speakers">正在暖機喇叭...</string>
+    <string name="search_warm_vinyl">正在擦拭黑膠唱片...</string>
+    <string name="search_warm_music_gods">正在請教音樂之神...</string>
+    <string name="search_warm_antennas">正在調整天線...</string>
+    <string name="search_warm_records">正在翻閱唱片...</string>
+    <string name="search_error_capabilities">無法載入搜尋功能</string>
+    <string name="search_error_search">搜尋失敗</string>
+    <string name="search_error_tracks">無法搜尋曲目</string>
+    <string name="search_error_albums">無法搜尋專輯</string>
+    <string name="search_error_artists">無法搜尋藝人</string>
+    <string name="search_error_playlists">無法搜尋播放清單</string>
+    <string name="search_error_users">無法搜尋使用者</string>
+
+    <!-- Home -->
+    <string name="home_title_browse">瀏覽</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_mode_synced">同步</string>
+    <string name="lyrics_mode_plain">純文字</string>
+    <string name="lyrics_no_synced">沒有可用的同步歌詞</string>
+    <string name="lyrics_no_plain">沒有可用的純文字歌詞</string>
+
+    <!-- Settings: audio format/quality labels -->
+    <string name="settings_audio_format_label">%1$s（%2$s）</string>
+    <string name="settings_audio_quality_lossy">%1$d kbps</string>
+    <string name="settings_audio_quality_lossless">%1$s kHz • %2$d 聲道</string>
+    <string name="search_error_no_metadata_plugin">未選取中繼資料外掛程式</string>
+
+    <!-- Common -->
+    <string name="common_back">返回</string>
+    <string name="common_retry">重試</string>
+    <string name="common_close_dialog">關閉對話框</string>
+    <string name="common_loading">載入中...</string>
+    <string name="common_unknown">未知</string>
+    <string name="common_unknown_error">未知錯誤</string>
+
+    <!-- Media cards -->
+    <string name="media_user">使用者</string>
+    <string name="media_playlist">播放清單</string>
+
+    <!-- Error display -->
+    <string name="error_title">我們深感抱歉</string>
+    <string name="error_description">目前有些功能無法正常運作。你的使用體驗對我們很重要，我們正盡全力修正。請再試一次，或查看下方的錯誤詳細資料。</string>
+    <string name="error_details">錯誤詳細資料</string>
+    <string name="error_copy_to_clipboard">複製到剪貼簿</string>
+    <string name="error_view_full_log">檢視完整記錄</string>
+    <string name="error_full_log_title">完整錯誤記錄</string>
+
+    <!-- Collection details -->
+    <string name="collection_details_shuffle">隨機播放</string>
+    <string name="collection_details_shuffle_play">隨機播放</string>
+    <string name="collection_details_follow">追蹤</string>
+    <string name="collection_details_unfollow">取消追蹤</string>
+    <string name="collection_details_edit_playlist">編輯播放清單</string>
+    <string name="collection_details_by_owner">由 %1$s 建立</string>
+
+    <!-- Track options -->
+    <string name="track_options_title">曲目選項</string>
+    <string name="track_options_add_to_jam">加入 Jam</string>
+    <string name="track_options_start_radio">開始播放電台</string>
+    <string name="track_options_play_next">下一首播放</string>
+    <string name="track_options_move_to_next">移至下一首</string>
+    <string name="track_options_remove_from_queue">從待播清單移除</string>
+    <string name="track_options_remove_from_favorites">從最愛中移除</string>
+    <string name="track_options_save_as_favorite">加入最愛</string>
+    <string name="track_options_add_to_playlist">加入播放清單</string>
+    <string name="track_options_download">下載</string>
+    <string name="track_options_share">分享</string>
+
+    <!-- Track list -->
+    <string name="track_list_sort_original">原始順序</string>
+    <string name="track_list_sort_title">標題</string>
+    <string name="track_list_sort_artist">藝人</string>
+    <string name="track_list_sort_album">專輯</string>
+    <string name="track_list_sort_duration">長度</string>
+    <string name="track_list_sort">排序</string>
+    <string name="track_list_no_tracks">找不到曲目</string>
+    <string name="track_list_filter_placeholder">篩選</string>
+    <string name="track_list_bulk_actions">批次操作</string>
+    <string name="track_list_download_all">全部下載</string>
+    <string name="track_list_download_count">下載 %1$d 首</string>
+    <string name="track_list_add_all_to_queue">全部加入待播清單</string>
+    <string name="track_list_add_count_to_queue">將 %1$d 首加入待播清單</string>
+    <string name="track_list_play_all_next">全部設為下一首播放</string>
+    <string name="track_list_play_count_next">將 %1$d 首設為下一首播放</string>
+    <string name="track_list_add_all_to_playlist">全部加入播放清單</string>
+    <string name="track_list_add_count_to_playlist">將 %1$d 首加入播放清單</string>
+    <string name="track_list_add_all_to_jam">全部加入 Jam</string>
+    <string name="track_list_add_count_to_jam">將 %1$d 首加入 Jam</string>
+    <string name="track_list_more_artists">+%1$d 位</string>
+
+    <!-- WebView -->
+    <string name="webview_no_url">沒有可載入的 URL</string>
+    <string name="webview_go_back">返回上一頁</string>
+    <string name="webview_go_forward">前往下一頁</string>
+
+    <!-- Blacklist -->
+    <string name="blacklist_filter_placeholder">篩選封鎖清單...</string>
+    <string name="blacklist_empty">沒有已封鎖的項目</string>
+    <string name="blacklist_no_results">沒有符合「%1$s」的已封鎖項目</string>
+    <string name="blacklist_section_tracks">曲目</string>
+    <string name="blacklist_item_track">曲目</string>
+    <string name="blacklist_add">加入封鎖清單</string>
+    <string name="blacklist_remove">從封鎖清單移除</string>
+
+    <!-- Downloads -->
+    <string name="downloads_error_no_metadata">沒有曲目中繼資料</string>
+    <string name="downloads_error_stream_unresolved_short">無法解析串流 URL</string>
+    <string name="downloads_error_stream_unresolved">無法解析串流 URL。請先嘗試播放此曲目。</string>
+
+    <!-- Saved tracks -->
+    <string name="saved_tracks_title">已儲存的曲目</string>
+    <string name="saved_tracks_owner_you">你</string>
+
+    <!-- Artist -->
+    <string name="artist_following">追蹤中</string>
+    <string name="artist_top_tracks">熱門曲目</string>
+    <string name="artist_play_top_tracks">播放熱門曲目</string>
+    <string name="artist_add_top_tracks_to_queue">將熱門曲目加入待播清單</string>
+    <string name="artist_related_artists">相關藝人</string>
+    <string name="artist_featured_playlists">精選播放清單</string>
+    <string name="artist_error_load_failed">無法載入藝人總覽</string>
+    <string name="artist_followers_unavailable">無法取得追蹤者人數</string>
+    <string name="artist_followers_thousands">%1$sK 位追蹤者</string>
+    <string name="artist_followers_millions">%1$sM 位追蹤者</string>
+    <string name="artist_followers_billions">%1$sB 位追蹤者</string>
+    <plurals name="artist_followers_count">
+        <item quantity="other">%1$d 位追蹤者</item>
+    </plurals>
+
+    <!-- Player -->
+    <string name="player_like_content_description">喜歡</string>
+    <string name="player_unlike_content_description">取消喜歡</string>
+    <string name="player_fallback_title">無曲目標題</string>
+    <string name="player_fallback_artists">無藝人</string>
+    <string name="player_unknown_album">未知專輯</string>
+    <string name="player_seek_label">播放進度</string>
+    <string name="player_volume_label">音量</string>
+    <string name="player_enable_shuffle_content_description">開啟隨機播放</string>
+    <string name="player_disable_shuffle_content_description">關閉隨機播放</string>
+    <string name="player_previous_content_description">上一首</string>
+    <string name="player_next_content_description">下一首</string>
+    <string name="player_play_or_pause_content_description">播放或暫停</string>
+    <string name="player_loop_mode_none">重複播放：關閉</string>
+    <string name="player_loop_mode_one">重複播放：單曲</string>
+    <string name="player_loop_mode_all">重複播放：全部</string>
+    <string name="player_mute_content_description">靜音</string>
+    <string name="player_unmute_content_description">取消靜音</string>
+    <string name="player_more_options_content_description">更多選項</string>
+    <string name="player_options_content_description">播放器選項</string>
+    <string name="player_collapse_content_description">收合播放器</string>
+    <string name="player_expand_lyrics_content_description">展開歌詞</string>
+    <string name="player_now_playing">現正播放</string>
+    <string name="player_lyrics">歌詞</string>
+    <string name="player_alternative_source">替代來源</string>
+    <string name="player_alternative_source_content_description">替代來源</string>
+    <string name="player_download">下載</string>
+    <string name="player_download_status_downloaded">已下載</string>
+    <string name="player_download_status_downloading">下載中...</string>
+    <string name="player_download_already_downloaded">已經下載過了</string>
+    <string name="player_download_retrying">正在重試下載...</string>
+    <string name="player_download_started">正在下載 %1$s</string>
+    <string name="player_sleep_timer_remaining">播放將在 %1$s 後暫停。</string>
+    <string name="player_sleep_timer_description">在所選的分鐘數後暫停播放。</string>
+    <string name="player_sleep_timer_minutes_label">分鐘</string>
+    <string name="player_sleep_timer_minutes_placeholder">請選擇 1 到 600 分鐘</string>
+    <string name="player_sleep_timer_cancel">取消定時器</string>
+    <string name="player_sleep_timer_start">開始</string>
+    <string name="player_track_details_stream_mismatch">播放 URL 是以不同的串流設定解析的。醒目標示的串流符合你目前的偏好；使用中的 URL 會在下次要求串流時更新。</string>
+    <string name="player_track_details_matched_source">配對的音訊來源</string>
+    <string name="player_track_details_loading_source">正在載入配對的來源…</string>
+    <string name="player_track_details_source_not_needed">播放本機快取檔案時，不需要配對的遠端來源。</string>
+    <string name="player_track_details_no_source">沒有可用的配對來源。</string>
+    <string name="player_track_details_no_cached_source">此曲目沒有已快取的配對音訊來源。</string>
+    <string name="player_track_details_streams_not_cached">串流詳細資料尚未快取。請先播放此曲目以載入資料。</string>
+    <string name="player_track_details_load_failed">無法載入曲目詳細資料。</string>
+    <string name="player_track_details_available_streams">可用的串流</string>
+    <string name="player_track_details_served_from_cache_description">此曲目正從本機快取播放，本次播放不會使用串流變體。</string>
+    <string name="player_track_details_loading_streams">正在載入串流…</string>
+    <string name="player_track_details_no_streams">此來源沒有可用的串流。</string>
+    <string name="player_track_details_selected_stream_content_description">目前選取的串流</string>
+    <string name="player_track_details_matches_preference">符合你的串流格式與品質偏好</string>
+    <string name="player_track_details_active_url">使用中的播放 URL</string>
+    <string name="player_track_details_served_from_cache">從本機快取播放</string>
+    <string name="player_track_details_metadata_track">中繼資料曲目</string>
+    <string name="player_track_details_title">標題</string>
+    <string name="player_track_details_id">ID</string>
+    <string name="player_track_details_album">專輯</string>
+    <string name="player_track_details_confidence">信賴度</string>
+    <string name="player_track_details_external_uri">外部 URI</string>
+    <string name="player_track_details_album_id">專輯 ID</string>
+    <string name="player_track_details_album_type">專輯類型</string>
+    <string name="player_track_details_album_release_date">專輯發行日期</string>
+    <string name="player_track_details_album_track_count">專輯曲目數</string>
+    <string name="player_track_details_album_genres">專輯類型風格</string>
+    <string name="player_track_details_duration">長度</string>
+    <string name="player_track_details_track_number">曲目編號</string>
+    <string name="player_track_details_disc_number">光碟編號</string>
+    <string name="player_track_details_explicit">兒少不宜</string>
+    <string name="player_track_details_popularity">熱門度</string>
+    <string name="player_track_details_isrc">ISRC</string>
+    <string name="player_track_details_thumbnail_urls">縮圖 URL</string>
+
+    <!-- Shell -->
+    <string name="shell_sidebar_toggle_content_description">切換側邊欄</string>
+
+    <!-- Alternative track -->
+    <string name="alternative_track_title">替代來源</string>
+    <string name="alternative_track_no_track">目前沒有播放中的曲目</string>
+    <string name="alternative_track_searching">正在搜尋替代來源...</string>
+    <string name="alternative_track_empty">找不到替代來源</string>
+    <string name="alternative_track_confidence">信賴度：%1$d%</string>
+    <string name="alternative_track_active_source">使用中的來源</string>
+
+    <!-- Queue -->
+    <string name="queue_participant_kick">踢出</string>
+    <string name="queue_participant_kick_description">將對方移出這個 Jam</string>
+    <string name="queue_participant_ban_description">踢出並禁止對方再次加入</string>
+    <string name="queue_participant_remove_suggestions">移除推薦曲目</string>
+    <string name="queue_participant_remove_suggestions_description">移除對方加入待播清單的所有曲目</string>
+    <string name="queue_reorder_content_description">重新排序</string>
+    <string name="queue_remove_from_queue">從待播清單移除</string>
+    <string name="queue_item_subtitle_added_by">%1$s • 由 %2$s 加入</string>
+
+    <!-- Playlist -->
+    <string name="playlist_owner_unknown">未知</string>
+    <string name="playlist_loading_title">正在載入播放清單...</string>
+    <string name="playlist_add_tracks_button">新增曲目</string>
+    <string name="playlist_add_tracks_title">將曲目加入播放清單</string>
+    <string name="playlist_add_tracks_search_placeholder">搜尋曲目...</string>
+    <string name="playlist_add_tracks_search_content_description">搜尋</string>
+    <string name="playlist_add_tracks_no_results">找不到曲目</string>
+    <string name="playlist_add_tracks_hint">搜尋要加入的曲目</string>
+    <string name="playlist_add_tracks_done">完成</string>
+    <string name="playlist_add_tracks_add">新增</string>
+    <string name="playlist_add_tracks_added_content_description">已新增</string>
+
+    <!-- Album -->
+    <string name="album_loading_title">正在載入專輯...</string>
+
+    <!-- Library -->
+    <string name="library_add_to_playlist_title">加入你的播放清單</string>
+    <string name="library_add_to_playlist_search_content_description">搜尋</string>
+    <string name="library_add_to_playlist_search_placeholder">搜尋你的播放清單...</string>
+    <string name="library_add_to_playlist_loading">正在載入你的播放清單...</string>
+    <string name="library_add_to_playlist_empty">你還沒有自己的播放清單。\n建立一個來加入曲目吧。</string>
+    <string name="library_playlist_form_create_title">建立播放清單</string>
+    <string name="library_playlist_form_edit_title">編輯播放清單</string>
+    <string name="library_playlist_form_create">建立</string>
+    <string name="library_playlist_form_name_label">名稱</string>
+    <string name="library_playlist_form_name_placeholder">播放清單名稱</string>
+    <string name="library_playlist_form_description_label">說明</string>
+    <string name="library_playlist_form_description_placeholder">說明（選填）</string>
+    <string name="library_playlist_form_public">公開</string>
+    <string name="library_playlist_form_public_description">所有人都能看到這個播放清單</string>
+    <string name="library_playlist_form_collaborative">協作</string>
+    <string name="library_playlist_form_collaborative_description">其他人可以將曲目加入這個播放清單</string>
+    <string name="library_playlist_form_cover_image">封面圖片</string>
+    <string name="library_playlist_form_cover_content_description">播放清單封面</string>
+    <string name="library_playlist_form_no_image">沒有圖片</string>
+    <string name="library_playlist_form_change_image">更換圖片</string>
+    <string name="library_playlist_form_pick_image">選擇圖片</string>
+
+    <!-- Plugin install / errors -->
+    <string name="plugin_action_install">安裝</string>
+    <string name="plugin_action_replace">取代</string>
+    <string name="plugin_error_plugin_json_missing">在 zip 檔案中找不到 plugin.json</string>
+    <string name="plugin_error_zipline_manifest_missing">在 zip 檔案中找不到 manifest.zipline.json</string>
+    <string name="plugin_error_invalid_plugin_json">plugin.json 格式無效：%1$s</string>
+    <string name="plugin_error_read_failed">無法讀取外掛程式：%1$s</string>
+    <string name="plugin_error_install_failed">無法安裝外掛程式：%1$s</string>
+    <string name="plugin_error_update_needs_confirmation">%1$s 有較新的版本。安裝前請先確認更新。</string>
+    <string name="plugin_error_replace_needs_confirmation">%1$s 已經安裝。安裝前請先確認取代。</string>
+    <string name="plugin_error_builtin_add">內建外掛程式已包含在內，無法再次新增。</string>
+    <string name="plugin_error_builtin_remove">無法移除內建外掛程式。</string>
+    <string name="plugin_error_api_version_invalid">%1$s 宣告的 apiVersion 無效（%2$s）。應為與 %3$s 相容的語意化版本。</string>
+    <string name="plugin_error_app_api_version_invalid">Spotube 外掛程式 API 版本 %1$s 無效。</string>
+    <string name="plugin_error_api_incompatible">%1$s 的目標為外掛程式 API %2$s，但 Spotube 支援的是不相容變更後的外掛程式 API %3$s。請安裝針對相同主要 API 版本建置的外掛程式。</string>
+
+    <!-- Plugin install prompts -->
+    <string name="plugin_prompt_incompatible_title">外掛程式 API 不相容</string>
+    <string name="plugin_prompt_install_title">要安裝外掛程式嗎？</string>
+    <string name="plugin_prompt_install_message">%1$s 將加入你已安裝的外掛程式。</string>
+    <string name="plugin_prompt_update_title">要更新外掛程式嗎？</string>
+    <string name="plugin_prompt_update_message">已安裝舊版（%1$s）。要更新至 %2$s 嗎？</string>
+    <string name="plugin_prompt_replace_title">要取代已安裝的外掛程式嗎？</string>
+    <string name="plugin_prompt_replace_invalid_incoming">%1$s 使用了無效的語意化版本（%2$s），無法作為更新進行比較。仍要取代已安裝的外掛程式嗎？</string>
+    <string name="plugin_prompt_replace_invalid_installed">已安裝的版本（%1$s）無法以語意化版本進行比較。要以 %2$s 取代嗎？</string>
+    <string name="plugin_prompt_replace_same_version">版本 %1$s 已經安裝。要以提供的版本取代現有的外掛程式嗎？</string>
+    <string name="plugin_prompt_replace_downgrade">已安裝的版本 %1$s 比提供的版本 %2$s 新。仍要取代嗎？</string>
+    <string name="plugin_prompt_replace_generic">要以提供的版本取代已安裝的外掛程式嗎？</string>
+
+    <!-- Plugin info dialog -->
+    <string name="plugin_info_label_format">%1$s：</string>
+    <string name="plugin_info_version">版本</string>
+    <string name="plugin_info_api_version">API 版本</string>
+    <string name="plugin_info_author">作者</string>
+    <string name="plugin_info_license">授權條款</string>
+    <string name="plugin_info_capabilities">權限</string>
+    <string name="plugin_info_abilities">功能</string>
+    <string name="plugin_info_repository">儲存庫</string>
+    <string name="plugin_info_contact">聯絡方式</string>
+    <string name="plugin_info_report_bugs">回報錯誤</string>
+    <string name="plugin_support_dialog_title">支持 %1$s</string>
+
+    <!-- Plugin discovery -->
+    <string name="plugin_discover_badge_official">官方</string>
+    <string name="plugin_discover_badge_verified">已驗證</string>
+    <string name="plugin_discover_stars_content_description">GitHub 星星數</string>
+    <string name="plugin_discover_repository_content_description">GitHub 儲存庫 URL</string>
+
+    <!-- Plugin release install dialog -->
+    <string name="plugin_install_no_releases">找不到發行版本</string>
+    <string name="plugin_install_select_release_label">選擇發行版本</string>
+    <string name="plugin_install_select_release_placeholder">選擇一個發行版本</string>
+    <string name="plugin_install_prerelease">預先發行版</string>
+    <string name="plugin_install_release_notes">版本資訊</string>
+
+    <!-- App navigation -->
+    <string name="nav_home">首頁</string>
+    <string name="nav_search">搜尋</string>
+    <string name="nav_group_on_device">本機</string>
+    <string name="nav_group_connect">連線</string>
+    <string name="nav_devices">裝置</string>
+
+    <!-- System tray (desktop) -->
+    <string name="tray_hide_window">隱藏視窗</string>
+    <string name="tray_show_window">顯示視窗</string>
+    <string name="tray_next_track">下一首</string>
+    <string name="tray_previous_track">上一首</string>
+    <string name="tray_shuffle">隨機播放</string>
+    <string name="tray_loop">重複播放</string>
+    <string name="tray_loop_off">重複播放：關閉</string>
+    <string name="tray_loop_one">重複播放：單曲</string>
+    <string name="tray_loop_all">重複播放：全部</string>
+    <string name="tray_volume">音量：%1$d%</string>
+    <string name="tray_volume_up">音量 +</string>
+    <string name="tray_volume_down">音量 -</string>
+    <string name="tray_mute">靜音</string>
+    <string name="tray_unmute">取消靜音</string>
+    <string name="tray_like_track">喜歡此曲目</string>
+    <string name="tray_unlike_track">取消喜歡此曲目</string>
+    <string name="tray_exit">結束</string>
+
+    <!-- Desktop window controls -->
+    <string name="app_window_minimize">最小化</string>
+    <string name="app_window_maximize">最大化</string>
+    <string name="app_window_restore">還原</string>
+    <string name="app_window_close">關閉</string>
+
+    <!-- Android playback notification -->
+    <string name="notification_playback_channel_name">播放</string>
+    <string name="notification_playback_channel_description">媒體播放控制項</string>
+
+    <!-- Android Auto / media browser -->
+    <string name="media_browser_browse">瀏覽</string>
+    <string name="media_browser_now_playing">現正播放</string>
+    <string name="media_browser_featured">精選</string>
+    <string name="media_browser_saved_tracks">已儲存的曲目</string>
+    <string name="media_browser_top_tracks">熱門曲目</string>
+</resources>

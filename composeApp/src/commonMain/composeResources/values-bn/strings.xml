@@ -1,0 +1,926 @@
+<!--
+  ~ Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="queue_title">কিউ</string>
+    <string name="queue_clear_queue">কিউ খালি করুন</string>
+    <string name="queue_filter_queue">কিউ ফিল্টার করুন...</string>
+    <string name="queue_no_queue_entries">কিউতে কিছু নেই</string>
+
+    <string name="search_placeholder">গান, শিল্পী, অ্যালবাম খুঁজুন...</string>
+    <string name="search_clear_history">সব হিস্ট্রি মুছুন</string>
+    <string name="search_filter_placeholder">খুঁজুন...</string>
+
+    <!-- Library toolbar -->
+    <string name="library_screen_title">আপনার লাইব্রেরি</string>
+    <string name="library_toolbar_compact_title">লাইব্রেরি</string>
+    <string name="library_tab_playlists">প্লেলিস্ট</string>
+    <string name="library_tab_albums">অ্যালবাম</string>
+    <string name="library_tab_artists">শিল্পী</string>
+    <string name="library_tab_local_tracks">লোকাল ট্র্যাক</string>
+    <string name="library_tab_downloads">ডাউনলোড</string>
+    <string name="library_filter_playlists">সেভ করা প্লেলিস্ট খুঁজুন…</string>
+    <string name="library_filter_albums">সেভ করা অ্যালবাম খুঁজুন…</string>
+    <string name="library_filter_artists">সেভ করা শিল্পী খুঁজুন…</string>
+    <string name="library_filter_local_tracks">ফোল্ডার বা ট্র্যাক খুঁজুন…</string>
+    <string name="library_action_search">লাইব্রেরি ফিল্টার করুন</string>
+    <string name="library_action_close_search">ফিল্টার বন্ধ করুন</string>
+    <string name="library_action_create_playlist">প্লেলিস্ট তৈরি করুন</string>
+    <string name="library_action_refresh_local_tracks">লোকাল ট্র্যাক রিফ্রেশ করুন</string>
+    <string name="library_action_grid_view">গ্রিড ভিউতে যান</string>
+    <string name="library_action_list_view">লিস্ট ভিউতে যান</string>
+    <string name="library_playlists_empty">কোনো সেভ করা প্লেলিস্ট নেই</string>
+    <string name="library_playlists_no_results">“%1$s”-এর সাথে মেলে এমন কোনো প্লেলিস্ট নেই</string>
+    <string name="library_albums_empty">কোনো সেভ করা অ্যালবাম নেই</string>
+    <string name="library_albums_no_results">“%1$s”-এর সাথে মেলে এমন কোনো অ্যালবাম নেই</string>
+    <string name="library_artists_empty">কোনো সেভ করা শিল্পী নেই</string>
+    <string name="library_artists_no_results">“%1$s”-এর সাথে মেলে এমন কোনো শিল্পী নেই</string>
+
+    <!-- Local media -->
+    <string name="library_local_folders">ফোল্ডার</string>
+    <string name="library_local_folder">ফোল্ডার</string>
+    <string name="library_local_summary">%1$s • %2$s</string>
+    <plurals name="library_local_tracks_count">
+        <item quantity="one">%1$dটি ট্র্যাক</item>
+        <item quantity="other">%1$dটি ট্র্যাক</item>
+    </plurals>
+    <plurals name="library_local_folders_count">
+        <item quantity="one">%1$dটি ফোল্ডার</item>
+        <item quantity="other">%1$dটি ফোল্ডার</item>
+    </plurals>
+    <string name="library_local_back">ফোল্ডারে ফিরে যান</string>
+    <string name="library_local_play_folder">ফোল্ডার প্লে করুন</string>
+    <string name="library_local_permission_title">অডিও অ্যাক্সেস প্রয়োজন</string>
+    <string name="library_local_permission_description">আপনার ডিভাইসের গান দেখতে অডিও অ্যাক্সেসের অনুমতি দিন।</string>
+    <string name="library_local_grant_access">অনুমতি দিন</string>
+    <string name="library_local_empty_folders">কোনো লোকাল ফোল্ডার পাওয়া যায়নি</string>
+    <string name="library_local_empty_tracks">এই ফোল্ডারে কোনো ট্র্যাক নেই</string>
+    <string name="library_local_no_results">মেলে এমন কোনো ফোল্ডার বা ট্র্যাক নেই</string>
+    <string name="library_local_refresh_failed">লোকাল মিডিয়া রিফ্রেশ করা যায়নি</string>
+
+    <!-- Downloads -->
+    <string name="downloads_summary">%1$dটি চলমান • %2$dটি সম্পন্ন</string>
+    <string name="downloads_clear_completed">সম্পন্নগুলো মুছুন</string>
+    <string name="downloads_empty">এখনো কোনো ডাউনলোড নেই</string>
+    <string name="downloads_status_downloading">ডাউনলোড হচ্ছে %1$d%</string>
+    <string name="downloads_status_queued">অপেক্ষমাণ</string>
+    <string name="downloads_status_completed">সম্পন্ন</string>
+    <string name="downloads_status_cancelled">বাতিল</string>
+    <string name="downloads_status_failed">ব্যর্থ</string>
+    <string name="downloads_status_failed_error">ব্যর্থ: %1$s</string>
+    <string name="downloads_action_cancel">ডাউনলোড বাতিল করুন</string>
+    <string name="downloads_action_retry">আবার ডাউনলোড করুন</string>
+    <string name="downloads_action_remove">ডাউনলোড সরান</string>
+
+    <!-- Shared media items -->
+    <string name="media_artist">শিল্পী</string>
+    <string name="media_blacklisted">ব্ল্যাকলিস্টেড</string>
+    <string name="media_liked_tracks">পছন্দের ট্র্যাক</string>
+    <string name="media_saved_songs">আপনার সেভ করা গান</string>
+    <string name="media_unknown_artist">অজানা শিল্পী</string>
+    <string name="media_preview_title">ট্র্যাকের নাম</string>
+    <string name="media_preview_subtitle">শিল্পীর নাম</string>
+
+    <string name="accessibility_selected">নির্বাচিত</string>
+
+    <string name="settings_screen_title">সেটিংস</string>
+
+    <string name="settings_section_plugins">প্লাগইন</string>
+    <string name="settings_section_language_region">ভাষা ও অঞ্চল</string>
+    <string name="settings_section_appearance">অ্যাপিয়ারেন্স</string>
+    <string name="settings_section_playback">প্লেব্যাক</string>
+    <string name="settings_section_downloads">ডাউনলোড</string>
+    <string name="settings_section_caching">ক্যাশিং</string>
+    <string name="settings_section_desktop">ডেস্কটপ</string>
+    <string name="settings_section_updates">আপডেট</string>
+    <string name="settings_section_support">সাপোর্ট</string>
+    <string name="settings_section_about">সম্পর্কে</string>
+
+    <string name="common_close">বন্ধ করুন</string>
+    <string name="common_save">সেভ করুন</string>
+    <string name="common_cancel">বাতিল</string>
+
+    <string name="settings_language_title">ভাষা</string>
+    <string name="settings_language_subtitle_current">অ্যাপ ইন্টারফেসের ভাষা। বর্তমান: %1$s</string>
+    <string name="settings_language_system_default">সিস্টেম ডিফল্ট</string>
+    <string name="settings_country_title">দেশ</string>
+    <string name="settings_country_subtitle_current">কনটেন্ট ও প্রাপ্যতার জন্য দেশ। বর্তমান: %1$s</string>
+    <string name="settings_option_name_and_code">%1$s (%2$s)</string>
+
+    <string name="settings_theme_title">থিম</string>
+    <string name="settings_theme_subtitle_current">Spotube আপনার সিস্টেমের অ্যাপিয়ারেন্সের সাথে কীভাবে মিলবে তা বেছে নিন। বর্তমান: %1$s</string>
+    <string name="settings_theme_light">লাইট</string>
+    <string name="settings_theme_dark">ডার্ক</string>
+    <string name="settings_theme_system">সিস্টেম</string>
+
+    <string name="settings_surface_theme_title">সারফেস</string>
+    <string name="settings_surface_theme_subtitle_current">অ্যাপের ব্যাকগ্রাউন্ড ম্যাটেরিয়াল। বর্তমান: %1$s</string>
+    <string name="settings_surface_watery">জলীয়</string>
+    <string name="settings_surface_icy">বরফি</string>
+    <string name="settings_surface_chrome">ক্রোম</string>
+    <string name="settings_surface_acrylic">অ্যাক্রিলিক</string>
+    <string name="settings_surface_glass">কাচ</string>
+
+    <string name="settings_accent_title">অ্যাকসেন্ট রং</string>
+    <string name="settings_accent_subtitle_current">বর্তমান প্যালেট: %1$s</string>
+    <string name="settings_accent_dialog_title">অ্যাকসেন্ট রং</string>
+    <string name="settings_accent_dialog_description">একটি অ্যাকসেন্ট প্যালেট বেছে নিন এবং লাইট ও ডার্ক দুই থিমেই প্রিভিউ দেখুন।</string>
+    <string name="settings_preview_light">লাইট</string>
+    <string name="settings_preview_dark">ডার্ক</string>
+    <string name="settings_preview_label">প্রিভিউ</string>
+    <string name="settings_preview_button">বাটন</string>
+    <string name="settings_accent_green_goblin">গ্রিন গবলিন</string>
+    <string name="settings_accent_electric_violet">ইলেকট্রিক ভায়োলেট</string>
+    <string name="settings_accent_oceanic_cyan">ওশেনিক সায়ান</string>
+    <string name="settings_accent_sunset_orange">সানসেট অরেঞ্জ</string>
+    <string name="settings_accent_rose_garden">রোজ গার্ডেন</string>
+    <string name="settings_accent_midnight_blue">মিডনাইট ব্লু</string>
+    <string name="settings_accent_metallic_slate">মেটালিক স্লেট</string>
+
+    <string name="settings_appearance_title">লুক ও ফিল</string>
+    <string name="settings_appearance_subtitle_current">সারফেস ম্যাটেরিয়াল ও অ্যাকসেন্ট। বর্তমান: %1$s · %2$s</string>
+    <string name="settings_appearance_dialog_title">লুক ও ফিল</string>
+    <string name="settings_appearance_dialog_description">একটি সারফেস ম্যাটেরিয়াল বেছে নিন, তারপর তার সাথে মানানসই একটি অ্যাকসেন্ট। প্রতিটি অপশনই বাছাই করা কম্বিনেশন।</string>
+    <string name="settings_appearance_surface_label">সারফেস</string>
+    <string name="settings_appearance_accent_label">অ্যাকসেন্ট</string>
+    <string name="settings_preview_secondary">সেকেন্ডারি</string>
+
+    <string name="settings_palette_title">প্যালেট</string>
+    <string name="settings_palette_subtitle_current">Millennium অ্যাকসেন্ট প্যালেট। বর্তমান: %1$s</string>
+    <string name="settings_palette_dialog_title">প্যালেট</string>
+    <string name="settings_palette_dialog_description">একটি Millennium অ্যাকসেন্ট প্যালেট বেছে নিন এবং লাইট ও ডার্কে প্রিভিউ দেখুন।</string>
+    <string name="settings_palette_label">প্যালেট</string>
+    <string name="settings_appearance_subtitle_palette">Millennium প্যালেট ও অ্যাকসেন্ট। বর্তমান: %1$s</string>
+    <string name="settings_palette_blue">নীল</string>
+    <string name="settings_palette_orange">কমলা</string>
+    <string name="settings_palette_lime">লাইম</string>
+
+    <string name="settings_download_folder_title">ডাউনলোড ফোল্ডার পরিবর্তন</string>
+    <string name="settings_download_folder_current">বর্তমান ফোল্ডার: %1$s</string>
+    <string name="settings_download_folder_description">ডিফল্ট মিউজিক ফোল্ডার ব্যবহার করতে এটি ফাঁকা রাখুন।</string>
+    <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
+    <string name="settings_local_media_folders_title">লোকাল মিডিয়া ফোল্ডার</string>
+    <string name="settings_local_media_folders_subtitle_current">ডেস্কটপে স্ক্যান করার জন্য কাস্টম ফোল্ডার। যোগ করা হয়েছে: %1$d</string>
+    <string name="settings_local_media_folders_subtitle_empty">এখনো কোনো কাস্টম ফোল্ডার যোগ করা হয়নি</string>
+    <string name="settings_local_media_folders_description">আপনার লোকাল মিউজিক লাইব্রেরির জন্য কাস্টম ফোল্ডার।</string>
+    <string name="settings_local_media_folders_manage">ম্যানেজ করুন</string>
+    <string name="settings_local_media_folders_add_action">ফোল্ডার যোগ করুন</string>
+    <string name="settings_local_media_folders_remove_action">ফোল্ডার সরান</string>
+    <string name="settings_local_media_folders_none_added">কোনো কাস্টম ফোল্ডার যোগ করা হয়নি।</string>
+    <string name="settings_local_media_folders_remove_named">স্ক্যান তালিকা থেকে %1$s সরান</string>
+    <string name="settings_local_media_folders_automatic_both">ডাউনলোড ও মিউজিক ক্যাশ ফোল্ডার স্বয়ংক্রিয়ভাবে অন্তর্ভুক্ত হয়।</string>
+    <string name="settings_local_media_folders_automatic_downloads">আপনার ডাউনলোড ফোল্ডার স্বয়ংক্রিয়ভাবে অন্তর্ভুক্ত হয়।</string>
+    <string name="settings_local_media_folders_automatic_cache">মিউজিক ক্যাশ ফোল্ডার স্বয়ংক্রিয়ভাবে অন্তর্ভুক্ত হয়।</string>
+    <string name="settings_local_media_folders_saving">সেভ হচ্ছে…</string>
+    <string name="settings_local_media_folders_save_error">ফোল্ডার সেভ করা যায়নি। আপনার পরিবর্তনগুলো রয়ে গেছে; আবার চেষ্টা করুন।</string>
+    <plurals name="settings_local_media_folders_count">
+        <item quantity="one">%1$dটি ফোল্ডার</item>
+        <item quantity="other">%1$dটি ফোল্ডার</item>
+    </plurals>
+    <string name="settings_download_format_title">ডাউনলোডের মিউজিক ফরম্যাট</string>
+    <string name="settings_download_format_subtitle_current">ডাউনলোডের জন্য পছন্দের কোডেক ও কন্টেইনার। বর্তমান: %1$s</string>
+    <string name="settings_download_quality_title">ডাউনলোডের মিউজিক কোয়ালিটি</string>
+
+    <string name="settings_streaming_format_title">স্ট্রিমিংয়ের মিউজিক ফরম্যাট</string>
+    <string name="settings_streaming_format_subtitle_current">মিউজিক স্ট্রিমিংয়ের জন্য পছন্দের কোডেক ও কন্টেইনার। বর্তমান: %1$s</string>
+    <string name="settings_streaming_quality_title">স্ট্রিমিংয়ের মিউজিক কোয়ালিটি</string>
+    <string name="settings_subtitle_current">বর্তমান: %1$s</string>
+    <string name="settings_enable_music_caching_title">মিউজিক ক্যাশিং চালু করুন</string>
+    <string name="settings_enable_music_caching_subtitle">বারবার প্লে দ্রুত করতে স্ট্রিম করা অডিও লোকালি সংরক্ষণ করুন।</string>
+    <string name="settings_cache_folder_title">ক্যাশ ফোল্ডার</string>
+    <string name="settings_cache_folder_current">বর্তমান: %1$s</string>
+    <string name="settings_cache_folder_default">বর্তমান: ডিফল্ট অ্যাপ্লিকেশন ক্যাশ</string>
+    <string name="settings_cache_size_limit_title">ক্যাশ সাইজের সীমা</string>
+    <string name="settings_cache_size_limit_unlimited">কোনো সীমা নেই</string>
+    <string name="settings_cache_size_limit_current">বর্তমান সীমা: %1$d MB</string>
+    <string name="settings_cache_size_limit_description">MB-তে সর্বোচ্চ ক্যাশ সাইজ দিন। সীমাহীন রাখতে 0 দিন বা ফাঁকা রাখুন।</string>
+    <string name="settings_cache_size_limit_placeholder">500</string>
+    <string name="settings_error_cache_size_range">সাইজ 0 বা একটি ধনাত্মক সংখ্যা হতে হবে।</string>
+    <string name="settings_enable_endless_playback_title">অবিরাম প্লেব্যাক চালু করুন</string>
+    <string name="settings_enable_endless_playback_subtitle">কিউ শেষ হলে সাজেস্ট করা ট্র্যাক দিয়ে প্লেব্যাক চালু রাখুন।</string>
+    <string name="settings_playback_port_title">প্লেব্যাক প্রক্সি সার্ভার পোর্ট</string>
+    <string name="settings_allow_remote_control_title">রিমোট কন্ট্রোলের অনুমতি দিন</string>
+    <string name="settings_allow_remote_control_subtitle">একই নেটওয়ার্কের অন্য ডিভাইস কানেক্ট হলে প্লেব্যাক নিয়ন্ত্রণ করতে দিন।</string>
+    <string name="settings_remote_device_name_title">রিমোট কন্ট্রোল ডিভাইসের নাম</string>
+    <string name="settings_remote_device_name_subtitle">অন্য ডিভাইস এই ডিভাইসটি খুঁজে পেলে যে নাম দেখবে। বর্তমান: %1$s</string>
+    <string name="settings_remote_device_name_description">আপনার নেটওয়ার্কের অন্য ডিভাইস এই Spotube খুঁজে পেলে দেখানোর জন্য একটি সহজ নাম বেছে নিন।</string>
+    <string name="settings_remote_device_name_placeholder">যেমন: বসার ঘরের Spotube</string>
+    <string name="settings_remote_device_name_default">ডিভাইসের হোস্টনেম</string>
+    <string name="settings_playback_port_subtitle_current">প্লেব্যাক প্রক্সি সার্ভারের ব্যবহৃত পোর্ট। বর্তমান: %1$d</string>
+    <string name="settings_playback_port_description">1 থেকে 65535-এর মধ্যে একটি পোর্ট বেছে নিন।</string>
+    <string name="settings_playback_port_placeholder">14769</string>
+    <string name="settings_error_whole_number">একটি সঠিক পূর্ণসংখ্যা দিন।</string>
+    <string name="settings_error_port_range">পোর্ট 1 থেকে 65535-এর মধ্যে হতে হবে।</string>
+
+    <string name="settings_blacklist_title">ব্ল্যাকলিস্ট</string>
+    <string name="settings_blacklist_subtitle">ব্ল্যাকলিস্ট করা ট্র্যাক ও শিল্পী ম্যানেজ করুন</string>
+
+    <string name="settings_desktop_minimize_title">ট্রেতে মিনিমাইজ করুন</string>
+    <string name="settings_desktop_minimize_subtitle">উইন্ডো মিনিমাইজ করলে Spotube সিস্টেম ট্রেতে চালু রাখুন।</string>
+    <string name="settings_desktop_discord_title">Discord রিচ প্রেজেন্স</string>
+    <string name="settings_desktop_discord_subtitle">ডেস্কটপে Discord-এ আপনার বর্তমান প্লেব্যাক স্ট্যাটাস দেখান।</string>
+
+    <string name="settings_updates_auto_check_title">স্বয়ংক্রিয়ভাবে আপডেট চেক করুন</string>
+    <string name="settings_updates_auto_check_subtitle">ব্যাকগ্রাউন্ডে Spotube-এর নতুন রিলিজ খুঁজুন।</string>
+
+    <string name="settings_plugins_manage_title">প্লাগইন ম্যানেজ করুন</string>
+    <string name="settings_plugins_manage_subtitle">আপনার প্লাগইনগুলো ম্যানেজ করুন</string>
+    <string name="settings_plugins_default_ability_title">ডিফল্ট %1$s প্লাগইন</string>
+    <string name="settings_plugins_ability_metadata">মেটাডেটা</string>
+    <string name="settings_plugins_ability_audio">অডিও</string>
+    <string name="settings_plugins_ability_lyrics">লিরিক্স</string>
+    <string name="settings_plugins_ability_scrobble">স্ক্রবল</string>
+    <string name="settings_plugins_no_selection">কোনো প্লাগইন নির্বাচিত নয়</string>
+    <string name="settings_plugins_action_change">পরিবর্তন করুন</string>
+    <string name="settings_plugins_action_select">নির্বাচন করুন</string>
+    <string name="settings_plugins_selected">নির্বাচিত</string>
+    <string name="settings_plugins_clear">নির্বাচন মুছুন</string>
+    <string name="settings_plugins_no_plugins">কোনো প্লাগইন উপলব্ধ নেই</string>
+    <string name="settings_plugins_plugin_content_description">%1$s প্লাগইন</string>
+    <string name="settings_plugins_clear_content_description">মুছুন</string>
+
+    <string name="plugin_configure_title">কনফিগার করুন</string>
+    <string name="plugin_screen_title">প্লাগইন ম্যানেজার</string>
+    <string name="plugin_error_enter_url">অনুগ্রহ করে একটি URL দিন</string>
+    <string name="plugin_error_url_scheme">URL অবশ্যই http:// বা https:// দিয়ে শুরু হতে হবে</string>
+    <string name="plugin_error_download_failed">প্লাগইন ডাউনলোড করা যায়নি</string>
+    <string name="plugin_empty_title">এখনো কোনো প্লাগইন ইনস্টল করা হয়নি</string>
+    <string name="plugin_empty_subtitle">একটি ডাউনলোড URL পেস্ট করুন বা ওপর থেকে একটি ফাইল বেছে নিন।</string>
+    <plurals name="plugin_installed_plugins_count">
+        <item quantity="one">%1$dটি প্লাগইন ইনস্টল করা আছে</item>
+        <item quantity="other">%1$dটি প্লাগইন ইনস্টল করা আছে</item>
+    </plurals>
+    <string name="plugin_install_section_title">প্লাগইন ইনস্টল করুন</string>
+    <string name="plugin_url_placeholder">https://example.com/plugin.smplug</string>
+    <string name="plugin_action_download">ডাউনলোড</string>
+    <string name="plugin_action_install_from_file">ফাইল থেকে ইনস্টল করুন (.smplug)</string>
+    <string name="plugin_state_active">সক্রিয়</string>
+    <string name="plugin_version_label">v%1$s</string>
+    <string name="plugin_state_builtin">বিল্ট-ইন</string>
+    <string name="plugin_action_remove">প্লাগইন সরান</string>
+    <string name="plugin_action_login">লগইন</string>
+    <string name="plugin_action_logout">লগআউট</string>
+    <string name="plugin_section_url_title">URL থেকে ডাউনলোড করুন</string>
+    <string name="plugin_section_file_title">ফাইল থেকে ইনস্টল করুন</string>
+    <string name="plugin_section_install">ইনস্টল করুন</string>
+
+    <string name="plugin_permissions_author_version">• %1$s</string>
+    <string name="plugin_permissions_requested_title">অনুরোধ করা পারমিশন</string>
+    <string name="plugin_permissions_none">এই প্লাগইনের কোনো বিশেষ পারমিশন প্রয়োজন নেই।</string>
+    <string name="plugin_permissions_compare_title">ইনস্টল করা বনাম প্রদত্ত</string>
+    <string name="plugin_permissions_installed_label">ইনস্টল করা</string>
+    <string name="plugin_permissions_supplied_label">প্রদত্ত</string>
+    <string name="plugin_permissions_api_diff">API %1$s → %2$s</string>
+    <string name="plugin_permissions_capability_storage_title">স্থায়ী স্টোরেজ</string>
+    <string name="plugin_permissions_capability_storage_desc">ডিস্কে ডেটা পড়া ও লেখা</string>
+    <string name="plugin_permissions_capability_network_title">নেটওয়ার্ক রিকোয়েস্ট</string>
+    <string name="plugin_permissions_capability_network_desc">ইন্টারনেটে ডেটা পাঠানো ও গ্রহণ করা</string>
+    <string name="plugin_permissions_capability_webview_title">WebView</string>
+    <string name="plugin_permissions_capability_webview_desc">অ্যাপের ভেতরে ওয়েব কনটেন্ট দেখানো</string>
+    <string name="settings_section_jam">গ্রুপ জ্যাম</string>
+    <string name="settings_jam_server_test">কানেকশন পরীক্ষা করুন</string>
+    <string name="settings_jam_server_testing">পরীক্ষা চলছে…</string>
+    <string name="settings_jam_server_test_ok">%1$d ms-এ কানেক্ট হয়েছে</string>
+    <string name="settings_jam_server_test_fail">ব্যর্থ: %1$s</string>
+    <string name="settings_jam_section_connection">কানেকশন</string>
+    <string name="settings_jam_section_diagnostics">ডায়াগনস্টিকস</string>
+
+    <!-- Group Jam -->
+    <string name="jam_screen_title">গ্রুপ জ্যাম</string>
+    <string name="jam_setup_create_tab">তৈরি করুন</string>
+    <string name="jam_setup_join_tab">যোগ দিন</string>
+    <string name="jam_setup_create_hint">একটি রুম তৈরি করুন, তারপর এর কোড বন্ধুদের সাথে শেয়ার করুন।</string>
+    <string name="jam_setup_create_button">রুম তৈরি করুন</string>
+    <string name="jam_setup_join_button">রুমে যোগ দিন</string>
+    <string name="jam_setup_working">কানেক্ট হচ্ছে…</string>
+    <string name="jam_setup_code_label">রুম কোড</string>
+    <string name="jam_setup_code_placeholder">ABC123</string>
+    <string name="jam_session_connected">কানেক্টেড</string>
+    <string name="jam_session_connecting">আবার কানেক্ট হচ্ছে…</string>
+    <string name="jam_invite_copy">কোড কপি করুন</string>
+    <string name="jam_invite_copied">কপি হয়েছে!</string>
+    <string name="jam_invite_share">শেয়ার করুন</string>
+    <string name="jam_participants_heading">অংশগ্রহণকারী (%1$d)</string>
+    <string name="jam_participants_host">হোস্ট</string>
+    <string name="jam_participants_guest">শ্রোতা</string>
+    <string name="jam_participants_waiting">শ্রোতাদের জন্য অপেক্ষা করা হচ্ছে…</string>
+    <string name="jam_participants_remove">সরান</string>
+    <string name="jam_participants_ban">ব্যান করুন</string>
+    <string name="jam_participants_manage">ম্যানেজ করুন</string>
+    <string name="jam_session_leave">রুম ছেড়ে দিন</string>
+    <string name="jam_error_title">কানেক্ট করা যায়নি</string>
+    <string name="jam_error_dismiss">বাদ দিন</string>
+    <string name="jam_error_create">জ্যাম সেশন তৈরি করা যায়নি</string>
+    <string name="jam_error_join">জ্যাম সেশনে যোগ দেওয়া যায়নি</string>
+    <string name="jam_error_invalid_code">অক্ষর ও সংখ্যা দিয়ে ছয় অক্ষরের একটি রুম কোড দিন।</string>
+    <string name="jam_share_message">এই কোড দিয়ে আমার Spotube জ্যামে যোগ দিন: %1$s</string>
+    <string name="settings_jam_server_title">রুম সার্ভার</string>
+    <string name="settings_jam_server_url">সার্ভার URL</string>
+    <string name="settings_jam_server_url_invalid">https:// দিয়ে শুরু হওয়া একটি URL দিন</string>
+    <string name="settings_jam_server_diagnostics_subtitle">রুম শুরু করার আগে রুম সার্ভার পরীক্ষা করুন।</string>
+    <string name="settings_jam_server_note">জ্যাম Spotube-এর বিনামূল্যের রুম সার্ভার ব্যবহার করে। নিজে হোস্ট করতে github.com/team-spotube/jam-server থেকে সার্ভার ডিপ্লয় করে তার URL দিন।</string>
+    <string name="settings_jam_section_you">আপনি</string>
+    <string name="jam_connection_host">সার্ভার: %1$s</string>
+    <string name="jam_connection_missing">রুম হোস্ট করতে বা যোগ দিতে সেটিংসে একটি রুম সার্ভার সেট করুন।</string>
+    <string name="jam_connection_settings">সার্ভার সেটিংস</string>
+    <string name="jam_participants_you">%1$s (আপনি)</string>
+    <string name="jam_name_title">আপনার নাম</string>
+    <string name="jam_name_subtitle">জ্যামের অন্যরা আপনাকে %1$s নামে দেখবে</string>
+    <string name="jam_name_description">জ্যামের সবাই দেখতে পাবে। %1$s ব্যবহার করতে ফাঁকা রাখুন। নতুন নাম পরের বার রুম তৈরি বা যোগ দেওয়ার সময় থেকে কার্যকর হবে।</string>
+    <string name="jam_name_too_long">সর্বোচ্চ %1$dটি অক্ষর ব্যবহার করুন।</string>
+    <string name="jam_error_no_server">কোনো জ্যাম সার্ভার সেট করা নেই</string>
+    <string name="jam_error_server_unreachable">জ্যাম সার্ভারে পৌঁছানো যায়নি। আপনার নেটওয়ার্ক বা সেটিংস → গ্রুপ জ্যাম-এ সার্ভার URL পরীক্ষা করুন।</string>
+    <string name="jam_error_server_incompatible">জ্যাম সার্ভারের সংস্করণটি সামঞ্জস্যপূর্ণ নয়।</string>
+    <string name="jam_error_room_not_found">এই কোডের কোনো রুম নেই। কোডটি দেখে আবার চেষ্টা করুন।</string>
+    <string name="jam_error_room_full">এই রুমটি পূর্ণ।</string>
+    <string name="jam_error_banned">হোস্ট আপনাকে এই রুম থেকে ব্যান করেছেন।</string>
+    <string name="jam_error_kicked">হোস্ট আপনাকে রুম থেকে সরিয়ে দিয়েছেন।</string>
+    <string name="jam_error_replaced">এই রুমটি এই ডিভাইসে আবার খোলা হয়েছে, তাই এই কানেকশনটি বন্ধ করা হয়েছে।</string>
+
+    <string name="player_go_to_album">অ্যালবামে যান</string>
+    <string name="player_sleep_timer">স্লিপ টাইমার</string>
+    <string name="player_track_details">ট্র্যাকের বিস্তারিত</string>
+    <string name="player_play_content_description">প্লে</string>
+    <string name="player_pause_content_description">পজ</string>
+    <string name="player_nothing_playing">কিছুই বাজছে না</string>
+    <string name="player_add_to_queue_content_description">কিউতে যোগ করুন</string>
+
+    <string name="update_action_ignore">উপেক্ষা করুন</string>
+    <string name="update_action_update">আপডেট করুন</string>
+    <string name="app_update_dialog_title">Spotube %1$s উপলব্ধ</string>
+    <string name="app_update_dialog_no_notes">এই রিলিজে নতুন কী আছে তা Spotube ডাউনলোড পেজে দেখুন।</string>
+    <string name="plugin_update_dialog_title">%1$s %2$s উপলব্ধ</string>
+    <string name="plugin_update_dialog_current_version">বর্তমানে ইনস্টল করা: %1$s</string>
+    <string name="plugin_update_dialog_no_notes">এই আপডেটে নতুন কী আছে তা প্লাগইনের পেজে দেখুন।</string>
+
+    <string name="welcome_skip">এড়িয়ে যান</string>
+    <string name="welcome_next">পরবর্তী</string>
+    <string name="welcome_back">পেছনে</string>
+    <string name="welcome_get_started">শুরু করুন</string>
+    <string name="welcome_app_name">Spotube</string>
+    <string name="welcome_brand_freedom">মিউজিক, কোনো বাঁধন ছাড়াই।</string>
+    <string name="welcome_brand_quiet_description">মিউজিকের জগতের জন্য একটি ওপেন-সোর্স প্লেয়ার।\nআপনার মতো করে ঘুরে দেখুন। নিজের মতো করে সাজিয়ে নিন।</string>
+    <string name="welcome_donate_quiet_title">এই প্রজেক্টটি বাঁচিয়ে রাখুন।</string>
+    <string name="welcome_donate_letter">Spotube মানুষের তৈরি, কোনো সাবস্ক্রিপশন ব্যবসার নয়। এটি যদি আপনার প্রতিদিনের জীবনের অংশ হয়ে ওঠে, তাহলে একটু সাপোর্ট আমাদের এর প্রাপ্য যত্ন নিতে সাহায্য করে।\n\nস্বাধীন সফটওয়্যারকে জায়গা দেওয়ার জন্য ধন্যবাদ।</string>
+    <string name="welcome_plugins_setup_guide">গান ও প্লেলিস্ট খুঁজতে একটি ক্যাটালগ প্লাগইন দিয়ে শুরু করুন। সেগুলো বাজাতে একটি অডিও প্লাগইন বেছে নিন। লিরিক্স ও শোনার হিস্ট্রি ঐচ্ছিক। নিচে একটি প্লাগইন খুঁজুন, এর পারমিশন দেখে নিন, ইনস্টল করুন, তারপর এখানে নির্বাচন করুন।</string>
+    <string name="welcome_plugins_discover">প্লাগইন খুঁজুন</string>
+    <string name="welcome_plugins_sources">আপনার সোর্স</string>
+    <string name="welcome_plugins_retry">আবার চেষ্টা করুন</string>
+    <string name="welcome_plugins_more">আরও প্লাগইন</string>
+    <string name="welcome_plugins_discovery_empty">নতুন কোনো প্লাগইন পাওয়া যায়নি। ওপরের লিংক বা .smplug ফাইল থেকেও ইনস্টল করতে পারেন।</string>
+    <string name="welcome_plugins_discovery_error">এই মুহূর্তে প্লাগইন খোঁজা যাচ্ছে না। আবার চেষ্টা করুন, অথবা লিংক বা ফাইল থেকে ইনস্টল করুন।</string>
+    <string name="welcome_step_welcome">স্বাগতম</string>
+    <string name="welcome_step_support">সাপোর্ট</string>
+    <string name="welcome_step_plugins">প্লাগইন</string>
+    <string name="welcome_step_guide">গাইড</string>
+
+    <string name="welcome_guide_title">Spotube যেভাবে ব্যবহার করবেন</string>
+    <string name="welcome_guide_subtitle">চারটি সহজ ধাপ, তারপরই গান শুনুন।</string>
+    <string name="welcome_guide_signin_title">সাইন ইন</string>
+    <string name="welcome_guide_signin_desc">আপনার অ্যাকাউন্ট কানেক্ট করুন, অথবা নিজের পছন্দের ক্যাটালগ প্লাগইন বেছে নিন।</string>
+    <string name="welcome_guide_search_title">খুঁজুন ও প্লে করুন</string>
+    <string name="welcome_guide_search_desc">যেকোনো গান, অ্যালবাম বা শিল্পী খুঁজুন, তারপর প্লে চাপুন।</string>
+    <string name="welcome_guide_offline_title">অফলাইনে শুনুন</string>
+    <string name="welcome_guide_offline_desc">কানেকশন ছাড়াই শুনতে ট্র্যাক ডাউনলোড করুন।</string>
+    <string name="welcome_guide_lyrics_title">লিরিক্সের সাথে গান</string>
+    <string name="welcome_guide_lyrics_desc">ট্র্যাক বাজার সময় প্লেয়ার থেকে সিঙ্ক করা লিরিক্স খুলুন।</string>
+
+    <!-- Page 1: branding -->
+    <string name="welcome_brand_tagline">আপনার মিউজিক। আপনার সোর্স। আপনার নিয়ম।</string>
+    <string name="welcome_brand_subtitle">একটি ফ্রি, ওপেন-সোর্স মিউজিক প্লেয়ার, যা তৈরি করেছে মিউজিক ভালোবাসা একটি কমিউনিটি।</string>
+    <string name="welcome_brand_chip_open_source">ওপেন সোর্স</string>
+    <string name="welcome_brand_chip_no_ads">বিজ্ঞাপন নেই</string>
+    <string name="welcome_brand_chip_no_tracking">টেলিমেট্রি নেই</string>
+    <string name="welcome_brand_chip_plugin_powered">প্লাগইন চালিত</string>
+    <string name="welcome_lets_go">চলুন শুরু করি</string>
+
+    <!-- Page 2: donations -->
+    <string name="welcome_donate_eyebrow">সমর্থকরাই আমাদের এগিয়ে নেন</string>
+    <string name="welcome_donate_title">ভালোবাসায় তৈরি। আপনার কারণেই টিকে আছে।</string>
+    <string name="welcome_donate_message">Spotube ১০০% ফ্রি, লিব্রে ও ওপেন সোর্স — কোনো বিজ্ঞাপন, সাবস্ক্রিপশন বা ট্র্যাকিং নেই। প্রতিটি ফিচার আছে কারণ আপনার মতো মানুষ কোড চালু রাখতে সাহায্য করেছেন।</string>
+    <string name="welcome_donate_patreon_title">Patreon</string>
+    <string name="welcome_donate_patreon_tag">মাসিক স্পনসর</string>
+    <string name="welcome_donate_patreon_subtitle">নিয়মিত ডেভেলপমেন্ট ও ইনফ্রাস্ট্রাকচারে সাপোর্ট করুন</string>
+    <string name="welcome_donate_bmac_title">Buy Me a Coffee</string>
+    <string name="welcome_donate_bmac_tag">এককালীন কফি</string>
+    <string name="welcome_donate_bmac_subtitle">একটি ছোট্ট টিপ দিয়ে রাত জাগা কোডিং সেশনে শক্তি জোগান</string>
+    <string name="welcome_donate_opencollective_title">Open Collective</string>
+    <string name="welcome_donate_opencollective_tag">কমিউনিটি ফান্ড</string>
+    <string name="welcome_donate_opencollective_subtitle">স্বচ্ছ, কমিউনিটি-পরিচালিত আর্থিক সহায়তা</string>
+    <string name="welcome_donate_thanks">ওপেন মিউজিকে বিশ্বাস রাখার জন্য অন্তরের অন্তস্তল থেকে ধন্যবাদ।</string>
+    <string name="welcome_donate_optional">সাপোর্ট করা সম্পূর্ণ ঐচ্ছিক — যেকোনো অবস্থাতেই Spotube ফ্রি থাকবে।</string>
+    <string name="welcome_donate_action">স্পনসর করুন</string>
+    <string name="welcome_donate_open_content_description">%1$s খুলুন</string>
+
+    <!-- Support / donations -->
+    <string name="support_button_label">Spotube-কে সাপোর্ট করুন</string>
+    <string name="support_dialog_title">Spotube-কে সাপোর্ট করুন</string>
+    <string name="support_dialog_message">Spotube ফ্রি, লিব্রে ও ওপেন সোর্স — কোনো বিজ্ঞাপন, সাবস্ক্রিপশন বা ট্র্যাকিং নেই। এটি যদি আপনাকে আনন্দ দেয়, তাহলে প্রজেক্টটিকে সাপোর্ট করার কথা ভাবুন।</string>
+    <string name="support_dialog_reminder_hint">এই রিমাইন্ডারগুলো সেটিংস → সাপোর্ট থেকে বন্ধ করতে পারেন।</string>
+    <string name="support_dialog_dismiss">পরে দেখব</string>
+    <string name="settings_support_reminders_title">সাপোর্ট রিমাইন্ডার</string>
+    <string name="settings_support_reminders_subtitle">প্রতি ৭ দিনে প্রজেক্টটিকে সাপোর্ট করার একটি ছোট রিমাইন্ডার দেখান।</string>
+
+    <!-- Page 3: plugins -->
+    <string name="welcome_plugins_eyebrow">মডুলার আর্কিটেকচার</string>
+    <string name="welcome_plugins_title">আপনার মিউজিক কোথা থেকে আসবে তা বেছে নিন।</string>
+    <string name="welcome_plugins_subtitle">Spotube ক্যাটালগ খোঁজা, অডিও স্ট্রিমিং ও সিঙ্ক করা লিরিক্স আলাদা রাখে। নিচে আপনার ইঞ্জিনগুলো কনফিগার করুন বা যেকোনো সময় বদলে নিন।</string>
+    <string name="welcome_plugins_metadata_title">মেটাডেটা ইঞ্জিন</string>
+    <string name="welcome_plugins_metadata_description">মিউজিক খোঁজা, সার্চ, ট্র্যাক তালিকা ও প্লেলিস্ট চালায়।</string>
+    <string name="welcome_plugins_audio_title">অডিও ইঞ্জিন</string>
+    <string name="welcome_plugins_audio_description">যে অডিও স্ট্রিম বাজে তা আনে ও ডিকোড করে।</string>
+    <string name="welcome_plugins_lyrics_title">লিরিক্স ইঞ্জিন</string>
+    <string name="welcome_plugins_lyrics_description">রিয়েল টাইমে সময়-সিঙ্ক করা কারাওকে লিরিক্স দেখায়।</string>
+    <string name="welcome_plugins_scrobble_title">স্ক্রবল ইঞ্জিন</string>
+    <string name="welcome_plugins_scrobble_description">Last.fm বা ListenBrainz-এ শোনার হিস্ট্রি রেকর্ড করে।</string>
+    <string name="welcome_plugins_badge_active">সক্রিয়</string>
+    <string name="welcome_plugins_badge_builtin">বিল্ট-ইন</string>
+    <string name="welcome_plugins_badge_ready">প্রস্তুত</string>
+    <string name="welcome_plugins_badge_optional">ঐচ্ছিক</string>
+    <string name="welcome_plugins_none_selected">একটি ইঞ্জিন বেছে নিন</string>
+    <string name="welcome_plugins_installed_section">ইনস্টল করা ইঞ্জিন</string>
+    <string name="welcome_plugins_set_default">ডিফল্ট হিসেবে সেট করুন</string>
+    <string name="welcome_plugins_builtin_note">NewPipe YouTube ও LRCLib Lyrics বিল্ট-ইন এবং শুরু থেকেই স্ট্রিম করার জন্য প্রস্তুত।</string>
+    <string name="welcome_plugins_tip">সেটিংস → প্লাগইন থেকে যেকোনো সময় কমিউনিটি প্লাগইন ম্যানেজ বা যোগ করুন।</string>
+
+    <!-- Page 4: how it works -->
+    <string name="welcome_how_eyebrow">রেট্রো-মডার্ন আর্কিটেকচার</string>
+    <string name="welcome_how_title">খাঁটি Hi-Fi, কোনো মধ্যস্থতাকারী নেই</string>
+    <string name="welcome_how_subtitle">Spotube কীভাবে সরাসরি আপনার মেশিনে বিকেন্দ্রীভূত প্লেব্যাক পরিচালনা করে, দেখুন।</string>
+    <string name="welcome_how_status_badge">সরাসরি পিয়ার-টু-পিয়ার • 256 KBPS OPUS</string>
+    <string name="welcome_how_mockup_title">নীল প্রহর</string>
+    <string name="welcome_how_mockup_artist">Spotube · প্লেয়ার ডেমো</string>
+    <string name="welcome_how_mockup_lyric">মাঝের মুহূর্তগুলোর জন্য একটু মিউজিক।</string>
+    <string name="welcome_how_step_search_title">১. বিকেন্দ্রীভূত খোঁজ</string>
+    <string name="welcome_how_step_search_desc">সার্চ সরাসরি আপনার বেছে নেওয়া ক্যাটালগ প্লাগইনে যায়। Spotube কখনো আপনার রুচির প্রোফাইল তৈরি করে না।</string>
+    <string name="welcome_how_step_stream_title">২. সরাসরি স্ট্রিম রেজোলিউশন</string>
+    <string name="welcome_how_step_stream_desc">অডিও কনটেন্ট সার্ভার থেকে সরাসরি আপনার মেশিনে স্ট্রিম হয়। কোনো প্রক্সি বা রিমোট ডেটা সংগ্রহ নেই।</string>
+    <string name="welcome_how_step_playback_title">৩. লোকাল DSP ও প্লেব্যাক</string>
+    <string name="welcome_how_step_playback_desc">ইকুয়ালাইজার কন্ট্রোল ও ঐচ্ছিক অফলাইন ডাউনলোডসহ লোকালি ডিকোড ও ক্যাশ করা হয়।</string>
+    <string name="welcome_how_step_lyrics_title">৪. সিঙ্ক করা লিরিক্স ও জ্যাম</string>
+    <string name="welcome_how_step_lyrics_desc">কারাওকে লিরিক্স প্লেব্যাকের সময়ের সাথে মিলে চলে, সাথে আছে LAN রিমোট কন্ট্রোল ও গ্রুপ জ্যাম।</string>
+    <string name="welcome_how_footer">কোনো মধ্যস্থতাকারী সার্ভার নেই। প্লেব্যাক হয় সরাসরি আপনার ডিভাইসে — ডিজাইনেই প্রাইভেট।</string>
+
+    <!-- Devices: play destination picker -->
+    <string name="devices_destination_title">একটি ডিভাইস বেছে নিন</string>
+    <string name="devices_destination_prompt">%1$s: “%2$s”</string>
+    <string name="devices_destination_action_play">প্লে</string>
+    <string name="devices_destination_action_add_to_queue">কিউতে যোগ</string>
+    <string name="devices_destination_action_play_next">পরবর্তীতে প্লে</string>
+    <string name="devices_destination_this_device">এই ডিভাইস</string>
+    <string name="devices_destination_this_device_subtitle">এই ডিভাইসে</string>
+    <string name="devices_destination_remote_device">রিমোট ডিভাইস</string>
+    <string name="devices_destination_remote_device_host">রিমোট ডিভাইস (%1$s)</string>
+    <string name="devices_destination_remote_subtitle">সংযুক্ত ডিভাইসে</string>
+
+    <!-- Devices: connection errors -->
+    <string name="devices_error_connection_failed">কানেকশন ব্যর্থ হয়েছে</string>
+    <string name="devices_error_connection_lost">কানেকশন বিচ্ছিন্ন হয়েছে</string>
+    <string name="devices_error_send_failed">পাঠানো যায়নি</string>
+    <string name="devices_error_discovery_failed">খোঁজা ব্যর্থ হয়েছে: %1$s</string>
+    <string name="devices_error_connect_failed">কানেক্ট করা যায়নি: %1$s</string>
+
+    <!-- Devices: discovery screen -->
+    <string name="devices_title">ডিভাইস</string>
+    <string name="devices_refresh">রিফ্রেশ</string>
+    <string name="devices_disconnect">ডিসকানেক্ট</string>
+    <string name="devices_connecting">কানেক্ট হচ্ছে...</string>
+    <string name="devices_searching">নেটওয়ার্কে ডিভাইস খোঁজা হচ্ছে...</string>
+    <string name="devices_empty">কোনো ডিভাইস পাওয়া যায়নি</string>
+    <string name="devices_empty_hint">অন্য ডিভাইসের সেটিংসে \"রিমোট কন্ট্রোলের অনুমতি দিন\" চালু আছে কিনা নিশ্চিত করুন।</string>
+    <string name="devices_unknown_device">অজানা ডিভাইস</string>
+    <string name="devices_resolving">খোঁজা হচ্ছে...</string>
+
+    <!-- Devices: remote control screen -->
+    <string name="devices_remote_title">রিমোট কন্ট্রোল</string>
+    <string name="devices_remote_disconnected">ডিসকানেক্টেড</string>
+    <string name="devices_remote_connection_error">কানেকশন ত্রুটি: %1$s</string>
+    <string name="devices_remote_unknown_track">অজানা ট্র্যাক</string>
+    <string name="devices_remote_unknown_artist">অজানা শিল্পী</string>
+    <string name="devices_remote_volume">ভলিউম</string>
+    <string name="devices_remote_remove_from_queue">কিউ থেকে সরান</string>
+    <string name="devices_remote_more_options">আরও অপশন</string>
+
+    <!-- Group Jam: play destination picker -->
+    <string name="jam_destination_title">কোথায় প্লে করবেন?</string>
+    <string name="jam_destination_message">আপনার একটি জ্যাম সেশন চালু আছে। এই কালেকশন কোথায় প্লে করবেন বেছে নিন।</string>
+    <string name="jam_destination_play_here">এখানে প্লে করুন</string>
+    <string name="jam_destination_suggest">জ্যামে সাজেস্ট করুন</string>
+
+    <!-- Group Jam: connection errors -->
+    <string name="jam_error_connection_failed">কানেকশন ব্যর্থ হয়েছে</string>
+    <string name="jam_error_connection_lost">কানেকশন বিচ্ছিন্ন হয়েছে</string>
+
+
+    <!-- Group Jam: queue snackbar -->
+    <string name="jam_queue_added_track">জ্যাম কিউতে যোগ করা হয়েছে</string>
+    <plurals name="jam_queue_added_tracks">
+        <item quantity="one">জ্যাম কিউতে %1$dটি যোগ করা হয়েছে</item>
+        <item quantity="other">জ্যাম কিউতে %1$dটি যোগ করা হয়েছে</item>
+    </plurals>
+
+    <!-- Remote control: connection request dialog -->
+    <string name="remote_request_title">রিমোট কন্ট্রোলের অনুরোধ</string>
+    <string name="remote_request_message">\"%1$s\" এই ডিভাইসের প্লেব্যাক নিয়ন্ত্রণ করতে চায়।</string>
+    <string name="remote_request_deny">প্রত্যাখ্যান</string>
+    <string name="remote_request_allow">অনুমতি দিন</string>
+    <string name="remote_request_allow_always">সবসময় অনুমতি দিন</string>
+
+    <!-- Search -->
+    <string name="search_results_title">সার্চের ফলাফল</string>
+    <string name="search_tab_all">সব</string>
+    <string name="search_section_tracks">ট্র্যাক</string>
+    <string name="search_section_users">ইউজার</string>
+    <string name="search_no_search_types">কোনো সার্চ টাইপ উপলব্ধ নেই</string>
+    <string name="search_start_typing">খুঁজতে টাইপ করা শুরু করুন</string>
+    <string name="search_start_typing_tracks">ট্র্যাক খুঁজতে টাইপ করা শুরু করুন</string>
+    <string name="search_no_results">কোনো ফলাফল পাওয়া যায়নি</string>
+    <string name="search_see_all">সব দেখুন</string>
+    <string name="search_searching">খোঁজা হচ্ছে</string>
+    <string name="search_loading_tracks">ট্র্যাক লোড হচ্ছে...</string>
+    <string name="search_loading_albums">অ্যালবাম লোড হচ্ছে...</string>
+    <string name="search_loading_artists">শিল্পী লোড হচ্ছে...</string>
+    <string name="search_loading_playlists">প্লেলিস্ট লোড হচ্ছে...</string>
+    <string name="search_loading_users">ইউজার লোড হচ্ছে...</string>
+    <string name="search_no_albums">কোনো অ্যালবাম পাওয়া যায়নি</string>
+    <string name="search_no_artists">কোনো শিল্পী পাওয়া যায়নি</string>
+    <string name="search_no_playlists">কোনো প্লেলিস্ট পাওয়া যায়নি</string>
+    <string name="search_no_users">কোনো ইউজার পাওয়া যায়নি</string>
+    <string name="search_warm_crates">রেকর্ডের বাক্স ঘাঁটা হচ্ছে...</string>
+    <string name="search_warm_cosmos">মহাবিশ্বে খোঁজা হচ্ছে...</string>
+    <string name="search_warm_speakers">স্পিকার গরম করা হচ্ছে...</string>
+    <string name="search_warm_vinyl">ভাইনিলের ধুলো ঝাড়া হচ্ছে...</string>
+    <string name="search_warm_music_gods">সংগীতের দেবতাদের জিজ্ঞেস করা হচ্ছে...</string>
+    <string name="search_warm_antennas">অ্যান্টেনা টিউন করা হচ্ছে...</string>
+    <string name="search_warm_records">রেকর্ড উল্টে দেখা হচ্ছে...</string>
+    <string name="search_error_capabilities">সার্চের সক্ষমতা লোড করা যায়নি</string>
+    <string name="search_error_search">সার্চ করা যায়নি</string>
+    <string name="search_error_tracks">ট্র্যাক খোঁজা যায়নি</string>
+    <string name="search_error_albums">অ্যালবাম খোঁজা যায়নি</string>
+    <string name="search_error_artists">শিল্পী খোঁজা যায়নি</string>
+    <string name="search_error_playlists">প্লেলিস্ট খোঁজা যায়নি</string>
+    <string name="search_error_users">ইউজার খোঁজা যায়নি</string>
+
+    <!-- Home -->
+    <string name="home_title_browse">ব্রাউজ</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_mode_synced">সিঙ্কড</string>
+    <string name="lyrics_mode_plain">সাধারণ</string>
+    <string name="lyrics_no_synced">কোনো সিঙ্ক করা লিরিক্স নেই</string>
+    <string name="lyrics_no_plain">কোনো সাধারণ লিরিক্স নেই</string>
+
+    <!-- Settings: audio format/quality labels -->
+    <string name="settings_audio_format_label">%2$s-এ %1$s</string>
+    <string name="settings_audio_quality_lossy">%1$d kbps</string>
+    <string name="settings_audio_quality_lossless">%1$s kHz • %2$d ch</string>
+    <string name="search_error_no_metadata_plugin">কোনো মেটাডেটা প্লাগইন নির্বাচিত নয়</string>
+
+    <!-- Common -->
+    <string name="common_back">পেছনে</string>
+    <string name="common_retry">আবার চেষ্টা করুন</string>
+    <string name="common_close_dialog">ডায়ালগ বন্ধ করুন</string>
+    <string name="common_loading">লোড হচ্ছে...</string>
+    <string name="common_unknown">অজানা</string>
+    <string name="common_unknown_error">অজানা ত্রুটি</string>
+
+    <!-- Media cards -->
+    <string name="media_user">ইউজার</string>
+    <string name="media_playlist">প্লেলিস্ট</string>
+
+    <!-- Error display -->
+    <string name="error_title">আমরা সত্যিই দুঃখিত</string>
+    <string name="error_description">এই মুহূর্তে কিছু একটা ঠিকমতো কাজ করছে না। আপনার অভিজ্ঞতা আমাদের কাছে গুরুত্বপূর্ণ, এবং আমরা এটি ঠিক করার সর্বোচ্চ চেষ্টা করছি। অনুগ্রহ করে আবার চেষ্টা করুন অথবা নিচে ত্রুটির বিস্তারিত দেখুন।</string>
+    <string name="error_details">ত্রুটির বিস্তারিত</string>
+    <string name="error_copy_to_clipboard">ক্লিপবোর্ডে কপি করুন</string>
+    <string name="error_view_full_log">সম্পূর্ণ লগ দেখুন</string>
+    <string name="error_full_log_title">সম্পূর্ণ ত্রুটি লগ</string>
+
+    <!-- Collection details -->
+    <string name="collection_details_shuffle">শাফল</string>
+    <string name="collection_details_shuffle_play">শাফল প্লে</string>
+    <string name="collection_details_follow">ফলো করুন</string>
+    <string name="collection_details_unfollow">আনফলো করুন</string>
+    <string name="collection_details_edit_playlist">প্লেলিস্ট এডিট করুন</string>
+    <string name="collection_details_by_owner">%1$s-এর</string>
+
+    <!-- Track options -->
+    <string name="track_options_title">ট্র্যাক অপশন</string>
+    <string name="track_options_add_to_jam">জ্যামে যোগ করুন</string>
+    <string name="track_options_start_radio">রেডিও শুরু করুন</string>
+    <string name="track_options_play_next">পরবর্তীতে প্লে করুন</string>
+    <string name="track_options_move_to_next">পরবর্তীতে সরান</string>
+    <string name="track_options_remove_from_queue">কিউ থেকে সরান</string>
+    <string name="track_options_remove_from_favorites">পছন্দের তালিকা থেকে সরান</string>
+    <string name="track_options_save_as_favorite">পছন্দের তালিকায় সেভ করুন</string>
+    <string name="track_options_add_to_playlist">প্লেলিস্টে যোগ করুন</string>
+    <string name="track_options_download">ডাউনলোড</string>
+    <string name="track_options_share">শেয়ার করুন</string>
+
+    <!-- Track list -->
+    <string name="track_list_sort_original">মূল ক্রম</string>
+    <string name="track_list_sort_title">নাম</string>
+    <string name="track_list_sort_artist">শিল্পী</string>
+    <string name="track_list_sort_album">অ্যালবাম</string>
+    <string name="track_list_sort_duration">দৈর্ঘ্য</string>
+    <string name="track_list_sort">সাজান</string>
+    <string name="track_list_no_tracks">কোনো ট্র্যাক পাওয়া যায়নি</string>
+    <string name="track_list_filter_placeholder">ফিল্টার</string>
+    <string name="track_list_bulk_actions">একসাথে অ্যাকশন</string>
+    <string name="track_list_download_all">সব ডাউনলোড করুন</string>
+    <string name="track_list_download_count">%1$dটি ডাউনলোড করুন</string>
+    <string name="track_list_add_all_to_queue">সব কিউতে যোগ করুন</string>
+    <string name="track_list_add_count_to_queue">%1$dটি কিউতে যোগ করুন</string>
+    <string name="track_list_play_all_next">সব পরবর্তীতে প্লে করুন</string>
+    <string name="track_list_play_count_next">%1$dটি পরবর্তীতে প্লে করুন</string>
+    <string name="track_list_add_all_to_playlist">সব প্লেলিস্টে যোগ করুন</string>
+    <string name="track_list_add_count_to_playlist">%1$dটি প্লেলিস্টে যোগ করুন</string>
+    <string name="track_list_add_all_to_jam">সব জ্যামে যোগ করুন</string>
+    <string name="track_list_add_count_to_jam">%1$dটি জ্যামে যোগ করুন</string>
+    <string name="track_list_more_artists">+আরও %1$d জন</string>
+
+    <!-- WebView -->
+    <string name="webview_no_url">লোড করার মতো কোনো URL নেই</string>
+    <string name="webview_go_back">ব্রাউজার হিস্ট্রিতে পেছনে যান</string>
+    <string name="webview_go_forward">ব্রাউজার হিস্ট্রিতে সামনে যান</string>
+
+    <!-- Blacklist -->
+    <string name="blacklist_filter_placeholder">ব্ল্যাকলিস্ট ফিল্টার করুন...</string>
+    <string name="blacklist_empty">ব্ল্যাকলিস্টে কিছু নেই</string>
+    <string name="blacklist_no_results">\'%1$s\'-এর সাথে মেলে এমন কিছু ব্ল্যাকলিস্টে নেই</string>
+    <string name="blacklist_section_tracks">ট্র্যাক</string>
+    <string name="blacklist_item_track">ট্র্যাক</string>
+    <string name="blacklist_add">ব্ল্যাকলিস্টে যোগ করুন</string>
+    <string name="blacklist_remove">ব্ল্যাকলিস্ট থেকে সরান</string>
+
+    <!-- Downloads -->
+    <string name="downloads_error_no_metadata">ট্র্যাকের কোনো মেটাডেটা নেই</string>
+    <string name="downloads_error_stream_unresolved_short">স্ট্রিম URL পাওয়া যায়নি</string>
+    <string name="downloads_error_stream_unresolved">স্ট্রিম URL পাওয়া যায়নি। প্রথমে ট্র্যাকটি প্লে করে দেখুন।</string>
+
+    <!-- Saved tracks -->
+    <string name="saved_tracks_title">সেভ করা ট্র্যাক</string>
+    <string name="saved_tracks_owner_you">আপনি</string>
+
+    <!-- Artist -->
+    <string name="artist_following">ফলো করছেন</string>
+    <string name="artist_top_tracks">জনপ্রিয় ট্র্যাক</string>
+    <string name="artist_play_top_tracks">জনপ্রিয় ট্র্যাক প্লে করুন</string>
+    <string name="artist_add_top_tracks_to_queue">জনপ্রিয় ট্র্যাক কিউতে যোগ করুন</string>
+    <string name="artist_related_artists">সম্পর্কিত শিল্পী</string>
+    <string name="artist_featured_playlists">ফিচার্ড প্লেলিস্ট</string>
+    <string name="artist_error_load_failed">শিল্পীর ওভারভিউ লোড করা যায়নি</string>
+    <string name="artist_followers_unavailable">ফলোয়ার সংখ্যা পাওয়া যাচ্ছে না</string>
+    <string name="artist_followers_thousands">%1$sK ফলোয়ার</string>
+    <string name="artist_followers_millions">%1$sM ফলোয়ার</string>
+    <string name="artist_followers_billions">%1$sB ফলোয়ার</string>
+    <plurals name="artist_followers_count">
+        <item quantity="one">%1$d জন ফলোয়ার</item>
+        <item quantity="other">%1$d জন ফলোয়ার</item>
+    </plurals>
+
+    <!-- Player -->
+    <string name="player_like_content_description">লাইক</string>
+    <string name="player_unlike_content_description">আনলাইক</string>
+    <string name="player_fallback_title">No-op ট্র্যাকের নাম</string>
+    <string name="player_fallback_artists">No-op শিল্পী</string>
+    <string name="player_unknown_album">অজানা অ্যালবাম</string>
+    <string name="player_seek_label">সিক</string>
+    <string name="player_volume_label">ভলিউম</string>
+    <string name="player_enable_shuffle_content_description">শাফল চালু করুন</string>
+    <string name="player_disable_shuffle_content_description">শাফল বন্ধ করুন</string>
+    <string name="player_previous_content_description">আগের</string>
+    <string name="player_next_content_description">পরের</string>
+    <string name="player_play_or_pause_content_description">প্লে বা পজ</string>
+    <string name="player_loop_mode_none">লুপ মোড বন্ধ</string>
+    <string name="player_loop_mode_one">লুপ মোড: একটি</string>
+    <string name="player_loop_mode_all">লুপ মোড: সব</string>
+    <string name="player_mute_content_description">মিউট</string>
+    <string name="player_unmute_content_description">আনমিউট</string>
+    <string name="player_more_options_content_description">আরও অপশন</string>
+    <string name="player_options_content_description">প্লেয়ার অপশন</string>
+    <string name="player_collapse_content_description">প্লেয়ার ছোট করুন</string>
+    <string name="player_expand_lyrics_content_description">লিরিক্স বড় করুন</string>
+    <string name="player_now_playing">এখন বাজছে</string>
+    <string name="player_lyrics">লিরিক্স</string>
+    <string name="player_alternative_source">বিকল্প সোর্স</string>
+    <string name="player_alternative_source_content_description">বিকল্প সোর্স</string>
+    <string name="player_download">ডাউনলোড</string>
+    <string name="player_download_status_downloaded">ডাউনলোড হয়েছে</string>
+    <string name="player_download_status_downloading">ডাউনলোড হচ্ছে...</string>
+    <string name="player_download_already_downloaded">আগেই ডাউনলোড করা হয়েছে</string>
+    <string name="player_download_retrying">আবার ডাউনলোডের চেষ্টা হচ্ছে...</string>
+    <string name="player_download_started">%1$s ডাউনলোড হচ্ছে</string>
+    <string name="player_sleep_timer_remaining">%1$s পর প্লেব্যাক পজ হবে।</string>
+    <string name="player_sleep_timer_description">নির্বাচিত মিনিট পরে প্লেব্যাক পজ করুন।</string>
+    <string name="player_sleep_timer_minutes_label">মিনিট</string>
+    <string name="player_sleep_timer_minutes_placeholder">1 থেকে 600 মিনিটের মধ্যে বেছে নিন</string>
+    <string name="player_sleep_timer_cancel">টাইমার বাতিল করুন</string>
+    <string name="player_sleep_timer_start">শুরু করুন</string>
+    <string name="player_track_details_stream_mismatch">প্লেব্যাক URL ভিন্ন স্ট্রিমিং সেটিংসে পাওয়া গেছে। হাইলাইট করা স্ট্রিমটি আপনার বর্তমান পছন্দের সাথে মেলে; পরবর্তী স্ট্রিম রিকোয়েস্টে সক্রিয় URL রিফ্রেশ হবে।</string>
+    <string name="player_track_details_matched_source">মিলে যাওয়া অডিও সোর্স</string>
+    <string name="player_track_details_loading_source">মিলে যাওয়া সোর্স লোড হচ্ছে…</string>
+    <string name="player_track_details_source_not_needed">লোকাল ক্যাশ ফাইল প্লে করার সময় মিলে যাওয়া রিমোট সোর্সের প্রয়োজন নেই।</string>
+    <string name="player_track_details_no_source">মিলে যাওয়া কোনো সোর্স উপলব্ধ নেই।</string>
+    <string name="player_track_details_no_cached_source">এই ট্র্যাকের জন্য মিলে যাওয়া কোনো অডিও সোর্স ক্যাশ করা নেই।</string>
+    <string name="player_track_details_streams_not_cached">স্ট্রিমের বিস্তারিত এখনো ক্যাশ করা হয়নি। লোড করতে প্রথমে ট্র্যাকটি প্লে করুন।</string>
+    <string name="player_track_details_load_failed">ট্র্যাকের বিস্তারিত লোড করা যায়নি।</string>
+    <string name="player_track_details_available_streams">উপলব্ধ স্ট্রিম</string>
+    <string name="player_track_details_served_from_cache_description">এই ট্র্যাকটি লোকাল ক্যাশ থেকে চালানো হচ্ছে। এই প্লেব্যাকে স্ট্রিম ভ্যারিয়েন্ট ব্যবহৃত হয় না।</string>
+    <string name="player_track_details_loading_streams">স্ট্রিম লোড হচ্ছে…</string>
+    <string name="player_track_details_no_streams">এই সোর্সের জন্য কোনো স্ট্রিম উপলব্ধ নেই।</string>
+    <string name="player_track_details_selected_stream_content_description">বর্তমানে নির্বাচিত স্ট্রিম</string>
+    <string name="player_track_details_matches_preference">আপনার স্ট্রিমিং ফরম্যাট ও কোয়ালিটি পছন্দের সাথে মেলে</string>
+    <string name="player_track_details_active_url">সক্রিয় প্লেব্যাক URL</string>
+    <string name="player_track_details_served_from_cache">লোকাল ক্যাশ থেকে চালানো হচ্ছে</string>
+    <string name="player_track_details_metadata_track">মেটাডেটা ট্র্যাক</string>
+    <string name="player_track_details_title">নাম</string>
+    <string name="player_track_details_id">ID</string>
+    <string name="player_track_details_album">অ্যালবাম</string>
+    <string name="player_track_details_confidence">নির্ভরযোগ্যতা</string>
+    <string name="player_track_details_external_uri">এক্সটার্নাল URI</string>
+    <string name="player_track_details_album_id">অ্যালবাম ID</string>
+    <string name="player_track_details_album_type">অ্যালবামের ধরন</string>
+    <string name="player_track_details_album_release_date">অ্যালবাম প্রকাশের তারিখ</string>
+    <string name="player_track_details_album_track_count">অ্যালবামের ট্র্যাক সংখ্যা</string>
+    <string name="player_track_details_album_genres">অ্যালবামের জনরা</string>
+    <string name="player_track_details_duration">দৈর্ঘ্য</string>
+    <string name="player_track_details_track_number">ট্র্যাক নম্বর</string>
+    <string name="player_track_details_disc_number">ডিস্ক নম্বর</string>
+    <string name="player_track_details_explicit">এক্সপ্লিসিট</string>
+    <string name="player_track_details_popularity">জনপ্রিয়তা</string>
+    <string name="player_track_details_isrc">ISRC</string>
+    <string name="player_track_details_thumbnail_urls">থাম্বনেইল URL</string>
+
+    <!-- Shell -->
+    <string name="shell_sidebar_toggle_content_description">সাইডবার টগল করুন</string>
+
+    <!-- Alternative track -->
+    <string name="alternative_track_title">বিকল্প সোর্স</string>
+    <string name="alternative_track_no_track">এখন কোনো ট্র্যাক বাজছে না</string>
+    <string name="alternative_track_searching">বিকল্প সোর্স খোঁজা হচ্ছে...</string>
+    <string name="alternative_track_empty">কোনো বিকল্প সোর্স পাওয়া যায়নি</string>
+    <string name="alternative_track_confidence">নির্ভরযোগ্যতা: %1$d%</string>
+    <string name="alternative_track_active_source">সক্রিয় সোর্স</string>
+
+    <!-- Queue -->
+    <string name="queue_participant_kick">বের করে দিন</string>
+    <string name="queue_participant_kick_description">তাকে সেশন থেকে সরিয়ে দিন</string>
+    <string name="queue_participant_ban_description">বের করে দিন এবং আবার যোগ দেওয়া আটকান</string>
+    <string name="queue_participant_remove_suggestions">সাজেশন সরান</string>
+    <string name="queue_participant_remove_suggestions_description">তার কিউতে যোগ করা সব ট্র্যাক সরিয়ে দিন</string>
+    <string name="queue_reorder_content_description">ক্রম বদলান</string>
+    <string name="queue_remove_from_queue">কিউ থেকে সরান</string>
+    <string name="queue_item_subtitle_added_by">%1$s • যোগ করেছেন %2$s</string>
+
+    <!-- Playlist -->
+    <string name="playlist_owner_unknown">অজানা</string>
+    <string name="playlist_loading_title">প্লেলিস্ট লোড হচ্ছে...</string>
+    <string name="playlist_add_tracks_button">ট্র্যাক যোগ করুন</string>
+    <string name="playlist_add_tracks_title">প্লেলিস্টে ট্র্যাক যোগ করুন</string>
+    <string name="playlist_add_tracks_search_placeholder">ট্র্যাক খুঁজুন...</string>
+    <string name="playlist_add_tracks_search_content_description">খুঁজুন</string>
+    <string name="playlist_add_tracks_no_results">কোনো ট্র্যাক পাওয়া যায়নি</string>
+    <string name="playlist_add_tracks_hint">যোগ করার জন্য ট্র্যাক খুঁজুন</string>
+    <string name="playlist_add_tracks_done">সম্পন্ন</string>
+    <string name="playlist_add_tracks_add">যোগ করুন</string>
+    <string name="playlist_add_tracks_added_content_description">যোগ করা হয়েছে</string>
+
+    <!-- Album -->
+    <string name="album_loading_title">অ্যালবাম লোড হচ্ছে...</string>
+
+    <!-- Library -->
+    <string name="library_add_to_playlist_title">আপনার প্লেলিস্টে যোগ করুন</string>
+    <string name="library_add_to_playlist_search_content_description">খুঁজুন</string>
+    <string name="library_add_to_playlist_search_placeholder">আপনার প্লেলিস্ট খুঁজুন...</string>
+    <string name="library_add_to_playlist_loading">আপনার প্লেলিস্ট লোড হচ্ছে...</string>
+    <string name="library_add_to_playlist_empty">আপনার এখনো কোনো প্লেলিস্ট নেই।\nট্র্যাক যোগ করতে একটি তৈরি করুন।</string>
+    <string name="library_playlist_form_create_title">প্লেলিস্ট তৈরি করুন</string>
+    <string name="library_playlist_form_edit_title">প্লেলিস্ট এডিট করুন</string>
+    <string name="library_playlist_form_create">তৈরি করুন</string>
+    <string name="library_playlist_form_name_label">নাম</string>
+    <string name="library_playlist_form_name_placeholder">প্লেলিস্টের নাম</string>
+    <string name="library_playlist_form_description_label">বিবরণ</string>
+    <string name="library_playlist_form_description_placeholder">বিবরণ (ঐচ্ছিক)</string>
+    <string name="library_playlist_form_public">পাবলিক</string>
+    <string name="library_playlist_form_public_description">যে কেউ এই প্লেলিস্ট দেখতে পারবে</string>
+    <string name="library_playlist_form_collaborative">কোলাবোরেটিভ</string>
+    <string name="library_playlist_form_collaborative_description">অন্যরা এই প্লেলিস্টে ট্র্যাক যোগ করতে পারবে</string>
+    <string name="library_playlist_form_cover_image">কভার ছবি</string>
+    <string name="library_playlist_form_cover_content_description">প্লেলিস্ট কভার</string>
+    <string name="library_playlist_form_no_image">কোনো ছবি নেই</string>
+    <string name="library_playlist_form_change_image">ছবি পরিবর্তন করুন</string>
+    <string name="library_playlist_form_pick_image">ছবি বেছে নিন</string>
+
+    <!-- Plugin install / errors -->
+    <string name="plugin_action_install">ইনস্টল করুন</string>
+    <string name="plugin_action_replace">প্রতিস্থাপন করুন</string>
+    <string name="plugin_error_plugin_json_missing">zip ফাইলে plugin.json পাওয়া যায়নি</string>
+    <string name="plugin_error_zipline_manifest_missing">zip ফাইলে manifest.zipline.json পাওয়া যায়নি</string>
+    <string name="plugin_error_invalid_plugin_json">plugin.json-এর ফরম্যাট সঠিক নয়: %1$s</string>
+    <string name="plugin_error_read_failed">প্লাগইন পড়া যায়নি: %1$s</string>
+    <string name="plugin_error_install_failed">প্লাগইন ইনস্টল করা যায়নি: %1$s</string>
+    <string name="plugin_error_update_needs_confirmation">%1$s-এর একটি নতুন ভার্সন উপলব্ধ। ইনস্টল করার আগে আপডেট নিশ্চিত করুন।</string>
+    <string name="plugin_error_replace_needs_confirmation">%1$s আগেই ইনস্টল করা আছে। ইনস্টল করার আগে প্রতিস্থাপন নিশ্চিত করুন।</string>
+    <string name="plugin_error_builtin_add">বিল্ট-ইন প্লাগইনগুলো আগে থেকেই অন্তর্ভুক্ত, আবার যোগ করা যাবে না।</string>
+    <string name="plugin_error_builtin_remove">বিল্ট-ইন প্লাগইন সরানো যাবে না।</string>
+    <string name="plugin_error_api_version_invalid">%1$s একটি অবৈধ apiVersion (%2$s) ঘোষণা করেছে। %3$s-এর সাথে সামঞ্জস্যপূর্ণ সিমান্টিক ভার্সনিং প্রত্যাশিত।</string>
+    <string name="plugin_error_app_api_version_invalid">Spotube প্লাগইন API ভার্সন %1$s অবৈধ।</string>
+    <string name="plugin_error_api_incompatible">%1$s প্লাগইন API %2$s-এর জন্য তৈরি, কিন্তু Spotube ব্রেকিং প্লাগইন API %3$s সাপোর্ট করে। একই ব্রেকিং API ভার্সনের জন্য তৈরি প্লাগইন ইনস্টল করুন।</string>
+
+    <!-- Plugin install prompts -->
+    <string name="plugin_prompt_incompatible_title">প্লাগইন API সামঞ্জস্যপূর্ণ নয়</string>
+    <string name="plugin_prompt_install_title">প্লাগইন ইনস্টল করবেন?</string>
+    <string name="plugin_prompt_install_message">%1$s আপনার ইনস্টল করা প্লাগইনে যোগ হবে।</string>
+    <string name="plugin_prompt_update_title">প্লাগইন আপডেট করবেন?</string>
+    <string name="plugin_prompt_update_message">একটি পুরোনো ভার্সন (%1$s) ইনস্টল করা আছে। %2$s-এ আপডেট করবেন?</string>
+    <string name="plugin_prompt_replace_title">ইনস্টল করা প্লাগইন প্রতিস্থাপন করবেন?</string>
+    <string name="plugin_prompt_replace_invalid_incoming">%1$s একটি অবৈধ সিমান্টিক ভার্সন (%2$s) ব্যবহার করে, তাই আপডেট হিসেবে তুলনা করা যাচ্ছে না। তবুও ইনস্টল করা প্লাগইন প্রতিস্থাপন করবেন?</string>
+    <string name="plugin_prompt_replace_invalid_installed">ইনস্টল করা ভার্সন (%1$s) সিমান্টিক ভার্সনিং দিয়ে তুলনা করা যাচ্ছে না। এটিকে %2$s দিয়ে প্রতিস্থাপন করবেন?</string>
+    <string name="plugin_prompt_replace_same_version">ভার্সন %1$s আগেই ইনস্টল করা আছে। বিদ্যমান প্লাগইনটি প্রদত্ত কপি দিয়ে প্রতিস্থাপন করবেন?</string>
+    <string name="plugin_prompt_replace_downgrade">ইনস্টল করা ভার্সন %1$s প্রদত্ত ভার্সন %2$s-এর চেয়ে নতুন। তবুও প্রতিস্থাপন করবেন?</string>
+    <string name="plugin_prompt_replace_generic">ইনস্টল করা প্লাগইনটি প্রদত্ত কপি দিয়ে প্রতিস্থাপন করবেন?</string>
+
+    <!-- Plugin info dialog -->
+    <string name="plugin_info_label_format">%1$s:</string>
+    <string name="plugin_info_version">ভার্সন</string>
+    <string name="plugin_info_api_version">API ভার্সন</string>
+    <string name="plugin_info_author">লেখক</string>
+    <string name="plugin_info_license">লাইসেন্স</string>
+    <string name="plugin_info_capabilities">সক্ষমতা</string>
+    <string name="plugin_info_abilities">ক্ষমতা</string>
+    <string name="plugin_info_repository">রিপোজিটরি</string>
+    <string name="plugin_info_contact">যোগাযোগ</string>
+    <string name="plugin_info_report_bugs">বাগ রিপোর্ট করুন</string>
+    <string name="plugin_support_dialog_title">%1$s-কে সাপোর্ট করুন</string>
+
+    <!-- Plugin discovery -->
+    <string name="plugin_discover_badge_official">অফিশিয়াল</string>
+    <string name="plugin_discover_badge_verified">ভেরিফায়েড</string>
+    <string name="plugin_discover_stars_content_description">GitHub স্টার</string>
+    <string name="plugin_discover_repository_content_description">GitHub রিপোজিটরি URL</string>
+
+    <!-- Plugin release install dialog -->
+    <string name="plugin_install_no_releases">কোনো রিলিজ পাওয়া যায়নি</string>
+    <string name="plugin_install_select_release_label">রিলিজ নির্বাচন করুন</string>
+    <string name="plugin_install_select_release_placeholder">একটি রিলিজ বেছে নিন</string>
+    <string name="plugin_install_prerelease">প্রি-রিলিজ</string>
+    <string name="plugin_install_release_notes">রিলিজ নোট</string>
+
+    <!-- App navigation -->
+    <string name="nav_home">হোম</string>
+    <string name="nav_search">সার্চ</string>
+    <string name="nav_group_on_device">এই ডিভাইসে</string>
+    <string name="nav_group_connect">Connect</string>
+    <string name="nav_devices">ডিভাইস</string>
+
+    <!-- System tray (desktop) -->
+    <string name="tray_hide_window">উইন্ডো লুকান</string>
+    <string name="tray_show_window">উইন্ডো দেখান</string>
+    <string name="tray_next_track">পরের ট্র্যাক</string>
+    <string name="tray_previous_track">আগের ট্র্যাক</string>
+    <string name="tray_shuffle">শাফল</string>
+    <string name="tray_loop">লুপ</string>
+    <string name="tray_loop_off">লুপ: বন্ধ</string>
+    <string name="tray_loop_one">লুপ: একটি</string>
+    <string name="tray_loop_all">লুপ: সব</string>
+    <string name="tray_volume">ভলিউম: %1$d%</string>
+    <string name="tray_volume_up">ভলিউম +</string>
+    <string name="tray_volume_down">ভলিউম -</string>
+    <string name="tray_mute">মিউট</string>
+    <string name="tray_unmute">আনমিউট</string>
+    <string name="tray_like_track">ট্র্যাক লাইক করুন</string>
+    <string name="tray_unlike_track">ট্র্যাক আনলাইক করুন</string>
+    <string name="tray_exit">বের হন</string>
+
+    <!-- Desktop window controls -->
+    <string name="app_window_minimize">মিনিমাইজ</string>
+    <string name="app_window_maximize">ম্যাক্সিমাইজ</string>
+    <string name="app_window_restore">রিস্টোর</string>
+    <string name="app_window_close">বন্ধ করুন</string>
+
+    <!-- Android playback notification -->
+    <string name="notification_playback_channel_name">প্লেব্যাক</string>
+    <string name="notification_playback_channel_description">মিডিয়া প্লেব্যাক কন্ট্রোল</string>
+
+    <!-- Android Auto / media browser -->
+    <string name="media_browser_browse">ব্রাউজ</string>
+    <string name="media_browser_now_playing">এখন বাজছে</string>
+    <string name="media_browser_featured">ফিচার্ড</string>
+    <string name="media_browser_saved_tracks">সেভ করা ট্র্যাক</string>
+    <string name="media_browser_top_tracks">জনপ্রিয় ট্র্যাক</string>
+</resources>

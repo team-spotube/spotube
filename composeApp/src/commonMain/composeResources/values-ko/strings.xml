@@ -1,0 +1,920 @@
+<!--
+  ~ Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="queue_title">대기열</string>
+    <string name="queue_clear_queue">대기열 비우기</string>
+    <string name="queue_filter_queue">대기열 필터...</string>
+    <string name="queue_no_queue_entries">대기열이 비어 있어요</string>
+
+    <string name="search_placeholder">노래, 아티스트, 앨범 검색...</string>
+    <string name="search_clear_history">기록 모두 지우기</string>
+    <string name="search_filter_placeholder">검색...</string>
+
+    <!-- Library toolbar -->
+    <string name="library_screen_title">내 라이브러리</string>
+    <string name="library_toolbar_compact_title">라이브러리</string>
+    <string name="library_tab_playlists">플레이리스트</string>
+    <string name="library_tab_albums">앨범</string>
+    <string name="library_tab_artists">아티스트</string>
+    <string name="library_tab_local_tracks">로컬 트랙</string>
+    <string name="library_tab_downloads">다운로드</string>
+    <string name="library_filter_playlists">저장한 플레이리스트 검색…</string>
+    <string name="library_filter_albums">저장한 앨범 검색…</string>
+    <string name="library_filter_artists">저장한 아티스트 검색…</string>
+    <string name="library_filter_local_tracks">폴더 또는 트랙 검색…</string>
+    <string name="library_action_search">라이브러리 필터</string>
+    <string name="library_action_close_search">필터 닫기</string>
+    <string name="library_action_create_playlist">플레이리스트 만들기</string>
+    <string name="library_action_refresh_local_tracks">로컬 트랙 새로고침</string>
+    <string name="library_action_grid_view">그리드 보기로 전환</string>
+    <string name="library_action_list_view">목록 보기로 전환</string>
+    <string name="library_playlists_empty">저장한 플레이리스트가 없어요</string>
+    <string name="library_playlists_no_results">“%1$s”와(과) 일치하는 플레이리스트가 없어요</string>
+    <string name="library_albums_empty">저장한 앨범이 없어요</string>
+    <string name="library_albums_no_results">“%1$s”와(과) 일치하는 앨범이 없어요</string>
+    <string name="library_artists_empty">저장한 아티스트가 없어요</string>
+    <string name="library_artists_no_results">“%1$s”와(과) 일치하는 아티스트가 없어요</string>
+
+    <!-- Local media -->
+    <string name="library_local_folders">폴더</string>
+    <string name="library_local_folder">폴더</string>
+    <string name="library_local_summary">%1$s • %2$s</string>
+    <plurals name="library_local_tracks_count">
+        <item quantity="other">트랙 %1$d개</item>
+    </plurals>
+    <plurals name="library_local_folders_count">
+        <item quantity="other">폴더 %1$d개</item>
+    </plurals>
+    <string name="library_local_back">폴더로 돌아가기</string>
+    <string name="library_local_play_folder">폴더 재생</string>
+    <string name="library_local_permission_title">오디오 접근 권한 필요</string>
+    <string name="library_local_permission_description">기기의 음악을 둘러보려면 오디오 접근을 허용하세요.</string>
+    <string name="library_local_grant_access">접근 허용</string>
+    <string name="library_local_empty_folders">로컬 폴더를 찾을 수 없어요</string>
+    <string name="library_local_empty_tracks">이 폴더에 트랙이 없어요</string>
+    <string name="library_local_no_results">일치하는 폴더나 트랙이 없어요</string>
+    <string name="library_local_refresh_failed">로컬 미디어를 새로고침하지 못했어요</string>
+
+    <!-- Downloads -->
+    <string name="downloads_summary">진행 중 %1$d개 • 완료 %2$d개</string>
+    <string name="downloads_clear_completed">완료된 항목 지우기</string>
+    <string name="downloads_empty">아직 다운로드한 항목이 없어요</string>
+    <string name="downloads_status_downloading">다운로드 중 %1$d%</string>
+    <string name="downloads_status_queued">대기 중</string>
+    <string name="downloads_status_completed">완료됨</string>
+    <string name="downloads_status_cancelled">취소됨</string>
+    <string name="downloads_status_failed">실패</string>
+    <string name="downloads_status_failed_error">실패: %1$s</string>
+    <string name="downloads_action_cancel">다운로드 취소</string>
+    <string name="downloads_action_retry">다운로드 다시 시도</string>
+    <string name="downloads_action_remove">다운로드 삭제</string>
+
+    <!-- Shared media items -->
+    <string name="media_artist">아티스트</string>
+    <string name="media_blacklisted">차단됨</string>
+    <string name="media_liked_tracks">좋아요 표시한 곡</string>
+    <string name="media_saved_songs">저장한 노래</string>
+    <string name="media_unknown_artist">알 수 없는 아티스트</string>
+    <string name="media_preview_title">트랙 제목</string>
+    <string name="media_preview_subtitle">아티스트 이름</string>
+
+    <string name="accessibility_selected">선택됨</string>
+
+    <string name="settings_screen_title">설정</string>
+
+    <string name="settings_section_plugins">플러그인</string>
+    <string name="settings_section_language_region">언어 및 지역</string>
+    <string name="settings_section_appearance">화면 스타일</string>
+    <string name="settings_section_playback">재생</string>
+    <string name="settings_section_downloads">다운로드</string>
+    <string name="settings_section_caching">캐시</string>
+    <string name="settings_section_desktop">데스크톱</string>
+    <string name="settings_section_updates">업데이트</string>
+    <string name="settings_section_support">후원</string>
+    <string name="settings_section_about">정보</string>
+
+    <string name="common_close">닫기</string>
+    <string name="common_save">저장</string>
+    <string name="common_cancel">취소</string>
+
+    <string name="settings_language_title">언어</string>
+    <string name="settings_language_subtitle_current">앱 인터페이스 언어입니다. 현재: %1$s</string>
+    <string name="settings_language_system_default">시스템 기본값</string>
+    <string name="settings_country_title">국가</string>
+    <string name="settings_country_subtitle_current">콘텐츠 및 이용 가능 여부에 적용되는 국가입니다. 현재: %1$s</string>
+    <string name="settings_option_name_and_code">%1$s (%2$s)</string>
+
+    <string name="settings_theme_title">테마</string>
+    <string name="settings_theme_subtitle_current">Spotube가 시스템 화면 모드를 따르는 방식을 선택하세요. 현재: %1$s</string>
+    <string name="settings_theme_light">라이트</string>
+    <string name="settings_theme_dark">다크</string>
+    <string name="settings_theme_system">시스템</string>
+
+    <string name="settings_surface_theme_title">표면</string>
+    <string name="settings_surface_theme_subtitle_current">앱의 배경 재질입니다. 현재: %1$s</string>
+    <string name="settings_surface_watery">물결</string>
+    <string name="settings_surface_icy">얼음</string>
+    <string name="settings_surface_chrome">크롬</string>
+    <string name="settings_surface_acrylic">아크릴</string>
+    <string name="settings_surface_glass">유리</string>
+
+    <string name="settings_accent_title">강조 색상</string>
+    <string name="settings_accent_subtitle_current">현재 팔레트: %1$s</string>
+    <string name="settings_accent_dialog_title">강조 색상</string>
+    <string name="settings_accent_dialog_description">강조 팔레트를 선택하고 라이트 및 다크 테마에서 미리 확인하세요.</string>
+    <string name="settings_preview_light">라이트</string>
+    <string name="settings_preview_dark">다크</string>
+    <string name="settings_preview_label">미리보기</string>
+    <string name="settings_preview_button">버튼</string>
+    <string name="settings_accent_green_goblin">그린 고블린</string>
+    <string name="settings_accent_electric_violet">일렉트릭 바이올렛</string>
+    <string name="settings_accent_oceanic_cyan">오셔닉 시안</string>
+    <string name="settings_accent_sunset_orange">선셋 오렌지</string>
+    <string name="settings_accent_rose_garden">로즈 가든</string>
+    <string name="settings_accent_midnight_blue">미드나이트 블루</string>
+    <string name="settings_accent_metallic_slate">메탈릭 슬레이트</string>
+
+    <string name="settings_appearance_title">디자인 &amp; 스타일</string>
+    <string name="settings_appearance_subtitle_current">표면 재질과 강조 색상. 현재: %1$s · %2$s</string>
+    <string name="settings_appearance_dialog_title">디자인 &amp; 스타일</string>
+    <string name="settings_appearance_dialog_description">표면 재질을 고른 다음 어울리는 강조 색상을 선택하세요. 모든 옵션은 엄선된 조합이에요.</string>
+    <string name="settings_appearance_surface_label">표면</string>
+    <string name="settings_appearance_accent_label">강조 색상</string>
+    <string name="settings_preview_secondary">보조</string>
+
+    <string name="settings_palette_title">팔레트</string>
+    <string name="settings_palette_subtitle_current">Millennium 강조 팔레트. 현재: %1$s</string>
+    <string name="settings_palette_dialog_title">팔레트</string>
+    <string name="settings_palette_dialog_description">Millennium 강조 팔레트를 선택하고 라이트 및 다크 모드에서 미리 확인하세요.</string>
+    <string name="settings_palette_label">팔레트</string>
+    <string name="settings_appearance_subtitle_palette">Millennium 팔레트 및 강조 색상. 현재: %1$s</string>
+    <string name="settings_palette_blue">블루</string>
+    <string name="settings_palette_orange">오렌지</string>
+    <string name="settings_palette_lime">라임</string>
+
+    <string name="settings_download_folder_title">다운로드 폴더 지정</string>
+    <string name="settings_download_folder_current">현재 폴더: %1$s</string>
+    <string name="settings_download_folder_description">기본 음악 폴더를 사용하려면 비워 두세요.</string>
+    <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
+    <string name="settings_local_media_folders_title">로컬 미디어 폴더</string>
+    <string name="settings_local_media_folders_subtitle_current">데스크톱에서 검색할 사용자 지정 폴더. 추가됨: %1$d</string>
+    <string name="settings_local_media_folders_subtitle_empty">아직 추가한 사용자 지정 폴더가 없어요</string>
+    <string name="settings_local_media_folders_description">로컬 음악 라이브러리용 사용자 지정 폴더입니다.</string>
+    <string name="settings_local_media_folders_manage">관리</string>
+    <string name="settings_local_media_folders_add_action">폴더 추가</string>
+    <string name="settings_local_media_folders_remove_action">폴더 삭제</string>
+    <string name="settings_local_media_folders_none_added">추가한 사용자 지정 폴더가 없습니다.</string>
+    <string name="settings_local_media_folders_remove_named">검색 목록에서 %1$s 삭제</string>
+    <string name="settings_local_media_folders_automatic_both">다운로드 폴더와 음악 캐시 폴더는 자동으로 포함돼요.</string>
+    <string name="settings_local_media_folders_automatic_downloads">다운로드 폴더는 자동으로 포함돼요.</string>
+    <string name="settings_local_media_folders_automatic_cache">음악 캐시 폴더는 자동으로 포함돼요.</string>
+    <string name="settings_local_media_folders_saving">저장 중…</string>
+    <string name="settings_local_media_folders_save_error">폴더를 저장하지 못했어요. 변경 사항은 그대로 남아 있으니 다시 시도하세요.</string>
+    <plurals name="settings_local_media_folders_count">
+        <item quantity="other">폴더 %1$d개</item>
+    </plurals>
+    <string name="settings_download_format_title">다운로드 음악 형식</string>
+    <string name="settings_download_format_subtitle_current">다운로드에 사용할 코덱 및 컨테이너. 현재: %1$s</string>
+    <string name="settings_download_quality_title">다운로드 음질</string>
+
+    <string name="settings_streaming_format_title">스트리밍 음악 형식</string>
+    <string name="settings_streaming_format_subtitle_current">음악 스트리밍에 사용할 코덱 및 컨테이너. 현재: %1$s</string>
+    <string name="settings_streaming_quality_title">스트리밍 음질</string>
+    <string name="settings_subtitle_current">현재: %1$s</string>
+    <string name="settings_enable_music_caching_title">음악 캐시 사용</string>
+    <string name="settings_enable_music_caching_subtitle">스트리밍한 오디오를 기기에 저장해 다시 재생할 때 더 빠르게 불러와요.</string>
+    <string name="settings_cache_folder_title">캐시 폴더</string>
+    <string name="settings_cache_folder_current">현재: %1$s</string>
+    <string name="settings_cache_folder_default">현재: 기본 앱 캐시</string>
+    <string name="settings_cache_size_limit_title">캐시 용량 제한</string>
+    <string name="settings_cache_size_limit_unlimited">제한 없음</string>
+    <string name="settings_cache_size_limit_current">현재 제한: %1$d MB</string>
+    <string name="settings_cache_size_limit_description">최대 캐시 용량을 MB 단위로 설정하세요. 제한을 두지 않으려면 0을 입력하거나 비워 두세요.</string>
+    <string name="settings_cache_size_limit_placeholder">500</string>
+    <string name="settings_error_cache_size_range">용량은 0 또는 양수여야 해요.</string>
+    <string name="settings_enable_endless_playback_title">끝없는 재생 사용</string>
+    <string name="settings_enable_endless_playback_subtitle">대기열이 끝나면 추천 트랙으로 계속 재생해요.</string>
+    <string name="settings_playback_port_title">재생 프록시 서버 포트</string>
+    <string name="settings_allow_remote_control_title">원격 제어 허용</string>
+    <string name="settings_allow_remote_control_subtitle">같은 네트워크의 다른 기기가 연결되면 재생을 제어할 수 있도록 허용해요.</string>
+    <string name="settings_remote_device_name_title">원격 제어 기기 이름</string>
+    <string name="settings_remote_device_name_subtitle">다른 기기가 이 기기를 찾을 때 표시되는 이름입니다. 현재: %1$s</string>
+    <string name="settings_remote_device_name_description">네트워크의 다른 기기가 이 Spotube를 찾을 때 표시할 이름을 정하세요.</string>
+    <string name="settings_remote_device_name_placeholder">예: 거실 Spotube</string>
+    <string name="settings_remote_device_name_default">기기 호스트 이름</string>
+    <string name="settings_playback_port_subtitle_current">재생 프록시 서버에서 사용하는 포트입니다. 현재: %1$d</string>
+    <string name="settings_playback_port_description">1에서 65535 사이의 포트를 선택하세요.</string>
+    <string name="settings_playback_port_placeholder">14769</string>
+    <string name="settings_error_whole_number">올바른 정수를 입력하세요.</string>
+    <string name="settings_error_port_range">포트는 1에서 65535 사이여야 해요.</string>
+
+    <string name="settings_blacklist_title">차단 목록</string>
+    <string name="settings_blacklist_subtitle">차단한 트랙 및 아티스트 관리</string>
+
+    <string name="settings_desktop_minimize_title">트레이로 최소화</string>
+    <string name="settings_desktop_minimize_subtitle">창을 최소화하면 Spotube를 시스템 트레이에서 계속 실행해요.</string>
+    <string name="settings_desktop_discord_title">Discord Rich Presence</string>
+    <string name="settings_desktop_discord_subtitle">데스크톱에서 현재 재생 상태를 Discord에 표시해요.</string>
+
+    <string name="settings_updates_auto_check_title">자동으로 업데이트 확인</string>
+    <string name="settings_updates_auto_check_subtitle">백그라운드에서 Spotube 새 버전을 확인해요.</string>
+
+    <string name="settings_plugins_manage_title">플러그인 관리</string>
+    <string name="settings_plugins_manage_subtitle">플러그인을 관리하세요</string>
+    <string name="settings_plugins_default_ability_title">기본 %1$s 플러그인</string>
+    <string name="settings_plugins_ability_metadata">메타데이터</string>
+    <string name="settings_plugins_ability_audio">오디오</string>
+    <string name="settings_plugins_ability_lyrics">가사</string>
+    <string name="settings_plugins_ability_scrobble">스크로블</string>
+    <string name="settings_plugins_no_selection">선택한 플러그인 없음</string>
+    <string name="settings_plugins_action_change">변경</string>
+    <string name="settings_plugins_action_select">선택</string>
+    <string name="settings_plugins_selected">선택됨</string>
+    <string name="settings_plugins_clear">선택 해제</string>
+    <string name="settings_plugins_no_plugins">사용 가능한 플러그인이 없어요</string>
+    <string name="settings_plugins_plugin_content_description">%1$s 플러그인</string>
+    <string name="settings_plugins_clear_content_description">지우기</string>
+
+    <string name="plugin_configure_title">구성</string>
+    <string name="plugin_screen_title">플러그인 관리자</string>
+    <string name="plugin_error_enter_url">URL을 입력하세요</string>
+    <string name="plugin_error_url_scheme">URL은 http:// 또는 https://로 시작해야 해요</string>
+    <string name="plugin_error_download_failed">플러그인을 다운로드하지 못했어요</string>
+    <string name="plugin_empty_title">아직 설치한 플러그인이 없어요</string>
+    <string name="plugin_empty_subtitle">위에 다운로드 URL을 붙여넣거나 파일을 선택하세요.</string>
+    <plurals name="plugin_installed_plugins_count">
+        <item quantity="other">플러그인 %1$d개 설치됨</item>
+    </plurals>
+    <string name="plugin_install_section_title">플러그인 설치</string>
+    <string name="plugin_url_placeholder">https://example.com/plugin.smplug</string>
+    <string name="plugin_action_download">다운로드</string>
+    <string name="plugin_action_install_from_file">파일에서 설치(.smplug)</string>
+    <string name="plugin_state_active">사용 중</string>
+    <string name="plugin_version_label">v%1$s</string>
+    <string name="plugin_state_builtin">기본 제공</string>
+    <string name="plugin_action_remove">플러그인 삭제</string>
+    <string name="plugin_action_login">로그인</string>
+    <string name="plugin_action_logout">로그아웃</string>
+    <string name="plugin_section_url_title">URL에서 다운로드</string>
+    <string name="plugin_section_file_title">파일에서 설치</string>
+    <string name="plugin_section_install">설치</string>
+
+    <string name="plugin_permissions_author_version">• %1$s</string>
+    <string name="plugin_permissions_requested_title">요청된 권한</string>
+    <string name="plugin_permissions_none">이 플러그인에는 특별한 권한이 필요하지 않아요.</string>
+    <string name="plugin_permissions_compare_title">설치된 버전과 제공된 버전 비교</string>
+    <string name="plugin_permissions_installed_label">설치됨</string>
+    <string name="plugin_permissions_supplied_label">제공됨</string>
+    <string name="plugin_permissions_api_diff">API %1$s → %2$s</string>
+    <string name="plugin_permissions_capability_storage_title">영구 저장소</string>
+    <string name="plugin_permissions_capability_storage_desc">디스크에 데이터 읽기 및 쓰기</string>
+    <string name="plugin_permissions_capability_network_title">네트워크 요청</string>
+    <string name="plugin_permissions_capability_network_desc">인터넷으로 데이터 송수신</string>
+    <string name="plugin_permissions_capability_webview_title">WebView</string>
+    <string name="plugin_permissions_capability_webview_desc">앱 안에 웹 콘텐츠 표시</string>
+    <string name="settings_section_jam">그룹 잼</string>
+    <string name="settings_jam_server_test">연결 테스트</string>
+    <string name="settings_jam_server_testing">테스트 중…</string>
+    <string name="settings_jam_server_test_ok">%1$d ms 만에 연결됨</string>
+    <string name="settings_jam_server_test_fail">실패: %1$s</string>
+    <string name="settings_jam_section_connection">연결</string>
+    <string name="settings_jam_section_diagnostics">진단</string>
+
+    <!-- Group Jam -->
+    <string name="jam_screen_title">그룹 잼</string>
+    <string name="jam_setup_create_tab">만들기</string>
+    <string name="jam_setup_join_tab">참여</string>
+    <string name="jam_setup_create_hint">방을 만든 다음 친구들에게 코드를 공유하세요.</string>
+    <string name="jam_setup_create_button">방 만들기</string>
+    <string name="jam_setup_join_button">방 참여</string>
+    <string name="jam_setup_working">연결 중…</string>
+    <string name="jam_setup_code_label">방 코드</string>
+    <string name="jam_setup_code_placeholder">ABC123</string>
+    <string name="jam_session_connected">연결됨</string>
+    <string name="jam_session_connecting">다시 연결 중…</string>
+    <string name="jam_invite_copy">코드 복사</string>
+    <string name="jam_invite_copied">복사됨!</string>
+    <string name="jam_invite_share">공유</string>
+    <string name="jam_participants_heading">참여자(%1$d)</string>
+    <string name="jam_participants_host">호스트</string>
+    <string name="jam_participants_guest">리스너</string>
+    <string name="jam_participants_waiting">리스너를 기다리는 중…</string>
+    <string name="jam_participants_remove">내보내기</string>
+    <string name="jam_participants_ban">차단</string>
+    <string name="jam_participants_manage">관리</string>
+    <string name="jam_session_leave">방 나가기</string>
+    <string name="jam_error_title">연결할 수 없어요</string>
+    <string name="jam_error_dismiss">닫기</string>
+    <string name="jam_error_create">잼 세션을 만들지 못했어요</string>
+    <string name="jam_error_join">잼 세션에 참여하지 못했어요</string>
+    <string name="jam_error_invalid_code">영문자와 숫자로 된 6자리 방 코드를 입력하세요.</string>
+    <string name="jam_share_message">내 Spotube 잼에 참여하세요. 코드: %1$s</string>
+    <string name="settings_jam_server_title">방 서버</string>
+    <string name="settings_jam_server_url">서버 URL</string>
+    <string name="settings_jam_server_url_invalid">https://로 시작하는 URL을 입력하세요.</string>
+    <string name="settings_jam_server_diagnostics_subtitle">방을 시작하기 전에 방 서버를 확인하세요.</string>
+    <string name="settings_jam_server_note">잼은 Spotube의 무료 방 서버를 사용합니다. 직접 호스팅하려면 github.com/team-spotube/jam-server의 서버를 배포하고 URL을 입력하세요.</string>
+    <string name="settings_jam_section_you">나</string>
+    <string name="jam_connection_host">서버: %1$s</string>
+    <string name="jam_connection_missing">방을 만들거나 참여하려면 설정에서 방 서버를 지정하세요.</string>
+    <string name="jam_connection_settings">서버 설정</string>
+    <string name="jam_participants_you">%1$s (나)</string>
+    <string name="jam_name_title">내 이름</string>
+    <string name="jam_name_subtitle">잼의 다른 사람들에게 %1$s(으)로 표시됩니다</string>
+    <string name="jam_name_description">잼의 모든 사람에게 표시됩니다. 비워 두면 %1$s을(를) 사용합니다. 새 이름은 다음에 방을 만들거나 참여할 때부터 적용됩니다.</string>
+    <string name="jam_name_too_long">최대 %1$d자까지 입력하세요.</string>
+    <string name="jam_error_no_server">설정된 잼 서버가 없습니다</string>
+    <string name="jam_error_server_unreachable">잼 서버에 연결할 수 없습니다. 네트워크 또는 설정 → 그룹 잼의 서버 URL을 확인하세요.</string>
+    <string name="jam_error_server_incompatible">잼 서버의 버전이 호환되지 않습니다.</string>
+    <string name="jam_error_room_not_found">해당 코드의 방이 없습니다. 코드를 확인하고 다시 시도하세요.</string>
+    <string name="jam_error_room_full">이 방은 가득 찼습니다.</string>
+    <string name="jam_error_banned">호스트가 이 방에서 나를 차단했습니다.</string>
+    <string name="jam_error_kicked">호스트가 나를 방에서 내보냈습니다.</string>
+    <string name="jam_error_replaced">이 기기에서 이 방이 다시 열려 이 연결이 종료되었습니다.</string>
+
+    <string name="player_go_to_album">앨범으로 이동</string>
+    <string name="player_sleep_timer">취침 타이머</string>
+    <string name="player_track_details">트랙 세부정보</string>
+    <string name="player_play_content_description">재생</string>
+    <string name="player_pause_content_description">일시정지</string>
+    <string name="player_nothing_playing">재생 중인 항목 없음</string>
+    <string name="player_add_to_queue_content_description">대기열에 추가</string>
+
+    <string name="update_action_ignore">무시</string>
+    <string name="update_action_update">업데이트</string>
+    <string name="app_update_dialog_title">Spotube %1$s 버전을 사용할 수 있어요</string>
+    <string name="app_update_dialog_no_notes">이번 릴리스의 새로운 기능은 Spotube 다운로드 페이지에서 확인하세요.</string>
+    <string name="plugin_update_dialog_title">%1$s %2$s 버전을 사용할 수 있어요</string>
+    <string name="plugin_update_dialog_current_version">현재 설치된 버전: %1$s</string>
+    <string name="plugin_update_dialog_no_notes">이번 업데이트의 새로운 기능은 플러그인 페이지에서 확인하세요.</string>
+
+    <string name="welcome_skip">건너뛰기</string>
+    <string name="welcome_next">다음</string>
+    <string name="welcome_back">뒤로</string>
+    <string name="welcome_get_started">시작하기</string>
+    <string name="welcome_app_name">Spotube</string>
+    <string name="welcome_brand_freedom">아무런 조건 없는 음악.</string>
+    <string name="welcome_brand_quiet_description">음악의 세계를 위한 오픈 소스 플레이어.\n마음껏 탐색하고, 나만의 방식으로 꾸며 보세요.</string>
+    <string name="welcome_donate_quiet_title">이 프로젝트가 계속될 수 있도록 도와주세요.</string>
+    <string name="welcome_donate_letter">Spotube는 구독 비즈니스가 아닌 사람들이 만들어요. Spotube가 일상의 일부가 되었다면, 작은 후원이 Spotube를 더 정성껏 가꾸는 데 큰 힘이 돼요.\n\n독립 소프트웨어에 자리를 내어 주셔서 감사합니다.</string>
+    <string name="welcome_plugins_setup_guide">먼저 카탈로그 플러그인으로 노래와 플레이리스트를 찾으세요. 재생하려면 오디오 플러그인을 선택하세요. 가사와 감상 기록은 선택 사항이에요. 아래에서 플러그인을 찾아 권한을 확인하고 설치한 다음 여기서 선택하세요.</string>
+    <string name="welcome_plugins_discover">플러그인 둘러보기</string>
+    <string name="welcome_plugins_sources">내 소스</string>
+    <string name="welcome_plugins_retry">다시 시도</string>
+    <string name="welcome_plugins_more">더 많은 플러그인</string>
+    <string name="welcome_plugins_discovery_empty">새 플러그인을 찾지 못했어요. 위에서 링크나 .smplug 파일로 설치할 수도 있어요.</string>
+    <string name="welcome_plugins_discovery_error">지금은 플러그인 둘러보기를 사용할 수 없어요. 다시 시도하거나 링크 또는 파일로 설치하세요.</string>
+    <string name="welcome_step_welcome">환영합니다</string>
+    <string name="welcome_step_support">후원</string>
+    <string name="welcome_step_plugins">플러그인</string>
+    <string name="welcome_step_guide">가이드</string>
+
+    <string name="welcome_guide_title">Spotube 사용 방법</string>
+    <string name="welcome_guide_subtitle">간단한 네 단계면 바로 감상할 수 있어요.</string>
+    <string name="welcome_guide_signin_title">로그인</string>
+    <string name="welcome_guide_signin_desc">계정을 연결하거나 원하는 카탈로그 플러그인을 선택하세요.</string>
+    <string name="welcome_guide_search_title">검색하고 재생하기</string>
+    <string name="welcome_guide_search_desc">노래, 앨범, 아티스트를 찾은 다음 재생을 누르세요.</string>
+    <string name="welcome_guide_offline_title">오프라인으로 감상하기</string>
+    <string name="welcome_guide_offline_desc">트랙을 다운로드하면 인터넷 연결 없이도 계속 재생할 수 있어요.</string>
+    <string name="welcome_guide_lyrics_title">가사 따라가기</string>
+    <string name="welcome_guide_lyrics_desc">트랙이 재생되는 동안 플레이어에서 싱크 가사를 열어 보세요.</string>
+
+    <!-- Page 1: branding -->
+    <string name="welcome_brand_tagline">나의 음악. 나의 소스. 나의 규칙.</string>
+    <string name="welcome_brand_subtitle">음악을 사랑하는 커뮤니티가 만든 무료 오픈 소스 음악 플레이어.</string>
+    <string name="welcome_brand_chip_open_source">오픈 소스</string>
+    <string name="welcome_brand_chip_no_ads">광고 없음</string>
+    <string name="welcome_brand_chip_no_tracking">원격 측정 없음</string>
+    <string name="welcome_brand_chip_plugin_powered">플러그인 기반</string>
+    <string name="welcome_lets_go">시작해요</string>
+
+    <!-- Page 2: donations -->
+    <string name="welcome_donate_eyebrow">후원자 덕분에 계속할 수 있어요</string>
+    <string name="welcome_donate_title">열정으로 만들고, 여러분 덕분에 이어 갑니다.</string>
+    <string name="welcome_donate_message">Spotube는 100% 무료이자 자유 오픈 소스 소프트웨어예요 — 광고도, 구독도, 추적도 없어요. 모든 기능은 여러분 같은 분들이 코드가 계속 이어지도록 도와주신 덕분에 존재해요.</string>
+    <string name="welcome_donate_patreon_title">Patreon</string>
+    <string name="welcome_donate_patreon_tag">월간 후원</string>
+    <string name="welcome_donate_patreon_subtitle">지속적인 개발과 인프라를 지원해 주세요</string>
+    <string name="welcome_donate_bmac_title">Buy Me a Coffee</string>
+    <string name="welcome_donate_bmac_tag">커피 한 잔 후원</string>
+    <string name="welcome_donate_bmac_subtitle">간단한 팁으로 늦은 밤 코딩에 힘을 보태 주세요</string>
+    <string name="welcome_donate_opencollective_title">Open Collective</string>
+    <string name="welcome_donate_opencollective_tag">커뮤니티 기금</string>
+    <string name="welcome_donate_opencollective_subtitle">투명하게 커뮤니티가 운영하는 재정 후원</string>
+    <string name="welcome_donate_thanks">열린 음악을 믿어 주셔서 진심으로 감사합니다.</string>
+    <string name="welcome_donate_optional">후원은 전적으로 선택 사항이에요 — 어떤 경우든 Spotube는 계속 무료예요.</string>
+    <string name="welcome_donate_action">후원하기</string>
+    <string name="welcome_donate_open_content_description">%1$s 열기</string>
+
+    <!-- Support / donations -->
+    <string name="support_button_label">Spotube 후원하기</string>
+    <string name="support_dialog_title">Spotube 후원하기</string>
+    <string name="support_dialog_message">Spotube는 무료이자 자유 오픈 소스 소프트웨어예요 — 광고도, 구독도, 추적도 없어요. Spotube가 즐거움을 준다면 프로젝트 후원을 고려해 주세요.</string>
+    <string name="support_dialog_reminder_hint">이 알림은 설정 → 후원에서 끌 수 있어요.</string>
+    <string name="support_dialog_dismiss">나중에</string>
+    <string name="settings_support_reminders_title">후원 알림</string>
+    <string name="settings_support_reminders_subtitle">7일마다 프로젝트 후원 알림을 가볍게 표시해요.</string>
+
+    <!-- Page 3: plugins -->
+    <string name="welcome_plugins_eyebrow">모듈식 구조</string>
+    <string name="welcome_plugins_title">음악을 어디서 가져올지 선택하세요.</string>
+    <string name="welcome_plugins_subtitle">Spotube는 카탈로그 탐색, 오디오 스트리밍, 싱크 가사를 분리해서 처리해요. 아래에서 엔진을 구성하거나 언제든지 바꿀 수 있어요.</string>
+    <string name="welcome_plugins_metadata_title">메타데이터 엔진</string>
+    <string name="welcome_plugins_metadata_description">음악 탐색, 검색, 트랙 목록, 플레이리스트를 담당해요.</string>
+    <string name="welcome_plugins_audio_title">오디오 엔진</string>
+    <string name="welcome_plugins_audio_description">재생할 오디오 스트림을 가져오고 디코딩해요.</string>
+    <string name="welcome_plugins_lyrics_title">가사 엔진</string>
+    <string name="welcome_plugins_lyrics_description">시간에 맞춘 노래방 가사를 실시간으로 보여 줘요.</string>
+    <string name="welcome_plugins_scrobble_title">스크로블 엔진</string>
+    <string name="welcome_plugins_scrobble_description">감상 기록을 Last.fm 또는 ListenBrainz에 기록해요.</string>
+    <string name="welcome_plugins_badge_active">사용 중</string>
+    <string name="welcome_plugins_badge_builtin">기본 제공</string>
+    <string name="welcome_plugins_badge_ready">준비됨</string>
+    <string name="welcome_plugins_badge_optional">선택 사항</string>
+    <string name="welcome_plugins_none_selected">엔진 선택</string>
+    <string name="welcome_plugins_installed_section">설치된 엔진</string>
+    <string name="welcome_plugins_set_default">기본값으로 설정</string>
+    <string name="welcome_plugins_builtin_note">NewPipe YouTube와 LRCLib Lyrics는 기본 제공되며 바로 스트리밍할 수 있어요.</string>
+    <string name="welcome_plugins_tip">설정 → 플러그인에서 언제든지 커뮤니티 플러그인을 관리하거나 추가할 수 있어요.</string>
+
+    <!-- Page 4: how it works -->
+    <string name="welcome_how_eyebrow">레트로 모던 아키텍처</string>
+    <string name="welcome_how_title">순수한 하이파이, 중개자는 없어요</string>
+    <string name="welcome_how_subtitle">Spotube가 기기에서 직접 분산형 재생을 처리하는 방법은 다음과 같아요.</string>
+    <string name="welcome_how_status_badge">P2P 직접 연결 • 256 KBPS OPUS</string>
+    <string name="welcome_how_mockup_title">블루 아워</string>
+    <string name="welcome_how_mockup_artist">Spotube · 플레이어 데모</string>
+    <string name="welcome_how_mockup_lyric">그 사이의 순간들을 위한 작은 음악.</string>
+    <string name="welcome_how_step_search_title">1. 분산형 탐색</string>
+    <string name="welcome_how_step_search_desc">검색어는 선택한 카탈로그 플러그인으로 바로 전달돼요. Spotube는 취향을 분석하지 않아요.</string>
+    <string name="welcome_how_step_stream_title">2. 직접 스트림 확인</string>
+    <string name="welcome_how_step_stream_desc">오디오는 콘텐츠 서버에서 기기로 바로 스트리밍돼요. 프록시 경유나 원격 데이터 수집은 없어요.</string>
+    <string name="welcome_how_step_playback_title">3. 로컬 DSP &amp; 재생</string>
+    <string name="welcome_how_step_playback_desc">이퀄라이저 컨트롤과 선택적 오프라인 다운로드를 지원하며 기기에서 디코딩하고 캐시해요.</string>
+    <string name="welcome_how_step_lyrics_title">4. 싱크 가사 &amp; 잼</string>
+    <string name="welcome_how_step_lyrics_desc">노래방 가사가 재생 시간에 맞춰 흐르고, LAN 원격 제어와 그룹 잼도 지원해요.</string>
+    <string name="welcome_how_footer">중개 서버가 없어요. 재생은 기기에서 직접 이루어져요 — 설계부터 개인정보를 보호해요.</string>
+
+    <!-- Devices: play destination picker -->
+    <string name="devices_destination_title">기기 선택</string>
+    <string name="devices_destination_prompt">%1$s: “%2$s”</string>
+    <string name="devices_destination_action_play">재생</string>
+    <string name="devices_destination_action_add_to_queue">대기열에 추가</string>
+    <string name="devices_destination_action_play_next">다음에 재생</string>
+    <string name="devices_destination_this_device">이 기기</string>
+    <string name="devices_destination_this_device_subtitle">이 기기에서</string>
+    <string name="devices_destination_remote_device">원격 기기</string>
+    <string name="devices_destination_remote_device_host">원격 기기(%1$s)</string>
+    <string name="devices_destination_remote_subtitle">연결된 기기에서</string>
+
+    <!-- Devices: connection errors -->
+    <string name="devices_error_connection_failed">연결 실패</string>
+    <string name="devices_error_connection_lost">연결 끊김</string>
+    <string name="devices_error_send_failed">전송 실패</string>
+    <string name="devices_error_discovery_failed">기기 검색 실패: %1$s</string>
+    <string name="devices_error_connect_failed">연결하지 못했어요: %1$s</string>
+
+    <!-- Devices: discovery screen -->
+    <string name="devices_title">기기</string>
+    <string name="devices_refresh">새로고침</string>
+    <string name="devices_disconnect">연결 해제</string>
+    <string name="devices_connecting">연결 중...</string>
+    <string name="devices_searching">네트워크에서 기기를 찾는 중...</string>
+    <string name="devices_empty">기기를 찾을 수 없어요</string>
+    <string name="devices_empty_hint">상대 기기의 설정에서 “원격 제어 허용”이 켜져 있는지 확인하세요.</string>
+    <string name="devices_unknown_device">알 수 없는 기기</string>
+    <string name="devices_resolving">확인 중...</string>
+
+    <!-- Devices: remote control screen -->
+    <string name="devices_remote_title">원격 제어</string>
+    <string name="devices_remote_disconnected">연결 끊김</string>
+    <string name="devices_remote_connection_error">연결 오류: %1$s</string>
+    <string name="devices_remote_unknown_track">알 수 없는 트랙</string>
+    <string name="devices_remote_unknown_artist">알 수 없는 아티스트</string>
+    <string name="devices_remote_volume">볼륨</string>
+    <string name="devices_remote_remove_from_queue">대기열에서 삭제</string>
+    <string name="devices_remote_more_options">옵션 더보기</string>
+
+    <!-- Group Jam: play destination picker -->
+    <string name="jam_destination_title">어디에서 재생할까요?</string>
+    <string name="jam_destination_message">진행 중인 잼 세션이 있어요. 이 컬렉션을 재생할 위치를 선택하세요.</string>
+    <string name="jam_destination_play_here">여기에서 재생</string>
+    <string name="jam_destination_suggest">잼에 추천하기</string>
+
+    <!-- Group Jam: connection errors -->
+    <string name="jam_error_connection_failed">연결 실패</string>
+    <string name="jam_error_connection_lost">연결 끊김</string>
+
+
+    <!-- Group Jam: queue snackbar -->
+    <string name="jam_queue_added_track">잼 대기열에 추가했어요</string>
+    <plurals name="jam_queue_added_tracks">
+        <item quantity="other">잼 대기열에 %1$d곡을 추가했어요</item>
+    </plurals>
+
+    <!-- Remote control: connection request dialog -->
+    <string name="remote_request_title">원격 제어 요청</string>
+    <string name="remote_request_message">“%1$s”에서 이 기기의 재생을 제어하려고 해요.</string>
+    <string name="remote_request_deny">거부</string>
+    <string name="remote_request_allow">허용</string>
+    <string name="remote_request_allow_always">항상 허용</string>
+
+    <!-- Search -->
+    <string name="search_results_title">검색 결과</string>
+    <string name="search_tab_all">전체</string>
+    <string name="search_section_tracks">트랙</string>
+    <string name="search_section_users">사용자</string>
+    <string name="search_no_search_types">사용 가능한 검색 유형이 없어요</string>
+    <string name="search_start_typing">입력하여 검색하세요</string>
+    <string name="search_start_typing_tracks">입력하여 트랙을 검색하세요</string>
+    <string name="search_no_results">검색 결과가 없어요</string>
+    <string name="search_see_all">모두 보기</string>
+    <string name="search_searching">검색 중</string>
+    <string name="search_loading_tracks">트랙 불러오는 중...</string>
+    <string name="search_loading_albums">앨범 불러오는 중...</string>
+    <string name="search_loading_artists">아티스트 불러오는 중...</string>
+    <string name="search_loading_playlists">플레이리스트 불러오는 중...</string>
+    <string name="search_loading_users">사용자 불러오는 중...</string>
+    <string name="search_no_albums">앨범을 찾을 수 없어요</string>
+    <string name="search_no_artists">아티스트를 찾을 수 없어요</string>
+    <string name="search_no_playlists">플레이리스트를 찾을 수 없어요</string>
+    <string name="search_no_users">사용자를 찾을 수 없어요</string>
+    <string name="search_warm_crates">레코드 상자를 뒤지는 중...</string>
+    <string name="search_warm_cosmos">우주를 탐색하는 중...</string>
+    <string name="search_warm_speakers">스피커 예열하는 중...</string>
+    <string name="search_warm_vinyl">바이닐 먼지 터는 중...</string>
+    <string name="search_warm_music_gods">음악의 신께 여쭤보는 중...</string>
+    <string name="search_warm_antennas">안테나 맞추는 중...</string>
+    <string name="search_warm_records">레코드를 넘겨보는 중...</string>
+    <string name="search_error_capabilities">검색 기능을 불러오지 못했어요</string>
+    <string name="search_error_search">검색하지 못했어요</string>
+    <string name="search_error_tracks">트랙을 검색하지 못했어요</string>
+    <string name="search_error_albums">앨범을 검색하지 못했어요</string>
+    <string name="search_error_artists">아티스트를 검색하지 못했어요</string>
+    <string name="search_error_playlists">플레이리스트를 검색하지 못했어요</string>
+    <string name="search_error_users">사용자를 검색하지 못했어요</string>
+
+    <!-- Home -->
+    <string name="home_title_browse">둘러보기</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_mode_synced">싱크</string>
+    <string name="lyrics_mode_plain">일반</string>
+    <string name="lyrics_no_synced">싱크 가사가 없어요</string>
+    <string name="lyrics_no_plain">일반 가사가 없어요</string>
+
+    <!-- Settings: audio format/quality labels -->
+    <string name="settings_audio_format_label">%2$s 컨테이너의 %1$s</string>
+    <string name="settings_audio_quality_lossy">%1$d kbps</string>
+    <string name="settings_audio_quality_lossless">%1$s kHz • %2$d ch</string>
+    <string name="search_error_no_metadata_plugin">선택한 메타데이터 플러그인이 없어요</string>
+
+    <!-- Common -->
+    <string name="common_back">뒤로</string>
+    <string name="common_retry">다시 시도</string>
+    <string name="common_close_dialog">대화상자 닫기</string>
+    <string name="common_loading">불러오는 중...</string>
+    <string name="common_unknown">알 수 없음</string>
+    <string name="common_unknown_error">알 수 없는 오류</string>
+
+    <!-- Media cards -->
+    <string name="media_user">사용자</string>
+    <string name="media_playlist">플레이리스트</string>
+
+    <!-- Error display -->
+    <string name="error_title">정말 죄송합니다</string>
+    <string name="error_description">지금 문제가 발생했어요. 여러분의 경험은 저희에게 소중하며, 문제를 해결하기 위해 최선을 다하고 있어요. 다시 시도하거나 아래 오류 세부정보를 확인하세요.</string>
+    <string name="error_details">오류 세부정보</string>
+    <string name="error_copy_to_clipboard">클립보드에 복사</string>
+    <string name="error_view_full_log">전체 로그 보기</string>
+    <string name="error_full_log_title">전체 오류 로그</string>
+
+    <!-- Collection details -->
+    <string name="collection_details_shuffle">셔플</string>
+    <string name="collection_details_shuffle_play">셔플 재생</string>
+    <string name="collection_details_follow">팔로우</string>
+    <string name="collection_details_unfollow">팔로우 취소</string>
+    <string name="collection_details_edit_playlist">플레이리스트 편집</string>
+    <string name="collection_details_by_owner">만든 사람: %1$s</string>
+
+    <!-- Track options -->
+    <string name="track_options_title">트랙 옵션</string>
+    <string name="track_options_add_to_jam">잼에 추가</string>
+    <string name="track_options_start_radio">라디오 시작</string>
+    <string name="track_options_play_next">다음에 재생</string>
+    <string name="track_options_move_to_next">다음 곡으로 이동</string>
+    <string name="track_options_remove_from_queue">대기열에서 삭제</string>
+    <string name="track_options_remove_from_favorites">즐겨찾기에서 삭제</string>
+    <string name="track_options_save_as_favorite">즐겨찾기에 저장</string>
+    <string name="track_options_add_to_playlist">플레이리스트에 추가</string>
+    <string name="track_options_download">다운로드</string>
+    <string name="track_options_share">공유</string>
+
+    <!-- Track list -->
+    <string name="track_list_sort_original">기본 순서</string>
+    <string name="track_list_sort_title">제목</string>
+    <string name="track_list_sort_artist">아티스트</string>
+    <string name="track_list_sort_album">앨범</string>
+    <string name="track_list_sort_duration">재생 시간</string>
+    <string name="track_list_sort">정렬</string>
+    <string name="track_list_no_tracks">트랙을 찾을 수 없어요</string>
+    <string name="track_list_filter_placeholder">필터</string>
+    <string name="track_list_bulk_actions">일괄 작업</string>
+    <string name="track_list_download_all">모두 다운로드</string>
+    <string name="track_list_download_count">%1$d곡 다운로드</string>
+    <string name="track_list_add_all_to_queue">모두 대기열에 추가</string>
+    <string name="track_list_add_count_to_queue">%1$d곡 대기열에 추가</string>
+    <string name="track_list_play_all_next">모두 다음에 재생</string>
+    <string name="track_list_play_count_next">%1$d곡 다음에 재생</string>
+    <string name="track_list_add_all_to_playlist">모두 플레이리스트에 추가</string>
+    <string name="track_list_add_count_to_playlist">%1$d곡 플레이리스트에 추가</string>
+    <string name="track_list_add_all_to_jam">모두 잼에 추가</string>
+    <string name="track_list_add_count_to_jam">%1$d곡 잼에 추가</string>
+    <string name="track_list_more_artists">외 %1$d명</string>
+
+    <!-- WebView -->
+    <string name="webview_no_url">불러올 URL이 없어요</string>
+    <string name="webview_go_back">브라우저 기록에서 뒤로 이동</string>
+    <string name="webview_go_forward">브라우저 기록에서 앞으로 이동</string>
+
+    <!-- Blacklist -->
+    <string name="blacklist_filter_placeholder">차단 목록 필터...</string>
+    <string name="blacklist_empty">차단한 항목이 없어요</string>
+    <string name="blacklist_no_results">‘%1$s’와(과) 일치하는 차단 항목이 없어요</string>
+    <string name="blacklist_section_tracks">트랙</string>
+    <string name="blacklist_item_track">트랙</string>
+    <string name="blacklist_add">차단 목록에 추가</string>
+    <string name="blacklist_remove">차단 목록에서 삭제</string>
+
+    <!-- Downloads -->
+    <string name="downloads_error_no_metadata">트랙 메타데이터 없음</string>
+    <string name="downloads_error_stream_unresolved_short">스트림 URL을 확인할 수 없어요</string>
+    <string name="downloads_error_stream_unresolved">스트림 URL을 확인할 수 없어요. 먼저 트랙을 재생해 보세요.</string>
+
+    <!-- Saved tracks -->
+    <string name="saved_tracks_title">저장한 트랙</string>
+    <string name="saved_tracks_owner_you">나</string>
+
+    <!-- Artist -->
+    <string name="artist_following">팔로잉</string>
+    <string name="artist_top_tracks">인기 트랙</string>
+    <string name="artist_play_top_tracks">인기 트랙 재생</string>
+    <string name="artist_add_top_tracks_to_queue">인기 트랙을 대기열에 추가</string>
+    <string name="artist_related_artists">관련 아티스트</string>
+    <string name="artist_featured_playlists">추천 플레이리스트</string>
+    <string name="artist_error_load_failed">아티스트 개요를 불러오지 못했어요</string>
+    <string name="artist_followers_unavailable">팔로워 정보 없음</string>
+    <string name="artist_followers_thousands">팔로워 %1$sK명</string>
+    <string name="artist_followers_millions">팔로워 %1$sM명</string>
+    <string name="artist_followers_billions">팔로워 %1$sB명</string>
+    <plurals name="artist_followers_count">
+        <item quantity="other">팔로워 %1$d명</item>
+    </plurals>
+
+    <!-- Player -->
+    <string name="player_like_content_description">좋아요</string>
+    <string name="player_unlike_content_description">좋아요 취소</string>
+    <string name="player_fallback_title">트랙 제목 없음</string>
+    <string name="player_fallback_artists">아티스트 없음</string>
+    <string name="player_unknown_album">알 수 없는 앨범</string>
+    <string name="player_seek_label">탐색</string>
+    <string name="player_volume_label">볼륨</string>
+    <string name="player_enable_shuffle_content_description">셔플 사용</string>
+    <string name="player_disable_shuffle_content_description">셔플 사용 안 함</string>
+    <string name="player_previous_content_description">이전</string>
+    <string name="player_next_content_description">다음</string>
+    <string name="player_play_or_pause_content_description">재생 또는 일시정지</string>
+    <string name="player_loop_mode_none">반복 끄기</string>
+    <string name="player_loop_mode_one">한 곡 반복</string>
+    <string name="player_loop_mode_all">전체 반복</string>
+    <string name="player_mute_content_description">음소거</string>
+    <string name="player_unmute_content_description">음소거 해제</string>
+    <string name="player_more_options_content_description">옵션 더보기</string>
+    <string name="player_options_content_description">플레이어 옵션</string>
+    <string name="player_collapse_content_description">플레이어 접기</string>
+    <string name="player_expand_lyrics_content_description">가사 펼치기</string>
+    <string name="player_now_playing">지금 재생 중</string>
+    <string name="player_lyrics">가사</string>
+    <string name="player_alternative_source">대체 소스</string>
+    <string name="player_alternative_source_content_description">대체 소스</string>
+    <string name="player_download">다운로드</string>
+    <string name="player_download_status_downloaded">다운로드 완료</string>
+    <string name="player_download_status_downloading">다운로드 중...</string>
+    <string name="player_download_already_downloaded">이미 다운로드됨</string>
+    <string name="player_download_retrying">다운로드 다시 시도 중...</string>
+    <string name="player_download_started">%1$s 다운로드 중</string>
+    <string name="player_sleep_timer_remaining">%1$s 후 재생이 일시정지돼요.</string>
+    <string name="player_sleep_timer_description">선택한 시간(분)이 지나면 재생을 일시정지해요.</string>
+    <string name="player_sleep_timer_minutes_label">분</string>
+    <string name="player_sleep_timer_minutes_placeholder">1~600분 사이에서 선택하세요</string>
+    <string name="player_sleep_timer_cancel">타이머 취소</string>
+    <string name="player_sleep_timer_start">시작</string>
+    <string name="player_track_details_stream_mismatch">재생 URL이 다른 스트리밍 설정으로 확인되었어요. 강조 표시된 스트림이 현재 설정과 일치하며, 사용 중인 URL은 다음 스트림 요청 시 새로고침돼요.</string>
+    <string name="player_track_details_matched_source">일치하는 오디오 소스</string>
+    <string name="player_track_details_loading_source">일치하는 소스 불러오는 중…</string>
+    <string name="player_track_details_source_not_needed">로컬 캐시 파일을 재생하는 동안에는 일치하는 원격 소스가 필요하지 않아요.</string>
+    <string name="player_track_details_no_source">일치하는 소스가 없어요.</string>
+    <string name="player_track_details_no_cached_source">이 트랙에 캐시된 일치 오디오 소스가 없어요.</string>
+    <string name="player_track_details_streams_not_cached">스트림 정보가 아직 캐시되지 않았어요. 먼저 트랙을 재생해 불러오세요.</string>
+    <string name="player_track_details_load_failed">트랙 세부정보를 불러오지 못했어요.</string>
+    <string name="player_track_details_available_streams">사용 가능한 스트림</string>
+    <string name="player_track_details_served_from_cache_description">이 트랙은 로컬 캐시에서 재생 중이에요. 이번 재생에는 스트림 변형이 사용되지 않아요.</string>
+    <string name="player_track_details_loading_streams">스트림 불러오는 중…</string>
+    <string name="player_track_details_no_streams">이 소스에 사용 가능한 스트림이 없어요.</string>
+    <string name="player_track_details_selected_stream_content_description">현재 선택된 스트림</string>
+    <string name="player_track_details_matches_preference">스트리밍 형식 &amp; 음질 설정과 일치</string>
+    <string name="player_track_details_active_url">현재 재생 URL</string>
+    <string name="player_track_details_served_from_cache">로컬 캐시에서 재생 중</string>
+    <string name="player_track_details_metadata_track">메타데이터 트랙</string>
+    <string name="player_track_details_title">제목</string>
+    <string name="player_track_details_id">ID</string>
+    <string name="player_track_details_album">앨범</string>
+    <string name="player_track_details_confidence">일치도</string>
+    <string name="player_track_details_external_uri">외부 URI</string>
+    <string name="player_track_details_album_id">앨범 ID</string>
+    <string name="player_track_details_album_type">앨범 유형</string>
+    <string name="player_track_details_album_release_date">앨범 발매일</string>
+    <string name="player_track_details_album_track_count">앨범 트랙 수</string>
+    <string name="player_track_details_album_genres">앨범 장르</string>
+    <string name="player_track_details_duration">재생 시간</string>
+    <string name="player_track_details_track_number">트랙 번호</string>
+    <string name="player_track_details_disc_number">디스크 번호</string>
+    <string name="player_track_details_explicit">청소년 이용불가</string>
+    <string name="player_track_details_popularity">인기도</string>
+    <string name="player_track_details_isrc">ISRC</string>
+    <string name="player_track_details_thumbnail_urls">썸네일 URL</string>
+
+    <!-- Shell -->
+    <string name="shell_sidebar_toggle_content_description">사이드바 전환</string>
+
+    <!-- Alternative track -->
+    <string name="alternative_track_title">대체 소스</string>
+    <string name="alternative_track_no_track">현재 재생 중인 트랙이 없어요</string>
+    <string name="alternative_track_searching">대체 소스를 찾는 중...</string>
+    <string name="alternative_track_empty">대체 소스를 찾을 수 없어요</string>
+    <string name="alternative_track_confidence">일치도: %1$d%</string>
+    <string name="alternative_track_active_source">현재 소스</string>
+
+    <!-- Queue -->
+    <string name="queue_participant_kick">내보내기</string>
+    <string name="queue_participant_kick_description">세션에서 내보내요</string>
+    <string name="queue_participant_ban_description">내보내고 다시 참여하지 못하게 해요</string>
+    <string name="queue_participant_remove_suggestions">추천곡 삭제</string>
+    <string name="queue_participant_remove_suggestions_description">이 참여자가 대기열에 추가한 모든 트랙을 삭제해요</string>
+    <string name="queue_reorder_content_description">순서 변경</string>
+    <string name="queue_remove_from_queue">대기열에서 삭제</string>
+    <string name="queue_item_subtitle_added_by">%1$s • %2$s님이 추가함</string>
+
+    <!-- Playlist -->
+    <string name="playlist_owner_unknown">알 수 없음</string>
+    <string name="playlist_loading_title">플레이리스트 불러오는 중...</string>
+    <string name="playlist_add_tracks_button">트랙 추가</string>
+    <string name="playlist_add_tracks_title">플레이리스트에 트랙 추가</string>
+    <string name="playlist_add_tracks_search_placeholder">트랙 검색...</string>
+    <string name="playlist_add_tracks_search_content_description">검색</string>
+    <string name="playlist_add_tracks_no_results">트랙을 찾을 수 없어요</string>
+    <string name="playlist_add_tracks_hint">추가할 트랙을 검색하세요</string>
+    <string name="playlist_add_tracks_done">완료</string>
+    <string name="playlist_add_tracks_add">추가</string>
+    <string name="playlist_add_tracks_added_content_description">추가됨</string>
+
+    <!-- Album -->
+    <string name="album_loading_title">앨범 불러오는 중...</string>
+
+    <!-- Library -->
+    <string name="library_add_to_playlist_title">내 플레이리스트에 추가</string>
+    <string name="library_add_to_playlist_search_content_description">검색</string>
+    <string name="library_add_to_playlist_search_placeholder">내 플레이리스트 검색...</string>
+    <string name="library_add_to_playlist_loading">내 플레이리스트 불러오는 중...</string>
+    <string name="library_add_to_playlist_empty">아직 소유한 플레이리스트가 없어요.\n플레이리스트를 만들어 트랙을 추가하세요.</string>
+    <string name="library_playlist_form_create_title">플레이리스트 만들기</string>
+    <string name="library_playlist_form_edit_title">플레이리스트 편집</string>
+    <string name="library_playlist_form_create">만들기</string>
+    <string name="library_playlist_form_name_label">이름</string>
+    <string name="library_playlist_form_name_placeholder">플레이리스트 이름</string>
+    <string name="library_playlist_form_description_label">설명</string>
+    <string name="library_playlist_form_description_placeholder">설명(선택 사항)</string>
+    <string name="library_playlist_form_public">공개</string>
+    <string name="library_playlist_form_public_description">누구나 이 플레이리스트를 볼 수 있어요</string>
+    <string name="library_playlist_form_collaborative">공동 작업</string>
+    <string name="library_playlist_form_collaborative_description">다른 사람도 이 플레이리스트에 트랙을 추가할 수 있어요</string>
+    <string name="library_playlist_form_cover_image">커버 이미지</string>
+    <string name="library_playlist_form_cover_content_description">플레이리스트 커버</string>
+    <string name="library_playlist_form_no_image">이미지 없음</string>
+    <string name="library_playlist_form_change_image">이미지 변경</string>
+    <string name="library_playlist_form_pick_image">이미지 선택</string>
+
+    <!-- Plugin install / errors -->
+    <string name="plugin_action_install">설치</string>
+    <string name="plugin_action_replace">교체</string>
+    <string name="plugin_error_plugin_json_missing">zip 파일에서 plugin.json을 찾을 수 없어요</string>
+    <string name="plugin_error_zipline_manifest_missing">zip 파일에서 manifest.zipline.json을 찾을 수 없어요</string>
+    <string name="plugin_error_invalid_plugin_json">plugin.json 형식이 올바르지 않아요: %1$s</string>
+    <string name="plugin_error_read_failed">플러그인을 읽지 못했어요: %1$s</string>
+    <string name="plugin_error_install_failed">플러그인을 설치하지 못했어요: %1$s</string>
+    <string name="plugin_error_update_needs_confirmation">%1$s의 새 버전을 사용할 수 있어요. 설치하기 전에 업데이트를 확인하세요.</string>
+    <string name="plugin_error_replace_needs_confirmation">%1$s이(가) 이미 설치되어 있어요. 설치하기 전에 교체를 확인하세요.</string>
+    <string name="plugin_error_builtin_add">기본 제공 플러그인은 이미 포함되어 있어 다시 추가할 수 없어요.</string>
+    <string name="plugin_error_builtin_remove">기본 제공 플러그인은 삭제할 수 없어요.</string>
+    <string name="plugin_error_api_version_invalid">%1$s에 잘못된 apiVersion(%2$s)이 선언되어 있어요. %3$s과(와) 호환되는 유의적 버전이 필요해요.</string>
+    <string name="plugin_error_app_api_version_invalid">Spotube 플러그인 API 버전 %1$s이(가) 올바르지 않아요.</string>
+    <string name="plugin_error_api_incompatible">%1$s은(는) 플러그인 API %2$s용이지만, Spotube는 호환성이 깨지는 플러그인 API %3$s을(를) 지원해요. 같은 주 API 버전용으로 빌드된 플러그인을 설치하세요.</string>
+
+    <!-- Plugin install prompts -->
+    <string name="plugin_prompt_incompatible_title">호환되지 않는 플러그인 API</string>
+    <string name="plugin_prompt_install_title">플러그인을 설치할까요?</string>
+    <string name="plugin_prompt_install_message">%1$s이(가) 설치된 플러그인에 추가돼요.</string>
+    <string name="plugin_prompt_update_title">플러그인을 업데이트할까요?</string>
+    <string name="plugin_prompt_update_message">이전 버전(%1$s)이 설치되어 있어요. %2$s(으)로 업데이트할까요?</string>
+    <string name="plugin_prompt_replace_title">설치된 플러그인을 교체할까요?</string>
+    <string name="plugin_prompt_replace_invalid_incoming">%1$s은(는) 잘못된 유의적 버전(%2$s)을 사용하므로 업데이트로 비교할 수 없어요. 그래도 설치된 플러그인을 교체할까요?</string>
+    <string name="plugin_prompt_replace_invalid_installed">설치된 버전(%1$s)은 유의적 버전으로 비교할 수 없어요. %2$s(으)로 교체할까요?</string>
+    <string name="plugin_prompt_replace_same_version">버전 %1$s이(가) 이미 설치되어 있어요. 기존 플러그인을 제공된 사본으로 교체할까요?</string>
+    <string name="plugin_prompt_replace_downgrade">설치된 버전 %1$s이(가) 제공된 버전 %2$s보다 최신이에요. 그래도 교체할까요?</string>
+    <string name="plugin_prompt_replace_generic">설치된 플러그인을 제공된 사본으로 교체할까요?</string>
+
+    <!-- Plugin info dialog -->
+    <string name="plugin_info_label_format">%1$s:</string>
+    <string name="plugin_info_version">버전</string>
+    <string name="plugin_info_api_version">API 버전</string>
+    <string name="plugin_info_author">제작자</string>
+    <string name="plugin_info_license">라이선스</string>
+    <string name="plugin_info_capabilities">권한</string>
+    <string name="plugin_info_abilities">기능</string>
+    <string name="plugin_info_repository">저장소</string>
+    <string name="plugin_info_contact">연락처</string>
+    <string name="plugin_info_report_bugs">버그 신고</string>
+    <string name="plugin_support_dialog_title">%1$s 후원하기</string>
+
+    <!-- Plugin discovery -->
+    <string name="plugin_discover_badge_official">공식</string>
+    <string name="plugin_discover_badge_verified">인증됨</string>
+    <string name="plugin_discover_stars_content_description">GitHub 스타</string>
+    <string name="plugin_discover_repository_content_description">GitHub 저장소 URL</string>
+
+    <!-- Plugin release install dialog -->
+    <string name="plugin_install_no_releases">릴리스를 찾을 수 없어요</string>
+    <string name="plugin_install_select_release_label">릴리스 선택</string>
+    <string name="plugin_install_select_release_placeholder">릴리스를 선택하세요</string>
+    <string name="plugin_install_prerelease">사전 릴리스</string>
+    <string name="plugin_install_release_notes">릴리스 노트</string>
+
+    <!-- App navigation -->
+    <string name="nav_home">홈</string>
+    <string name="nav_search">검색</string>
+    <string name="nav_group_on_device">이 기기</string>
+    <string name="nav_group_connect">연결</string>
+    <string name="nav_devices">기기</string>
+
+    <!-- System tray (desktop) -->
+    <string name="tray_hide_window">창 숨기기</string>
+    <string name="tray_show_window">창 표시</string>
+    <string name="tray_next_track">다음 트랙</string>
+    <string name="tray_previous_track">이전 트랙</string>
+    <string name="tray_shuffle">셔플</string>
+    <string name="tray_loop">반복</string>
+    <string name="tray_loop_off">반복: 끔</string>
+    <string name="tray_loop_one">반복: 한 곡</string>
+    <string name="tray_loop_all">반복: 전체</string>
+    <string name="tray_volume">볼륨: %1$d%</string>
+    <string name="tray_volume_up">볼륨 +</string>
+    <string name="tray_volume_down">볼륨 -</string>
+    <string name="tray_mute">음소거</string>
+    <string name="tray_unmute">음소거 해제</string>
+    <string name="tray_like_track">트랙 좋아요</string>
+    <string name="tray_unlike_track">트랙 좋아요 취소</string>
+    <string name="tray_exit">종료</string>
+
+    <!-- Desktop window controls -->
+    <string name="app_window_minimize">최소화</string>
+    <string name="app_window_maximize">최대화</string>
+    <string name="app_window_restore">이전 크기로 복원</string>
+    <string name="app_window_close">닫기</string>
+
+    <!-- Android playback notification -->
+    <string name="notification_playback_channel_name">재생</string>
+    <string name="notification_playback_channel_description">미디어 재생 컨트롤</string>
+
+    <!-- Android Auto / media browser -->
+    <string name="media_browser_browse">둘러보기</string>
+    <string name="media_browser_now_playing">지금 재생 중</string>
+    <string name="media_browser_featured">추천</string>
+    <string name="media_browser_saved_tracks">저장한 트랙</string>
+    <string name="media_browser_top_tracks">인기 트랙</string>
+</resources>

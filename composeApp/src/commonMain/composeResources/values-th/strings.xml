@@ -1,0 +1,920 @@
+<!--
+  ~ Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="queue_title">คิว</string>
+    <string name="queue_clear_queue">ล้างคิว</string>
+    <string name="queue_filter_queue">กรองคิว...</string>
+    <string name="queue_no_queue_entries">ไม่มีรายการในคิว</string>
+
+    <string name="search_placeholder">ค้นหาเพลง ศิลปิน อัลบั้ม...</string>
+    <string name="search_clear_history">ล้างประวัติทั้งหมด</string>
+    <string name="search_filter_placeholder">ค้นหา...</string>
+
+    <!-- Library toolbar -->
+    <string name="library_screen_title">คลังเพลงของคุณ</string>
+    <string name="library_toolbar_compact_title">คลังเพลง</string>
+    <string name="library_tab_playlists">เพลย์ลิสต์</string>
+    <string name="library_tab_albums">อัลบั้ม</string>
+    <string name="library_tab_artists">ศิลปิน</string>
+    <string name="library_tab_local_tracks">เพลงในเครื่อง</string>
+    <string name="library_tab_downloads">ดาวน์โหลด</string>
+    <string name="library_filter_playlists">ค้นหาเพลย์ลิสต์ที่บันทึกไว้…</string>
+    <string name="library_filter_albums">ค้นหาอัลบั้มที่บันทึกไว้…</string>
+    <string name="library_filter_artists">ค้นหาศิลปินที่บันทึกไว้…</string>
+    <string name="library_filter_local_tracks">ค้นหาโฟลเดอร์หรือเพลง…</string>
+    <string name="library_action_search">กรองคลังเพลง</string>
+    <string name="library_action_close_search">ปิดตัวกรอง</string>
+    <string name="library_action_create_playlist">สร้างเพลย์ลิสต์</string>
+    <string name="library_action_refresh_local_tracks">รีเฟรชเพลงในเครื่อง</string>
+    <string name="library_action_grid_view">เปลี่ยนเป็นมุมมองตาราง</string>
+    <string name="library_action_list_view">เปลี่ยนเป็นมุมมองรายการ</string>
+    <string name="library_playlists_empty">ไม่มีเพลย์ลิสต์ที่บันทึกไว้</string>
+    <string name="library_playlists_no_results">ไม่มีเพลย์ลิสต์ที่ตรงกับ “%1$s”</string>
+    <string name="library_albums_empty">ไม่มีอัลบั้มที่บันทึกไว้</string>
+    <string name="library_albums_no_results">ไม่มีอัลบั้มที่ตรงกับ “%1$s”</string>
+    <string name="library_artists_empty">ไม่มีศิลปินที่บันทึกไว้</string>
+    <string name="library_artists_no_results">ไม่มีศิลปินที่ตรงกับ “%1$s”</string>
+
+    <!-- Local media -->
+    <string name="library_local_folders">โฟลเดอร์</string>
+    <string name="library_local_folder">โฟลเดอร์</string>
+    <string name="library_local_summary">%1$s • %2$s</string>
+    <plurals name="library_local_tracks_count">
+        <item quantity="other">%1$d เพลง</item>
+    </plurals>
+    <plurals name="library_local_folders_count">
+        <item quantity="other">%1$d โฟลเดอร์</item>
+    </plurals>
+    <string name="library_local_back">กลับไปที่โฟลเดอร์</string>
+    <string name="library_local_play_folder">เล่นโฟลเดอร์</string>
+    <string name="library_local_permission_title">ต้องได้รับสิทธิ์เข้าถึงไฟล์เสียง</string>
+    <string name="library_local_permission_description">อนุญาตการเข้าถึงไฟล์เสียงเพื่อเรียกดูเพลงในอุปกรณ์ของคุณ</string>
+    <string name="library_local_grant_access">อนุญาตการเข้าถึง</string>
+    <string name="library_local_empty_folders">ไม่พบโฟลเดอร์ในเครื่อง</string>
+    <string name="library_local_empty_tracks">ไม่มีเพลงในโฟลเดอร์นี้</string>
+    <string name="library_local_no_results">ไม่มีโฟลเดอร์หรือเพลงที่ตรงกัน</string>
+    <string name="library_local_refresh_failed">รีเฟรชสื่อในเครื่องไม่สำเร็จ</string>
+
+    <!-- Downloads -->
+    <string name="downloads_summary">กำลังดำเนินการ %1$d • เสร็จสิ้น %2$d</string>
+    <string name="downloads_clear_completed">ล้างรายการที่เสร็จแล้ว</string>
+    <string name="downloads_empty">ยังไม่มีการดาวน์โหลด</string>
+    <string name="downloads_status_downloading">กำลังดาวน์โหลด %1$d%</string>
+    <string name="downloads_status_queued">อยู่ในคิว</string>
+    <string name="downloads_status_completed">เสร็จสิ้น</string>
+    <string name="downloads_status_cancelled">ยกเลิกแล้ว</string>
+    <string name="downloads_status_failed">ล้มเหลว</string>
+    <string name="downloads_status_failed_error">ล้มเหลว: %1$s</string>
+    <string name="downloads_action_cancel">ยกเลิกการดาวน์โหลด</string>
+    <string name="downloads_action_retry">ลองดาวน์โหลดอีกครั้ง</string>
+    <string name="downloads_action_remove">ลบการดาวน์โหลด</string>
+
+    <!-- Shared media items -->
+    <string name="media_artist">ศิลปิน</string>
+    <string name="media_blacklisted">อยู่ในบัญชีดำ</string>
+    <string name="media_liked_tracks">เพลงที่ถูกใจ</string>
+    <string name="media_saved_songs">เพลงที่คุณบันทึกไว้</string>
+    <string name="media_unknown_artist">ไม่ทราบศิลปิน</string>
+    <string name="media_preview_title">ชื่อเพลง</string>
+    <string name="media_preview_subtitle">ชื่อศิลปิน</string>
+
+    <string name="accessibility_selected">เลือกแล้ว</string>
+
+    <string name="settings_screen_title">การตั้งค่า</string>
+
+    <string name="settings_section_plugins">ปลั๊กอิน</string>
+    <string name="settings_section_language_region">ภาษาและภูมิภาค</string>
+    <string name="settings_section_appearance">รูปลักษณ์</string>
+    <string name="settings_section_playback">การเล่น</string>
+    <string name="settings_section_downloads">การดาวน์โหลด</string>
+    <string name="settings_section_caching">แคช</string>
+    <string name="settings_section_desktop">เดสก์ท็อป</string>
+    <string name="settings_section_updates">อัปเดต</string>
+    <string name="settings_section_support">สนับสนุน</string>
+    <string name="settings_section_about">เกี่ยวกับ</string>
+
+    <string name="common_close">ปิด</string>
+    <string name="common_save">บันทึก</string>
+    <string name="common_cancel">ยกเลิก</string>
+
+    <string name="settings_language_title">ภาษา</string>
+    <string name="settings_language_subtitle_current">ภาษาของอินเทอร์เฟซแอป ปัจจุบัน: %1$s</string>
+    <string name="settings_language_system_default">ค่าเริ่มต้นของระบบ</string>
+    <string name="settings_country_title">ประเทศ</string>
+    <string name="settings_country_subtitle_current">ประเทศสำหรับเนื้อหาและความพร้อมใช้งาน ปัจจุบัน: %1$s</string>
+    <string name="settings_option_name_and_code">%1$s (%2$s)</string>
+
+    <string name="settings_theme_title">ธีม</string>
+    <string name="settings_theme_subtitle_current">เลือกว่าจะให้ Spotube แสดงผลตามระบบอย่างไร ปัจจุบัน: %1$s</string>
+    <string name="settings_theme_light">สว่าง</string>
+    <string name="settings_theme_dark">มืด</string>
+    <string name="settings_theme_system">ตามระบบ</string>
+
+    <string name="settings_surface_theme_title">พื้นผิว</string>
+    <string name="settings_surface_theme_subtitle_current">วัสดุพื้นหลังของแอป ปัจจุบัน: %1$s</string>
+    <string name="settings_surface_watery">สายน้ำ</string>
+    <string name="settings_surface_icy">น้ำแข็ง</string>
+    <string name="settings_surface_chrome">โครม</string>
+    <string name="settings_surface_acrylic">อะคริลิก</string>
+    <string name="settings_surface_glass">กระจก</string>
+
+    <string name="settings_accent_title">สีเน้น</string>
+    <string name="settings_accent_subtitle_current">ชุดสีปัจจุบัน: %1$s</string>
+    <string name="settings_accent_dialog_title">สีเน้น</string>
+    <string name="settings_accent_dialog_description">เลือกชุดสีเน้นและดูตัวอย่างทั้งในธีมสว่างและธีมมืด</string>
+    <string name="settings_preview_light">สว่าง</string>
+    <string name="settings_preview_dark">มืด</string>
+    <string name="settings_preview_label">ตัวอย่าง</string>
+    <string name="settings_preview_button">ปุ่ม</string>
+    <string name="settings_accent_green_goblin">กรีนก็อบลิน</string>
+    <string name="settings_accent_electric_violet">ม่วงไฟฟ้า</string>
+    <string name="settings_accent_oceanic_cyan">ฟ้าครามมหาสมุทร</string>
+    <string name="settings_accent_sunset_orange">ส้มอัสดง</string>
+    <string name="settings_accent_rose_garden">สวนกุหลาบ</string>
+    <string name="settings_accent_midnight_blue">น้ำเงินเที่ยงคืน</string>
+    <string name="settings_accent_metallic_slate">เทาเมทัลลิก</string>
+
+    <string name="settings_appearance_title">รูปลักษณ์และความรู้สึก</string>
+    <string name="settings_appearance_subtitle_current">วัสดุพื้นผิวและสีเน้น ปัจจุบัน: %1$s · %2$s</string>
+    <string name="settings_appearance_dialog_title">รูปลักษณ์และความรู้สึก</string>
+    <string name="settings_appearance_dialog_description">เลือกวัสดุพื้นผิว แล้วเลือกสีเน้นที่เข้ากัน ทุกตัวเลือกเป็นชุดที่คัดสรรมาแล้ว</string>
+    <string name="settings_appearance_surface_label">พื้นผิว</string>
+    <string name="settings_appearance_accent_label">สีเน้น</string>
+    <string name="settings_preview_secondary">รอง</string>
+
+    <string name="settings_palette_title">ชุดสี</string>
+    <string name="settings_palette_subtitle_current">ชุดสีเน้น Millennium ปัจจุบัน: %1$s</string>
+    <string name="settings_palette_dialog_title">ชุดสี</string>
+    <string name="settings_palette_dialog_description">เลือกชุดสีเน้น Millennium และดูตัวอย่างทั้งในโหมดสว่างและมืด</string>
+    <string name="settings_palette_label">ชุดสี</string>
+    <string name="settings_appearance_subtitle_palette">ชุดสีและสีเน้น Millennium ปัจจุบัน: %1$s</string>
+    <string name="settings_palette_blue">น้ำเงิน</string>
+    <string name="settings_palette_orange">ส้ม</string>
+    <string name="settings_palette_lime">เขียวมะนาว</string>
+
+    <string name="settings_download_folder_title">กำหนดโฟลเดอร์ดาวน์โหลดเอง</string>
+    <string name="settings_download_folder_current">โฟลเดอร์ปัจจุบัน: %1$s</string>
+    <string name="settings_download_folder_description">เว้นว่างไว้เพื่อใช้โฟลเดอร์เพลงเริ่มต้น</string>
+    <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
+    <string name="settings_local_media_folders_title">โฟลเดอร์สื่อในเครื่อง</string>
+    <string name="settings_local_media_folders_subtitle_current">โฟลเดอร์ที่กำหนดเองเพื่อสแกนบนเดสก์ท็อป เพิ่มแล้ว: %1$d</string>
+    <string name="settings_local_media_folders_subtitle_empty">ยังไม่ได้เพิ่มโฟลเดอร์ที่กำหนดเอง</string>
+    <string name="settings_local_media_folders_description">โฟลเดอร์ที่กำหนดเองสำหรับคลังเพลงในเครื่องของคุณ</string>
+    <string name="settings_local_media_folders_manage">จัดการ</string>
+    <string name="settings_local_media_folders_add_action">เพิ่มโฟลเดอร์</string>
+    <string name="settings_local_media_folders_remove_action">ลบโฟลเดอร์</string>
+    <string name="settings_local_media_folders_none_added">ยังไม่ได้เพิ่มโฟลเดอร์ที่กำหนดเอง</string>
+    <string name="settings_local_media_folders_remove_named">ลบ %1$s ออกจากรายการสแกน</string>
+    <string name="settings_local_media_folders_automatic_both">โฟลเดอร์ดาวน์โหลดและโฟลเดอร์แคชเพลงจะถูกรวมโดยอัตโนมัติ</string>
+    <string name="settings_local_media_folders_automatic_downloads">โฟลเดอร์ดาวน์โหลดของคุณจะถูกรวมโดยอัตโนมัติ</string>
+    <string name="settings_local_media_folders_automatic_cache">โฟลเดอร์แคชเพลงจะถูกรวมโดยอัตโนมัติ</string>
+    <string name="settings_local_media_folders_saving">กำลังบันทึก…</string>
+    <string name="settings_local_media_folders_save_error">บันทึกโฟลเดอร์ไม่ได้ การเปลี่ยนแปลงของคุณยังอยู่ โปรดลองอีกครั้ง</string>
+    <plurals name="settings_local_media_folders_count">
+        <item quantity="other">%1$d โฟลเดอร์</item>
+    </plurals>
+    <string name="settings_download_format_title">รูปแบบเพลงที่ดาวน์โหลด</string>
+    <string name="settings_download_format_subtitle_current">โคเดกและคอนเทนเนอร์ที่ต้องการสำหรับการดาวน์โหลด ปัจจุบัน: %1$s</string>
+    <string name="settings_download_quality_title">คุณภาพเพลงที่ดาวน์โหลด</string>
+
+    <string name="settings_streaming_format_title">รูปแบบการสตรีมเพลง</string>
+    <string name="settings_streaming_format_subtitle_current">โคเดกและคอนเทนเนอร์ที่ต้องการสำหรับการสตรีมเพลง ปัจจุบัน: %1$s</string>
+    <string name="settings_streaming_quality_title">คุณภาพการสตรีมเพลง</string>
+    <string name="settings_subtitle_current">ปัจจุบัน: %1$s</string>
+    <string name="settings_enable_music_caching_title">เปิดใช้แคชเพลง</string>
+    <string name="settings_enable_music_caching_subtitle">จัดเก็บเสียงที่สตรีมไว้ในเครื่องเพื่อให้เล่นซ้ำได้เร็วขึ้น</string>
+    <string name="settings_cache_folder_title">โฟลเดอร์แคช</string>
+    <string name="settings_cache_folder_current">ปัจจุบัน: %1$s</string>
+    <string name="settings_cache_folder_default">ปัจจุบัน: แคชเริ่มต้นของแอป</string>
+    <string name="settings_cache_size_limit_title">ขีดจำกัดขนาดแคช</string>
+    <string name="settings_cache_size_limit_unlimited">ไม่จำกัด</string>
+    <string name="settings_cache_size_limit_current">ขีดจำกัดปัจจุบัน: %1$d MB</string>
+    <string name="settings_cache_size_limit_description">กำหนดขนาดแคชสูงสุดเป็น MB ใส่ 0 หรือเว้นว่างไว้เพื่อไม่จำกัด</string>
+    <string name="settings_cache_size_limit_placeholder">500</string>
+    <string name="settings_error_cache_size_range">ขนาดต้องเป็น 0 หรือจำนวนบวก</string>
+    <string name="settings_enable_endless_playback_title">เปิดใช้การเล่นต่อเนื่องไม่สิ้นสุด</string>
+    <string name="settings_enable_endless_playback_subtitle">เล่นต่อด้วยเพลงแนะนำเมื่อคิวของคุณหมด</string>
+    <string name="settings_playback_port_title">พอร์ตเซิร์ฟเวอร์พร็อกซีการเล่น</string>
+    <string name="settings_allow_remote_control_title">อนุญาตการควบคุมระยะไกล</string>
+    <string name="settings_allow_remote_control_subtitle">ให้อุปกรณ์อื่นในเครือข่ายเดียวกันควบคุมการเล่นได้เมื่อเชื่อมต่อ</string>
+    <string name="settings_remote_device_name_title">ชื่ออุปกรณ์สำหรับควบคุมระยะไกล</string>
+    <string name="settings_remote_device_name_subtitle">ชื่อที่อุปกรณ์อื่นจะเห็นเมื่อค้นหาอุปกรณ์นี้ ปัจจุบัน: %1$s</string>
+    <string name="settings_remote_device_name_description">เลือกชื่อที่จำง่ายเพื่อแสดงให้อุปกรณ์อื่นในเครือข่ายของคุณเห็นเมื่อค้นพบ Spotube เครื่องนี้</string>
+    <string name="settings_remote_device_name_placeholder">เช่น Spotube ห้องนั่งเล่น</string>
+    <string name="settings_remote_device_name_default">ชื่อโฮสต์ของอุปกรณ์</string>
+    <string name="settings_playback_port_subtitle_current">พอร์ตที่เซิร์ฟเวอร์พร็อกซีการเล่นใช้ ปัจจุบัน: %1$d</string>
+    <string name="settings_playback_port_description">เลือกพอร์ตระหว่าง 1 ถึง 65535</string>
+    <string name="settings_playback_port_placeholder">14769</string>
+    <string name="settings_error_whole_number">ใส่จำนวนเต็มที่ถูกต้อง</string>
+    <string name="settings_error_port_range">พอร์ตต้องอยู่ระหว่าง 1 ถึง 65535</string>
+
+    <string name="settings_blacklist_title">บัญชีดำ</string>
+    <string name="settings_blacklist_subtitle">จัดการเพลงและศิลปินในบัญชีดำ</string>
+
+    <string name="settings_desktop_minimize_title">ย่อไปที่ถาดระบบ</string>
+    <string name="settings_desktop_minimize_subtitle">ให้ Spotube ทำงานต่อในถาดระบบเมื่อย่อหน้าต่าง</string>
+    <string name="settings_desktop_discord_title">Discord Rich Presence</string>
+    <string name="settings_desktop_discord_subtitle">แสดงสถานะการเล่นปัจจุบันของคุณใน Discord บนเดสก์ท็อป</string>
+
+    <string name="settings_updates_auto_check_title">ตรวจหาอัปเดตโดยอัตโนมัติ</string>
+    <string name="settings_updates_auto_check_subtitle">ค้นหา Spotube เวอร์ชันใหม่ในเบื้องหลัง</string>
+
+    <string name="settings_plugins_manage_title">จัดการปลั๊กอิน</string>
+    <string name="settings_plugins_manage_subtitle">จัดการปลั๊กอินของคุณ</string>
+    <string name="settings_plugins_default_ability_title">ปลั๊กอิน%1$sเริ่มต้น</string>
+    <string name="settings_plugins_ability_metadata">เมทาดาทา</string>
+    <string name="settings_plugins_ability_audio">เสียง</string>
+    <string name="settings_plugins_ability_lyrics">เนื้อเพลง</string>
+    <string name="settings_plugins_ability_scrobble">Scrobble</string>
+    <string name="settings_plugins_no_selection">ยังไม่ได้เลือกปลั๊กอิน</string>
+    <string name="settings_plugins_action_change">เปลี่ยน</string>
+    <string name="settings_plugins_action_select">เลือก</string>
+    <string name="settings_plugins_selected">เลือกแล้ว</string>
+    <string name="settings_plugins_clear">ล้างการเลือก</string>
+    <string name="settings_plugins_no_plugins">ไม่มีปลั๊กอินให้ใช้</string>
+    <string name="settings_plugins_plugin_content_description">ปลั๊กอิน %1$s</string>
+    <string name="settings_plugins_clear_content_description">ล้าง</string>
+
+    <string name="plugin_configure_title">กำหนดค่า</string>
+    <string name="plugin_screen_title">ตัวจัดการปลั๊กอิน</string>
+    <string name="plugin_error_enter_url">โปรดใส่ URL</string>
+    <string name="plugin_error_url_scheme">URL ต้องขึ้นต้นด้วย http:// หรือ https://</string>
+    <string name="plugin_error_download_failed">ดาวน์โหลดปลั๊กอินไม่สำเร็จ</string>
+    <string name="plugin_empty_title">ยังไม่ได้ติดตั้งปลั๊กอิน</string>
+    <string name="plugin_empty_subtitle">วาง URL สำหรับดาวน์โหลดหรือเลือกไฟล์ด้านบน</string>
+    <plurals name="plugin_installed_plugins_count">
+        <item quantity="other">ติดตั้งปลั๊กอินแล้ว %1$d รายการ</item>
+    </plurals>
+    <string name="plugin_install_section_title">ติดตั้งปลั๊กอิน</string>
+    <string name="plugin_url_placeholder">https://example.com/plugin.smplug</string>
+    <string name="plugin_action_download">ดาวน์โหลด</string>
+    <string name="plugin_action_install_from_file">ติดตั้งจากไฟล์ (.smplug)</string>
+    <string name="plugin_state_active">ใช้งานอยู่</string>
+    <string name="plugin_version_label">v%1$s</string>
+    <string name="plugin_state_builtin">ในตัว</string>
+    <string name="plugin_action_remove">ลบปลั๊กอิน</string>
+    <string name="plugin_action_login">เข้าสู่ระบบ</string>
+    <string name="plugin_action_logout">ออกจากระบบ</string>
+    <string name="plugin_section_url_title">ดาวน์โหลดจาก URL</string>
+    <string name="plugin_section_file_title">ติดตั้งจากไฟล์</string>
+    <string name="plugin_section_install">ติดตั้ง</string>
+
+    <string name="plugin_permissions_author_version">• %1$s</string>
+    <string name="plugin_permissions_requested_title">สิทธิ์ที่ร้องขอ</string>
+    <string name="plugin_permissions_none">ปลั๊กอินนี้ไม่ต้องใช้สิทธิ์พิเศษ</string>
+    <string name="plugin_permissions_compare_title">ที่ติดตั้งอยู่เทียบกับที่ให้มา</string>
+    <string name="plugin_permissions_installed_label">ติดตั้งอยู่</string>
+    <string name="plugin_permissions_supplied_label">ที่ให้มา</string>
+    <string name="plugin_permissions_api_diff">API %1$s → %2$s</string>
+    <string name="plugin_permissions_capability_storage_title">พื้นที่จัดเก็บถาวร</string>
+    <string name="plugin_permissions_capability_storage_desc">อ่านและเขียนข้อมูลลงดิสก์</string>
+    <string name="plugin_permissions_capability_network_title">คำขอเครือข่าย</string>
+    <string name="plugin_permissions_capability_network_desc">ส่งและรับข้อมูลผ่านอินเทอร์เน็ต</string>
+    <string name="plugin_permissions_capability_webview_title">WebView</string>
+    <string name="plugin_permissions_capability_webview_desc">แสดงเนื้อหาเว็บภายในแอป</string>
+    <string name="settings_section_jam">แจมกลุ่ม</string>
+    <string name="settings_jam_server_test">ทดสอบการเชื่อมต่อ</string>
+    <string name="settings_jam_server_testing">กำลังทดสอบ…</string>
+    <string name="settings_jam_server_test_ok">เชื่อมต่อแล้วใน %1$d ms</string>
+    <string name="settings_jam_server_test_fail">ล้มเหลว: %1$s</string>
+    <string name="settings_jam_section_connection">การเชื่อมต่อ</string>
+    <string name="settings_jam_section_diagnostics">การวินิจฉัย</string>
+
+    <!-- Group Jam -->
+    <string name="jam_screen_title">แจมกลุ่ม</string>
+    <string name="jam_setup_create_tab">สร้าง</string>
+    <string name="jam_setup_join_tab">เข้าร่วม</string>
+    <string name="jam_setup_create_hint">สร้างห้อง แล้วแชร์รหัสห้องให้เพื่อนของคุณ</string>
+    <string name="jam_setup_create_button">สร้างห้อง</string>
+    <string name="jam_setup_join_button">เข้าร่วมห้อง</string>
+    <string name="jam_setup_working">กำลังเชื่อมต่อ…</string>
+    <string name="jam_setup_code_label">รหัสห้อง</string>
+    <string name="jam_setup_code_placeholder">ABC123</string>
+    <string name="jam_session_connected">เชื่อมต่อแล้ว</string>
+    <string name="jam_session_connecting">กำลังเชื่อมต่อใหม่…</string>
+    <string name="jam_invite_copy">คัดลอกรหัส</string>
+    <string name="jam_invite_copied">คัดลอกแล้ว!</string>
+    <string name="jam_invite_share">แชร์</string>
+    <string name="jam_participants_heading">ผู้เข้าร่วม (%1$d)</string>
+    <string name="jam_participants_host">โฮสต์</string>
+    <string name="jam_participants_guest">ผู้ฟัง</string>
+    <string name="jam_participants_waiting">กำลังรอผู้ฟัง…</string>
+    <string name="jam_participants_remove">นำออก</string>
+    <string name="jam_participants_ban">แบน</string>
+    <string name="jam_participants_manage">จัดการ</string>
+    <string name="jam_session_leave">ออกจากห้อง</string>
+    <string name="jam_error_title">เชื่อมต่อไม่ได้</string>
+    <string name="jam_error_dismiss">ปิด</string>
+    <string name="jam_error_create">สร้างเซสชันแจมไม่สำเร็จ</string>
+    <string name="jam_error_join">เข้าร่วมเซสชันแจมไม่สำเร็จ</string>
+    <string name="jam_error_invalid_code">ใส่รหัสห้อง 6 ตัวอักษร ที่ประกอบด้วยตัวอักษรและตัวเลข</string>
+    <string name="jam_share_message">มาร่วมแจมกับฉันบน Spotube ด้วยรหัส: %1$s</string>
+    <string name="settings_jam_server_title">เซิร์ฟเวอร์ห้อง</string>
+    <string name="settings_jam_server_url">URL ของเซิร์ฟเวอร์</string>
+    <string name="settings_jam_server_url_invalid">ใส่ URL ที่ขึ้นต้นด้วย https://</string>
+    <string name="settings_jam_server_diagnostics_subtitle">ตรวจสอบเซิร์ฟเวอร์ห้องก่อนเริ่มห้อง</string>
+    <string name="settings_jam_server_note">แจมใช้เซิร์ฟเวอร์ห้องฟรีของ Spotube หากต้องการโฮสต์เอง ให้ติดตั้งเซิร์ฟเวอร์จาก github.com/team-spotube/jam-server แล้วใส่ URL ของเซิร์ฟเวอร์นั้น</string>
+    <string name="settings_jam_section_you">คุณ</string>
+    <string name="jam_connection_host">เซิร์ฟเวอร์: %1$s</string>
+    <string name="jam_connection_missing">ตั้งค่าเซิร์ฟเวอร์ห้องในการตั้งค่าเพื่อโฮสต์หรือเข้าร่วมห้อง</string>
+    <string name="jam_connection_settings">การตั้งค่าเซิร์ฟเวอร์</string>
+    <string name="jam_participants_you">%1$s (คุณ)</string>
+    <string name="jam_name_title">ชื่อของคุณ</string>
+    <string name="jam_name_subtitle">คนอื่นในแจมจะเห็นคุณเป็น %1$s</string>
+    <string name="jam_name_description">ทุกคนในแจมจะเห็นชื่อนี้ เว้นว่างไว้เพื่อใช้ %1$s ชื่อใหม่จะมีผลเมื่อคุณสร้างหรือเข้าร่วมห้องครั้งถัดไป</string>
+    <string name="jam_name_too_long">ใช้ได้ไม่เกิน %1$d ตัวอักษร</string>
+    <string name="jam_error_no_server">ยังไม่ได้ตั้งค่าเซิร์ฟเวอร์แจม</string>
+    <string name="jam_error_server_unreachable">เชื่อมต่อเซิร์ฟเวอร์แจมไม่ได้ ตรวจสอบเครือข่ายหรือ URL ของเซิร์ฟเวอร์ใน การตั้งค่า → แจมกลุ่ม</string>
+    <string name="jam_error_server_incompatible">เซิร์ฟเวอร์แจมใช้เวอร์ชันที่เข้ากันไม่ได้</string>
+    <string name="jam_error_room_not_found">ไม่มีห้องที่ใช้รหัสนี้ ตรวจสอบแล้วลองอีกครั้ง</string>
+    <string name="jam_error_room_full">ห้องนี้เต็มแล้ว</string>
+    <string name="jam_error_banned">โฮสต์แบนคุณออกจากห้องนี้</string>
+    <string name="jam_error_kicked">โฮสต์นำคุณออกจากห้อง</string>
+    <string name="jam_error_replaced">ห้องนี้ถูกเปิดอีกครั้งบนอุปกรณ์นี้ จึงปิดการเชื่อมต่อนี้</string>
+
+    <string name="player_go_to_album">ไปที่อัลบั้ม</string>
+    <string name="player_sleep_timer">ตั้งเวลาปิด</string>
+    <string name="player_track_details">รายละเอียดเพลง</string>
+    <string name="player_play_content_description">เล่น</string>
+    <string name="player_pause_content_description">หยุดชั่วคราว</string>
+    <string name="player_nothing_playing">ไม่มีเพลงที่กำลังเล่น</string>
+    <string name="player_add_to_queue_content_description">เพิ่มลงในคิว</string>
+
+    <string name="update_action_ignore">ละเว้น</string>
+    <string name="update_action_update">อัปเดต</string>
+    <string name="app_update_dialog_title">Spotube %1$s พร้อมให้ใช้งานแล้ว</string>
+    <string name="app_update_dialog_no_notes">ดูว่ามีอะไรใหม่ในเวอร์ชันนี้ได้ที่หน้าดาวน์โหลดของ Spotube</string>
+    <string name="plugin_update_dialog_title">%1$s %2$s พร้อมให้ใช้งานแล้ว</string>
+    <string name="plugin_update_dialog_current_version">ติดตั้งอยู่ในปัจจุบัน: %1$s</string>
+    <string name="plugin_update_dialog_no_notes">ดูว่ามีอะไรใหม่ในอัปเดตนี้ได้จากหน้าของปลั๊กอิน</string>
+
+    <string name="welcome_skip">ข้าม</string>
+    <string name="welcome_next">ถัดไป</string>
+    <string name="welcome_back">ย้อนกลับ</string>
+    <string name="welcome_get_started">เริ่มต้นใช้งาน</string>
+    <string name="welcome_app_name">Spotube</string>
+    <string name="welcome_brand_freedom">ดนตรีที่ไร้พันธนาการ</string>
+    <string name="welcome_brand_quiet_description">เครื่องเล่นโอเพนซอร์สสำหรับโลกแห่งดนตรี\nให้คุณสำรวจ ให้คุณสร้างในแบบของคุณเอง</string>
+    <string name="welcome_donate_quiet_title">ช่วยให้โปรเจกต์นี้อยู่ต่อไป</string>
+    <string name="welcome_donate_letter">Spotube สร้างขึ้นโดยผู้คน ไม่ใช่ธุรกิจแบบสมัครสมาชิก หากแอปนี้กลายเป็นส่วนหนึ่งในชีวิตประจำวันของคุณ การสนับสนุนเพียงเล็กน้อยจะช่วยให้เราดูแลแอปได้อย่างที่ควรเป็น\n\nขอบคุณที่เปิดพื้นที่ให้ซอฟต์แวร์อิสระ</string>
+    <string name="welcome_plugins_setup_guide">เริ่มต้นด้วยปลั๊กอินแคตตาล็อกเพื่อค้นหาเพลงและเพลย์ลิสต์ เลือกปลั๊กอินเสียงเพื่อเล่นเพลง ส่วนเนื้อเพลงและประวัติการฟังเป็นตัวเลือกเสริม ค้นพบปลั๊กอินด้านล่าง ตรวจสอบสิทธิ์ ติดตั้ง แล้วเลือกใช้ที่นี่</string>
+    <string name="welcome_plugins_discover">ค้นพบปลั๊กอิน</string>
+    <string name="welcome_plugins_sources">แหล่งที่มาของคุณ</string>
+    <string name="welcome_plugins_retry">ลองอีกครั้ง</string>
+    <string name="welcome_plugins_more">ปลั๊กอินเพิ่มเติม</string>
+    <string name="welcome_plugins_discovery_empty">ไม่พบปลั๊กอินใหม่ คุณยังติดตั้งจากลิงก์หรือไฟล์ .smplug ด้านบนได้</string>
+    <string name="welcome_plugins_discovery_error">ไม่สามารถค้นหาปลั๊กอินได้ในขณะนี้ ลองอีกครั้ง หรือติดตั้งจากลิงก์หรือไฟล์</string>
+    <string name="welcome_step_welcome">ยินดีต้อนรับ</string>
+    <string name="welcome_step_support">สนับสนุน</string>
+    <string name="welcome_step_plugins">ปลั๊กอิน</string>
+    <string name="welcome_step_guide">คู่มือ</string>
+
+    <string name="welcome_guide_title">วิธีใช้ Spotube</string>
+    <string name="welcome_guide_subtitle">แค่ 4 ขั้นตอนง่าย ๆ ก็เริ่มฟังได้เลย</string>
+    <string name="welcome_guide_signin_title">เข้าสู่ระบบ</string>
+    <string name="welcome_guide_signin_desc">เชื่อมต่อบัญชีของคุณ หรือเลือกปลั๊กอินแคตตาล็อกของคุณเอง</string>
+    <string name="welcome_guide_search_title">ค้นหาและเล่น</string>
+    <string name="welcome_guide_search_desc">ค้นหาเพลง อัลบั้ม หรือศิลปิน แล้วกดเล่น</string>
+    <string name="welcome_guide_offline_title">ฟังแบบออฟไลน์</string>
+    <string name="welcome_guide_offline_desc">ดาวน์โหลดเพลงเพื่อฟังต่อได้แม้ไม่มีการเชื่อมต่อ</string>
+    <string name="welcome_guide_lyrics_title">ร้องตามเนื้อเพลง</string>
+    <string name="welcome_guide_lyrics_desc">เปิดเนื้อเพลงแบบซิงค์จากเครื่องเล่นขณะที่เพลงกำลังเล่น</string>
+
+    <!-- Page 1: branding -->
+    <string name="welcome_brand_tagline">เพลงของคุณ แหล่งที่มาของคุณ กฎของคุณ</string>
+    <string name="welcome_brand_subtitle">เครื่องเล่นเพลงฟรีและโอเพนซอร์ส สร้างโดยชุมชนที่รักในเสียงเพลง</string>
+    <string name="welcome_brand_chip_open_source">โอเพนซอร์ส</string>
+    <string name="welcome_brand_chip_no_ads">ไม่มีโฆษณา</string>
+    <string name="welcome_brand_chip_no_tracking">ไม่มีการเก็บข้อมูล</string>
+    <string name="welcome_brand_chip_plugin_powered">ขับเคลื่อนด้วยปลั๊กอิน</string>
+    <string name="welcome_lets_go">ไปกันเลย</string>
+
+    <!-- Page 2: donations -->
+    <string name="welcome_donate_eyebrow">ผู้สนับสนุนคือแรงผลักดันของเรา</string>
+    <string name="welcome_donate_title">สร้างด้วยใจ อยู่ได้ด้วยคุณ</string>
+    <string name="welcome_donate_message">Spotube ฟรี เสรี และโอเพนซอร์ส 100% — ไม่มีโฆษณา ไม่มีการสมัครสมาชิก ไม่มีการติดตาม ทุกฟีเจอร์มีอยู่ได้เพราะคนอย่างคุณเลือกที่จะช่วยให้การพัฒนาเดินหน้าต่อไป</string>
+    <string name="welcome_donate_patreon_title">Patreon</string>
+    <string name="welcome_donate_patreon_tag">ผู้สนับสนุนรายเดือน</string>
+    <string name="welcome_donate_patreon_subtitle">สนับสนุนการพัฒนาและโครงสร้างพื้นฐานอย่างต่อเนื่อง</string>
+    <string name="welcome_donate_bmac_title">Buy Me a Coffee</string>
+    <string name="welcome_donate_bmac_tag">กาแฟครั้งเดียว</string>
+    <string name="welcome_donate_bmac_subtitle">เติมพลังให้การเขียนโค้ดยามดึกด้วยทิปเล็ก ๆ</string>
+    <string name="welcome_donate_opencollective_title">Open Collective</string>
+    <string name="welcome_donate_opencollective_tag">กองทุนชุมชน</string>
+    <string name="welcome_donate_opencollective_subtitle">การสนับสนุนทางการเงินที่โปร่งใสและบริหารโดยชุมชน</string>
+    <string name="welcome_donate_thanks">ขอบคุณจากใจที่เชื่อมั่นในดนตรีแบบเปิด</string>
+    <string name="welcome_donate_optional">การสนับสนุนเป็นทางเลือกโดยสมบูรณ์ — Spotube ยังคงฟรีไม่ว่าอย่างไร</string>
+    <string name="welcome_donate_action">สนับสนุน</string>
+    <string name="welcome_donate_open_content_description">เปิด %1$s</string>
+
+    <!-- Support / donations -->
+    <string name="support_button_label">สนับสนุน Spotube</string>
+    <string name="support_dialog_title">สนับสนุน Spotube</string>
+    <string name="support_dialog_message">Spotube ฟรี เสรี และโอเพนซอร์ส — ไม่มีโฆษณา ไม่มีการสมัครสมาชิก ไม่มีการติดตาม หากแอปนี้ทำให้คุณมีความสุข ลองพิจารณาสนับสนุนโปรเจกต์นี้</string>
+    <string name="support_dialog_reminder_hint">คุณปิดการแจ้งเตือนเหล่านี้ได้ที่ การตั้งค่า → สนับสนุน</string>
+    <string name="support_dialog_dismiss">ไว้ทีหลัง</string>
+    <string name="settings_support_reminders_title">การแจ้งเตือนให้สนับสนุน</string>
+    <string name="settings_support_reminders_subtitle">แสดงการแจ้งเตือนเบา ๆ ให้สนับสนุนโปรเจกต์ทุก 7 วัน</string>
+
+    <!-- Page 3: plugins -->
+    <string name="welcome_plugins_eyebrow">สถาปัตยกรรมแบบโมดูล</string>
+    <string name="welcome_plugins_title">เลือกได้ว่าเพลงของคุณมาจากไหน</string>
+    <string name="welcome_plugins_subtitle">Spotube แยกการค้นหาแคตตาล็อก การสตรีมเสียง และเนื้อเพลงแบบซิงค์ออกจากกัน กำหนดค่าเอนจินของคุณด้านล่างหรือเปลี่ยนได้ทุกเมื่อ</string>
+    <string name="welcome_plugins_metadata_title">เอนจินเมทาดาทา</string>
+    <string name="welcome_plugins_metadata_description">ขับเคลื่อนการค้นพบเพลง การค้นหา รายชื่อเพลง และเพลย์ลิสต์</string>
+    <string name="welcome_plugins_audio_title">เอนจินเสียง</string>
+    <string name="welcome_plugins_audio_description">ดึงและถอดรหัสสตรีมเสียงที่จะเล่น</string>
+    <string name="welcome_plugins_lyrics_title">เอนจินเนื้อเพลง</string>
+    <string name="welcome_plugins_lyrics_description">สตรีมเนื้อเพลงคาราโอเกะที่ซิงค์ตามเวลาแบบเรียลไทม์</string>
+    <string name="welcome_plugins_scrobble_title">เอนจิน Scrobble</string>
+    <string name="welcome_plugins_scrobble_description">บันทึกประวัติการฟังไปยัง Last.fm หรือ ListenBrainz</string>
+    <string name="welcome_plugins_badge_active">ใช้งานอยู่</string>
+    <string name="welcome_plugins_badge_builtin">ในตัว</string>
+    <string name="welcome_plugins_badge_ready">พร้อม</string>
+    <string name="welcome_plugins_badge_optional">ไม่บังคับ</string>
+    <string name="welcome_plugins_none_selected">เลือกเอนจิน</string>
+    <string name="welcome_plugins_installed_section">เอนจินที่ติดตั้งไว้</string>
+    <string name="welcome_plugins_set_default">ตั้งเป็นค่าเริ่มต้น</string>
+    <string name="welcome_plugins_builtin_note">NewPipe YouTube และ LRCLib Lyrics มีมาในตัวและพร้อมสตรีมได้ทันที</string>
+    <string name="welcome_plugins_tip">จัดการหรือเพิ่มปลั๊กอินจากชุมชนได้ทุกเมื่อที่ การตั้งค่า → ปลั๊กอิน</string>
+
+    <!-- Page 4: how it works -->
+    <string name="welcome_how_eyebrow">สถาปัตยกรรมย้อนยุคผสมสมัยใหม่</string>
+    <string name="welcome_how_title">Hi-Fi บริสุทธิ์ ไม่มีคนกลาง</string>
+    <string name="welcome_how_subtitle">นี่คือวิธีที่ Spotube จัดการการเล่นแบบกระจายศูนย์บนเครื่องของคุณโดยตรง</string>
+    <string name="welcome_how_status_badge">เพียร์ทูเพียร์โดยตรง • 256 KBPS OPUS</string>
+    <string name="welcome_how_mockup_title">Blue hour</string>
+    <string name="welcome_how_mockup_artist">Spotube · ตัวอย่างเครื่องเล่น</string>
+    <string name="welcome_how_mockup_lyric">ดนตรีเล็ก ๆ สำหรับช่วงเวลาระหว่างทาง</string>
+    <string name="welcome_how_step_search_title">1. การค้นพบแบบกระจายศูนย์</string>
+    <string name="welcome_how_step_search_desc">คำค้นหาส่งตรงไปยังปลั๊กอินแคตตาล็อกที่คุณเลือก Spotube ไม่เคยเก็บข้อมูลรสนิยมของคุณ</string>
+    <string name="welcome_how_step_stream_title">2. ระบุสตรีมโดยตรง</string>
+    <string name="welcome_how_step_stream_desc">เสียงสตรีมตรงจากเซิร์ฟเวอร์เนื้อหามายังเครื่องของคุณ ไม่ผ่านพร็อกซีหรือการเก็บข้อมูลจากระยะไกล</string>
+    <string name="welcome_how_step_playback_title">3. DSP และการเล่นในเครื่อง</string>
+    <string name="welcome_how_step_playback_desc">ถอดรหัสและแคชในเครื่อง พร้อมอีควอไลเซอร์และการดาวน์โหลดแบบออฟไลน์ (ไม่บังคับ)</string>
+    <string name="welcome_how_step_lyrics_title">4. เนื้อเพลงแบบซิงค์และแจม</string>
+    <string name="welcome_how_step_lyrics_desc">เนื้อเพลงคาราโอเกะเลื่อนตามเวลาที่เล่น พร้อมการควบคุมระยะไกลผ่าน LAN และแจมกลุ่ม</string>
+    <string name="welcome_how_footer">ไม่มีเซิร์ฟเวอร์คนกลาง การเล่นเกิดขึ้นบนอุปกรณ์ของคุณ — เป็นส่วนตัวตั้งแต่การออกแบบ</string>
+
+    <!-- Devices: play destination picker -->
+    <string name="devices_destination_title">เลือกอุปกรณ์</string>
+    <string name="devices_destination_prompt">%1$s: “%2$s”</string>
+    <string name="devices_destination_action_play">เล่น</string>
+    <string name="devices_destination_action_add_to_queue">เพิ่มลงในคิว</string>
+    <string name="devices_destination_action_play_next">เล่นถัดไป</string>
+    <string name="devices_destination_this_device">อุปกรณ์นี้</string>
+    <string name="devices_destination_this_device_subtitle">บนอุปกรณ์นี้</string>
+    <string name="devices_destination_remote_device">อุปกรณ์ระยะไกล</string>
+    <string name="devices_destination_remote_device_host">อุปกรณ์ระยะไกล (%1$s)</string>
+    <string name="devices_destination_remote_subtitle">บนอุปกรณ์ที่เชื่อมต่ออยู่</string>
+
+    <!-- Devices: connection errors -->
+    <string name="devices_error_connection_failed">การเชื่อมต่อล้มเหลว</string>
+    <string name="devices_error_connection_lost">การเชื่อมต่อขาดหาย</string>
+    <string name="devices_error_send_failed">ส่งไม่สำเร็จ</string>
+    <string name="devices_error_discovery_failed">การค้นหาล้มเหลว: %1$s</string>
+    <string name="devices_error_connect_failed">เชื่อมต่อไม่สำเร็จ: %1$s</string>
+
+    <!-- Devices: discovery screen -->
+    <string name="devices_title">อุปกรณ์</string>
+    <string name="devices_refresh">รีเฟรช</string>
+    <string name="devices_disconnect">ยกเลิกการเชื่อมต่อ</string>
+    <string name="devices_connecting">กำลังเชื่อมต่อ...</string>
+    <string name="devices_searching">กำลังค้นหาอุปกรณ์ในเครือข่าย...</string>
+    <string name="devices_empty">ไม่พบอุปกรณ์</string>
+    <string name="devices_empty_hint">ตรวจสอบว่าอุปกรณ์อีกเครื่องเปิด “อนุญาตการควบคุมระยะไกล” ไว้ในการตั้งค่า</string>
+    <string name="devices_unknown_device">อุปกรณ์ที่ไม่รู้จัก</string>
+    <string name="devices_resolving">กำลังระบุ...</string>
+
+    <!-- Devices: remote control screen -->
+    <string name="devices_remote_title">รีโมตคอนโทรล</string>
+    <string name="devices_remote_disconnected">ยกเลิกการเชื่อมต่อแล้ว</string>
+    <string name="devices_remote_connection_error">ข้อผิดพลาดในการเชื่อมต่อ: %1$s</string>
+    <string name="devices_remote_unknown_track">ไม่ทราบชื่อเพลง</string>
+    <string name="devices_remote_unknown_artist">ไม่ทราบศิลปิน</string>
+    <string name="devices_remote_volume">ระดับเสียง</string>
+    <string name="devices_remote_remove_from_queue">นำออกจากคิว</string>
+    <string name="devices_remote_more_options">ตัวเลือกเพิ่มเติม</string>
+
+    <!-- Group Jam: play destination picker -->
+    <string name="jam_destination_title">เล่นที่ไหน?</string>
+    <string name="jam_destination_message">คุณมีเซสชันแจมที่ใช้งานอยู่ เลือกว่าจะเล่นคอลเลกชันนี้ที่ไหน</string>
+    <string name="jam_destination_play_here">เล่นที่นี่</string>
+    <string name="jam_destination_suggest">เสนอให้แจม</string>
+
+    <!-- Group Jam: connection errors -->
+    <string name="jam_error_connection_failed">การเชื่อมต่อล้มเหลว</string>
+    <string name="jam_error_connection_lost">การเชื่อมต่อขาดหาย</string>
+
+
+    <!-- Group Jam: queue snackbar -->
+    <string name="jam_queue_added_track">เพิ่มลงในคิวแจมแล้ว</string>
+    <plurals name="jam_queue_added_tracks">
+        <item quantity="other">เพิ่ม %1$d เพลงลงในคิวแจมแล้ว</item>
+    </plurals>
+
+    <!-- Remote control: connection request dialog -->
+    <string name="remote_request_title">คำขอควบคุมระยะไกล</string>
+    <string name="remote_request_message">“%1$s” ต้องการควบคุมการเล่นบนอุปกรณ์นี้</string>
+    <string name="remote_request_deny">ปฏิเสธ</string>
+    <string name="remote_request_allow">อนุญาต</string>
+    <string name="remote_request_allow_always">อนุญาตเสมอ</string>
+
+    <!-- Search -->
+    <string name="search_results_title">ผลการค้นหา</string>
+    <string name="search_tab_all">ทั้งหมด</string>
+    <string name="search_section_tracks">เพลง</string>
+    <string name="search_section_users">ผู้ใช้</string>
+    <string name="search_no_search_types">ไม่มีประเภทการค้นหาให้ใช้</string>
+    <string name="search_start_typing">เริ่มพิมพ์เพื่อค้นหา</string>
+    <string name="search_start_typing_tracks">เริ่มพิมพ์เพื่อค้นหาเพลง</string>
+    <string name="search_no_results">ไม่พบผลลัพธ์</string>
+    <string name="search_see_all">ดูทั้งหมด</string>
+    <string name="search_searching">กำลังค้นหา</string>
+    <string name="search_loading_tracks">กำลังโหลดเพลง...</string>
+    <string name="search_loading_albums">กำลังโหลดอัลบั้ม...</string>
+    <string name="search_loading_artists">กำลังโหลดศิลปิน...</string>
+    <string name="search_loading_playlists">กำลังโหลดเพลย์ลิสต์...</string>
+    <string name="search_loading_users">กำลังโหลดผู้ใช้...</string>
+    <string name="search_no_albums">ไม่พบอัลบั้ม</string>
+    <string name="search_no_artists">ไม่พบศิลปิน</string>
+    <string name="search_no_playlists">ไม่พบเพลย์ลิสต์</string>
+    <string name="search_no_users">ไม่พบผู้ใช้</string>
+    <string name="search_warm_crates">กำลังคุ้ยกล่องแผ่นเสียง...</string>
+    <string name="search_warm_cosmos">กำลังค้นหาทั่วจักรวาล...</string>
+    <string name="search_warm_speakers">กำลังวอร์มลำโพง...</string>
+    <string name="search_warm_vinyl">กำลังปัดฝุ่นแผ่นไวนิล...</string>
+    <string name="search_warm_music_gods">กำลังปรึกษาเทพแห่งดนตรี...</string>
+    <string name="search_warm_antennas">กำลังจูนเสาอากาศ...</string>
+    <string name="search_warm_records">กำลังพลิกหาแผ่นเสียง...</string>
+    <string name="search_error_capabilities">โหลดความสามารถในการค้นหาไม่สำเร็จ</string>
+    <string name="search_error_search">ค้นหาไม่สำเร็จ</string>
+    <string name="search_error_tracks">ค้นหาเพลงไม่สำเร็จ</string>
+    <string name="search_error_albums">ค้นหาอัลบั้มไม่สำเร็จ</string>
+    <string name="search_error_artists">ค้นหาศิลปินไม่สำเร็จ</string>
+    <string name="search_error_playlists">ค้นหาเพลย์ลิสต์ไม่สำเร็จ</string>
+    <string name="search_error_users">ค้นหาผู้ใช้ไม่สำเร็จ</string>
+
+    <!-- Home -->
+    <string name="home_title_browse">เรียกดู</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_mode_synced">ซิงค์</string>
+    <string name="lyrics_mode_plain">ธรรมดา</string>
+    <string name="lyrics_no_synced">ไม่มีเนื้อเพลงแบบซิงค์</string>
+    <string name="lyrics_no_plain">ไม่มีเนื้อเพลงแบบธรรมดา</string>
+
+    <!-- Settings: audio format/quality labels -->
+    <string name="settings_audio_format_label">%1$s ใน %2$s</string>
+    <string name="settings_audio_quality_lossy">%1$d kbps</string>
+    <string name="settings_audio_quality_lossless">%1$s kHz • %2$d ช่อง</string>
+    <string name="search_error_no_metadata_plugin">ยังไม่ได้เลือกปลั๊กอินเมทาดาทา</string>
+
+    <!-- Common -->
+    <string name="common_back">ย้อนกลับ</string>
+    <string name="common_retry">ลองอีกครั้ง</string>
+    <string name="common_close_dialog">ปิดกล่องโต้ตอบ</string>
+    <string name="common_loading">กำลังโหลด...</string>
+    <string name="common_unknown">ไม่ทราบ</string>
+    <string name="common_unknown_error">ข้อผิดพลาดที่ไม่ทราบสาเหตุ</string>
+
+    <!-- Media cards -->
+    <string name="media_user">ผู้ใช้</string>
+    <string name="media_playlist">เพลย์ลิสต์</string>
+
+    <!-- Error display -->
+    <string name="error_title">ขออภัยเป็นอย่างยิ่ง</string>
+    <string name="error_description">มีบางอย่างทำงานไม่ถูกต้องในขณะนี้ ประสบการณ์ของคุณสำคัญสำหรับเรา และเรากำลังพยายามแก้ไขอย่างเต็มที่ โปรดลองอีกครั้งหรือตรวจสอบรายละเอียดข้อผิดพลาดด้านล่าง</string>
+    <string name="error_details">รายละเอียดข้อผิดพลาด</string>
+    <string name="error_copy_to_clipboard">คัดลอกไปยังคลิปบอร์ด</string>
+    <string name="error_view_full_log">ดูบันทึกทั้งหมด</string>
+    <string name="error_full_log_title">บันทึกข้อผิดพลาดทั้งหมด</string>
+
+    <!-- Collection details -->
+    <string name="collection_details_shuffle">สุ่มเพลง</string>
+    <string name="collection_details_shuffle_play">เล่นแบบสุ่ม</string>
+    <string name="collection_details_follow">ติดตาม</string>
+    <string name="collection_details_unfollow">เลิกติดตาม</string>
+    <string name="collection_details_edit_playlist">แก้ไขเพลย์ลิสต์</string>
+    <string name="collection_details_by_owner">โดย %1$s</string>
+
+    <!-- Track options -->
+    <string name="track_options_title">ตัวเลือกเพลง</string>
+    <string name="track_options_add_to_jam">เพิ่มลงในแจม</string>
+    <string name="track_options_start_radio">เริ่มวิทยุ</string>
+    <string name="track_options_play_next">เล่นถัดไป</string>
+    <string name="track_options_move_to_next">ย้ายไปเป็นเพลงถัดไป</string>
+    <string name="track_options_remove_from_queue">นำออกจากคิว</string>
+    <string name="track_options_remove_from_favorites">นำออกจากรายการโปรด</string>
+    <string name="track_options_save_as_favorite">บันทึกเป็นรายการโปรด</string>
+    <string name="track_options_add_to_playlist">เพิ่มลงในเพลย์ลิสต์</string>
+    <string name="track_options_download">ดาวน์โหลด</string>
+    <string name="track_options_share">แชร์</string>
+
+    <!-- Track list -->
+    <string name="track_list_sort_original">ลำดับเดิม</string>
+    <string name="track_list_sort_title">ชื่อเพลง</string>
+    <string name="track_list_sort_artist">ศิลปิน</string>
+    <string name="track_list_sort_album">อัลบั้ม</string>
+    <string name="track_list_sort_duration">ความยาว</string>
+    <string name="track_list_sort">เรียงลำดับ</string>
+    <string name="track_list_no_tracks">ไม่พบเพลง</string>
+    <string name="track_list_filter_placeholder">กรอง</string>
+    <string name="track_list_bulk_actions">การดำเนินการแบบกลุ่ม</string>
+    <string name="track_list_download_all">ดาวน์โหลดทั้งหมด</string>
+    <string name="track_list_download_count">ดาวน์โหลด %1$d เพลง</string>
+    <string name="track_list_add_all_to_queue">เพิ่มทั้งหมดลงในคิว</string>
+    <string name="track_list_add_count_to_queue">เพิ่ม %1$d เพลงลงในคิว</string>
+    <string name="track_list_play_all_next">เล่นทั้งหมดถัดไป</string>
+    <string name="track_list_play_count_next">เล่น %1$d เพลงถัดไป</string>
+    <string name="track_list_add_all_to_playlist">เพิ่มทั้งหมดลงในเพลย์ลิสต์</string>
+    <string name="track_list_add_count_to_playlist">เพิ่ม %1$d เพลงลงในเพลย์ลิสต์</string>
+    <string name="track_list_add_all_to_jam">เพิ่มทั้งหมดลงในแจม</string>
+    <string name="track_list_add_count_to_jam">เพิ่ม %1$d เพลงลงในแจม</string>
+    <string name="track_list_more_artists">+อีก %1$d</string>
+
+    <!-- WebView -->
+    <string name="webview_no_url">ไม่มี URL ให้โหลด</string>
+    <string name="webview_go_back">ย้อนกลับในประวัติเบราว์เซอร์</string>
+    <string name="webview_go_forward">ไปข้างหน้าในประวัติเบราว์เซอร์</string>
+
+    <!-- Blacklist -->
+    <string name="blacklist_filter_placeholder">กรองบัญชีดำ...</string>
+    <string name="blacklist_empty">ไม่มีรายการในบัญชีดำ</string>
+    <string name="blacklist_no_results">ไม่มีรายการในบัญชีดำที่ตรงกับ “%1$s”</string>
+    <string name="blacklist_section_tracks">เพลง</string>
+    <string name="blacklist_item_track">เพลง</string>
+    <string name="blacklist_add">เพิ่มลงในบัญชีดำ</string>
+    <string name="blacklist_remove">นำออกจากบัญชีดำ</string>
+
+    <!-- Downloads -->
+    <string name="downloads_error_no_metadata">ไม่มีเมทาดาทาของเพลง</string>
+    <string name="downloads_error_stream_unresolved_short">ไม่สามารถระบุ URL ของสตรีมได้</string>
+    <string name="downloads_error_stream_unresolved">ไม่สามารถระบุ URL ของสตรีมได้ ลองเล่นเพลงนี้ก่อน</string>
+
+    <!-- Saved tracks -->
+    <string name="saved_tracks_title">เพลงที่บันทึกไว้</string>
+    <string name="saved_tracks_owner_you">คุณ</string>
+
+    <!-- Artist -->
+    <string name="artist_following">กำลังติดตาม</string>
+    <string name="artist_top_tracks">เพลงยอดนิยม</string>
+    <string name="artist_play_top_tracks">เล่นเพลงยอดนิยม</string>
+    <string name="artist_add_top_tracks_to_queue">เพิ่มเพลงยอดนิยมลงในคิว</string>
+    <string name="artist_related_artists">ศิลปินที่เกี่ยวข้อง</string>
+    <string name="artist_featured_playlists">เพลย์ลิสต์แนะนำ</string>
+    <string name="artist_error_load_failed">โหลดภาพรวมศิลปินไม่สำเร็จ</string>
+    <string name="artist_followers_unavailable">ไม่มีข้อมูลผู้ติดตาม</string>
+    <string name="artist_followers_thousands">ผู้ติดตาม %1$sK คน</string>
+    <string name="artist_followers_millions">ผู้ติดตาม %1$sM คน</string>
+    <string name="artist_followers_billions">ผู้ติดตาม %1$sB คน</string>
+    <plurals name="artist_followers_count">
+        <item quantity="other">ผู้ติดตาม %1$d คน</item>
+    </plurals>
+
+    <!-- Player -->
+    <string name="player_like_content_description">ถูกใจ</string>
+    <string name="player_unlike_content_description">เลิกถูกใจ</string>
+    <string name="player_fallback_title">ชื่อเพลงตัวอย่าง</string>
+    <string name="player_fallback_artists">ศิลปินตัวอย่าง</string>
+    <string name="player_unknown_album">ไม่ทราบอัลบั้ม</string>
+    <string name="player_seek_label">เลื่อนตำแหน่ง</string>
+    <string name="player_volume_label">ระดับเสียง</string>
+    <string name="player_enable_shuffle_content_description">เปิดการสุ่มเพลง</string>
+    <string name="player_disable_shuffle_content_description">ปิดการสุ่มเพลง</string>
+    <string name="player_previous_content_description">ก่อนหน้า</string>
+    <string name="player_next_content_description">ถัดไป</string>
+    <string name="player_play_or_pause_content_description">เล่นหรือหยุดชั่วคราว</string>
+    <string name="player_loop_mode_none">ปิดการเล่นซ้ำ</string>
+    <string name="player_loop_mode_one">เล่นซ้ำเพลงเดียว</string>
+    <string name="player_loop_mode_all">เล่นซ้ำทั้งหมด</string>
+    <string name="player_mute_content_description">ปิดเสียง</string>
+    <string name="player_unmute_content_description">เปิดเสียง</string>
+    <string name="player_more_options_content_description">ตัวเลือกเพิ่มเติม</string>
+    <string name="player_options_content_description">ตัวเลือกเครื่องเล่น</string>
+    <string name="player_collapse_content_description">ยุบเครื่องเล่น</string>
+    <string name="player_expand_lyrics_content_description">ขยายเนื้อเพลง</string>
+    <string name="player_now_playing">กำลังเล่น</string>
+    <string name="player_lyrics">เนื้อเพลง</string>
+    <string name="player_alternative_source">แหล่งที่มาสำรอง</string>
+    <string name="player_alternative_source_content_description">แหล่งที่มาสำรอง</string>
+    <string name="player_download">ดาวน์โหลด</string>
+    <string name="player_download_status_downloaded">ดาวน์โหลดแล้ว</string>
+    <string name="player_download_status_downloading">กำลังดาวน์โหลด...</string>
+    <string name="player_download_already_downloaded">ดาวน์โหลดไว้แล้ว</string>
+    <string name="player_download_retrying">กำลังลองดาวน์โหลดอีกครั้ง...</string>
+    <string name="player_download_started">กำลังดาวน์โหลด %1$s</string>
+    <string name="player_sleep_timer_remaining">การเล่นจะหยุดชั่วคราวในอีก %1$s</string>
+    <string name="player_sleep_timer_description">หยุดการเล่นชั่วคราวหลังจากจำนวนนาทีที่เลือก</string>
+    <string name="player_sleep_timer_minutes_label">นาที</string>
+    <string name="player_sleep_timer_minutes_placeholder">เลือกระหว่าง 1 ถึง 600 นาที</string>
+    <string name="player_sleep_timer_cancel">ยกเลิกตัวตั้งเวลา</string>
+    <string name="player_sleep_timer_start">เริ่ม</string>
+    <string name="player_track_details_stream_mismatch">URL สำหรับเล่นถูกระบุด้วยการตั้งค่าการสตรีมที่ต่างออกไป สตรีมที่ไฮไลต์ตรงกับค่าที่คุณต้องการในปัจจุบัน URL ที่ใช้งานอยู่จะรีเฟรชเมื่อมีการขอสตรีมครั้งถัดไป</string>
+    <string name="player_track_details_matched_source">แหล่งเสียงที่จับคู่ได้</string>
+    <string name="player_track_details_loading_source">กำลังโหลดแหล่งที่จับคู่ได้…</string>
+    <string name="player_track_details_source_not_needed">ไม่จำเป็นต้องใช้แหล่งระยะไกลที่จับคู่ได้ขณะเล่นไฟล์ที่แคชไว้ในเครื่อง</string>
+    <string name="player_track_details_no_source">ไม่มีแหล่งที่จับคู่ได้</string>
+    <string name="player_track_details_no_cached_source">ไม่มีแหล่งเสียงที่จับคู่ได้ถูกแคชไว้สำหรับเพลงนี้</string>
+    <string name="player_track_details_streams_not_cached">ยังไม่ได้แคชรายละเอียดสตรีม เล่นเพลงนี้ก่อนเพื่อโหลดข้อมูล</string>
+    <string name="player_track_details_load_failed">โหลดรายละเอียดเพลงไม่สำเร็จ</string>
+    <string name="player_track_details_available_streams">สตรีมที่มีให้ใช้</string>
+    <string name="player_track_details_served_from_cache_description">เพลงนี้กำลังเล่นจากแคชในเครื่อง จึงไม่ได้ใช้สตรีมรูปแบบต่าง ๆ สำหรับการเล่นนี้</string>
+    <string name="player_track_details_loading_streams">กำลังโหลดสตรีม…</string>
+    <string name="player_track_details_no_streams">ไม่มีสตรีมสำหรับแหล่งนี้</string>
+    <string name="player_track_details_selected_stream_content_description">สตรีมที่เลือกอยู่ในปัจจุบัน</string>
+    <string name="player_track_details_matches_preference">ตรงกับรูปแบบและคุณภาพการสตรีมที่คุณต้องการ</string>
+    <string name="player_track_details_active_url">URL ที่ใช้เล่นอยู่</string>
+    <string name="player_track_details_served_from_cache">เล่นจากแคชในเครื่อง</string>
+    <string name="player_track_details_metadata_track">เพลงจากเมทาดาทา</string>
+    <string name="player_track_details_title">ชื่อเพลง</string>
+    <string name="player_track_details_id">ID</string>
+    <string name="player_track_details_album">อัลบั้ม</string>
+    <string name="player_track_details_confidence">ความแม่นยำ</string>
+    <string name="player_track_details_external_uri">URI ภายนอก</string>
+    <string name="player_track_details_album_id">ID อัลบั้ม</string>
+    <string name="player_track_details_album_type">ประเภทอัลบั้ม</string>
+    <string name="player_track_details_album_release_date">วันที่วางจำหน่ายอัลบั้ม</string>
+    <string name="player_track_details_album_track_count">จำนวนเพลงในอัลบั้ม</string>
+    <string name="player_track_details_album_genres">แนวเพลงของอัลบั้ม</string>
+    <string name="player_track_details_duration">ความยาว</string>
+    <string name="player_track_details_track_number">หมายเลขเพลง</string>
+    <string name="player_track_details_disc_number">หมายเลขแผ่น</string>
+    <string name="player_track_details_explicit">เนื้อหาไม่เหมาะสม</string>
+    <string name="player_track_details_popularity">ความนิยม</string>
+    <string name="player_track_details_isrc">ISRC</string>
+    <string name="player_track_details_thumbnail_urls">URL ภาพขนาดย่อ</string>
+
+    <!-- Shell -->
+    <string name="shell_sidebar_toggle_content_description">สลับแถบด้านข้าง</string>
+
+    <!-- Alternative track -->
+    <string name="alternative_track_title">แหล่งที่มาสำรอง</string>
+    <string name="alternative_track_no_track">ไม่มีเพลงที่กำลังเล่นอยู่</string>
+    <string name="alternative_track_searching">กำลังค้นหาแหล่งที่มาสำรอง...</string>
+    <string name="alternative_track_empty">ไม่พบแหล่งที่มาสำรอง</string>
+    <string name="alternative_track_confidence">ความแม่นยำ: %1$d%</string>
+    <string name="alternative_track_active_source">แหล่งที่ใช้งานอยู่</string>
+
+    <!-- Queue -->
+    <string name="queue_participant_kick">เตะออก</string>
+    <string name="queue_participant_kick_description">นำผู้ใช้นี้ออกจากเซสชัน</string>
+    <string name="queue_participant_ban_description">เตะออกและไม่ให้กลับเข้ามาอีก</string>
+    <string name="queue_participant_remove_suggestions">ลบเพลงที่เสนอ</string>
+    <string name="queue_participant_remove_suggestions_description">ลบทุกเพลงที่ผู้ใช้นี้เพิ่มลงในคิว</string>
+    <string name="queue_reorder_content_description">จัดลำดับใหม่</string>
+    <string name="queue_remove_from_queue">นำออกจากคิว</string>
+    <string name="queue_item_subtitle_added_by">%1$s • เพิ่มโดย %2$s</string>
+
+    <!-- Playlist -->
+    <string name="playlist_owner_unknown">ไม่ทราบ</string>
+    <string name="playlist_loading_title">กำลังโหลดเพลย์ลิสต์...</string>
+    <string name="playlist_add_tracks_button">เพิ่มเพลง</string>
+    <string name="playlist_add_tracks_title">เพิ่มเพลงลงในเพลย์ลิสต์</string>
+    <string name="playlist_add_tracks_search_placeholder">ค้นหาเพลง...</string>
+    <string name="playlist_add_tracks_search_content_description">ค้นหา</string>
+    <string name="playlist_add_tracks_no_results">ไม่พบเพลง</string>
+    <string name="playlist_add_tracks_hint">ค้นหาเพลงที่จะเพิ่ม</string>
+    <string name="playlist_add_tracks_done">เสร็จสิ้น</string>
+    <string name="playlist_add_tracks_add">เพิ่ม</string>
+    <string name="playlist_add_tracks_added_content_description">เพิ่มแล้ว</string>
+
+    <!-- Album -->
+    <string name="album_loading_title">กำลังโหลดอัลบั้ม...</string>
+
+    <!-- Library -->
+    <string name="library_add_to_playlist_title">เพิ่มลงในเพลย์ลิสต์ของคุณ</string>
+    <string name="library_add_to_playlist_search_content_description">ค้นหา</string>
+    <string name="library_add_to_playlist_search_placeholder">ค้นหาเพลย์ลิสต์ของคุณ...</string>
+    <string name="library_add_to_playlist_loading">กำลังโหลดเพลย์ลิสต์ของคุณ...</string>
+    <string name="library_add_to_playlist_empty">คุณยังไม่มีเพลย์ลิสต์ของตัวเอง\nสร้างเพลย์ลิสต์เพื่อเพิ่มเพลง</string>
+    <string name="library_playlist_form_create_title">สร้างเพลย์ลิสต์</string>
+    <string name="library_playlist_form_edit_title">แก้ไขเพลย์ลิสต์</string>
+    <string name="library_playlist_form_create">สร้าง</string>
+    <string name="library_playlist_form_name_label">ชื่อ</string>
+    <string name="library_playlist_form_name_placeholder">ชื่อเพลย์ลิสต์</string>
+    <string name="library_playlist_form_description_label">คำอธิบาย</string>
+    <string name="library_playlist_form_description_placeholder">คำอธิบาย (ไม่บังคับ)</string>
+    <string name="library_playlist_form_public">สาธารณะ</string>
+    <string name="library_playlist_form_public_description">ทุกคนสามารถเห็นเพลย์ลิสต์นี้</string>
+    <string name="library_playlist_form_collaborative">ทำร่วมกัน</string>
+    <string name="library_playlist_form_collaborative_description">ผู้อื่นสามารถเพิ่มเพลงลงในเพลย์ลิสต์นี้ได้</string>
+    <string name="library_playlist_form_cover_image">ภาพปก</string>
+    <string name="library_playlist_form_cover_content_description">ปกเพลย์ลิสต์</string>
+    <string name="library_playlist_form_no_image">ไม่มีภาพ</string>
+    <string name="library_playlist_form_change_image">เปลี่ยนภาพ</string>
+    <string name="library_playlist_form_pick_image">เลือกภาพ</string>
+
+    <!-- Plugin install / errors -->
+    <string name="plugin_action_install">ติดตั้ง</string>
+    <string name="plugin_action_replace">แทนที่</string>
+    <string name="plugin_error_plugin_json_missing">ไม่พบ plugin.json ในไฟล์ zip</string>
+    <string name="plugin_error_zipline_manifest_missing">ไม่พบ manifest.zipline.json ในไฟล์ zip</string>
+    <string name="plugin_error_invalid_plugin_json">รูปแบบ plugin.json ไม่ถูกต้อง: %1$s</string>
+    <string name="plugin_error_read_failed">อ่านปลั๊กอินไม่สำเร็จ: %1$s</string>
+    <string name="plugin_error_install_failed">ติดตั้งปลั๊กอินไม่สำเร็จ: %1$s</string>
+    <string name="plugin_error_update_needs_confirmation">มี %1$s เวอร์ชันใหม่กว่า โปรดยืนยันการอัปเดตก่อนติดตั้ง</string>
+    <string name="plugin_error_replace_needs_confirmation">%1$s ติดตั้งอยู่แล้ว โปรดยืนยันการแทนที่ก่อนติดตั้ง</string>
+    <string name="plugin_error_builtin_add">ปลั๊กอินในตัวรวมอยู่แล้วและไม่สามารถเพิ่มซ้ำได้</string>
+    <string name="plugin_error_builtin_remove">ไม่สามารถลบปลั๊กอินในตัวได้</string>
+    <string name="plugin_error_api_version_invalid">%1$s ระบุ apiVersion ไม่ถูกต้อง (%2$s) ต้องเป็น semantic versioning ที่เข้ากันได้กับ %3$s</string>
+    <string name="plugin_error_app_api_version_invalid">เวอร์ชัน API ปลั๊กอินของ Spotube %1$s ไม่ถูกต้อง</string>
+    <string name="plugin_error_api_incompatible">%1$s ใช้ API ปลั๊กอิน %2$s แต่ Spotube รองรับ API ปลั๊กอินแบบ breaking %3$s โปรดติดตั้งปลั๊กอินที่สร้างสำหรับ API เวอร์ชัน breaking เดียวกัน</string>
+
+    <!-- Plugin install prompts -->
+    <string name="plugin_prompt_incompatible_title">API ปลั๊กอินเข้ากันไม่ได้</string>
+    <string name="plugin_prompt_install_title">ติดตั้งปลั๊กอินหรือไม่?</string>
+    <string name="plugin_prompt_install_message">%1$s จะถูกเพิ่มลงในปลั๊กอินที่ติดตั้งไว้ของคุณ</string>
+    <string name="plugin_prompt_update_title">อัปเดตปลั๊กอินหรือไม่?</string>
+    <string name="plugin_prompt_update_message">มีการติดตั้งเวอร์ชันเก่ากว่าอยู่ (%1$s) อัปเดตเป็น %2$s หรือไม่?</string>
+    <string name="plugin_prompt_replace_title">แทนที่ปลั๊กอินที่ติดตั้งไว้หรือไม่?</string>
+    <string name="plugin_prompt_replace_invalid_incoming">%1$s ใช้ semantic version ที่ไม่ถูกต้อง (%2$s) จึงไม่สามารถเปรียบเทียบเป็นการอัปเดตได้ ต้องการแทนที่ปลั๊กอินที่ติดตั้งไว้ต่อไปหรือไม่?</string>
+    <string name="plugin_prompt_replace_invalid_installed">ไม่สามารถเปรียบเทียบเวอร์ชันที่ติดตั้งไว้ (%1$s) ด้วย semantic versioning ได้ แทนที่ด้วย %2$s หรือไม่?</string>
+    <string name="plugin_prompt_replace_same_version">เวอร์ชัน %1$s ติดตั้งอยู่แล้ว แทนที่ปลั๊กอินเดิมด้วยสำเนาที่ให้มาหรือไม่?</string>
+    <string name="plugin_prompt_replace_downgrade">เวอร์ชันที่ติดตั้งไว้ %1$s ใหม่กว่าเวอร์ชันที่ให้มา %2$s ต้องการแทนที่ต่อไปหรือไม่?</string>
+    <string name="plugin_prompt_replace_generic">แทนที่ปลั๊กอินที่ติดตั้งไว้ด้วยสำเนาที่ให้มาหรือไม่?</string>
+
+    <!-- Plugin info dialog -->
+    <string name="plugin_info_label_format">%1$s:</string>
+    <string name="plugin_info_version">เวอร์ชัน</string>
+    <string name="plugin_info_api_version">เวอร์ชัน API</string>
+    <string name="plugin_info_author">ผู้สร้าง</string>
+    <string name="plugin_info_license">สัญญาอนุญาต</string>
+    <string name="plugin_info_capabilities">สิทธิ์การเข้าถึง</string>
+    <string name="plugin_info_abilities">ความสามารถ</string>
+    <string name="plugin_info_repository">รีโพซิทอรี</string>
+    <string name="plugin_info_contact">ติดต่อ</string>
+    <string name="plugin_info_report_bugs">รายงานข้อบกพร่อง</string>
+    <string name="plugin_support_dialog_title">สนับสนุน %1$s</string>
+
+    <!-- Plugin discovery -->
+    <string name="plugin_discover_badge_official">ทางการ</string>
+    <string name="plugin_discover_badge_verified">ยืนยันแล้ว</string>
+    <string name="plugin_discover_stars_content_description">ดาวบน GitHub</string>
+    <string name="plugin_discover_repository_content_description">URL รีโพซิทอรี GitHub</string>
+
+    <!-- Plugin release install dialog -->
+    <string name="plugin_install_no_releases">ไม่พบรีลีส</string>
+    <string name="plugin_install_select_release_label">เลือกรีลีส</string>
+    <string name="plugin_install_select_release_placeholder">เลือกรีลีส</string>
+    <string name="plugin_install_prerelease">รุ่นทดสอบก่อนเปิดตัว</string>
+    <string name="plugin_install_release_notes">บันทึกประจำรุ่น</string>
+
+    <!-- App navigation -->
+    <string name="nav_home">หน้าแรก</string>
+    <string name="nav_search">ค้นหา</string>
+    <string name="nav_group_on_device">ในอุปกรณ์</string>
+    <string name="nav_group_connect">เชื่อมต่อ</string>
+    <string name="nav_devices">อุปกรณ์</string>
+
+    <!-- System tray (desktop) -->
+    <string name="tray_hide_window">ซ่อนหน้าต่าง</string>
+    <string name="tray_show_window">แสดงหน้าต่าง</string>
+    <string name="tray_next_track">เพลงถัดไป</string>
+    <string name="tray_previous_track">เพลงก่อนหน้า</string>
+    <string name="tray_shuffle">สุ่มเพลง</string>
+    <string name="tray_loop">เล่นซ้ำ</string>
+    <string name="tray_loop_off">เล่นซ้ำ: ปิด</string>
+    <string name="tray_loop_one">เล่นซ้ำ: เพลงเดียว</string>
+    <string name="tray_loop_all">เล่นซ้ำ: ทั้งหมด</string>
+    <string name="tray_volume">ระดับเสียง: %1$d%</string>
+    <string name="tray_volume_up">เพิ่มเสียง +</string>
+    <string name="tray_volume_down">ลดเสียง -</string>
+    <string name="tray_mute">ปิดเสียง</string>
+    <string name="tray_unmute">เปิดเสียง</string>
+    <string name="tray_like_track">ถูกใจเพลง</string>
+    <string name="tray_unlike_track">เลิกถูกใจเพลง</string>
+    <string name="tray_exit">ออก</string>
+
+    <!-- Desktop window controls -->
+    <string name="app_window_minimize">ย่อขนาด</string>
+    <string name="app_window_maximize">ขยายใหญ่สุด</string>
+    <string name="app_window_restore">คืนขนาด</string>
+    <string name="app_window_close">ปิด</string>
+
+    <!-- Android playback notification -->
+    <string name="notification_playback_channel_name">การเล่น</string>
+    <string name="notification_playback_channel_description">ตัวควบคุมการเล่นสื่อ</string>
+
+    <!-- Android Auto / media browser -->
+    <string name="media_browser_browse">เรียกดู</string>
+    <string name="media_browser_now_playing">กำลังเล่น</string>
+    <string name="media_browser_featured">แนะนำ</string>
+    <string name="media_browser_saved_tracks">เพลงที่บันทึกไว้</string>
+    <string name="media_browser_top_tracks">เพลงยอดนิยม</string>
+</resources>

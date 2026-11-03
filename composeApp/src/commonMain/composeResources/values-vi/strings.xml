@@ -1,0 +1,920 @@
+<!--
+  ~ Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="queue_title">Danh sách chờ</string>
+    <string name="queue_clear_queue">Xóa danh sách chờ</string>
+    <string name="queue_filter_queue">Lọc danh sách chờ...</string>
+    <string name="queue_no_queue_entries">Danh sách chờ trống</string>
+
+    <string name="search_placeholder">Tìm bài hát, nghệ sĩ, album...</string>
+    <string name="search_clear_history">Xóa toàn bộ lịch sử</string>
+    <string name="search_filter_placeholder">Tìm kiếm...</string>
+
+    <!-- Library toolbar -->
+    <string name="library_screen_title">Thư viện của bạn</string>
+    <string name="library_toolbar_compact_title">Thư viện</string>
+    <string name="library_tab_playlists">Danh sách phát</string>
+    <string name="library_tab_albums">Album</string>
+    <string name="library_tab_artists">Nghệ sĩ</string>
+    <string name="library_tab_local_tracks">Bài hát trên máy</string>
+    <string name="library_tab_downloads">Đã tải xuống</string>
+    <string name="library_filter_playlists">Tìm danh sách phát đã lưu…</string>
+    <string name="library_filter_albums">Tìm album đã lưu…</string>
+    <string name="library_filter_artists">Tìm nghệ sĩ đã lưu…</string>
+    <string name="library_filter_local_tracks">Tìm thư mục hoặc bài hát…</string>
+    <string name="library_action_search">Lọc thư viện</string>
+    <string name="library_action_close_search">Đóng bộ lọc</string>
+    <string name="library_action_create_playlist">Tạo danh sách phát</string>
+    <string name="library_action_refresh_local_tracks">Làm mới bài hát trên máy</string>
+    <string name="library_action_grid_view">Chuyển sang dạng lưới</string>
+    <string name="library_action_list_view">Chuyển sang dạng danh sách</string>
+    <string name="library_playlists_empty">Chưa có danh sách phát nào được lưu</string>
+    <string name="library_playlists_no_results">Không có danh sách phát nào khớp với “%1$s”</string>
+    <string name="library_albums_empty">Chưa có album nào được lưu</string>
+    <string name="library_albums_no_results">Không có album nào khớp với “%1$s”</string>
+    <string name="library_artists_empty">Chưa có nghệ sĩ nào được lưu</string>
+    <string name="library_artists_no_results">Không có nghệ sĩ nào khớp với “%1$s”</string>
+
+    <!-- Local media -->
+    <string name="library_local_folders">Thư mục</string>
+    <string name="library_local_folder">Thư mục</string>
+    <string name="library_local_summary">%1$s • %2$s</string>
+    <plurals name="library_local_tracks_count">
+        <item quantity="other">%1$d bài hát</item>
+    </plurals>
+    <plurals name="library_local_folders_count">
+        <item quantity="other">%1$d thư mục</item>
+    </plurals>
+    <string name="library_local_back">Quay lại thư mục</string>
+    <string name="library_local_play_folder">Phát thư mục</string>
+    <string name="library_local_permission_title">Cần quyền truy cập âm thanh</string>
+    <string name="library_local_permission_description">Cho phép truy cập âm thanh để duyệt nhạc trên thiết bị của bạn.</string>
+    <string name="library_local_grant_access">Cấp quyền</string>
+    <string name="library_local_empty_folders">Không tìm thấy thư mục nào trên máy</string>
+    <string name="library_local_empty_tracks">Thư mục này không có bài hát nào</string>
+    <string name="library_local_no_results">Không có thư mục hoặc bài hát nào khớp</string>
+    <string name="library_local_refresh_failed">Không thể làm mới nội dung trên máy</string>
+
+    <!-- Downloads -->
+    <string name="downloads_summary">%1$d đang tải • %2$d đã xong</string>
+    <string name="downloads_clear_completed">Xóa mục đã xong</string>
+    <string name="downloads_empty">Chưa có nội dung tải xuống</string>
+    <string name="downloads_status_downloading">Đang tải xuống %1$d%</string>
+    <string name="downloads_status_queued">Đang chờ</string>
+    <string name="downloads_status_completed">Đã xong</string>
+    <string name="downloads_status_cancelled">Đã hủy</string>
+    <string name="downloads_status_failed">Thất bại</string>
+    <string name="downloads_status_failed_error">Thất bại: %1$s</string>
+    <string name="downloads_action_cancel">Hủy tải xuống</string>
+    <string name="downloads_action_retry">Thử tải lại</string>
+    <string name="downloads_action_remove">Xóa mục tải xuống</string>
+
+    <!-- Shared media items -->
+    <string name="media_artist">Nghệ sĩ</string>
+    <string name="media_blacklisted">Đã chặn</string>
+    <string name="media_liked_tracks">Bài hát đã thích</string>
+    <string name="media_saved_songs">Bài hát bạn đã lưu</string>
+    <string name="media_unknown_artist">Nghệ sĩ không xác định</string>
+    <string name="media_preview_title">Tên bài hát</string>
+    <string name="media_preview_subtitle">Tên nghệ sĩ</string>
+
+    <string name="accessibility_selected">Đã chọn</string>
+
+    <string name="settings_screen_title">Cài đặt</string>
+
+    <string name="settings_section_plugins">Plugin</string>
+    <string name="settings_section_language_region">Ngôn ngữ và khu vực</string>
+    <string name="settings_section_appearance">Giao diện</string>
+    <string name="settings_section_playback">Phát lại</string>
+    <string name="settings_section_downloads">Tải xuống</string>
+    <string name="settings_section_caching">Bộ nhớ đệm</string>
+    <string name="settings_section_desktop">Máy tính</string>
+    <string name="settings_section_updates">Cập nhật</string>
+    <string name="settings_section_support">Ủng hộ</string>
+    <string name="settings_section_about">Giới thiệu</string>
+
+    <string name="common_close">Đóng</string>
+    <string name="common_save">Lưu</string>
+    <string name="common_cancel">Hủy</string>
+
+    <string name="settings_language_title">Ngôn ngữ</string>
+    <string name="settings_language_subtitle_current">Ngôn ngữ giao diện ứng dụng. Hiện tại: %1$s</string>
+    <string name="settings_language_system_default">Mặc định của hệ thống</string>
+    <string name="settings_country_title">Quốc gia</string>
+    <string name="settings_country_subtitle_current">Quốc gia dùng cho nội dung và tính khả dụng. Hiện tại: %1$s</string>
+    <string name="settings_option_name_and_code">%1$s (%2$s)</string>
+
+    <string name="settings_theme_title">Chủ đề</string>
+    <string name="settings_theme_subtitle_current">Chọn cách Spotube khớp với giao diện hệ thống. Hiện tại: %1$s</string>
+    <string name="settings_theme_light">Sáng</string>
+    <string name="settings_theme_dark">Tối</string>
+    <string name="settings_theme_system">Theo hệ thống</string>
+
+    <string name="settings_surface_theme_title">Bề mặt</string>
+    <string name="settings_surface_theme_subtitle_current">Chất liệu nền của ứng dụng. Hiện tại: %1$s</string>
+    <string name="settings_surface_watery">Nước</string>
+    <string name="settings_surface_icy">Băng</string>
+    <string name="settings_surface_chrome">Chrome</string>
+    <string name="settings_surface_acrylic">Acrylic</string>
+    <string name="settings_surface_glass">Kính</string>
+
+    <string name="settings_accent_title">Màu nhấn</string>
+    <string name="settings_accent_subtitle_current">Bảng màu hiện tại: %1$s</string>
+    <string name="settings_accent_dialog_title">Màu nhấn</string>
+    <string name="settings_accent_dialog_description">Chọn bảng màu nhấn và xem trước ở cả chủ đề sáng và tối.</string>
+    <string name="settings_preview_light">Sáng</string>
+    <string name="settings_preview_dark">Tối</string>
+    <string name="settings_preview_label">Xem trước</string>
+    <string name="settings_preview_button">Nút</string>
+    <string name="settings_accent_green_goblin">Xanh yêu tinh</string>
+    <string name="settings_accent_electric_violet">Tím điện</string>
+    <string name="settings_accent_oceanic_cyan">Lam đại dương</string>
+    <string name="settings_accent_sunset_orange">Cam hoàng hôn</string>
+    <string name="settings_accent_rose_garden">Vườn hồng</string>
+    <string name="settings_accent_midnight_blue">Xanh nửa đêm</string>
+    <string name="settings_accent_metallic_slate">Xám kim loại</string>
+
+    <string name="settings_appearance_title">Giao diện &amp; cảm nhận</string>
+    <string name="settings_appearance_subtitle_current">Chất liệu bề mặt và màu nhấn. Hiện tại: %1$s · %2$s</string>
+    <string name="settings_appearance_dialog_title">Giao diện &amp; cảm nhận</string>
+    <string name="settings_appearance_dialog_description">Chọn chất liệu bề mặt, sau đó chọn màu nhấn phù hợp. Mỗi lựa chọn đều là một sự kết hợp được tuyển chọn.</string>
+    <string name="settings_appearance_surface_label">Bề mặt</string>
+    <string name="settings_appearance_accent_label">Màu nhấn</string>
+    <string name="settings_preview_secondary">Phụ</string>
+
+    <string name="settings_palette_title">Bảng màu</string>
+    <string name="settings_palette_subtitle_current">Bảng màu nhấn Millennium. Hiện tại: %1$s</string>
+    <string name="settings_palette_dialog_title">Bảng màu</string>
+    <string name="settings_palette_dialog_description">Chọn bảng màu nhấn Millennium và xem trước ở chế độ sáng và tối.</string>
+    <string name="settings_palette_label">Bảng màu</string>
+    <string name="settings_appearance_subtitle_palette">Bảng màu Millennium và màu nhấn. Hiện tại: %1$s</string>
+    <string name="settings_palette_blue">Xanh lam</string>
+    <string name="settings_palette_orange">Cam</string>
+    <string name="settings_palette_lime">Xanh chanh</string>
+
+    <string name="settings_download_folder_title">Thư mục tải xuống tùy chỉnh</string>
+    <string name="settings_download_folder_current">Thư mục hiện tại: %1$s</string>
+    <string name="settings_download_folder_description">Để trống để dùng thư mục nhạc mặc định.</string>
+    <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
+    <string name="settings_local_media_folders_title">Thư mục nhạc trên máy</string>
+    <string name="settings_local_media_folders_subtitle_current">Thư mục tùy chỉnh để quét trên máy tính. Đã thêm: %1$d</string>
+    <string name="settings_local_media_folders_subtitle_empty">Chưa thêm thư mục tùy chỉnh nào</string>
+    <string name="settings_local_media_folders_description">Thư mục tùy chỉnh cho thư viện nhạc trên máy của bạn.</string>
+    <string name="settings_local_media_folders_manage">Quản lý</string>
+    <string name="settings_local_media_folders_add_action">Thêm thư mục</string>
+    <string name="settings_local_media_folders_remove_action">Xóa thư mục</string>
+    <string name="settings_local_media_folders_none_added">Chưa thêm thư mục tùy chỉnh nào.</string>
+    <string name="settings_local_media_folders_remove_named">Xóa %1$s khỏi danh sách quét</string>
+    <string name="settings_local_media_folders_automatic_both">Thư mục tải xuống và thư mục bộ nhớ đệm nhạc được tự động thêm vào.</string>
+    <string name="settings_local_media_folders_automatic_downloads">Thư mục tải xuống của bạn được tự động thêm vào.</string>
+    <string name="settings_local_media_folders_automatic_cache">Thư mục bộ nhớ đệm nhạc được tự động thêm vào.</string>
+    <string name="settings_local_media_folders_saving">Đang lưu…</string>
+    <string name="settings_local_media_folders_save_error">Không thể lưu thư mục. Các thay đổi của bạn vẫn còn đây; hãy thử lại.</string>
+    <plurals name="settings_local_media_folders_count">
+        <item quantity="other">%1$d thư mục</item>
+    </plurals>
+    <string name="settings_download_format_title">Định dạng nhạc tải xuống</string>
+    <string name="settings_download_format_subtitle_current">Codec và container ưu tiên khi tải xuống. Hiện tại: %1$s</string>
+    <string name="settings_download_quality_title">Chất lượng nhạc tải xuống</string>
+
+    <string name="settings_streaming_format_title">Định dạng nhạc phát trực tuyến</string>
+    <string name="settings_streaming_format_subtitle_current">Codec và container ưu tiên khi phát trực tuyến. Hiện tại: %1$s</string>
+    <string name="settings_streaming_quality_title">Chất lượng nhạc phát trực tuyến</string>
+    <string name="settings_subtitle_current">Hiện tại: %1$s</string>
+    <string name="settings_enable_music_caching_title">Bật bộ nhớ đệm nhạc</string>
+    <string name="settings_enable_music_caching_subtitle">Lưu âm thanh đã phát trực tuyến trên máy để phát lại nhanh hơn.</string>
+    <string name="settings_cache_folder_title">Thư mục bộ nhớ đệm</string>
+    <string name="settings_cache_folder_current">Hiện tại: %1$s</string>
+    <string name="settings_cache_folder_default">Hiện tại: bộ nhớ đệm mặc định của ứng dụng</string>
+    <string name="settings_cache_size_limit_title">Giới hạn dung lượng bộ nhớ đệm</string>
+    <string name="settings_cache_size_limit_unlimited">Không giới hạn</string>
+    <string name="settings_cache_size_limit_current">Giới hạn hiện tại: %1$d MB</string>
+    <string name="settings_cache_size_limit_description">Đặt dung lượng bộ nhớ đệm tối đa tính bằng MB. Nhập 0 hoặc để trống nếu không muốn giới hạn.</string>
+    <string name="settings_cache_size_limit_placeholder">500</string>
+    <string name="settings_error_cache_size_range">Dung lượng phải là 0 hoặc một số dương.</string>
+    <string name="settings_enable_endless_playback_title">Bật phát liên tục</string>
+    <string name="settings_enable_endless_playback_subtitle">Tiếp tục phát với các bài hát được đề xuất khi danh sách chờ kết thúc.</string>
+    <string name="settings_playback_port_title">Cổng máy chủ proxy phát lại</string>
+    <string name="settings_allow_remote_control_title">Cho phép điều khiển từ xa</string>
+    <string name="settings_allow_remote_control_subtitle">Cho phép các thiết bị khác trong cùng mạng điều khiển phát lại khi kết nối.</string>
+    <string name="settings_remote_device_name_title">Tên thiết bị điều khiển từ xa</string>
+    <string name="settings_remote_device_name_subtitle">Tên mà các thiết bị khác thấy khi tìm thấy thiết bị này. Hiện tại: %1$s</string>
+    <string name="settings_remote_device_name_description">Chọn một tên dễ nhận biết để hiển thị cho các thiết bị khác trong mạng khi chúng tìm thấy Spotube này.</string>
+    <string name="settings_remote_device_name_placeholder">VD: Spotube phòng khách</string>
+    <string name="settings_remote_device_name_default">tên máy chủ của thiết bị</string>
+    <string name="settings_playback_port_subtitle_current">Cổng được máy chủ proxy phát lại sử dụng. Hiện tại: %1$d</string>
+    <string name="settings_playback_port_description">Chọn một cổng từ 1 đến 65535.</string>
+    <string name="settings_playback_port_placeholder">14769</string>
+    <string name="settings_error_whole_number">Nhập một số nguyên hợp lệ.</string>
+    <string name="settings_error_port_range">Cổng phải nằm trong khoảng từ 1 đến 65535.</string>
+
+    <string name="settings_blacklist_title">Danh sách chặn</string>
+    <string name="settings_blacklist_subtitle">Quản lý bài hát và nghệ sĩ bị chặn</string>
+
+    <string name="settings_desktop_minimize_title">Thu nhỏ xuống khay hệ thống</string>
+    <string name="settings_desktop_minimize_subtitle">Giữ Spotube chạy trong khay hệ thống khi thu nhỏ cửa sổ.</string>
+    <string name="settings_desktop_discord_title">Discord Rich Presence</string>
+    <string name="settings_desktop_discord_subtitle">Hiển thị trạng thái đang phát trên Discord trên máy tính.</string>
+
+    <string name="settings_updates_auto_check_title">Tự động kiểm tra cập nhật</string>
+    <string name="settings_updates_auto_check_subtitle">Tìm các phiên bản Spotube mới trong nền.</string>
+
+    <string name="settings_plugins_manage_title">Quản lý plugin</string>
+    <string name="settings_plugins_manage_subtitle">Quản lý các plugin của bạn</string>
+    <string name="settings_plugins_default_ability_title">Plugin %1$s mặc định</string>
+    <string name="settings_plugins_ability_metadata">Siêu dữ liệu</string>
+    <string name="settings_plugins_ability_audio">Âm thanh</string>
+    <string name="settings_plugins_ability_lyrics">Lời bài hát</string>
+    <string name="settings_plugins_ability_scrobble">Scrobble</string>
+    <string name="settings_plugins_no_selection">Chưa chọn plugin</string>
+    <string name="settings_plugins_action_change">Thay đổi</string>
+    <string name="settings_plugins_action_select">Chọn</string>
+    <string name="settings_plugins_selected">Đã chọn</string>
+    <string name="settings_plugins_clear">Bỏ chọn</string>
+    <string name="settings_plugins_no_plugins">Không có plugin nào</string>
+    <string name="settings_plugins_plugin_content_description">Plugin %1$s</string>
+    <string name="settings_plugins_clear_content_description">Xóa</string>
+
+    <string name="plugin_configure_title">Cấu hình</string>
+    <string name="plugin_screen_title">Trình quản lý plugin</string>
+    <string name="plugin_error_enter_url">Vui lòng nhập URL</string>
+    <string name="plugin_error_url_scheme">URL phải bắt đầu bằng http:// hoặc https://</string>
+    <string name="plugin_error_download_failed">Không thể tải plugin xuống</string>
+    <string name="plugin_empty_title">Chưa cài đặt plugin nào</string>
+    <string name="plugin_empty_subtitle">Dán URL tải xuống hoặc chọn tệp ở trên.</string>
+    <plurals name="plugin_installed_plugins_count">
+        <item quantity="other">Đã cài đặt %1$d plugin</item>
+    </plurals>
+    <string name="plugin_install_section_title">Cài đặt plugin</string>
+    <string name="plugin_url_placeholder">https://example.com/plugin.smplug</string>
+    <string name="plugin_action_download">Tải xuống</string>
+    <string name="plugin_action_install_from_file">Cài đặt từ tệp (.smplug)</string>
+    <string name="plugin_state_active">Đang dùng</string>
+    <string name="plugin_version_label">v%1$s</string>
+    <string name="plugin_state_builtin">Tích hợp sẵn</string>
+    <string name="plugin_action_remove">Gỡ plugin</string>
+    <string name="plugin_action_login">Đăng nhập</string>
+    <string name="plugin_action_logout">Đăng xuất</string>
+    <string name="plugin_section_url_title">Tải xuống từ URL</string>
+    <string name="plugin_section_file_title">Cài đặt từ tệp</string>
+    <string name="plugin_section_install">Cài đặt</string>
+
+    <string name="plugin_permissions_author_version">• %1$s</string>
+    <string name="plugin_permissions_requested_title">Quyền được yêu cầu</string>
+    <string name="plugin_permissions_none">Plugin này không yêu cầu quyền đặc biệt nào.</string>
+    <string name="plugin_permissions_compare_title">Đã cài đặt và bản cung cấp</string>
+    <string name="plugin_permissions_installed_label">Đã cài đặt</string>
+    <string name="plugin_permissions_supplied_label">Bản cung cấp</string>
+    <string name="plugin_permissions_api_diff">API %1$s → %2$s</string>
+    <string name="plugin_permissions_capability_storage_title">Lưu trữ lâu dài</string>
+    <string name="plugin_permissions_capability_storage_desc">Đọc và ghi dữ liệu vào ổ đĩa</string>
+    <string name="plugin_permissions_capability_network_title">Yêu cầu mạng</string>
+    <string name="plugin_permissions_capability_network_desc">Gửi và nhận dữ liệu qua internet</string>
+    <string name="plugin_permissions_capability_webview_title">WebView</string>
+    <string name="plugin_permissions_capability_webview_desc">Hiển thị nội dung web trong ứng dụng</string>
+    <string name="settings_section_jam">Jam nhóm</string>
+    <string name="settings_jam_server_test">Kiểm tra kết nối</string>
+    <string name="settings_jam_server_testing">Đang kiểm tra…</string>
+    <string name="settings_jam_server_test_ok">Đã kết nối trong %1$d ms</string>
+    <string name="settings_jam_server_test_fail">Thất bại: %1$s</string>
+    <string name="settings_jam_section_connection">Kết nối</string>
+    <string name="settings_jam_section_diagnostics">Chẩn đoán</string>
+
+    <!-- Group Jam -->
+    <string name="jam_screen_title">Jam nhóm</string>
+    <string name="jam_setup_create_tab">Tạo</string>
+    <string name="jam_setup_join_tab">Tham gia</string>
+    <string name="jam_setup_create_hint">Tạo phòng, sau đó chia sẻ mã phòng với bạn bè.</string>
+    <string name="jam_setup_create_button">Tạo phòng</string>
+    <string name="jam_setup_join_button">Vào phòng</string>
+    <string name="jam_setup_working">Đang kết nối…</string>
+    <string name="jam_setup_code_label">Mã phòng</string>
+    <string name="jam_setup_code_placeholder">ABC123</string>
+    <string name="jam_session_connected">Đã kết nối</string>
+    <string name="jam_session_connecting">Đang kết nối lại…</string>
+    <string name="jam_invite_copy">Sao chép mã</string>
+    <string name="jam_invite_copied">Đã sao chép!</string>
+    <string name="jam_invite_share">Chia sẻ</string>
+    <string name="jam_participants_heading">Người tham gia (%1$d)</string>
+    <string name="jam_participants_host">Chủ phòng</string>
+    <string name="jam_participants_guest">Người nghe</string>
+    <string name="jam_participants_waiting">Đang chờ người nghe…</string>
+    <string name="jam_participants_remove">Xóa</string>
+    <string name="jam_participants_ban">Cấm</string>
+    <string name="jam_participants_manage">Quản lý</string>
+    <string name="jam_session_leave">Rời phòng</string>
+    <string name="jam_error_title">Không thể kết nối</string>
+    <string name="jam_error_dismiss">Bỏ qua</string>
+    <string name="jam_error_create">Không thể tạo phiên Jam</string>
+    <string name="jam_error_join">Không thể tham gia phiên Jam</string>
+    <string name="jam_error_invalid_code">Nhập mã phòng gồm sáu ký tự chữ và số.</string>
+    <string name="jam_share_message">Tham gia Jam Spotube của mình với mã: %1$s</string>
+    <string name="settings_jam_server_title">Máy chủ phòng</string>
+    <string name="settings_jam_server_url">URL máy chủ</string>
+    <string name="settings_jam_server_url_invalid">Nhập URL bắt đầu bằng https://</string>
+    <string name="settings_jam_server_diagnostics_subtitle">Kiểm tra máy chủ phòng trước khi tạo phòng.</string>
+    <string name="settings_jam_server_note">Jam dùng máy chủ phòng miễn phí của Spotube. Để tự lưu trữ, hãy triển khai máy chủ từ github.com/team-spotube/jam-server rồi nhập URL của nó.</string>
+    <string name="settings_jam_section_you">Bạn</string>
+    <string name="jam_connection_host">Máy chủ: %1$s</string>
+    <string name="jam_connection_missing">Đặt máy chủ phòng trong Cài đặt để tạo hoặc tham gia phòng.</string>
+    <string name="jam_connection_settings">Cài đặt máy chủ</string>
+    <string name="jam_participants_you">%1$s (bạn)</string>
+    <string name="jam_name_title">Tên của bạn</string>
+    <string name="jam_name_subtitle">Mọi người trong jam thấy bạn là %1$s</string>
+    <string name="jam_name_description">Hiển thị cho mọi người trong jam. Để trống để dùng %1$s. Tên mới sẽ áp dụng từ lần tới bạn tạo hoặc tham gia phòng.</string>
+    <string name="jam_name_too_long">Dùng tối đa %1$d ký tự.</string>
+    <string name="jam_error_no_server">Chưa cấu hình máy chủ jam</string>
+    <string name="jam_error_server_unreachable">Không kết nối được máy chủ jam. Hãy kiểm tra mạng hoặc URL máy chủ trong Cài đặt → Jam nhóm.</string>
+    <string name="jam_error_server_incompatible">Máy chủ jam đang chạy phiên bản không tương thích.</string>
+    <string name="jam_error_room_not_found">Không có phòng nào với mã này. Hãy kiểm tra và thử lại.</string>
+    <string name="jam_error_room_full">Phòng này đã đầy.</string>
+    <string name="jam_error_banned">Chủ phòng đã cấm bạn khỏi phòng này.</string>
+    <string name="jam_error_kicked">Chủ phòng đã xóa bạn khỏi phòng.</string>
+    <string name="jam_error_replaced">Phòng này đã được mở lại trên thiết bị này nên kết nối này đã bị đóng.</string>
+
+    <string name="player_go_to_album">Đi tới album</string>
+    <string name="player_sleep_timer">Hẹn giờ tắt</string>
+    <string name="player_track_details">Chi tiết bài hát</string>
+    <string name="player_play_content_description">Phát</string>
+    <string name="player_pause_content_description">Tạm dừng</string>
+    <string name="player_nothing_playing">Không có gì đang phát</string>
+    <string name="player_add_to_queue_content_description">Thêm vào danh sách chờ</string>
+
+    <string name="update_action_ignore">Bỏ qua</string>
+    <string name="update_action_update">Cập nhật</string>
+    <string name="app_update_dialog_title">Đã có Spotube %1$s</string>
+    <string name="app_update_dialog_no_notes">Xem có gì mới trong bản phát hành này trên trang tải xuống Spotube.</string>
+    <string name="plugin_update_dialog_title">Đã có %1$s %2$s</string>
+    <string name="plugin_update_dialog_current_version">Đang cài đặt: %1$s</string>
+    <string name="plugin_update_dialog_no_notes">Xem có gì mới trong bản cập nhật này trên trang của plugin.</string>
+
+    <string name="welcome_skip">Bỏ qua</string>
+    <string name="welcome_next">Tiếp</string>
+    <string name="welcome_back">Quay lại</string>
+    <string name="welcome_get_started">Bắt đầu</string>
+    <string name="welcome_app_name">Spotube</string>
+    <string name="welcome_brand_freedom">Âm nhạc, không ràng buộc.</string>
+    <string name="welcome_brand_quiet_description">Trình phát mã nguồn mở cho cả thế giới âm nhạc.\nTùy bạn khám phá. Tùy bạn biến nó thành của riêng mình.</string>
+    <string name="welcome_donate_quiet_title">Giúp dự án này tiếp tục sống.</string>
+    <string name="welcome_donate_letter">Spotube được tạo ra bởi con người, không phải một doanh nghiệp thu phí thuê bao. Nếu Spotube trở thành một phần cuộc sống hằng ngày của bạn, một chút ủng hộ sẽ giúp chúng tôi chăm chút nó xứng đáng hơn.\n\nCảm ơn bạn đã dành chỗ cho phần mềm độc lập.</string>
+    <string name="welcome_plugins_setup_guide">Bắt đầu với một plugin danh mục để tìm bài hát và danh sách phát. Chọn một plugin âm thanh để phát chúng. Lời bài hát và lịch sử nghe là tùy chọn. Hãy khám phá plugin bên dưới, xem lại quyền của nó, cài đặt rồi chọn nó tại đây.</string>
+    <string name="welcome_plugins_discover">Khám phá plugin</string>
+    <string name="welcome_plugins_sources">Nguồn của bạn</string>
+    <string name="welcome_plugins_retry">Thử lại</string>
+    <string name="welcome_plugins_more">Thêm plugin</string>
+    <string name="welcome_plugins_discovery_empty">Không tìm thấy plugin mới. Bạn cũng có thể cài đặt từ liên kết hoặc tệp .smplug ở trên.</string>
+    <string name="welcome_plugins_discovery_error">Hiện không thể khám phá plugin. Hãy thử lại hoặc cài đặt từ liên kết hay tệp.</string>
+    <string name="welcome_step_welcome">Chào mừng</string>
+    <string name="welcome_step_support">Ủng hộ</string>
+    <string name="welcome_step_plugins">Plugin</string>
+    <string name="welcome_step_guide">Hướng dẫn</string>
+
+    <string name="welcome_guide_title">Cách dùng Spotube</string>
+    <string name="welcome_guide_subtitle">Bốn bước nhanh là bạn đã có thể nghe nhạc.</string>
+    <string name="welcome_guide_signin_title">Đăng nhập</string>
+    <string name="welcome_guide_signin_desc">Kết nối tài khoản hoặc chọn plugin danh mục của riêng bạn.</string>
+    <string name="welcome_guide_search_title">Tìm kiếm và phát</string>
+    <string name="welcome_guide_search_desc">Tìm bất kỳ bài hát, album hay nghệ sĩ nào rồi nhấn phát.</string>
+    <string name="welcome_guide_offline_title">Nghe ngoại tuyến</string>
+    <string name="welcome_guide_offline_desc">Tải bài hát xuống để tiếp tục nghe khi không có kết nối.</string>
+    <string name="welcome_guide_lyrics_title">Theo dõi lời bài hát</string>
+    <string name="welcome_guide_lyrics_desc">Mở lời bài hát đồng bộ từ trình phát khi bài hát đang phát.</string>
+
+    <!-- Page 1: branding -->
+    <string name="welcome_brand_tagline">Âm nhạc của bạn. Nguồn của bạn. Luật của bạn.</string>
+    <string name="welcome_brand_subtitle">Trình phát nhạc miễn phí, mã nguồn mở, được xây dựng bởi một cộng đồng yêu âm nhạc.</string>
+    <string name="welcome_brand_chip_open_source">Mã nguồn mở</string>
+    <string name="welcome_brand_chip_no_ads">Không quảng cáo</string>
+    <string name="welcome_brand_chip_no_tracking">Không thu thập dữ liệu</string>
+    <string name="welcome_brand_chip_plugin_powered">Vận hành bằng plugin</string>
+    <string name="welcome_lets_go">Bắt đầu thôi</string>
+
+    <!-- Page 2: donations -->
+    <string name="welcome_donate_eyebrow">Người ủng hộ giúp chúng tôi tiếp bước</string>
+    <string name="welcome_donate_title">Tạo nên bằng đam mê. Duy trì nhờ bạn.</string>
+    <string name="welcome_donate_message">Spotube miễn phí 100%, tự do và mã nguồn mở — không quảng cáo, không thuê bao, không theo dõi. Mọi tính năng tồn tại là nhờ những người như bạn đã chọn giúp mã nguồn tiếp tục phát triển.</string>
+    <string name="welcome_donate_patreon_title">Patreon</string>
+    <string name="welcome_donate_patreon_tag">Tài trợ hằng tháng</string>
+    <string name="welcome_donate_patreon_subtitle">Hỗ trợ phát triển và hạ tầng lâu dài</string>
+    <string name="welcome_donate_bmac_title">Buy Me a Coffee</string>
+    <string name="welcome_donate_bmac_tag">Một ly cà phê</string>
+    <string name="welcome_donate_bmac_subtitle">Tiếp sức cho một buổi code đêm khuya bằng một khoản tip nhỏ</string>
+    <string name="welcome_donate_opencollective_title">Open Collective</string>
+    <string name="welcome_donate_opencollective_tag">Quỹ cộng đồng</string>
+    <string name="welcome_donate_opencollective_subtitle">Hỗ trợ tài chính minh bạch, do cộng đồng quản lý</string>
+    <string name="welcome_donate_thanks">Từ tận đáy lòng, cảm ơn bạn đã tin vào âm nhạc mở.</string>
+    <string name="welcome_donate_optional">Ủng hộ hoàn toàn là tùy chọn — Spotube vẫn luôn miễn phí.</string>
+    <string name="welcome_donate_action">Tài trợ</string>
+    <string name="welcome_donate_open_content_description">Mở %1$s</string>
+
+    <!-- Support / donations -->
+    <string name="support_button_label">Ủng hộ Spotube</string>
+    <string name="support_dialog_title">Ủng hộ Spotube</string>
+    <string name="support_dialog_message">Spotube miễn phí, tự do và mã nguồn mở — không quảng cáo, không thuê bao, không theo dõi. Nếu Spotube mang lại niềm vui cho bạn, hãy cân nhắc ủng hộ dự án.</string>
+    <string name="support_dialog_reminder_hint">Bạn có thể tắt lời nhắc này trong Cài đặt → Ủng hộ.</string>
+    <string name="support_dialog_dismiss">Để sau</string>
+    <string name="settings_support_reminders_title">Lời nhắc ủng hộ</string>
+    <string name="settings_support_reminders_subtitle">Hiển thị lời nhắc nhẹ nhàng về việc ủng hộ dự án mỗi 7 ngày.</string>
+
+    <!-- Page 3: plugins -->
+    <string name="welcome_plugins_eyebrow">Kiến trúc mô-đun</string>
+    <string name="welcome_plugins_title">Chọn nơi lấy nhạc của bạn.</string>
+    <string name="welcome_plugins_subtitle">Spotube tách riêng việc khám phá danh mục, phát âm thanh trực tuyến và lời bài hát đồng bộ. Cấu hình các engine bên dưới hoặc chuyển đổi bất cứ lúc nào.</string>
+    <string name="welcome_plugins_metadata_title">Engine siêu dữ liệu</string>
+    <string name="welcome_plugins_metadata_description">Cung cấp khám phá nhạc, tìm kiếm, danh sách bài hát và danh sách phát.</string>
+    <string name="welcome_plugins_audio_title">Engine âm thanh</string>
+    <string name="welcome_plugins_audio_description">Lấy và giải mã luồng âm thanh để phát.</string>
+    <string name="welcome_plugins_lyrics_title">Engine lời bài hát</string>
+    <string name="welcome_plugins_lyrics_description">Truyền lời bài hát karaoke đồng bộ theo thời gian thực.</string>
+    <string name="welcome_plugins_scrobble_title">Engine scrobble</string>
+    <string name="welcome_plugins_scrobble_description">Ghi lại lịch sử nghe lên Last.fm hoặc ListenBrainz.</string>
+    <string name="welcome_plugins_badge_active">Đang dùng</string>
+    <string name="welcome_plugins_badge_builtin">Tích hợp sẵn</string>
+    <string name="welcome_plugins_badge_ready">Sẵn sàng</string>
+    <string name="welcome_plugins_badge_optional">Tùy chọn</string>
+    <string name="welcome_plugins_none_selected">Chọn một engine</string>
+    <string name="welcome_plugins_installed_section">Engine đã cài đặt</string>
+    <string name="welcome_plugins_set_default">Đặt làm mặc định</string>
+    <string name="welcome_plugins_builtin_note">NewPipe YouTube và LRCLib Lyrics được tích hợp sẵn và có thể phát ngay.</string>
+    <string name="welcome_plugins_tip">Quản lý hoặc thêm plugin cộng đồng bất cứ lúc nào trong Cài đặt → Plugin.</string>
+
+    <!-- Page 4: how it works -->
+    <string name="welcome_how_eyebrow">Kiến trúc cổ điển hiện đại</string>
+    <string name="welcome_how_title">Hi-Fi thuần túy, không trung gian</string>
+    <string name="welcome_how_subtitle">Đây là cách Spotube điều phối việc phát nhạc phi tập trung ngay trên máy của bạn.</string>
+    <string name="welcome_how_status_badge">NGANG HÀNG TRỰC TIẾP • 256 KBPS OPUS</string>
+    <string name="welcome_how_mockup_title">Giờ xanh</string>
+    <string name="welcome_how_mockup_artist">Spotube · minh họa trình phát</string>
+    <string name="welcome_how_mockup_lyric">Một chút âm nhạc cho những khoảnh khắc xen giữa.</string>
+    <string name="welcome_how_step_search_title">1. Khám phá phi tập trung</string>
+    <string name="welcome_how_step_search_desc">Truy vấn được gửi thẳng tới plugin danh mục bạn chọn. Spotube không bao giờ lập hồ sơ sở thích của bạn.</string>
+    <string name="welcome_how_step_stream_title">2. Phân giải luồng trực tiếp</string>
+    <string name="welcome_how_step_stream_desc">Âm thanh được truyền trực tiếp từ máy chủ nội dung tới máy của bạn. Không qua proxy, không thu thập dữ liệu từ xa.</string>
+    <string name="welcome_how_step_playback_title">3. DSP &amp; phát lại cục bộ</string>
+    <string name="welcome_how_step_playback_desc">Giải mã và lưu đệm cục bộ với bộ chỉnh âm và tùy chọn tải xuống ngoại tuyến.</string>
+    <string name="welcome_how_step_lyrics_title">4. Lời bài hát đồng bộ &amp; Jam</string>
+    <string name="welcome_how_step_lyrics_desc">Lời karaoke bám theo thời điểm phát, cùng với điều khiển từ xa qua LAN và Jam nhóm.</string>
+    <string name="welcome_how_footer">Không có máy chủ trung gian. Việc phát nhạc diễn ra ngay trên thiết bị của bạn — riêng tư từ thiết kế.</string>
+
+    <!-- Devices: play destination picker -->
+    <string name="devices_destination_title">Chọn thiết bị</string>
+    <string name="devices_destination_prompt">%1$s: “%2$s”</string>
+    <string name="devices_destination_action_play">Phát</string>
+    <string name="devices_destination_action_add_to_queue">Thêm vào danh sách chờ</string>
+    <string name="devices_destination_action_play_next">Phát tiếp theo</string>
+    <string name="devices_destination_this_device">Thiết bị này</string>
+    <string name="devices_destination_this_device_subtitle">Trên thiết bị này</string>
+    <string name="devices_destination_remote_device">Thiết bị từ xa</string>
+    <string name="devices_destination_remote_device_host">Thiết bị từ xa (%1$s)</string>
+    <string name="devices_destination_remote_subtitle">Trên thiết bị đã kết nối</string>
+
+    <!-- Devices: connection errors -->
+    <string name="devices_error_connection_failed">Kết nối thất bại</string>
+    <string name="devices_error_connection_lost">Mất kết nối</string>
+    <string name="devices_error_send_failed">Gửi thất bại</string>
+    <string name="devices_error_discovery_failed">Tìm thiết bị thất bại: %1$s</string>
+    <string name="devices_error_connect_failed">Không thể kết nối: %1$s</string>
+
+    <!-- Devices: discovery screen -->
+    <string name="devices_title">Thiết bị</string>
+    <string name="devices_refresh">Làm mới</string>
+    <string name="devices_disconnect">Ngắt kết nối</string>
+    <string name="devices_connecting">Đang kết nối...</string>
+    <string name="devices_searching">Đang tìm thiết bị trong mạng...</string>
+    <string name="devices_empty">Không tìm thấy thiết bị nào</string>
+    <string name="devices_empty_hint">Hãy đảm bảo thiết bị kia đã bật \"Cho phép điều khiển từ xa\" trong cài đặt.</string>
+    <string name="devices_unknown_device">Thiết bị không xác định</string>
+    <string name="devices_resolving">Đang phân giải...</string>
+
+    <!-- Devices: remote control screen -->
+    <string name="devices_remote_title">Điều khiển từ xa</string>
+    <string name="devices_remote_disconnected">Đã ngắt kết nối</string>
+    <string name="devices_remote_connection_error">Lỗi kết nối: %1$s</string>
+    <string name="devices_remote_unknown_track">Bài hát không xác định</string>
+    <string name="devices_remote_unknown_artist">Nghệ sĩ không xác định</string>
+    <string name="devices_remote_volume">Âm lượng</string>
+    <string name="devices_remote_remove_from_queue">Xóa khỏi danh sách chờ</string>
+    <string name="devices_remote_more_options">Tùy chọn khác</string>
+
+    <!-- Group Jam: play destination picker -->
+    <string name="jam_destination_title">Phát ở đâu?</string>
+    <string name="jam_destination_message">Bạn đang có một phiên Jam. Chọn nơi phát bộ sưu tập này.</string>
+    <string name="jam_destination_play_here">Phát tại đây</string>
+    <string name="jam_destination_suggest">Đề xuất cho Jam</string>
+
+    <!-- Group Jam: connection errors -->
+    <string name="jam_error_connection_failed">Kết nối thất bại</string>
+    <string name="jam_error_connection_lost">Mất kết nối</string>
+
+
+    <!-- Group Jam: queue snackbar -->
+    <string name="jam_queue_added_track">Đã thêm vào danh sách chờ của Jam</string>
+    <plurals name="jam_queue_added_tracks">
+        <item quantity="other">Đã thêm %1$d bài hát vào danh sách chờ của Jam</item>
+    </plurals>
+
+    <!-- Remote control: connection request dialog -->
+    <string name="remote_request_title">Yêu cầu điều khiển từ xa</string>
+    <string name="remote_request_message">\"%1$s\" muốn điều khiển việc phát trên thiết bị này.</string>
+    <string name="remote_request_deny">Từ chối</string>
+    <string name="remote_request_allow">Cho phép</string>
+    <string name="remote_request_allow_always">Luôn cho phép</string>
+
+    <!-- Search -->
+    <string name="search_results_title">Kết quả tìm kiếm</string>
+    <string name="search_tab_all">Tất cả</string>
+    <string name="search_section_tracks">Bài hát</string>
+    <string name="search_section_users">Người dùng</string>
+    <string name="search_no_search_types">Không có loại tìm kiếm nào</string>
+    <string name="search_start_typing">Nhập để bắt đầu tìm kiếm</string>
+    <string name="search_start_typing_tracks">Nhập để bắt đầu tìm bài hát</string>
+    <string name="search_no_results">Không tìm thấy kết quả</string>
+    <string name="search_see_all">Xem tất cả</string>
+    <string name="search_searching">Đang tìm kiếm</string>
+    <string name="search_loading_tracks">Đang tải bài hát...</string>
+    <string name="search_loading_albums">Đang tải album...</string>
+    <string name="search_loading_artists">Đang tải nghệ sĩ...</string>
+    <string name="search_loading_playlists">Đang tải danh sách phát...</string>
+    <string name="search_loading_users">Đang tải người dùng...</string>
+    <string name="search_no_albums">Không tìm thấy album nào</string>
+    <string name="search_no_artists">Không tìm thấy nghệ sĩ nào</string>
+    <string name="search_no_playlists">Không tìm thấy danh sách phát nào</string>
+    <string name="search_no_users">Không tìm thấy người dùng nào</string>
+    <string name="search_warm_crates">Đang lục tìm kho đĩa...</string>
+    <string name="search_warm_cosmos">Đang tìm khắp vũ trụ...</string>
+    <string name="search_warm_speakers">Đang làm nóng loa...</string>
+    <string name="search_warm_vinyl">Đang phủi bụi đĩa than...</string>
+    <string name="search_warm_music_gods">Đang hỏi ý các vị thần âm nhạc...</string>
+    <string name="search_warm_antennas">Đang dò ăng-ten...</string>
+    <string name="search_warm_records">Đang lật giở các đĩa nhạc...</string>
+    <string name="search_error_capabilities">Không thể tải khả năng tìm kiếm</string>
+    <string name="search_error_search">Tìm kiếm thất bại</string>
+    <string name="search_error_tracks">Không thể tìm bài hát</string>
+    <string name="search_error_albums">Không thể tìm album</string>
+    <string name="search_error_artists">Không thể tìm nghệ sĩ</string>
+    <string name="search_error_playlists">Không thể tìm danh sách phát</string>
+    <string name="search_error_users">Không thể tìm người dùng</string>
+
+    <!-- Home -->
+    <string name="home_title_browse">Duyệt</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_mode_synced">Đồng bộ</string>
+    <string name="lyrics_mode_plain">Thường</string>
+    <string name="lyrics_no_synced">Không có lời bài hát đồng bộ</string>
+    <string name="lyrics_no_plain">Không có lời bài hát</string>
+
+    <!-- Settings: audio format/quality labels -->
+    <string name="settings_audio_format_label">%1$s trong %2$s</string>
+    <string name="settings_audio_quality_lossy">%1$d kbps</string>
+    <string name="settings_audio_quality_lossless">%1$s kHz • %2$d kênh</string>
+    <string name="search_error_no_metadata_plugin">Chưa chọn plugin siêu dữ liệu</string>
+
+    <!-- Common -->
+    <string name="common_back">Quay lại</string>
+    <string name="common_retry">Thử lại</string>
+    <string name="common_close_dialog">Đóng hộp thoại</string>
+    <string name="common_loading">Đang tải...</string>
+    <string name="common_unknown">Không xác định</string>
+    <string name="common_unknown_error">Lỗi không xác định</string>
+
+    <!-- Media cards -->
+    <string name="media_user">Người dùng</string>
+    <string name="media_playlist">Danh sách phát</string>
+
+    <!-- Error display -->
+    <string name="error_title">Chúng tôi thật sự xin lỗi</string>
+    <string name="error_description">Đã có sự cố xảy ra. Trải nghiệm của bạn rất quan trọng với chúng tôi và chúng tôi đang cố gắng hết sức để khắc phục. Vui lòng thử lại hoặc xem chi tiết lỗi bên dưới.</string>
+    <string name="error_details">Chi tiết lỗi</string>
+    <string name="error_copy_to_clipboard">Sao chép vào bộ nhớ tạm</string>
+    <string name="error_view_full_log">Xem nhật ký đầy đủ</string>
+    <string name="error_full_log_title">Nhật ký lỗi đầy đủ</string>
+
+    <!-- Collection details -->
+    <string name="collection_details_shuffle">Phát ngẫu nhiên</string>
+    <string name="collection_details_shuffle_play">Phát ngẫu nhiên</string>
+    <string name="collection_details_follow">Theo dõi</string>
+    <string name="collection_details_unfollow">Bỏ theo dõi</string>
+    <string name="collection_details_edit_playlist">Sửa danh sách phát</string>
+    <string name="collection_details_by_owner">Của %1$s</string>
+
+    <!-- Track options -->
+    <string name="track_options_title">Tùy chọn bài hát</string>
+    <string name="track_options_add_to_jam">Thêm vào Jam</string>
+    <string name="track_options_start_radio">Phát radio</string>
+    <string name="track_options_play_next">Phát tiếp theo</string>
+    <string name="track_options_move_to_next">Chuyển lên phát tiếp theo</string>
+    <string name="track_options_remove_from_queue">Xóa khỏi danh sách chờ</string>
+    <string name="track_options_remove_from_favorites">Xóa khỏi mục yêu thích</string>
+    <string name="track_options_save_as_favorite">Lưu vào mục yêu thích</string>
+    <string name="track_options_add_to_playlist">Thêm vào danh sách phát</string>
+    <string name="track_options_download">Tải xuống</string>
+    <string name="track_options_share">Chia sẻ</string>
+
+    <!-- Track list -->
+    <string name="track_list_sort_original">Mặc định</string>
+    <string name="track_list_sort_title">Tên</string>
+    <string name="track_list_sort_artist">Nghệ sĩ</string>
+    <string name="track_list_sort_album">Album</string>
+    <string name="track_list_sort_duration">Thời lượng</string>
+    <string name="track_list_sort">Sắp xếp</string>
+    <string name="track_list_no_tracks">Không tìm thấy bài hát nào</string>
+    <string name="track_list_filter_placeholder">Lọc</string>
+    <string name="track_list_bulk_actions">Thao tác hàng loạt</string>
+    <string name="track_list_download_all">Tải xuống tất cả</string>
+    <string name="track_list_download_count">Tải xuống %1$d</string>
+    <string name="track_list_add_all_to_queue">Thêm tất cả vào danh sách chờ</string>
+    <string name="track_list_add_count_to_queue">Thêm %1$d vào danh sách chờ</string>
+    <string name="track_list_play_all_next">Phát tất cả tiếp theo</string>
+    <string name="track_list_play_count_next">Phát %1$d bài tiếp theo</string>
+    <string name="track_list_add_all_to_playlist">Thêm tất cả vào danh sách phát</string>
+    <string name="track_list_add_count_to_playlist">Thêm %1$d vào danh sách phát</string>
+    <string name="track_list_add_all_to_jam">Thêm tất cả vào Jam</string>
+    <string name="track_list_add_count_to_jam">Thêm %1$d vào Jam</string>
+    <string name="track_list_more_artists">+%1$d người khác</string>
+
+    <!-- WebView -->
+    <string name="webview_no_url">Không có URL để tải</string>
+    <string name="webview_go_back">Quay lại trang trước</string>
+    <string name="webview_go_forward">Đi tới trang sau</string>
+
+    <!-- Blacklist -->
+    <string name="blacklist_filter_placeholder">Lọc danh sách chặn...</string>
+    <string name="blacklist_empty">Không có mục nào bị chặn</string>
+    <string name="blacklist_no_results">Không có mục bị chặn nào khớp với \'%1$s\'</string>
+    <string name="blacklist_section_tracks">Bài hát</string>
+    <string name="blacklist_item_track">Bài hát</string>
+    <string name="blacklist_add">Thêm vào danh sách chặn</string>
+    <string name="blacklist_remove">Xóa khỏi danh sách chặn</string>
+
+    <!-- Downloads -->
+    <string name="downloads_error_no_metadata">Không có siêu dữ liệu bài hát</string>
+    <string name="downloads_error_stream_unresolved_short">Không thể phân giải URL luồng</string>
+    <string name="downloads_error_stream_unresolved">Không thể phân giải URL luồng. Hãy thử phát bài hát trước.</string>
+
+    <!-- Saved tracks -->
+    <string name="saved_tracks_title">Bài hát đã lưu</string>
+    <string name="saved_tracks_owner_you">Bạn</string>
+
+    <!-- Artist -->
+    <string name="artist_following">Đang theo dõi</string>
+    <string name="artist_top_tracks">Bài hát hàng đầu</string>
+    <string name="artist_play_top_tracks">Phát bài hát hàng đầu</string>
+    <string name="artist_add_top_tracks_to_queue">Thêm bài hát hàng đầu vào danh sách chờ</string>
+    <string name="artist_related_artists">Nghệ sĩ liên quan</string>
+    <string name="artist_featured_playlists">Danh sách phát nổi bật</string>
+    <string name="artist_error_load_failed">Không thể tải thông tin nghệ sĩ</string>
+    <string name="artist_followers_unavailable">Không có thông tin người theo dõi</string>
+    <string name="artist_followers_thousands">%1$s N người theo dõi</string>
+    <string name="artist_followers_millions">%1$s Tr người theo dõi</string>
+    <string name="artist_followers_billions">%1$s T người theo dõi</string>
+    <plurals name="artist_followers_count">
+        <item quantity="other">%1$d người theo dõi</item>
+    </plurals>
+
+    <!-- Player -->
+    <string name="player_like_content_description">Thích</string>
+    <string name="player_unlike_content_description">Bỏ thích</string>
+    <string name="player_fallback_title">Tên bài hát trống</string>
+    <string name="player_fallback_artists">Nghệ sĩ trống</string>
+    <string name="player_unknown_album">Album không xác định</string>
+    <string name="player_seek_label">Tua</string>
+    <string name="player_volume_label">Âm lượng</string>
+    <string name="player_enable_shuffle_content_description">Bật phát ngẫu nhiên</string>
+    <string name="player_disable_shuffle_content_description">Tắt phát ngẫu nhiên</string>
+    <string name="player_previous_content_description">Trước</string>
+    <string name="player_next_content_description">Tiếp</string>
+    <string name="player_play_or_pause_content_description">Phát hoặc tạm dừng</string>
+    <string name="player_loop_mode_none">Tắt lặp lại</string>
+    <string name="player_loop_mode_one">Lặp lại một bài</string>
+    <string name="player_loop_mode_all">Lặp lại tất cả</string>
+    <string name="player_mute_content_description">Tắt tiếng</string>
+    <string name="player_unmute_content_description">Bật tiếng</string>
+    <string name="player_more_options_content_description">Tùy chọn khác</string>
+    <string name="player_options_content_description">Tùy chọn trình phát</string>
+    <string name="player_collapse_content_description">Thu gọn trình phát</string>
+    <string name="player_expand_lyrics_content_description">Mở rộng lời bài hát</string>
+    <string name="player_now_playing">Đang phát</string>
+    <string name="player_lyrics">Lời bài hát</string>
+    <string name="player_alternative_source">Nguồn thay thế</string>
+    <string name="player_alternative_source_content_description">Nguồn thay thế</string>
+    <string name="player_download">Tải xuống</string>
+    <string name="player_download_status_downloaded">Đã tải xuống</string>
+    <string name="player_download_status_downloading">Đang tải xuống...</string>
+    <string name="player_download_already_downloaded">Đã tải xuống trước đó</string>
+    <string name="player_download_retrying">Đang thử tải lại...</string>
+    <string name="player_download_started">Đang tải xuống %1$s</string>
+    <string name="player_sleep_timer_remaining">Nhạc sẽ tạm dừng sau %1$s.</string>
+    <string name="player_sleep_timer_description">Tạm dừng phát sau số phút đã chọn.</string>
+    <string name="player_sleep_timer_minutes_label">Phút</string>
+    <string name="player_sleep_timer_minutes_placeholder">Chọn từ 1 đến 600 phút</string>
+    <string name="player_sleep_timer_cancel">Hủy hẹn giờ</string>
+    <string name="player_sleep_timer_start">Bắt đầu</string>
+    <string name="player_track_details_stream_mismatch">URL phát được phân giải với cài đặt phát trực tuyến khác. Luồng được đánh dấu khớp với lựa chọn hiện tại của bạn; URL đang dùng sẽ được làm mới ở lần yêu cầu luồng tiếp theo.</string>
+    <string name="player_track_details_matched_source">Nguồn âm thanh khớp</string>
+    <string name="player_track_details_loading_source">Đang tải nguồn khớp…</string>
+    <string name="player_track_details_source_not_needed">Không cần nguồn từ xa khớp khi đang phát tệp đệm trên máy.</string>
+    <string name="player_track_details_no_source">Không có nguồn khớp nào.</string>
+    <string name="player_track_details_no_cached_source">Chưa có nguồn âm thanh khớp nào được lưu đệm cho bài hát này.</string>
+    <string name="player_track_details_streams_not_cached">Chi tiết luồng chưa được lưu đệm. Hãy phát bài hát trước để tải chúng.</string>
+    <string name="player_track_details_load_failed">Không thể tải chi tiết bài hát.</string>
+    <string name="player_track_details_available_streams">Các luồng khả dụng</string>
+    <string name="player_track_details_served_from_cache_description">Bài hát này đang được phát từ bộ nhớ đệm trên máy. Các biến thể luồng không được dùng cho lần phát này.</string>
+    <string name="player_track_details_loading_streams">Đang tải luồng…</string>
+    <string name="player_track_details_no_streams">Không có luồng nào cho nguồn này.</string>
+    <string name="player_track_details_selected_stream_content_description">Luồng đang được chọn</string>
+    <string name="player_track_details_matches_preference">Khớp với định dạng &amp; chất lượng phát trực tuyến bạn chọn</string>
+    <string name="player_track_details_active_url">URL phát đang dùng</string>
+    <string name="player_track_details_served_from_cache">Phát từ bộ nhớ đệm trên máy</string>
+    <string name="player_track_details_metadata_track">Bài hát theo siêu dữ liệu</string>
+    <string name="player_track_details_title">Tên</string>
+    <string name="player_track_details_id">ID</string>
+    <string name="player_track_details_album">Album</string>
+    <string name="player_track_details_confidence">Độ tin cậy</string>
+    <string name="player_track_details_external_uri">URI bên ngoài</string>
+    <string name="player_track_details_album_id">ID album</string>
+    <string name="player_track_details_album_type">Loại album</string>
+    <string name="player_track_details_album_release_date">Ngày phát hành album</string>
+    <string name="player_track_details_album_track_count">Số bài hát trong album</string>
+    <string name="player_track_details_album_genres">Thể loại album</string>
+    <string name="player_track_details_duration">Thời lượng</string>
+    <string name="player_track_details_track_number">Số thứ tự bài hát</string>
+    <string name="player_track_details_disc_number">Số đĩa</string>
+    <string name="player_track_details_explicit">Nội dung tục tĩu</string>
+    <string name="player_track_details_popularity">Độ phổ biến</string>
+    <string name="player_track_details_isrc">ISRC</string>
+    <string name="player_track_details_thumbnail_urls">URL ảnh thu nhỏ</string>
+
+    <!-- Shell -->
+    <string name="shell_sidebar_toggle_content_description">Bật/tắt thanh bên</string>
+
+    <!-- Alternative track -->
+    <string name="alternative_track_title">Nguồn thay thế</string>
+    <string name="alternative_track_no_track">Hiện không có bài hát nào đang phát</string>
+    <string name="alternative_track_searching">Đang tìm nguồn thay thế...</string>
+    <string name="alternative_track_empty">Không tìm thấy nguồn thay thế nào</string>
+    <string name="alternative_track_confidence">Độ tin cậy: %1$d%</string>
+    <string name="alternative_track_active_source">Nguồn đang dùng</string>
+
+    <!-- Queue -->
+    <string name="queue_participant_kick">Mời ra</string>
+    <string name="queue_participant_kick_description">Xóa người này khỏi phiên</string>
+    <string name="queue_participant_ban_description">Mời ra và không cho tham gia lại</string>
+    <string name="queue_participant_remove_suggestions">Xóa đề xuất</string>
+    <string name="queue_participant_remove_suggestions_description">Xóa mọi bài hát họ đã thêm vào danh sách chờ</string>
+    <string name="queue_reorder_content_description">Sắp xếp lại</string>
+    <string name="queue_remove_from_queue">Xóa khỏi danh sách chờ</string>
+    <string name="queue_item_subtitle_added_by">%1$s • Được thêm bởi %2$s</string>
+
+    <!-- Playlist -->
+    <string name="playlist_owner_unknown">Không xác định</string>
+    <string name="playlist_loading_title">Đang tải danh sách phát...</string>
+    <string name="playlist_add_tracks_button">Thêm bài hát</string>
+    <string name="playlist_add_tracks_title">Thêm bài hát vào danh sách phát</string>
+    <string name="playlist_add_tracks_search_placeholder">Tìm bài hát...</string>
+    <string name="playlist_add_tracks_search_content_description">Tìm kiếm</string>
+    <string name="playlist_add_tracks_no_results">Không tìm thấy bài hát nào</string>
+    <string name="playlist_add_tracks_hint">Tìm bài hát để thêm</string>
+    <string name="playlist_add_tracks_done">Xong</string>
+    <string name="playlist_add_tracks_add">Thêm</string>
+    <string name="playlist_add_tracks_added_content_description">Đã thêm</string>
+
+    <!-- Album -->
+    <string name="album_loading_title">Đang tải album...</string>
+
+    <!-- Library -->
+    <string name="library_add_to_playlist_title">Thêm vào danh sách phát của bạn</string>
+    <string name="library_add_to_playlist_search_content_description">Tìm kiếm</string>
+    <string name="library_add_to_playlist_search_placeholder">Tìm danh sách phát của bạn...</string>
+    <string name="library_add_to_playlist_loading">Đang tải danh sách phát của bạn...</string>
+    <string name="library_add_to_playlist_empty">Bạn chưa có danh sách phát nào.\nHãy tạo một danh sách để thêm bài hát.</string>
+    <string name="library_playlist_form_create_title">Tạo danh sách phát</string>
+    <string name="library_playlist_form_edit_title">Sửa danh sách phát</string>
+    <string name="library_playlist_form_create">Tạo</string>
+    <string name="library_playlist_form_name_label">Tên</string>
+    <string name="library_playlist_form_name_placeholder">Tên danh sách phát</string>
+    <string name="library_playlist_form_description_label">Mô tả</string>
+    <string name="library_playlist_form_description_placeholder">Mô tả (không bắt buộc)</string>
+    <string name="library_playlist_form_public">Công khai</string>
+    <string name="library_playlist_form_public_description">Ai cũng có thể xem danh sách phát này</string>
+    <string name="library_playlist_form_collaborative">Cộng tác</string>
+    <string name="library_playlist_form_collaborative_description">Người khác có thể thêm bài hát vào danh sách phát này</string>
+    <string name="library_playlist_form_cover_image">Ảnh bìa</string>
+    <string name="library_playlist_form_cover_content_description">Ảnh bìa danh sách phát</string>
+    <string name="library_playlist_form_no_image">Không có ảnh</string>
+    <string name="library_playlist_form_change_image">Đổi ảnh</string>
+    <string name="library_playlist_form_pick_image">Chọn ảnh</string>
+
+    <!-- Plugin install / errors -->
+    <string name="plugin_action_install">Cài đặt</string>
+    <string name="plugin_action_replace">Thay thế</string>
+    <string name="plugin_error_plugin_json_missing">Không tìm thấy plugin.json trong tệp zip</string>
+    <string name="plugin_error_zipline_manifest_missing">Không tìm thấy manifest.zipline.json trong tệp zip</string>
+    <string name="plugin_error_invalid_plugin_json">Định dạng plugin.json không hợp lệ: %1$s</string>
+    <string name="plugin_error_read_failed">Không thể đọc plugin: %1$s</string>
+    <string name="plugin_error_install_failed">Không thể cài đặt plugin: %1$s</string>
+    <string name="plugin_error_update_needs_confirmation">Đã có phiên bản mới hơn của %1$s. Hãy xác nhận cập nhật trước khi cài đặt.</string>
+    <string name="plugin_error_replace_needs_confirmation">%1$s đã được cài đặt. Hãy xác nhận thay thế trước khi cài đặt.</string>
+    <string name="plugin_error_builtin_add">Plugin tích hợp sẵn đã có trong ứng dụng và không thể thêm lại.</string>
+    <string name="plugin_error_builtin_remove">Không thể gỡ plugin tích hợp sẵn.</string>
+    <string name="plugin_error_api_version_invalid">%1$s khai báo apiVersion không hợp lệ (%2$s). Cần phiên bản theo chuẩn semantic versioning tương thích với %3$s.</string>
+    <string name="plugin_error_app_api_version_invalid">Phiên bản API plugin Spotube %1$s không hợp lệ.</string>
+    <string name="plugin_error_api_incompatible">%1$s nhắm tới API plugin %2$s, nhưng Spotube hỗ trợ API plugin %3$s có thay đổi không tương thích. Hãy cài đặt plugin được xây dựng cho cùng phiên bản API chính.</string>
+
+    <!-- Plugin install prompts -->
+    <string name="plugin_prompt_incompatible_title">API plugin không tương thích</string>
+    <string name="plugin_prompt_install_title">Cài đặt plugin?</string>
+    <string name="plugin_prompt_install_message">%1$s sẽ được thêm vào danh sách plugin đã cài đặt.</string>
+    <string name="plugin_prompt_update_title">Cập nhật plugin?</string>
+    <string name="plugin_prompt_update_message">Đang cài đặt phiên bản cũ hơn (%1$s). Cập nhật lên %2$s?</string>
+    <string name="plugin_prompt_replace_title">Thay thế plugin đã cài đặt?</string>
+    <string name="plugin_prompt_replace_invalid_incoming">%1$s dùng phiên bản semantic không hợp lệ (%2$s) nên không thể so sánh như một bản cập nhật. Vẫn thay thế plugin đã cài đặt?</string>
+    <string name="plugin_prompt_replace_invalid_installed">Không thể so sánh phiên bản đã cài đặt (%1$s) theo semantic versioning. Thay thế bằng %2$s?</string>
+    <string name="plugin_prompt_replace_same_version">Phiên bản %1$s đã được cài đặt. Thay thế plugin hiện có bằng bản được cung cấp?</string>
+    <string name="plugin_prompt_replace_downgrade">Phiên bản đã cài đặt %1$s mới hơn phiên bản được cung cấp %2$s. Vẫn thay thế?</string>
+    <string name="plugin_prompt_replace_generic">Thay thế plugin đã cài đặt bằng bản được cung cấp?</string>
+
+    <!-- Plugin info dialog -->
+    <string name="plugin_info_label_format">%1$s:</string>
+    <string name="plugin_info_version">Phiên bản</string>
+    <string name="plugin_info_api_version">Phiên bản API</string>
+    <string name="plugin_info_author">Tác giả</string>
+    <string name="plugin_info_license">Giấy phép</string>
+    <string name="plugin_info_capabilities">Khả năng</string>
+    <string name="plugin_info_abilities">Chức năng</string>
+    <string name="plugin_info_repository">Kho mã</string>
+    <string name="plugin_info_contact">Liên hệ</string>
+    <string name="plugin_info_report_bugs">Báo lỗi</string>
+    <string name="plugin_support_dialog_title">Ủng hộ %1$s</string>
+
+    <!-- Plugin discovery -->
+    <string name="plugin_discover_badge_official">Chính thức</string>
+    <string name="plugin_discover_badge_verified">Đã xác minh</string>
+    <string name="plugin_discover_stars_content_description">Sao GitHub</string>
+    <string name="plugin_discover_repository_content_description">URL kho mã GitHub</string>
+
+    <!-- Plugin release install dialog -->
+    <string name="plugin_install_no_releases">Không tìm thấy bản phát hành nào</string>
+    <string name="plugin_install_select_release_label">Chọn bản phát hành</string>
+    <string name="plugin_install_select_release_placeholder">Chọn một bản phát hành</string>
+    <string name="plugin_install_prerelease">Bản thử nghiệm</string>
+    <string name="plugin_install_release_notes">Ghi chú phát hành</string>
+
+    <!-- App navigation -->
+    <string name="nav_home">Trang chủ</string>
+    <string name="nav_search">Tìm kiếm</string>
+    <string name="nav_group_on_device">Trên thiết bị</string>
+    <string name="nav_group_connect">Kết nối</string>
+    <string name="nav_devices">Thiết bị</string>
+
+    <!-- System tray (desktop) -->
+    <string name="tray_hide_window">Ẩn cửa sổ</string>
+    <string name="tray_show_window">Hiện cửa sổ</string>
+    <string name="tray_next_track">Bài tiếp theo</string>
+    <string name="tray_previous_track">Bài trước</string>
+    <string name="tray_shuffle">Phát ngẫu nhiên</string>
+    <string name="tray_loop">Lặp lại</string>
+    <string name="tray_loop_off">Lặp lại: TẮT</string>
+    <string name="tray_loop_one">Lặp lại: MỘT BÀI</string>
+    <string name="tray_loop_all">Lặp lại: TẤT CẢ</string>
+    <string name="tray_volume">Âm lượng: %1$d%</string>
+    <string name="tray_volume_up">Âm lượng +</string>
+    <string name="tray_volume_down">Âm lượng -</string>
+    <string name="tray_mute">Tắt tiếng</string>
+    <string name="tray_unmute">Bật tiếng</string>
+    <string name="tray_like_track">Thích bài hát</string>
+    <string name="tray_unlike_track">Bỏ thích bài hát</string>
+    <string name="tray_exit">Thoát</string>
+
+    <!-- Desktop window controls -->
+    <string name="app_window_minimize">Thu nhỏ</string>
+    <string name="app_window_maximize">Phóng to</string>
+    <string name="app_window_restore">Khôi phục</string>
+    <string name="app_window_close">Đóng</string>
+
+    <!-- Android playback notification -->
+    <string name="notification_playback_channel_name">Phát nhạc</string>
+    <string name="notification_playback_channel_description">Điều khiển phát nội dung</string>
+
+    <!-- Android Auto / media browser -->
+    <string name="media_browser_browse">Duyệt</string>
+    <string name="media_browser_now_playing">Đang phát</string>
+    <string name="media_browser_featured">Nổi bật</string>
+    <string name="media_browser_saved_tracks">Bài hát đã lưu</string>
+    <string name="media_browser_top_tracks">Bài hát hàng đầu</string>
+</resources>

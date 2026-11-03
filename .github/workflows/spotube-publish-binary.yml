@@ -1,0 +1,274 @@
+name: Publish
+
+# Publishes an existing GitHub release (made by spotube-release-binary.yml) to the package managers.
+# The `render` job checks out the release tag, downloads its assets and renders packaging/<target> with
+# Gradle (:composeApp:renderPackaging<Target>: version, checksums, git-cliff release notes). The publish
+# jobs only push what it rendered.
+#
+# Secrets:
+#   FLATHUB_TOKEN        PAT with push access to team-spotube/org.spotube.spotube
+#   AUR_USERNAME, AUR_EMAIL, AUR_SSH_PRIVATE_KEY   AUR account that maintains spotube-bin
+#   WINGET_TOKEN         classic PAT (public_repo) that can push to team-spotube/winget-pkgs and open PRs
+#   CHOCO_API_KEY        chocolatey.org API key
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to publish (vX.Y.Z)
+        required: true
+        type: string
+      jobs:
+        description: Jobs to run (flathub,aur,winget,chocolatey)
+        required: true
+        type: string
+        default: flathub,aur,winget,chocolatey
+      aur_pkgrel:
+        description: AUR pkgrel (bump to re-release the same version)
+        required: true
+        type: string
+        default: '1'
+      dry_run:
+        description: Dry run (render the packages, push nothing)
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+env:
+  TAG: ${{ inputs.tag }}
+  GH_TOKEN: ${{ github.token }}
+
+jobs:
+  render:
+    name: Render packages
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Validate tag and find release
+        id: version
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::tag must look like vX.Y.Z, got '$TAG'"
+            exit 1
+          fi
+          is_draft=$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft)
+          # The packages download from the public release URLs, which a draft doesn't have yet
+          if [ "$is_draft" = "true" ] && [ "$DRY_RUN" != "true" ]; then
+            echo "::error::release $TAG is still a draft; publish it first"
+            exit 1
+          fi
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+      # Full history: git-cliff builds the release notes from it
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+
+      # Configuring :composeApp runs cargo (Gobley)
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Install git-cliff
+        uses: taiki-e/install-action@v2
+        with:
+          tool: git-cliff
+
+      - name: Download release assets
+        run: |
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --dir release-assets \
+            --pattern 'spotube-linux-*.tar.xz' --pattern 'Spotube-windows-x86_64-setup.exe'
+
+      - name: Render packages
+        env:
+          PKGREL: ${{ inputs.aur_pkgrel }}
+        run: |
+          chmod +x gradlew
+          ./gradlew :composeApp:renderPackagingFlatpak :composeApp:renderPackagingAur \
+            :composeApp:renderPackagingWinget :composeApp:renderPackagingChocolatey \
+            -Pnightly=false -Ppkgrel="$PKGREL" -PpackagingArtifactsDir=release-assets
+          for f in composeApp/build/packaging/{flatpak/*.yml,aur/PKGBUILD,winget/*.yaml,chocolatey/*.nuspec}; do
+            echo "::group::$f"
+            cat "$f"
+            echo "::endgroup::"
+          done
+
+      - name: Upload rendered packages
+        uses: actions/upload-artifact@v7
+        with:
+          name: packaging
+          path: |
+            composeApp/build/packaging/flatpak
+            composeApp/build/packaging/aur
+            composeApp/build/packaging/winget
+            composeApp/build/packaging/chocolatey
+
+      # Chocolatey embeds the installer in the package
+      - name: Upload Windows installer
+        if: contains(inputs.jobs, 'chocolatey')
+        uses: actions/upload-artifact@v7
+        with:
+          name: windows-installer
+          path: release-assets/Spotube-windows-x86_64-setup.exe
+
+  flathub:
+    name: Flathub
+    needs: render
+    if: contains(inputs.jobs, 'flathub')
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.render.outputs.version }}
+      FLATHUB_REPO: team-spotube/org.spotube.spotube
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: packaging
+          path: packaging
+
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ env.FLATHUB_REPO }}
+          token: ${{ secrets.FLATHUB_TOKEN }}
+          path: flathub
+
+      - name: Commit
+        working-directory: flathub
+        run: |
+          cp ../packaging/flatpak/org.spotube.spotube.yml .
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "update-$VERSION"
+          git add org.spotube.spotube.yml
+          git diff --cached
+          git commit -m "Update to $VERSION"
+
+      - name: Push and open PR
+        if: ${{ !inputs.dry_run }}
+        working-directory: flathub
+        env:
+          GH_TOKEN: ${{ secrets.FLATHUB_TOKEN }}
+        run: |
+          git push -u origin "update-$VERSION"
+          gh pr create --repo "$FLATHUB_REPO" --head "update-$VERSION" \
+            --title "Update to $VERSION" \
+            --body "Release notes: https://github.com/$GITHUB_REPOSITORY/releases/tag/$TAG"
+
+  aur:
+    name: AUR
+    needs: render
+    if: contains(inputs.jobs, 'aur')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: packaging
+          path: packaging
+
+      - name: Publish to AUR
+        if: ${{ !inputs.dry_run }}
+        uses: KSXGitHub/github-actions-deploy-aur@v4.2.0
+        with:
+          pkgname: spotube-bin
+          pkgbuild: packaging/aur/PKGBUILD
+          commit_username: ${{ secrets.AUR_USERNAME }}
+          commit_email: ${{ secrets.AUR_EMAIL }}
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          commit_message: Update to ${{ needs.render.outputs.version }}-${{ inputs.aur_pkgrel }}
+
+  winget:
+    name: WinGet
+    needs: render
+    if: contains(inputs.jobs, 'winget')
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.render.outputs.version }}
+      FORK: team-spotube/winget-pkgs
+      MANIFEST_DIR: manifests/k/KRTirtho/Spotube
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: packaging
+          path: packaging
+
+      - name: Sync fork with upstream
+        if: ${{ !inputs.dry_run }}
+        env:
+          GH_TOKEN: ${{ secrets.WINGET_TOKEN }}
+        run: gh repo sync "$FORK" --source microsoft/winget-pkgs --branch master
+
+      # winget-pkgs is huge: only fetch this package's directory
+      - uses: actions/checkout@v7
+        if: ${{ !inputs.dry_run }}
+        with:
+          repository: ${{ env.FORK }}
+          ref: master
+          token: ${{ secrets.WINGET_TOKEN }}
+          path: winget-pkgs
+          sparse-checkout: ${{ env.MANIFEST_DIR }}
+
+      - name: Push and open PR
+        if: ${{ !inputs.dry_run }}
+        working-directory: winget-pkgs
+        env:
+          GH_TOKEN: ${{ secrets.WINGET_TOKEN }}
+        run: |
+          branch="KRTirtho.Spotube-$VERSION"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          mkdir -p "$MANIFEST_DIR/$VERSION"
+          cp ../packaging/winget/*.yaml "$MANIFEST_DIR/$VERSION/"
+          git add "$MANIFEST_DIR/$VERSION"
+          git commit -m "New version: KRTirtho.Spotube version $VERSION"
+          git push -u origin "$branch"
+          gh pr create --repo microsoft/winget-pkgs --base master --head "${FORK%%/*}:$branch" \
+            --title "New version: KRTirtho.Spotube version $VERSION" \
+            --body "Release notes: https://github.com/$GITHUB_REPOSITORY/releases/tag/$TAG"
+
+  chocolatey:
+    name: Chocolatey
+    needs: render
+    if: contains(inputs.jobs, 'chocolatey')
+    runs-on: windows-latest
+    env:
+      VERSION: ${{ needs.render.outputs.version }}
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: packaging
+          path: packaging
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: windows-installer
+          path: packaging/chocolatey/tools
+
+      - name: Pack
+        run: choco pack packaging/chocolatey/spotube.nuspec --outputdirectory dist
+
+      - name: Upload package
+        uses: actions/upload-artifact@v7
+        with:
+          name: chocolatey-nupkg
+          path: dist/*.nupkg
+
+      - name: Publish to Chocolatey
+        if: ${{ !inputs.dry_run }}
+        env:
+          CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
+        run: choco push "dist/spotube.$env:VERSION.nupkg" --source https://push.chocolatey.org/ --api-key "$env:CHOCO_API_KEY"

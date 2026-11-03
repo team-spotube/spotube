@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.10.0.schema.json
+
+PackageIdentifier: KRTirtho.Spotube
+PackageVersion: {{version}}
+PackageLocale: en-US
+Publisher: Team Spotube
+PublisherUrl: https://github.com/team-spotube
+PublisherSupportUrl: https://github.com/team-spotube/spotube/issues
+PrivacyUrl: https://spotube.cc/p/privacy
+Author: Team Spotube
+PackageName: Spotube
+PackageUrl: https://spotube.cc
+License: AGPL-3.0-or-later
+LicenseUrl: https://github.com/team-spotube/spotube/blob/master/LICENSE
+Copyright: Copyright (c) 2022-2026 Kingkor Roy Tirtho and Spotube Contributors
+ShortDescription: Open source, plugin powered music streaming client
+Description: |-
+  A cross-platform, extensible, open source music streaming platform. Bring your own music
+  metadata, playlists and audio sources with plugins made by the community or by yourself.
+Moniker: spotube
+Tags:
+- audio
+- music
+- music-player
+- streaming
+- lyrics
+- plugins
+{{#release.notes}}
+ReleaseNotes: |-
+{{#indent2}}{{release.notes}}{{/indent2}}
+{{/release.notes}}
+ReleaseNotesUrl: {{release.url}}
+ManifestType: defaultLocale
+ManifestVersion: 1.10.0

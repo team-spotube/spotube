@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.installer.1.10.0.schema.json
+
+PackageIdentifier: KRTirtho.Spotube
+PackageVersion: {{version}}
+Platform:
+- Windows.Desktop
+MinimumOSVersion: 10.0.0.0
+# electron-builder one-click NSIS installer (Nucleus), installs per user; winget's nullsoft default /S is silent
+InstallerType: nullsoft
+Scope: user
+InstallModes:
+- silent
+- silentWithProgress
+UpgradeBehavior: install
+ReleaseDate: {{release.date}}
+Installers:
+- Architecture: x64
+  InstallerUrl: {{artifacts.windowsX64.url}}
+  InstallerSha256: {{artifacts.windowsX64.sha256Upper}}
+ManifestType: installer
+ManifestVersion: 1.10.0

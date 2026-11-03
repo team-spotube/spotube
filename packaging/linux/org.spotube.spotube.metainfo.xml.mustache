@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>org.spotube.spotube</id>
+  <!-- The Flutter-era app shipped on Flathub as com.github.KRTirtho.Spotube -->
+  <provides>
+    <id>com.github.KRTirtho.Spotube</id>
+  </provides>
+  <replaces>
+    <id>com.github.KRTirtho.Spotube</id>
+  </replaces>
+
+  <name>Spotube</name>
+  <summary>Plugin powered, open source music streaming client</summary>
+  <developer id="org.spotube">
+    <name>Team Spotube</name>
+  </developer>
+
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>AGPL-3.0-or-later</project_license>
+
+  <description>
+    <p>
+      A cross-platform, extensible, open source music streaming platform. Bring your own music
+      metadata, playlists and audio sources with plugins made by the community or by yourself.
+    </p>
+    <ul>
+      <li>Plugin powered: supports any platform or custom music service through plugins</li>
+      <li>Community driven plugins for popular platforms, or create your own</li>
+      <li>Freely downloadable tracks with tagged metadata</li>
+      <li>Time synced lyrics regardless of plugin support</li>
+      <li>No telemetry, diagnostics or user data collection</li>
+      <li>Small size, low data usage and native performance</li>
+    </ul>
+  </description>
+
+  <launchable type="desktop-id">org.spotube.spotube.desktop</launchable>
+
+  <categories>
+    <category>AudioVideo</category>
+    <category>Audio</category>
+    <category>Music</category>
+  </categories>
+  <keywords>
+    <keyword>music</keyword>
+    <keyword>streaming</keyword>
+    <keyword>player</keyword>
+    <keyword>lyrics</keyword>
+  </keywords>
+
+  <url type="homepage">https://spotube.cc</url>
+  <url type="bugtracker">https://github.com/team-spotube/spotube/issues</url>
+  <url type="vcs-browser">https://github.com/team-spotube/spotube</url>
+  <url type="donation">https://opencollective.com/spotube</url>
+  <url type="contribute">https://github.com/team-spotube/spotube/blob/master/CONTRIBUTION.md</url>
+
+  <screenshots>
+    <screenshot type="default">
+      <caption>Browse music from the service your plugin connects to</caption>
+      <image>https://raw.githubusercontent.com/team-spotube/spotube/master/assets/screenshots/home-desktop-dark.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Synced lyrics</caption>
+      <image>https://raw.githubusercontent.com/team-spotube/spotube/master/assets/screenshots/lyrics-desktop-dark.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Your playlists</caption>
+      <image>https://raw.githubusercontent.com/team-spotube/spotube/master/assets/screenshots/playlists-desktop-dark.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Search tracks, albums, artists, playlists and users</caption>
+      <image>https://raw.githubusercontent.com/team-spotube/spotube/master/assets/screenshots/search-desktop-dark.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Local folders and downloads</caption>
+      <image>https://raw.githubusercontent.com/team-spotube/spotube/master/assets/screenshots/local-tracks-desktop-dark.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Group Jam rooms</caption>
+      <image>https://raw.githubusercontent.com/team-spotube/spotube/master/assets/screenshots/group-jam-desktop-dark.png</image>
+    </screenshot>
+  </screenshots>
+
+  <branding>
+    <color type="primary" scheme_preference="light">#84b2ff</color>
+    <color type="primary" scheme_preference="dark">#01185c</color>
+  </branding>
+
+  <content_rating type="oars-1.1" />
+
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
+
+  <!-- Generated from the git-cliff changelog (RenderPackagingTask) -->
+  <releases>
+{{#releases}}
+    <release version="{{version}}" date="{{date}}">
+      <url type="details">{{url}}</url>
+{{#notes}}
+      <description>
+{{#groups}}
+        <p>{{title}}</p>
+        <ul>
+{{#entries}}
+          <li>{{text}}</li>
+{{/entries}}
+        </ul>
+{{/groups}}
+      </description>
+{{/notes}}
+    </release>
+{{/releases}}
+  </releases>
+</component>
