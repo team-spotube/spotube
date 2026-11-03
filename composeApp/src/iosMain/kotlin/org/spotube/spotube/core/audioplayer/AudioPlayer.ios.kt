@@ -48,6 +48,7 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
     }.create()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val lock = Mutex()
+    private val mediaSession = IosMediaSession()
 
     private var disposed = false
 
@@ -94,8 +95,22 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
                 NativePlayerState.IDLE -> _playerState.tryEmit(PlayerState.IDLE)
                 NativePlayerState.OPENING,
                 NativePlayerState.BUFFERING -> _playerState.tryEmit(PlayerState.BUFFERING)
-                NativePlayerState.PLAYING -> _playerState.tryEmit(PlayerState.PLAYING)
-                NativePlayerState.PAUSED -> _playerState.tryEmit(PlayerState.PAUSED)
+                NativePlayerState.PLAYING -> {
+                    _playerState.tryEmit(PlayerState.PLAYING)
+                    mediaSession.update(
+                        _currentMediaItem.value,
+                        _position.value.inWholeMilliseconds / 1000.0,
+                        _duration.value.inWholeMilliseconds / 1000.0,
+                        true)
+                }
+                NativePlayerState.PAUSED -> {
+                    _playerState.tryEmit(PlayerState.PAUSED)
+                    mediaSession.update(
+                        _currentMediaItem.value,
+                        _position.value.inWholeMilliseconds / 1000.0,
+                        _duration.value.inWholeMilliseconds / 1000.0,
+                        false)
+                }
                 NativePlayerState.ENDED -> scope.launch { lock.withLock { onMediaEndedLocked() } }
             }
         }
@@ -103,6 +118,11 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
         override fun onTime(positionMs: Long) {
             if (disposed || positionMs < 0) return
             _position.tryEmit(positionMs.milliseconds)
+            mediaSession.update(
+                _currentMediaItem.value,
+                positionMs / 1000.0,
+                _duration.value.inWholeMilliseconds / 1000.0,
+                _playerState.value == PlayerState.PLAYING)
         }
 
         override fun onDuration(durationMs: Long) {
@@ -128,6 +148,12 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
 
     init {
         engine.setListener(engineListener)
+        mediaSession.configure(
+            onPlay = { scope.launch { play() } },
+            onPause = { scope.launch { pause() } },
+            onSeek = { seconds -> scope.launch { seekTo(seconds.milliseconds) } },
+            onNext = { scope.launch { skipToNext() } },
+            onPrevious = { scope.launch { skipToPrevious() } })
     }
 
     /** Loads [currentPlaylist] at [currentIndex] into the engine. Caller holds [lock]. */
@@ -167,6 +193,7 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
     actual override suspend fun play() {
         lock.withLock {
             if (disposed || currentPlaylist.isEmpty()) return
+            mediaSession.activate()
             if (currentIndex !in currentPlaylist.indices) {
                 currentIndex = 0
                 _currentMediaItem.tryEmit(currentPlaylist[0])
@@ -186,6 +213,12 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
         lock.withLock {
             if (disposed) return
             engine.stop()
+            mediaSession.deactivate()
+            mediaSession.update(
+                _currentMediaItem.value,
+                0.0,
+                _duration.value.inWholeMilliseconds / 1000.0,
+                false)
             engineHasMedia = false
             pendingStartMs = 0L
             _position.tryEmit(Duration.ZERO)
@@ -275,6 +308,11 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
             currentIndex = startPosition.coerceIn(0, currentPlaylist.lastIndex)
             _currentMediaItem.tryEmit(currentPlaylist[currentIndex])
             _duration.tryEmit(currentPlaylist[currentIndex].duration)
+            mediaSession.update(
+                _currentMediaItem.value,
+                0.0,
+                _duration.value.inWholeMilliseconds / 1000.0,
+                false)
 
             if (autoPlay) {
                 loadCurrentIntoEngineLocked(autoPlay = true)
@@ -414,6 +452,8 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
         disposed = true
         engine.setListener(null)
         engine.destroy()
+        mediaSession.deactivate()
+        mediaSession.clear()
         scope.cancel()
 
         originalPlaylist.clear()

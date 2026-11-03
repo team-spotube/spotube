@@ -18,7 +18,10 @@
 package org.spotube.spotube.core.audioplayer
 
 import org.spotube.plugin_interfaces.plugin_apis.audio.StreamProtocol
+import org.spotube.spotube.PlatformType
+import org.spotube.spotube.getPlatform
 import org.spotube.spotube.core.di.injectLogger
+import org.spotube.spotube.core.server.StreamingUrlRepository
 import org.spotube.spotube.modules.blacklist.BlacklistRepository
 import org.spotube.spotube.modules.library.local_tracks.media.LocalMediaCacheRepository
 import org.spotube.spotube.modules.plugin.PluginProvider
@@ -51,6 +54,7 @@ class DeviceAudioPlayerQueue(
     private val blacklistRepository: BlacklistRepository) : AudioPlayerQueue, KoinComponent {
 
     private val logger by injectLogger<DeviceAudioPlayerQueue>()
+    private val streamingUrlRepository = get<StreamingUrlRepository>()
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -515,7 +519,25 @@ class DeviceAudioPlayerQueue(
     private suspend fun QueueEntry.toMediaItem(): MediaItem? {
         return when (this) {
             is QueueEntry.StreamingTrack -> {
-                val resolvedUrl = url.ifBlank { buildStreamingUrl(track.id, protocol) }
+                val isIos = getPlatform().type == PlatformType.IOS
+                val requiresIosResolution = isIos && (
+                    url.isBlank() ||
+                        url.startsWith("http://127.0.0.1") ||
+                        url.startsWith("https://127.0.0.1") ||
+                        url.startsWith("http://[::1]") ||
+                        url.startsWith("https://[::1]") ||
+                        url.startsWith("http://localhost") ||
+                        url.startsWith("https://localhost"))
+                val resolvedStream = if (requiresIosResolution) {
+                    streamingUrlRepository.resolveStreamInfo(track)
+                } else {
+                    null
+                }
+                val resolvedUrl = if (requiresIosResolution) {
+                    resolvedStream?.url ?: buildStreamingUrl(track.id, protocol)
+                } else {
+                    url.ifBlank { buildStreamingUrl(track.id, protocol) }
+                }
                 if (resolvedUrl.isBlank()) return null
                 MediaItem(
                     title = track.title,
@@ -524,7 +546,7 @@ class DeviceAudioPlayerQueue(
                     duration = track.durationMs.milliseconds,
                     coverURL = artworkUrl.orEmpty(),
                     url = resolvedUrl,
-                    protocol = protocol)
+                    protocol = resolvedStream?.protocol ?: protocol)
             }
 
             is QueueEntry.LocalTrack -> {
