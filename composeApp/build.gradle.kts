@@ -449,7 +449,7 @@ nucleus.application {
         "--enable-native-access=ALL-UNNAMED", // need for JNA for compose-webview (wry) to work
         // --- ADD THESE FOR SPEED & LOW RAM ---
         "-Xms64m",                  // Start with a tiny heap (prevents grabbing 500MB upfront)
-        "-Xmx384m",                 // Cap the max heap (VLC and WebView need a bit of room)
+        "-Xmx1g",                   // Ceiling, not a reservation: the heap only grows to what is live (#3200, #3193)
         "-XX:TieredStopAtLevel=1",  // Disables the heavy C2 compiler. Huge startup speedup!
         "-XX:+UseSerialGC"          // The Serial GC is the most efficient for heaps under 512MB
     )
@@ -556,7 +556,7 @@ nucleus.application {
         // ProGuard is not used for native images; -Os is the size equivalent
         optimization = NativeImageOptimization.SIZE
         // Same ceiling as the JVM distribution's -Xmx
-        maxHeapSize = "384m"
+        maxHeapSize = "1g"
         // Skiko is loaded from lib/ next to the binary (Nucleus copies it there); don't embed
         // a second ~30 MB copy as a resource
         buildArgs.add("-H:+UnlockExperimentalVMOptions")

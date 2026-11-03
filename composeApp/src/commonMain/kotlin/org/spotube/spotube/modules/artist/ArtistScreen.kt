@@ -18,6 +18,7 @@
 package org.spotube.spotube.modules.artist
 
 
+import org.spotube.spotube.core.ui.misc.itemsWithUniqueKeys
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
@@ -638,7 +639,7 @@ private fun AlbumsSection(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.Top
     ) {
-        items(albums, key = { it.id }) { album ->
+        itemsWithUniqueKeys(albums, id = { it.id }) { album ->
             AlbumCard(album = album)
         }
     }
@@ -676,7 +677,7 @@ private fun RelatedArtistsSection(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.Top
     ) {
-        items(artists, key = { it.id }) { artist ->
+        itemsWithUniqueKeys(artists, id = { it.id }) { artist ->
             ArtistCard(artist = artist)
         }
     }
@@ -714,7 +715,7 @@ private fun FeaturedPlaylistsSection(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.Top
     ) {
-        items(playlists, key = { it.id }) { playlist ->
+        itemsWithUniqueKeys(playlists, id = { it.id }) { playlist ->
             PlaylistCard(playlist = playlist)
         }
     }

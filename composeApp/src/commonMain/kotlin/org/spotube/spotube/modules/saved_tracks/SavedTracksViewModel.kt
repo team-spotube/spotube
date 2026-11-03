@@ -152,7 +152,7 @@ class SavedTracksViewModel(
                     .filterNotNull()
                     .flatMapLatest { it.loggedInFlow }
                     .distinctUntilChanged(),
-                repository.savedTracksIdsFlow
+                repository.libraryChanges
             ) { _, _ -> }.collect {
                 loadInitialData()
                 loadCurrentUser()

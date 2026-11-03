@@ -19,6 +19,13 @@ package org.spotube.spotube.modules.library.local_tracks.media
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.jetbrains.skia.EncodedImageFormat
+import org.jetbrains.skia.FilterMipmap
+import org.jetbrains.skia.FilterMode
+import org.jetbrains.skia.Image
+import org.jetbrains.skia.MipmapMode
+import org.jetbrains.skia.Rect
+import org.jetbrains.skia.Surface
 import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
@@ -70,7 +77,7 @@ class JvmLocalMediaDiscoveryService : LocalMediaDiscoveryService {
                                 artists = metadata?.artists?.takeIf { it.isNotEmpty() } ?: emptyList(),
                                 durationMs = metadata?.durationMs ?: 0L,
                                 album = metadata?.album,
-                                coverBytes = metadata?.coverBytes)
+                                coverBytes = metadata?.coverBytes?.let(::coverThumbnail))
                             folders.getOrPut(parent) { mutableListOf() }.add(track)
                         }
                 }
@@ -187,3 +194,30 @@ class JvmLocalMediaDiscoveryService : LocalMediaDiscoveryService {
             "wma")
     }
 }
+
+/**
+ * Embedded covers can be several MB each and the index is serialised to JSON, so keep a small
+ * JPEG like Android does (#3193). Returns null for unreadable art.
+ */
+internal fun coverThumbnail(bytes: ByteArray, size: Int = COVER_THUMBNAIL_SIZE): ByteArray? = runCatching {
+    Image.makeFromEncoded(bytes).use { source ->
+        val scale = size.toFloat() / minOf(source.width, source.height)
+        if (scale >= 1f && bytes.size <= MAX_SMALL_COVER_BYTES) return@runCatching bytes
+        val width = (source.width * scale.coerceAtMost(1f)).toInt().coerceAtLeast(1)
+        val height = (source.height * scale.coerceAtMost(1f)).toInt().coerceAtLeast(1)
+        Surface.makeRasterN32Premul(width, height).use { surface ->
+            surface.canvas.drawImageRect(
+                source,
+                Rect.makeWH(source.width.toFloat(), source.height.toFloat()),
+                Rect.makeWH(width.toFloat(), height.toFloat()),
+                FilterMipmap(FilterMode.LINEAR, MipmapMode.NONE),
+                null,
+                true)
+            surface.makeImageSnapshot().use { it.encodeToData(EncodedImageFormat.JPEG, 85)?.bytes }
+        }
+    }
+}.getOrNull()
+
+private const val COVER_THUMBNAIL_SIZE = 160
+private const val MAX_SMALL_COVER_BYTES = 64 * 1024
+
