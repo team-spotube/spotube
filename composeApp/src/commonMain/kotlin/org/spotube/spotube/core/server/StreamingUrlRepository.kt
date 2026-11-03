@@ -23,11 +23,9 @@ import org.spotube.plugin_interfaces.plugin_apis.audio.AudioQuality
 import org.spotube.plugin_interfaces.plugin_apis.audio.AudioStream
 import org.spotube.plugin_interfaces.plugin_apis.audio.StreamProtocol
 import org.spotube.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
-import org.spotube.spotube.PlatformType
 import org.spotube.spotube.core.audioplayer.AudioPlayerQueue
 import org.spotube.spotube.core.audioplayer.QueueEntry
 import org.spotube.spotube.core.di.injectLogger
-import org.spotube.spotube.getPlatform
 import org.spotube.spotube.modules.plugin.AudioPluginSource
 import org.spotube.spotube.modules.settings.UserSettingsSource
 import kotlinx.coroutines.flow.filterNotNull
@@ -80,8 +78,7 @@ class StreamingUrlRepository(
     private val audioPlayerQueue: AudioPlayerQueue,
     private val matchedTracksRepository: TrackSourceRepository,
     private val settingsRepository: UserSettingsSource,
-    private val streamUrlCacheTtlMs: Long = 30.seconds.inWholeMilliseconds,
-    private val platform: PlatformType = currentPlatform) : KoinComponent {
+    private val streamUrlCacheTtlMs: Long = 30.seconds.inWholeMilliseconds) : KoinComponent {
 
     private val logger by injectLogger<StreamingUrlRepository>()
     private val streamUrlCacheMutex = Mutex()
@@ -146,7 +143,7 @@ class StreamingUrlRepository(
             } else {
                 stream.streams
             }
-            return selectPreferredAudioStream(candidates, preferredFormat, preferredQuality, platform)
+            return selectPreferredAudioStream(candidates, preferredFormat, preferredQuality)
                 .also { logSelection(trackId, origin, candidates, preferredFormat, preferredQuality, it) }
         }
 
@@ -256,12 +253,11 @@ class StreamingUrlRepository(
         logger.i {
             "[Resolve $trackId] selecting from ${streams.size} candidates ($origin), " +
                 "want ${preferredFormat.codec}/${preferredFormat.container} $preferredQuality " +
-                "(rank key = unplayable, formatMismatch, qualityTypeMismatch, qualityDistance, channelDistance; " +
+                "(rank key = formatMismatch, qualityTypeMismatch, qualityDistance, channelDistance; " +
                 "lowest wins):\n" +
                 streams.joinToString("\n") { stream ->
                     val marker = if (stream === selected) "  -> " else "     "
-                    "$marker${stream.describeForLog()} key=(${if (stream.isPlayableOn(platform)) 0 else 1}, " +
-                        "${formatMismatchCount(stream, preferredFormat)}, " +
+                    "$marker${stream.describeForLog()} key=(${formatMismatchCount(stream, preferredFormat)}, " +
                         "${if (stream.matchesQualityType(preferredQuality)) 0 else 1}, " +
                         "${stream.qualityDistance(preferredQuality).let { if (it == Long.MAX_VALUE) "inf" else "$it" }}, " +
                         "${stream.channelDistance(preferredQuality)}) ${urlSummary(stream.url)}"
@@ -269,10 +265,6 @@ class StreamingUrlRepository(
         }
         when {
             selected == null -> logger.w { "[Resolve $trackId] no stream selected" }
-            !selected.isPlayableOn(platform) -> logger.w {
-                "[Resolve $trackId] NO PLAYABLE STREAM on $platform; falling back to " +
-                    "${selected.describeForLog()}, which the player will likely reject"
-            }
             formatMismatchCount(selected, preferredFormat) > 0 -> logger.w {
                 "[Resolve $trackId] FORMAT FALLBACK: wanted ${preferredFormat.codec}/${preferredFormat.container}, " +
                     "got ${selected.codec}/${selected.container} (${selected.protocol})"
@@ -400,21 +392,16 @@ internal fun normalizeManifestUrl(url: String, protocol: StreamProtocol): String
     }
 }
 
-internal val currentPlatform: PlatformType by lazy { getPlatform().type }
-
 /**
- * Selects the available stream closest to the user's preferred format and quality.
- * Streams the [platform]'s player can decode always win over ones it can't, whatever the
- * preferences say: e.g. opus/webm is unplayable on iOS.
+ * Selects the available stream closest to the user's preferred format and quality. Every
+ * platform's player (ExoPlayer on Android, VLC elsewhere including iOS) can play any container,
+ * codec and protocol plugins return, so nothing is ruled out up front.
  */
 internal fun selectPreferredAudioStream(
     streams: List<AudioStream>,
     preferredFormat: AudioFormat,
-    preferredQuality: AudioQuality,
-    platform: PlatformType = currentPlatform): AudioStream? = streams.minWithOrNull(
+    preferredQuality: AudioQuality): AudioStream? = streams.minWithOrNull(
     compareBy<AudioStream> { stream ->
-        if (stream.isPlayableOn(platform)) 0 else 1
-    }.thenBy { stream ->
         formatMismatchCount(stream, preferredFormat)
     }.thenBy { stream ->
         if (stream.matchesQualityType(preferredQuality)) 0 else 1
@@ -424,25 +411,6 @@ internal fun selectPreferredAudioStream(
         stream.channelDistance(preferredQuality)
     }
 )
-
-private val MATROSKA_CONTAINERS = setOf("webm", "mkv", "matroska")
-
-// Containers a platform's player can't open, so e.g. YouTube's opus/webm streams fail to load there.
-private val UNSUPPORTED_CONTAINERS: Map<PlatformType, Set<String>> = mapOf(
-    // AVPlayer has no WebM/Ogg/Matroska demuxer.
-    PlatformType.IOS to MATROSKA_CONTAINERS + setOf("ogg", "oga"))
-
-/**
- * Whether [platform]'s player can play this stream. ExoPlayer (Android) and VLC elsewhere handle
- * everything plugins return; AVPlayer (iOS) can't demux WebM/Ogg and can't play DASH.
- */
-internal fun AudioStream.isPlayableOn(platform: PlatformType): Boolean =
-    isContainerPlayableOn(container, platform) &&
-        !(platform == PlatformType.IOS && protocol == StreamProtocol.DASH)
-
-/** Whether [platform]'s player can open [container] at all; see [AudioStream.isPlayableOn]. */
-internal fun isContainerPlayableOn(container: String, platform: PlatformType): Boolean =
-    container.lowercase() !in UNSUPPORTED_CONTAINERS[platform].orEmpty()
 
 private fun formatMismatchCount(stream: AudioStream, preferredFormat: AudioFormat): Int =
     (if (stream.codec.equals(preferredFormat.codec, ignoreCase = true)) 0 else 1) +

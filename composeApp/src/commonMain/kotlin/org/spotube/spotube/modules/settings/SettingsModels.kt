@@ -17,9 +17,6 @@
 
 package org.spotube.spotube.modules.settings
 
-import org.spotube.spotube.core.server.isContainerPlayableOn
-import org.spotube.spotube.core.server.currentPlatform
-import org.spotube.spotube.PlatformType
 import org.spotube.plugin_interfaces.plugin_apis.audio.AudioFormat
 import org.spotube.plugin_interfaces.plugin_apis.audio.AudioQuality
 import kotlinx.serialization.SerialName
@@ -101,23 +98,12 @@ const val DEFAULT_JAM_SERVER_URL = "https://spotube-jam.workers.dev"
 internal fun isJamServerUrl(url: String): Boolean =
     Regex("^(https?|wss?)://[^\\s/?#]+(/\\S*)?$", RegexOption.IGNORE_CASE).matches(url.trim())
 
-/**
- * opus/webm wherever the platform's player can open WebM; iOS (AVPlayer) can't, so it streams AAC.
- * TODO: revisit once iOS can play Opus (e.g. remuxing to CAF or a non-AVPlayer backend).
- */
-internal fun defaultStreamingMusicFormat(platform: PlatformType = currentPlatform): AudioFormat {
-    val aac = !isContainerPlayableOn("webm", platform)
-    return AudioFormat(
-        codec = if (aac) "aac" else "opus",
-        container = if (aac) "mp4" else "webm",
-        qualities = listOf(
-            AudioQuality.Lossy(bitrate = 44_000),
-            AudioQuality.Lossy(bitrate = 96_000),
-            AudioQuality.Lossy(bitrate = 128_000),
-            AudioQuality.Lossy(bitrate = 256_000)))
-}
-
-/** Moves settings saved with a streaming format [platform] can't play (iOS' old opus/webm default) to the default. */
-internal fun UserSettings.withPlayableStreamingFormat(platform: PlatformType = currentPlatform): UserSettings =
-    if (isContainerPlayableOn(streamingMusicFormat.container, platform)) this
-    else copy(streamingMusicFormat = defaultStreamingMusicFormat(platform))
+/** opus/webm on every platform: all of their players (ExoPlayer, VLC) can play it. */
+internal fun defaultStreamingMusicFormat(): AudioFormat = AudioFormat(
+    codec = "opus",
+    container = "webm",
+    qualities = listOf(
+        AudioQuality.Lossy(bitrate = 44_000),
+        AudioQuality.Lossy(bitrate = 96_000),
+        AudioQuality.Lossy(bitrate = 128_000),
+        AudioQuality.Lossy(bitrate = 256_000)))

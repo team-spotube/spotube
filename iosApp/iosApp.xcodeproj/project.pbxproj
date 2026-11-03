@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		9A1B2C3D4E5F60718293A4B1 /* VLCKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9A1B2C3D4E5F60718293A4B3 /* VLCKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		11DF02E4B44E5BCF61736473 /* Spotube.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spotube.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -41,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9A1B2C3D4E5F60718293A4B1 /* VLCKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,6 +90,7 @@
 			);
 			name = iosApp;
 			packageProductDependencies = (
+				9A1B2C3D4E5F60718293A4B3 /* VLCKit */,
 			);
 			productName = iosApp;
 			productReference = 11DF02E4B44E5BCF61736473 /* Spotube.app */;
@@ -114,6 +120,9 @@
 			);
 			mainGroup = EFA169D322B90F32841D602F;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				9A1B2C3D4E5F60718293A4B2 /* XCRemoteSwiftPackageReference "vlckit" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 835615636B5FE86AA850B7DB /* Products */;
 			projectDirPath = "";
@@ -368,6 +377,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9A1B2C3D4E5F60718293A4B2 /* XCRemoteSwiftPackageReference "vlckit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/videolan/vlckit";
+			requirement = {
+				kind = revision;
+				revision = 6b87735a95fd3aa96f0fdb6d1b465a2d92badd8f;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9A1B2C3D4E5F60718293A4B3 /* VLCKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9A1B2C3D4E5F60718293A4B2 /* XCRemoteSwiftPackageReference "vlckit" */;
+			productName = VLCKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B056E79C138AE849968965F1 /* Project object */;
 }
