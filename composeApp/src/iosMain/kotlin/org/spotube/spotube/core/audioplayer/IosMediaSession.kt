@@ -23,9 +23,9 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFAudio.AVAudioSession
 import platform.AVFAudio.AVAudioSessionCategoryPlayback
 import platform.AVFAudio.AVAudioSessionModeDefault
-import platform.Foundation.NSDictionary
-import platform.Foundation.NSMutableDictionary
+import platform.AVFAudio.setActive
 import platform.Foundation.NSNotificationCenter
+import platform.Foundation.NSNumber
 import platform.Foundation.NSOperationQueue
 import platform.MediaPlayer.MPChangePlaybackPositionCommandEvent
 import platform.MediaPlayer.MPMediaItemPropertyAlbumTitle
@@ -99,20 +99,21 @@ internal class IosMediaSession {
             return
         }
 
-        val info = NSMutableDictionary()
-        info.setObject(item.title, forKey = MPMediaItemPropertyTitle)
-        info.setObject(item.artist, forKey = MPMediaItemPropertyArtist)
-        item.album.takeIf { it.isNotBlank() }?.let {
-            info.setObject(it, forKey = MPMediaItemPropertyAlbumTitle)
+        val info = buildMap<Any?, Any?> {
+            put(MPMediaItemPropertyTitle, item.title)
+            put(MPMediaItemPropertyArtist, item.artist)
+            item.album.takeIf { it.isNotBlank() }?.let {
+                put(MPMediaItemPropertyAlbumTitle, it)
+            }
+            if (durationSeconds.isFinite() && durationSeconds > 0) {
+                put(MPMediaItemPropertyPlaybackDuration, durationSeconds)
+            }
+            if (positionSeconds.isFinite() && positionSeconds >= 0) {
+                put(MPNowPlayingInfoPropertyElapsedPlaybackTime, positionSeconds)
+            }
+            put(MPNowPlayingInfoPropertyPlaybackRate, if (isPlaying) 1.0 else 0.0)
         }
-        if (durationSeconds.isFinite() && durationSeconds > 0) {
-            info.setObject(durationSeconds, forKey = MPMediaItemPropertyPlaybackDuration)
-        }
-        if (positionSeconds.isFinite() && positionSeconds >= 0) {
-            info.setObject(positionSeconds, forKey = MPNowPlayingInfoPropertyElapsedPlaybackTime)
-        }
-        info.setObject(if (isPlaying) 1.0 else 0.0, forKey = MPNowPlayingInfoPropertyPlaybackRate)
-        nowPlayingInfoCenter.nowPlayingInfo = info as NSDictionary
+        nowPlayingInfoCenter.nowPlayingInfo = info
     }
 
     fun clear() {
@@ -130,38 +131,42 @@ internal class IosMediaSession {
     }
 
     private fun registerAudioSessionNotifications() {
-        notificationTokens += notificationCenter.addObserverForName(
+        notificationCenter.addObserverForName(
             name = platform.AVFAudio.AVAudioSessionInterruptionNotification,
             `object` = audioSession,
             queue = NSOperationQueue.mainQueue()) { notification ->
             val type = notification?.userInfo?.get(
-                platform.AVFAudio.AVAudioSessionInterruptionTypeKey) as? Number
-            if (type?.intValue == platform.AVFAudio.AVAudioSessionInterruptionTypeBegan) {
+                platform.AVFAudio.AVAudioSessionInterruptionTypeKey) as? NSNumber
+            if (type?.unsignedLongValue == platform.AVFAudio.AVAudioSessionInterruptionTypeBegan) {
                 onPause?.invoke()
-            } else if (type?.intValue == platform.AVFAudio.AVAudioSessionInterruptionTypeEnded) {
+            } else if (type?.unsignedLongValue == platform.AVFAudio.AVAudioSessionInterruptionTypeEnded) {
                 activate()
                 val options = notification?.userInfo?.get(
-                    platform.AVFAudio.AVAudioSessionInterruptionOptionKey) as? Number
-                val shouldResume = (options?.intValue ?: 0) and
-                    platform.AVFAudio.AVAudioSessionInterruptionOptionShouldResume.toInt() != 0
+                    platform.AVFAudio.AVAudioSessionInterruptionOptionKey) as? NSNumber
+                val shouldResume = options?.unsignedLongValue
+                    ?.and(platform.AVFAudio.AVAudioSessionInterruptionOptionShouldResume)
+                    ?.let { it != 0UL } == true
                 if (shouldResume) onPlay?.invoke()
             }
-        }
+        }?.let { notificationTokens += it }
     }
 
     private fun registerRemoteCommands() {
-        remoteCommandTokens += remoteCommandCenter.playCommand to
-            remoteCommandCenter.playCommand.addTargetWithHandler {
+        fun register(command: MPRemoteCommand, handler: (platform.MediaPlayer.MPRemoteCommandEvent?) -> platform.MediaPlayer.MPRemoteCommandHandlerStatus) {
+            command.addTargetWithHandler(handler)?.let {
+                remoteCommandTokens += command to it
+            }
+        }
+
+        register(remoteCommandCenter.playCommand) {
             onPlay?.invoke()
             MPRemoteCommandHandlerStatusSuccess
         }
-        remoteCommandTokens += remoteCommandCenter.pauseCommand to
-            remoteCommandCenter.pauseCommand.addTargetWithHandler {
+        register(remoteCommandCenter.pauseCommand) {
             onPause?.invoke()
             MPRemoteCommandHandlerStatusSuccess
         }
-        remoteCommandTokens += remoteCommandCenter.changePlaybackPositionCommand to
-            remoteCommandCenter.changePlaybackPositionCommand.addTargetWithHandler { event ->
+        register(remoteCommandCenter.changePlaybackPositionCommand) { event ->
             val position = (event as? MPChangePlaybackPositionCommandEvent)?.positionTime
             if (position != null && position.isFinite() && position >= 0) {
                 onSeek?.invoke(position)
@@ -170,13 +175,11 @@ internal class IosMediaSession {
                 MPRemoteCommandHandlerStatusCommandFailed
             }
         }
-        remoteCommandTokens += remoteCommandCenter.nextTrackCommand to
-            remoteCommandCenter.nextTrackCommand.addTargetWithHandler {
+        register(remoteCommandCenter.nextTrackCommand) {
             onNext?.invoke()
             MPRemoteCommandHandlerStatusSuccess
         }
-        remoteCommandTokens += remoteCommandCenter.previousTrackCommand to
-            remoteCommandCenter.previousTrackCommand.addTargetWithHandler {
+        register(remoteCommandCenter.previousTrackCommand) {
             onPrevious?.invoke()
             MPRemoteCommandHandlerStatusSuccess
         }
