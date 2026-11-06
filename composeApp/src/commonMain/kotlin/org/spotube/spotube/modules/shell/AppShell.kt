@@ -17,7 +17,12 @@
 
 package org.spotube.spotube.modules.shell
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -104,6 +109,7 @@ fun AppShell(
     val isQueueVisible by queueViewModel.isQueueVisible.collectAsState()
     val isAlternativeVisible by alternativeViewModel.isAlternativeVisible.collectAsState()
     val isLyricsOverlayVisible by viewModel.isLyricsOverlayVisible.collectAsState()
+    val isFullscreenPlayerVisible by viewModel.isFullscreenPlayerVisible.collectAsState()
 
     LaunchedEffect(navigatorCommands, navigator) {
         launch {
@@ -177,7 +183,25 @@ fun AppShell(
                             modifier = Modifier.fillMaxWidth(),
                             onQueue = queueViewModel::toggleQueueVisibility,
                             onAlternativeSource = alternativeViewModel::toggleAlternativeVisibility,
-                            onLyrics = { navigatorCommands.navigateTo(Routes.Lyrics) })
+                            onLyrics = { navigatorCommands.navigateTo(Routes.Lyrics) },
+                            onFullscreen = viewModel::showFullscreenPlayer)
+                    }
+
+                    // Above the content and the large player, but below the queue and
+                    // alternative source sheets so those can still be opened from it
+                    AnimatedVisibility(
+                        visible = isFullscreenPlayerVisible,
+                        enter = fadeIn() + slideInVertically { it / 8 },
+                        exit = fadeOut() + slideOutVertically { it / 8 }
+                    ) {
+                        AppFullscreenPlayer(
+                            modifier = Modifier.fillMaxSize(),
+                            onClose = viewModel::hideFullscreenPlayer,
+                            onQueue = queueViewModel::toggleQueueVisibility,
+                            onLyrics = {
+                                viewModel.hideFullscreenPlayer()
+                                navigatorCommands.navigateTo(Routes.Lyrics)
+                            })
                     }
 
                     if (isQueueVisible) {
