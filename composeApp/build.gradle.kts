@@ -114,7 +114,8 @@ listOf("linux", "aur", "flatpak", "winget", "chocolatey").forEach { target ->
     }
 }
 val githubRepositoryPath = repositoryUrl.removePrefix("https://github.com/")
-val latestReleaseApiUrl = "https://api.github.com/repos/$githubRepositoryPath/releases/latest"
+// Full list (not releases/latest) so pre-release installs can be offered newer pre-releases.
+val releasesApiUrl = "https://api.github.com/repos/$githubRepositoryPath/releases?per_page=50"
 val generatedAppInfoDir = layout.buildDirectory.dir("generated/appBuildInfo/commonMain/kotlin")
 val generateAppBuildInfo by tasks.registering(Copy::class) {
     description = "Generate AppBuildInfo.kt"
@@ -126,7 +127,7 @@ val generateAppBuildInfo by tasks.registering(Copy::class) {
             "appVersion" to appVersionName,
             "appBuildNumber" to appBuildNumber,
             "repositoryUrl" to appRepositoryUrl,
-            "latestReleaseApiUrl" to latestReleaseApiUrl,
+            "releasesApiUrl" to releasesApiUrl,
         )
     )
     inputs.properties(
@@ -134,7 +135,7 @@ val generateAppBuildInfo by tasks.registering(Copy::class) {
             "appVersion" to appVersionName,
             "appBuildNumber" to appBuildNumber,
             "repositoryUrl" to appRepositoryUrl,
-            "latestReleaseApiUrl" to latestReleaseApiUrl,
+            "releasesApiUrl" to releasesApiUrl,
         )
     )
 }
