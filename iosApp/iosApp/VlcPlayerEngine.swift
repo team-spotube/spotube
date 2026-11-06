@@ -36,6 +36,7 @@ final class VlcPlayerEngineFactory: NSObject, NativePlayerEngineFactory {
 /// Every VLC call is made on the main queue, in the order the Kotlin side issued it.
 final class VlcPlayerEngine: NSObject, NativePlayerEngine, VLCMediaPlayerDelegate {
     private let player = VLCMediaPlayer()
+    private let audioSession = AVAudioSession.sharedInstance()
     private var listener: NativePlayerListener?
     private var released = false
 
@@ -47,7 +48,6 @@ final class VlcPlayerEngine: NSObject, NativePlayerEngine, VLCMediaPlayerDelegat
     override init() {
         super.init()
         player.delegate = self
-        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
     }
 
     // MARK: NativePlayerEngine
@@ -70,6 +70,7 @@ final class VlcPlayerEngine: NSObject, NativePlayerEngine, VLCMediaPlayerDelegat
             }
             self.lastReportedDurationMs = 0
             self.player.media = media
+            self.applyPlaybackSettings()
             self.report(.opening)
             if autoPlay { self.startPlayback() }
         }
@@ -121,11 +122,15 @@ final class VlcPlayerEngine: NSObject, NativePlayerEngine, VLCMediaPlayerDelegat
         onMain {
             guard !self.released else { return }
             self.released = true
-            self.listener = nil
             self.player.delegate = nil
             self.player.stop()
             self.player.media = nil
-            try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+            do {
+                try self.audioSession.setActive(false, options: .notifyOthersOnDeactivation)
+            } catch {
+                self.listener?.onError(message: "Could not deactivate audio session: \(error.localizedDescription)")
+            }
+            self.listener = nil
         }
     }
 
@@ -172,7 +177,19 @@ final class VlcPlayerEngine: NSObject, NativePlayerEngine, VLCMediaPlayerDelegat
     // MARK: Internals
 
     private func startPlayback() {
-        try? AVAudioSession.sharedInstance().setActive(true)
+        do {
+            try audioSession.setCategory(.playback, mode: .default, options: [])
+        } catch {
+            listener?.onError(message: "Could not configure audio session: \(error.localizedDescription)")
+            return
+        }
+        do {
+            try audioSession.setActive(true)
+        } catch {
+            listener?.onError(message: "Could not activate audio session: \(error.localizedDescription)")
+            return
+        }
+        applyPlaybackSettings()
         player.play()
     }
 
