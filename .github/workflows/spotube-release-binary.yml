@@ -666,8 +666,10 @@ jobs:
           path: iosApp/Pods
           key: pods-${{ runner.os }}-${{ hashFiles('iosApp/Podfile.lock') }}
 
+      # Not --deployment: that fails whenever the runner's CocoaPods version differs from the one that
+      # wrote Podfile.lock. A plain install still installs the pod versions pinned in Podfile.lock.
       - name: Install CocoaPods dependencies
-        run: pod install --deployment --project-directory=iosApp
+        run: pod install --project-directory=iosApp
 
       # Unsigned on purpose: there is no Apple developer account in CI. The IPA is meant for sideloading
       # (AltStore, Sideloadly, ...), which re-signs it with the user's own certificate.
