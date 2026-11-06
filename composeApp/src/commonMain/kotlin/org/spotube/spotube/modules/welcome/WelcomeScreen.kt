@@ -26,6 +26,9 @@ import org.spotube.millennium.composables.MillenniumSeparator
 import org.spotube.millennium.composables.MillenniumTabGroup
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -66,6 +69,9 @@ import spotube.composeapp.generated.resources.welcome_skip
  * walk-through, so the screen reads as one deliberate panel on every window size.
  * Each step owns its content and the footer only carries the forward action.
  */
+/** Below this width the welcome card trims its margins and step tabs. */
+private val WelcomeCompactWidth = 480.dp
+
 @Composable
 fun WelcomeScreen(viewModel: WelcomeViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -92,14 +98,17 @@ fun WelcomeScreen(viewModel: WelcomeViewModel) {
                         }
                     })
 
-                Box(
+                BoxWithConstraints(
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 16.dp),
+                        .fillMaxWidth(),
                     contentAlignment = Alignment.Center) {
+                    // Phones get tighter margins so the four step tabs keep whole words.
+                    val compact = maxWidth < WelcomeCompactWidth
+                    val outerPadding = if (compact) 8.dp else 16.dp
                     MillenniumCard(
                         modifier = Modifier
+                            .padding(outerPadding)
                             .widthIn(max = 1040.dp)
                             .fillMaxWidth()
                             .fillMaxHeight(),
@@ -109,8 +118,9 @@ fun WelcomeScreen(viewModel: WelcomeViewModel) {
                                 modifier = Modifier
                                     .weight(1f)
                                     .fillMaxWidth()
-                                    .padding(horizontal = 12.dp, vertical = 12.dp),
+                                    .padding(if (compact) 8.dp else 12.dp),
                                 state = state,
+                                compact = compact,
                                 viewModel = viewModel)
                             MillenniumSeparator()
                             WelcomeActionBar(
@@ -127,25 +137,31 @@ fun WelcomeScreen(viewModel: WelcomeViewModel) {
 @Composable
 private fun WelcomeStepSwitcher(
     state: WelcomeUiState,
+    compact: Boolean,
     viewModel: WelcomeViewModel,
     modifier: Modifier = Modifier) {
     val labels = welcomeStepLabels.map { stringResource(it) }
+    val pagePadding = if (compact) 12.dp else 32.dp
     MillenniumTabGroup(
+        listInnerSpacing = if (compact) 2.dp else null,
+        tabPadding = if (compact) PaddingValues(vertical = 8.dp, horizontal = 4.dp) else null,
+        tabTextStyle = if (compact) TextStyle(fontSize = 12.sp, lineHeight = 16.sp, fontWeight = FontWeight.SemiBold) else null,
         selectedTab = state.currentPageIndex,
         onSelectedTabChange = viewModel::goToPage,
         tabs = labels.indices.toList(),
         modifier = modifier,
         tabLabel = { labels[it] }) { index ->
         when (index) {
-            0 -> BrandingPage()
+            0 -> BrandingPage(contentPadding = pagePadding)
 
             1 -> DonationPage(
                 donations = state.donations,
-                onDonate = viewModel::openDonation)
+                onDonate = viewModel::openDonation,
+                contentPadding = pagePadding)
 
             2 -> PluginsPage()
 
-            else -> HowItWorksPage()
+            else -> HowItWorksPage(contentPadding = pagePadding)
         }
     }
 }

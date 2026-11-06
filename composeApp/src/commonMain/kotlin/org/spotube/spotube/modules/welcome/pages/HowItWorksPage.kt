@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.spotube.spotube.resources.iconsax.Iconsax
 import org.spotube.spotube.resources.iconsax.IconsaxDocumentDownload
@@ -41,12 +42,12 @@ import spotube.composeapp.generated.resources.welcome_guide_title
  * No marketing prose — just the four things a new user needs to do.
  */
 @Composable
-fun HowItWorksPage(modifier: Modifier = Modifier) {
+fun HowItWorksPage(modifier: Modifier = Modifier, contentPadding: Dp = 28.dp) {
     Column(
         modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(28.dp),
+            .padding(contentPadding),
         verticalArrangement = Arrangement.spacedBy(20.dp)) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(
