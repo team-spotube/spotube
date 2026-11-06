@@ -24,6 +24,7 @@ import org.spotube.spotube.core.di.injectLogger
 import org.spotube.spotube.core.paths.Paths
 import org.spotube.spotube.core.zipline.BuiltInPluginService
 import org.spotube.spotube.core.zipline.PluginService
+import org.spotube.spotube.core.zipline.PluginServiceScope
 import org.spotube.spotube.core.zipline.ZiplinePluginService
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsChannel
@@ -221,17 +222,9 @@ class PluginManager(
 
                         if (ziplineServicesByPluginID.containsKey(plugin.id)) {
                             ziplineServices[ability] = ziplineServicesByPluginID[plugin.id]
-                        } else if (plugin in BUILT_IN_PLUGINS) {
-                            val service = BuiltInPluginService(plugin)
-                            ziplineServices[ability] = service
-                            ziplineServicesByPluginID[plugin.id] = service
-                            service.start()
                         } else {
-                            logger.d { "ziplineServices: creating new ZiplinePluginService for ${plugin.name} (${plugin.id})" }
-                            val service = ZiplinePluginService(
-                                applicationName = plugin.name,
-                                manifestUrl = "http://localhost?path=${(pluginsDir / plugin.id.toPath() / "manifest.zipline.json")}",
-                                pluginInfo = plugin)
+                            logger.d { "ziplineServices: creating service for ${plugin.name} (${plugin.id})" }
+                            val service = createService(plugin)
                             ziplineServices[ability] = service
                             ziplineServicesByPluginID[plugin.id] = service
                             service.start()
@@ -261,6 +254,36 @@ class PluginManager(
             started = SharingStarted.Eagerly,
             initialValue = null
         )
+
+    private fun createService(plugin: PluginEntry): PluginService =
+        if (plugin in BUILT_IN_PLUGINS) {
+            BuiltInPluginService(plugin)
+        } else {
+            ZiplinePluginService(
+                applicationName = plugin.name,
+                manifestUrl = "http://localhost?path=${(pluginsDir / plugin.id.toPath() / "manifest.zipline.json")}",
+                pluginInfo = plugin)
+        }
+
+    /**
+     * Runs [block] against [plugin]: on its running service when it's selected for an ability,
+     * otherwise on a short-lived one that is stopped again afterwards. Lets the plugin screen
+     * ask any installed plugin (e.g. for its support text) without making it a default.
+     */
+    suspend fun <T> withPluginService(plugin: PluginEntry, block: suspend PluginServiceScope.() -> T): T {
+        ziplineServices.value?.values?.firstOrNull { it?.pluginId == plugin.id }?.let { running ->
+            return running.use(block)
+        }
+        val service = createService(plugin)
+        try {
+            service.start()
+            return service.use(block)
+        } finally {
+            withContext(NonCancellable) {
+                runCatching { service.stop() }.onFailure { logger.e(it) { "Failed to stop temporary service for ${plugin.name}" } }
+            }
+        }
+    }
 
     private fun filterPluginByType(ability: PluginAbility): StateFlow<List<PluginEntry>> {
         return state

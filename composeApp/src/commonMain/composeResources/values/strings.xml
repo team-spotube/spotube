@@ -258,6 +258,16 @@
     <string name="settings_plugins_clear_content_description">Clear</string>
 
     <string name="plugin_configure_title">Configure</string>
+    <string name="plugin_defaults_title">In use</string>
+    <string name="plugin_selection_none">None</string>
+    <string name="plugin_ability_metadata_caption">Songs, albums, artists and search</string>
+    <string name="plugin_ability_audio_caption">Plays the music</string>
+    <string name="plugin_ability_lyrics_caption">Synced lyrics</string>
+    <string name="plugin_ability_scrobble_caption">Logs what you listen to</string>
+    <string name="plugin_installed_title">Installed</string>
+    <string name="plugin_action_details">Plugin details</string>
+    <string name="plugin_action_support">Support</string>
+    <string name="plugin_action_more">More options</string>
     <string name="plugin_screen_title">Plugin Manager</string>
     <string name="plugin_error_enter_url">Please enter a URL</string>
     <string name="plugin_error_url_scheme">URL must start with http:// or https://</string>
@@ -1044,6 +1054,7 @@
     <string name="plugin_info_contact">Contact</string>
     <string name="plugin_info_report_bugs">Report Bugs</string>
     <string name="plugin_support_dialog_title">Support %1$s</string>
+    <string name="plugin_support_unavailable">This plugin hasn\'t shared any ways to support it yet.</string>
 
     <!-- Plugin discovery -->
     <string name="plugin_discover_badge_official">Official</string>
