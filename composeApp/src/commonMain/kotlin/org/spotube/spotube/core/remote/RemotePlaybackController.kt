@@ -311,7 +311,13 @@ class RemotePlaybackController(
                     }
 
                     RemoteCollectionType.ArtistTopTracks -> when (request.action) {
-                        PlaybackDestinationAction.Play -> collectionPlaybackHelper.playArtistTopTracks(request.id)
+                        PlaybackDestinationAction.Play -> {
+                            if (startTrack != null) {
+                                collectionPlaybackHelper.playArtistTopTracksFromTrack(request.id, startTrack)
+                            } else {
+                                collectionPlaybackHelper.playArtistTopTracks(request.id)
+                            }
+                        }
                         PlaybackDestinationAction.AddToQueue -> collectionPlaybackHelper.addArtistTopTracksToQueue(request.id)
                         PlaybackDestinationAction.PlayNext -> collectionPlaybackHelper.playArtistTopTracksNext(request.id)
                     }
