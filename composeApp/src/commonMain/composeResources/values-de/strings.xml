@@ -21,30 +21,30 @@
     <string name="queue_filter_queue">Warteschlange filtern...</string>
     <string name="queue_no_queue_entries">Keine Einträge in der Warteschlange</string>
 
-    <string name="search_placeholder">Songs, Künstler, Alben suchen...</string>
+    <string name="search_placeholder">Lieder, Künstler, Alben suchen...</string>
     <string name="search_clear_history">Verlauf löschen</string>
     <string name="search_filter_placeholder">Suchen...</string>
 
     <!-- Library toolbar -->
     <string name="library_screen_title">Deine Bibliothek</string>
     <string name="library_toolbar_compact_title">Bibliothek</string>
-    <string name="library_tab_playlists">Playlists</string>
+    <string name="library_tab_playlists">Wiedergabelisten</string>
     <string name="library_tab_albums">Alben</string>
     <string name="library_tab_artists">Künstler</string>
     <string name="library_tab_local_tracks">Lokale Titel</string>
-    <string name="library_tab_downloads">Downloads</string>
-    <string name="library_filter_playlists">Gespeicherte Playlists durchsuchen…</string>
+    <string name="library_tab_downloads">Herunterladen</string>
+    <string name="library_filter_playlists">Gespeicherte Wiedergabelisten durchsuchen…</string>
     <string name="library_filter_albums">Gespeicherte Alben durchsuchen…</string>
     <string name="library_filter_artists">Gespeicherte Künstler durchsuchen…</string>
     <string name="library_filter_local_tracks">Ordner oder Titel durchsuchen…</string>
     <string name="library_action_search">Bibliothek filtern</string>
     <string name="library_action_close_search">Filter schließen</string>
-    <string name="library_action_create_playlist">Playlist erstellen</string>
+    <string name="library_action_create_playlist">Wiedergabeliste erstellen</string>
     <string name="library_action_refresh_local_tracks">Lokale Titel aktualisieren</string>
     <string name="library_action_grid_view">Zur Rasteransicht wechseln</string>
     <string name="library_action_list_view">Zur Listenansicht wechseln</string>
-    <string name="library_playlists_empty">Keine gespeicherten Playlists</string>
-    <string name="library_playlists_no_results">Keine Playlists für „%1$s“</string>
+    <string name="library_playlists_empty">Keine gespeicherten Wiedergabelisten</string>
+    <string name="library_playlists_no_results">Keine Wiedergabelisten für „%1$s“</string>
     <string name="library_albums_empty">Keine gespeicherten Alben</string>
     <string name="library_albums_no_results">Keine Alben für „%1$s“</string>
     <string name="library_artists_empty">Keine gespeicherten Künstler</string>
@@ -75,22 +75,22 @@
     <!-- Downloads -->
     <string name="downloads_summary">%1$d aktiv • %2$d abgeschlossen</string>
     <string name="downloads_clear_completed">Abgeschlossene entfernen</string>
-    <string name="downloads_empty">Noch keine Downloads</string>
+    <string name="downloads_empty">Noch nichts heruntergeladen</string>
     <string name="downloads_status_downloading">Wird heruntergeladen: %1$d%</string>
     <string name="downloads_status_queued">In Warteschlange</string>
     <string name="downloads_status_completed">Abgeschlossen</string>
     <string name="downloads_status_cancelled">Abgebrochen</string>
     <string name="downloads_status_failed">Fehlgeschlagen</string>
     <string name="downloads_status_failed_error">Fehlgeschlagen: %1$s</string>
-    <string name="downloads_action_cancel">Download abbrechen</string>
-    <string name="downloads_action_retry">Download wiederholen</string>
-    <string name="downloads_action_remove">Download entfernen</string>
+    <string name="downloads_action_cancel">Herunterladen abbrechen</string>
+    <string name="downloads_action_retry">Herunterladen wiederholen</string>
+    <string name="downloads_action_remove">Heruntergeladenes entfernen</string>
 
     <!-- Shared media items -->
     <string name="media_artist">Künstler</string>
     <string name="media_blacklisted">Auf der Sperrliste</string>
-    <string name="media_liked_tracks">Lieblingssongs</string>
-    <string name="media_saved_songs">Deine gespeicherten Songs</string>
+    <string name="media_liked_tracks">Lieblingslieder</string>
+    <string name="media_saved_songs">Deine gespeicherten Lieder</string>
     <string name="media_unknown_artist">Unbekannter Künstler</string>
     <string name="media_preview_title">Titelname</string>
     <string name="media_preview_subtitle">Künstlername</string>
@@ -99,14 +99,14 @@
 
     <string name="settings_screen_title">Einstellungen</string>
 
-    <string name="settings_section_plugins">Plugins</string>
+    <string name="settings_section_plugins">Erweiterungen</string>
     <string name="settings_section_language_region">Sprache und Region</string>
     <string name="settings_section_appearance">Darstellung</string>
     <string name="settings_section_playback">Wiedergabe</string>
-    <string name="settings_section_downloads">Downloads</string>
+    <string name="settings_section_downloads">Herunterladen</string>
     <string name="settings_section_caching">Zwischenspeicher</string>
-    <string name="settings_section_desktop">Desktop</string>
-    <string name="settings_section_updates">Updates</string>
+    <string name="settings_section_desktop">Schreibtisch</string>
+    <string name="settings_section_updates">Neue Versionen</string>
     <string name="settings_section_support">Unterstützen</string>
     <string name="settings_section_about">Über</string>
 
@@ -121,7 +121,7 @@
     <string name="settings_country_subtitle_current">Land für Inhalte und Verfügbarkeit. Aktuell: %1$s</string>
     <string name="settings_option_name_and_code">%1$s (%2$s)</string>
 
-    <string name="settings_theme_title">Design</string>
+    <string name="settings_theme_title">Erscheinungsbild</string>
     <string name="settings_theme_subtitle_current">Lege fest, wie sich Spotube an das Erscheinungsbild deines Systems anpasst. Aktuell: %1$s</string>
     <string name="settings_theme_light">Hell</string>
     <string name="settings_theme_dark">Dunkel</string>
@@ -138,7 +138,7 @@
     <string name="settings_accent_title">Akzentfarbe</string>
     <string name="settings_accent_subtitle_current">Aktuelle Palette: %1$s</string>
     <string name="settings_accent_dialog_title">Akzentfarbe</string>
-    <string name="settings_accent_dialog_description">Wähle eine Akzentpalette und sieh sie dir im hellen und dunklen Design an.</string>
+    <string name="settings_accent_dialog_description">Wähle eine Akzentpalette und sieh sie dir im hellen und dunklen Erscheinungsbild an.</string>
     <string name="settings_preview_light">Hell</string>
     <string name="settings_preview_dark">Dunkel</string>
     <string name="settings_preview_label">Vorschau</string>
@@ -151,7 +151,7 @@
     <string name="settings_accent_midnight_blue">Mitternachtsblau</string>
     <string name="settings_accent_metallic_slate">Schiefermetallic</string>
 
-    <string name="settings_appearance_title">Look &amp; Feel</string>
+    <string name="settings_appearance_title">Allgemeines Erscheinungsbild</string>
     <string name="settings_appearance_subtitle_current">Oberflächenmaterial und Akzent. Aktuell: %1$s · %2$s</string>
     <string name="settings_appearance_dialog_title">Look &amp; Feel</string>
     <string name="settings_appearance_dialog_description">Wähle ein Oberflächenmaterial und dann einen passenden Akzent. Jede Option ist eine sorgfältig abgestimmte Kombination.</string>
@@ -169,12 +169,12 @@
     <string name="settings_palette_orange">Orange</string>
     <string name="settings_palette_lime">Limette</string>
 
-    <string name="settings_download_folder_title">Eigener Download-Ordner</string>
+    <string name="settings_download_folder_title">Eigener Herunterlade-Ordner</string>
     <string name="settings_download_folder_current">Aktueller Ordner: %1$s</string>
     <string name="settings_download_folder_description">Leer lassen, um den Standard-Musikordner zu verwenden.</string>
     <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
     <string name="settings_local_media_folders_title">Lokale Medienordner</string>
-    <string name="settings_local_media_folders_subtitle_current">Eigene Ordner, die auf dem Desktop durchsucht werden. Hinzugefügt: %1$d</string>
+    <string name="settings_local_media_folders_subtitle_current">Eigene Ordner, die auf dem Schreibtisch durchsucht werden. Hinzugefügt: %1$d</string>
     <string name="settings_local_media_folders_subtitle_empty">Noch kein eigener Ordner hinzugefügt</string>
     <string name="settings_local_media_folders_description">Eigene Ordner für deine lokale Musikbibliothek.</string>
     <string name="settings_local_media_folders_manage">Verwalten</string>
@@ -182,32 +182,32 @@
     <string name="settings_local_media_folders_remove_action">Ordner entfernen</string>
     <string name="settings_local_media_folders_none_added">Keine eigenen Ordner hinzugefügt.</string>
     <string name="settings_local_media_folders_remove_named">%1$s aus der Suchliste entfernen</string>
-    <string name="settings_local_media_folders_automatic_both">Download- und Musik-Cache-Ordner werden automatisch einbezogen.</string>
-    <string name="settings_local_media_folders_automatic_downloads">Dein Download-Ordner wird automatisch einbezogen.</string>
-    <string name="settings_local_media_folders_automatic_cache">Der Musik-Cache-Ordner wird automatisch einbezogen.</string>
+    <string name="settings_local_media_folders_automatic_both">Herunerlade- und Musik-Zwischenspeicher-Ordner werden automatisch einbezogen.</string>
+    <string name="settings_local_media_folders_automatic_downloads">Dein Herunterlade-Ordner wird automatisch einbezogen.</string>
+    <string name="settings_local_media_folders_automatic_cache">Der Musik-Zwischenspeicher-Ordner wird automatisch einbezogen.</string>
     <string name="settings_local_media_folders_saving">Wird gespeichert…</string>
     <string name="settings_local_media_folders_save_error">Ordner konnten nicht gespeichert werden. Deine Änderungen sind noch da – versuche es erneut.</string>
     <plurals name="settings_local_media_folders_count">
         <item quantity="one">%1$d Ordner</item>
         <item quantity="other">%1$d Ordner</item>
     </plurals>
-    <string name="settings_download_format_title">Download-Format</string>
-    <string name="settings_download_format_subtitle_current">Bevorzugter Codec und Container für Downloads. Aktuell: %1$s</string>
-    <string name="settings_download_quality_title">Download-Qualität</string>
+    <string name="settings_download_format_title">Herunterlade-Format</string>
+    <string name="settings_download_format_subtitle_current">Bevorzugter Codec und Container für Herunterladen. Aktuell: %1$s</string>
+    <string name="settings_download_quality_title">Herunterlade-Qualität</string>
 
-    <string name="settings_streaming_format_title">Streaming-Format</string>
-    <string name="settings_streaming_format_subtitle_current">Bevorzugter Codec und Container für Musik-Streaming. Aktuell: %1$s</string>
-    <string name="settings_streaming_quality_title">Streaming-Qualität</string>
+    <string name="settings_streaming_format_title">Übertragungs-Format</string>
+    <string name="settings_streaming_format_subtitle_current">Bevorzugter Codec und Container für Musik-Übertragung. Aktuell: %1$s</string>
+    <string name="settings_streaming_quality_title">Übertragungs-Qualität</string>
     <string name="settings_subtitle_current">Aktuell: %1$s</string>
     <string name="settings_enable_music_caching_title">Musik zwischenspeichern</string>
     <string name="settings_enable_music_caching_subtitle">Gestreamte Audiodaten lokal speichern, damit sie beim erneuten Abspielen schneller laden.</string>
-    <string name="settings_cache_folder_title">Cache-Ordner</string>
+    <string name="settings_cache_folder_title">Zwischenspeicher-Ordner</string>
     <string name="settings_cache_folder_current">Aktuell: %1$s</string>
-    <string name="settings_cache_folder_default">Aktuell: Standard-App-Cache</string>
-    <string name="settings_cache_size_limit_title">Cache-Größenlimit</string>
-    <string name="settings_cache_size_limit_unlimited">Kein Limit</string>
-    <string name="settings_cache_size_limit_current">Aktuelles Limit: %1$d MB</string>
-    <string name="settings_cache_size_limit_description">Lege die maximale Cache-Größe in MB fest. Gib 0 ein oder lass das Feld leer für kein Limit.</string>
+    <string name="settings_cache_folder_default">Aktuell: Standard-App-Zwischenspeicher</string>
+    <string name="settings_cache_size_limit_title">Zwischenspeicher-Größenlimite</string>
+    <string name="settings_cache_size_limit_unlimited">Keine Limite</string>
+    <string name="settings_cache_size_limit_current">Aktuelle Limite: %1$d MB</string>
+    <string name="settings_cache_size_limit_description">Lege die maximale Zwischenspeicher-Größe in MB fest. Gib 0 ein oder lass das Feld leer für keine Limite.</string>
     <string name="settings_cache_size_limit_placeholder">500</string>
     <string name="settings_error_cache_size_range">Die Größe muss 0 oder eine positive Zahl sein.</string>
     <string name="settings_enable_endless_playback_title">Endlose Wiedergabe aktivieren</string>
@@ -232,46 +232,46 @@
     <string name="settings_desktop_minimize_title">In den Infobereich minimieren</string>
     <string name="settings_desktop_minimize_subtitle">Spotube läuft im Infobereich weiter, wenn das Fenster minimiert ist.</string>
     <string name="settings_desktop_discord_title">Discord Rich Presence</string>
-    <string name="settings_desktop_discord_subtitle">Zeige auf dem Desktop deinen aktuellen Wiedergabestatus in Discord an.</string>
+    <string name="settings_desktop_discord_subtitle">Zeige auf dem Schreibtisch deinen aktuellen Wiedergabestatus in Discord an.</string>
 
-    <string name="settings_updates_auto_check_title">Automatisch nach Updates suchen</string>
+    <string name="settings_updates_auto_check_title">Automatisch nach neuen Versionen suchen</string>
     <string name="settings_updates_auto_check_subtitle">Im Hintergrund nach neuen Spotube-Versionen suchen.</string>
 
-    <string name="settings_plugins_manage_title">Plugins verwalten</string>
-    <string name="settings_plugins_manage_subtitle">Verwalte deine Plugins</string>
-    <string name="settings_plugins_default_ability_title">Standard-Plugin für %1$s</string>
+    <string name="settings_plugins_manage_title">Erweiterungen verwalten</string>
+    <string name="settings_plugins_manage_subtitle">Verwalte deine Erweiterungen</string>
+    <string name="settings_plugins_default_ability_title">Standard-Erweiterung für %1$s</string>
     <string name="settings_plugins_ability_metadata">Metadaten</string>
     <string name="settings_plugins_ability_audio">Audio</string>
-    <string name="settings_plugins_ability_lyrics">Songtexte</string>
-    <string name="settings_plugins_ability_scrobble">Scrobbling</string>
-    <string name="settings_plugins_no_selection">Kein Plugin ausgewählt</string>
+    <string name="settings_plugins_ability_lyrics">Liedtexte</string>
+    <string name="settings_plugins_ability_scrobble">Metadaten teilen</string>
+    <string name="settings_plugins_no_selection">Keine Erweiterung ausgewählt</string>
     <string name="settings_plugins_action_change">Ändern</string>
     <string name="settings_plugins_action_select">Auswählen</string>
     <string name="settings_plugins_selected">Ausgewählt</string>
     <string name="settings_plugins_clear">Auswahl aufheben</string>
-    <string name="settings_plugins_no_plugins">Keine Plugins verfügbar</string>
-    <string name="settings_plugins_plugin_content_description">Plugin %1$s</string>
+    <string name="settings_plugins_no_plugins">Keine Erweiterungen verfügbar</string>
+    <string name="settings_plugins_plugin_content_description">Erweiterung %1$s</string>
     <string name="settings_plugins_clear_content_description">Löschen</string>
 
     <string name="plugin_configure_title">Konfigurieren</string>
-    <string name="plugin_screen_title">Plugin-Verwaltung</string>
+    <string name="plugin_screen_title">Erweiterungs-Verwaltung</string>
     <string name="plugin_error_enter_url">Bitte gib eine URL ein</string>
     <string name="plugin_error_url_scheme">Die URL muss mit http:// oder https:// beginnen</string>
-    <string name="plugin_error_download_failed">Plugin konnte nicht heruntergeladen werden</string>
-    <string name="plugin_empty_title">Noch keine Plugins installiert</string>
-    <string name="plugin_empty_subtitle">Füge oben eine Download-URL ein oder wähle eine Datei aus.</string>
+    <string name="plugin_error_download_failed">Erweiterung konnte nicht heruntergeladen werden</string>
+    <string name="plugin_empty_title">Noch keine Erweiterungen installiert</string>
+    <string name="plugin_empty_subtitle">Füge oben eine Herunterlade-URL ein oder wähle eine Datei aus.</string>
     <plurals name="plugin_installed_plugins_count">
-        <item quantity="one">%1$d Plugin installiert</item>
-        <item quantity="other">%1$d Plugins installiert</item>
+        <item quantity="one">%1$d Erweiterung installiert</item>
+        <item quantity="other">%1$d Erweiterungen installiert</item>
     </plurals>
-    <string name="plugin_install_section_title">Plugin installieren</string>
+    <string name="plugin_install_section_title">Erweiterung installieren</string>
     <string name="plugin_url_placeholder">https://example.com/plugin.smplug</string>
     <string name="plugin_action_download">Herunterladen</string>
     <string name="plugin_action_install_from_file">Aus Datei installieren (.smplug)</string>
     <string name="plugin_state_active">Aktiv</string>
     <string name="plugin_version_label">v%1$s</string>
     <string name="plugin_state_builtin">Integriert</string>
-    <string name="plugin_action_remove">Plugin entfernen</string>
+    <string name="plugin_action_remove">Erweiterung entfernen</string>
     <string name="plugin_action_login">Anmelden</string>
     <string name="plugin_action_logout">Abmelden</string>
     <string name="plugin_section_url_title">Von URL herunterladen</string>
@@ -280,7 +280,7 @@
 
     <string name="plugin_permissions_author_version">• %1$s</string>
     <string name="plugin_permissions_requested_title">Angeforderte Berechtigungen</string>
-    <string name="plugin_permissions_none">Dieses Plugin benötigt keine besonderen Berechtigungen.</string>
+    <string name="plugin_permissions_none">Diese Erweiterung benötigt keine besonderen Berechtigungen.</string>
     <string name="plugin_permissions_compare_title">Installiert vs. neu</string>
     <string name="plugin_permissions_installed_label">Installiert</string>
     <string name="plugin_permissions_supplied_label">Neu</string>
@@ -314,7 +314,7 @@
     <string name="settings_jam_section_diagnostics">Diagnose</string>
 
     <!-- Group Jam -->
-    <string name="jam_screen_title">Gruppen-Jam</string>
+    <string name="jam_screen_title">Gruppen-Zusammenspiel</string>
     <string name="jam_setup_create_tab">Erstellen</string>
     <string name="jam_setup_join_tab">Beitreten</string>
     <string name="jam_setup_create_hint">Erstelle einen Raum und teile den Code mit deinen Freunden.</string>
@@ -341,13 +341,13 @@
     <string name="jam_session_leave">Raum verlassen</string>
     <string name="jam_error_title">Verbindung fehlgeschlagen</string>
     <string name="jam_error_dismiss">Schließen</string>
-    <string name="jam_error_create">Jam-Session konnte nicht erstellt werden</string>
-    <string name="jam_error_join">Beitritt zur Jam-Session fehlgeschlagen</string>
+    <string name="jam_error_create">Zusammenspiel konnte nicht erstellt werden</string>
+    <string name="jam_error_join">Beitritt zum Zusammenspiel fehlgeschlagen</string>
     <string name="jam_error_invalid_code">Gib einen sechsstelligen Raumcode aus Buchstaben und Ziffern ein.</string>
-    <string name="jam_share_message">Tritt meiner Spotube-Jam bei, Code: %1$s</string>
+    <string name="jam_share_message">Tritt meiner Spotube-Zusammenspiel bei, Code: %1$s</string>
 
     <string name="player_go_to_album">Zum Album</string>
-    <string name="player_sleep_timer">Sleep-Timer</string>
+    <string name="player_sleep_timer">Einschlaffunktion</string>
     <string name="player_track_details">Titeldetails</string>
     <string name="player_play_content_description">Abspielen</string>
     <string name="player_pause_content_description">Pause</string>
@@ -357,10 +357,10 @@
     <string name="update_action_ignore">Ignorieren</string>
     <string name="update_action_update">Aktualisieren</string>
     <string name="app_update_dialog_title">Spotube %1$s ist verfügbar</string>
-    <string name="app_update_dialog_no_notes">Die Neuerungen dieser Version findest du auf der Spotube-Downloadseite.</string>
+    <string name="app_update_dialog_no_notes">Die Neuerungen dieser Version findest du auf der Spotube-Herunterladeseite.</string>
     <string name="plugin_update_dialog_title">%1$s %2$s ist verfügbar</string>
     <string name="plugin_update_dialog_current_version">Aktuell installiert: %1$s</string>
-    <string name="plugin_update_dialog_no_notes">Die Neuerungen dieses Updates findest du auf der Seite des Plugins.</string>
+    <string name="plugin_update_dialog_no_notes">Die Neuerungen dieser neuen Version findest du auf der Seite der Erweiterungen.</string>
 
     <string name="welcome_skip">Überspringen</string>
     <string name="welcome_next">Weiter</string>
@@ -368,63 +368,63 @@
     <string name="welcome_get_started">Los geht\'s</string>
     <string name="welcome_app_name">Spotube</string>
     <string name="welcome_brand_freedom">Musik ohne Fesseln.</string>
-    <string name="welcome_brand_quiet_description">Ein Open-Source-Player für eine ganze Welt voller Musik.\nZum Entdecken. Zum Selbstgestalten.</string>
+    <string name="welcome_brand_quiet_description">Ein quelloffener Musikspieler für eine ganze Welt voller Musik.\nZum Entdecken. Zum Selbstgestalten.</string>
     <string name="welcome_donate_quiet_title">Halte dieses Projekt am Leben.</string>
     <string name="welcome_donate_letter">Spotube wird von Menschen gemacht, nicht von einem Abo-Unternehmen. Wenn es Teil deines Alltags wird, hilft uns schon eine kleine Unterstützung, ihm die Pflege zu geben, die es verdient.\n\nDanke, dass du unabhängiger Software einen Platz gibst.</string>
-    <string name="welcome_plugins_setup_guide">Beginne mit einem Katalog-Plugin, um Songs und Playlists zu finden. Wähle ein Audio-Plugin, um sie abzuspielen. Songtexte und Hörverlauf sind optional. Entdecke unten ein Plugin, prüfe seine Berechtigungen, installiere es und wähle es dann hier aus.</string>
-    <string name="welcome_plugins_discover">Plugins entdecken</string>
+    <string name="welcome_plugins_setup_guide">Beginne mit einer Katalog-Erweiterung, um Lieder und Wiedergabelisten zu finden. Wähle eine Audio-Erweiterung, um sie abzuspielen. Liedtexte und Hörverlauf sind optional. Entdecke unten eine Erweiterung, prüfe seine Berechtigungen, installiere sie und wähle sie dann hier aus.</string>
+    <string name="welcome_plugins_discover">Erweiterungen entdecken</string>
     <string name="welcome_plugins_sources">Deine Quellen</string>
     <string name="welcome_plugins_retry">Erneut versuchen</string>
-    <string name="welcome_plugins_more">Weitere Plugins</string>
-    <string name="welcome_plugins_discovery_empty">Keine neuen Plugins gefunden. Du kannst auch oben eines über einen Link oder eine .smplug-Datei installieren.</string>
-    <string name="welcome_plugins_discovery_error">Die Plugin-Suche ist gerade nicht verfügbar. Versuche es erneut oder installiere über einen Link oder eine Datei.</string>
+    <string name="welcome_plugins_more">Weitere Erweiterungen</string>
+    <string name="welcome_plugins_discovery_empty">Keine neuen Erweiterungen gefunden. Du kannst auch oben eine über eine Verknüpfung oder eine .smplug-Datei installieren.</string>
+    <string name="welcome_plugins_discovery_error">Die Erweiterungs-Suche ist gerade nicht verfügbar. Versuche es erneut oder installiere über eine Verknüpfung oder eine Datei.</string>
     <string name="welcome_step_welcome">Willkommen</string>
     <string name="welcome_step_support">Unterstützen</string>
-    <string name="welcome_step_plugins">Plugins</string>
+    <string name="welcome_step_plugins">Erweiterungen</string>
     <string name="welcome_step_guide">Anleitung</string>
 
     <string name="welcome_guide_title">So nutzt du Spotube</string>
     <string name="welcome_guide_subtitle">Vier schnelle Schritte und du hörst Musik.</string>
     <string name="welcome_guide_signin_title">Anmelden</string>
-    <string name="welcome_guide_signin_desc">Verbinde dein Konto oder wähle ein eigenes Katalog-Plugin.</string>
+    <string name="welcome_guide_signin_desc">Verbinde dein Konto oder wähle eine eigene Katalog-Erweiterung.</string>
     <string name="welcome_guide_search_title">Suchen und abspielen</string>
-    <string name="welcome_guide_search_desc">Finde einen Song, ein Album oder einen Künstler und tippe auf Abspielen.</string>
-    <string name="welcome_guide_offline_title">Offline hören</string>
+    <string name="welcome_guide_search_desc">Finde ein Lied, ein Album oder einen Künstler und tippe auf Abspielen.</string>
+    <string name="welcome_guide_offline_title">Ohne Verbindung zum Internet hören</string>
     <string name="welcome_guide_offline_desc">Lade Titel herunter, um auch ohne Verbindung weiterzuhören.</string>
-    <string name="welcome_guide_lyrics_title">Songtexte mitlesen</string>
-    <string name="welcome_guide_lyrics_desc">Öffne im Player synchronisierte Songtexte, während ein Titel läuft.</string>
+    <string name="welcome_guide_lyrics_title">Liedtexte mitlesen</string>
+    <string name="welcome_guide_lyrics_desc">Öffne im Spieler synchronisierte Liedtexte, während ein Titel läuft.</string>
 
     <!-- Page 1: branding -->
     <string name="welcome_brand_tagline">Deine Musik. Deine Quellen. Deine Regeln.</string>
-    <string name="welcome_brand_subtitle">Ein kostenloser Open-Source-Musikplayer, entwickelt von einer Community, die Musik einfach liebt.</string>
-    <string name="welcome_brand_chip_open_source">Open Source</string>
+    <string name="welcome_brand_subtitle">Ein kostenloser quelloffener Musikspieler, entwickelt von einer Gemeinschaft, die Musik einfach liebt.</string>
+    <string name="welcome_brand_chip_open_source">Quelloffen</string>
     <string name="welcome_brand_chip_no_ads">Keine Werbung</string>
     <string name="welcome_brand_chip_no_tracking">Keine Telemetrie</string>
-    <string name="welcome_brand_chip_plugin_powered">Mit Plugins</string>
+    <string name="welcome_brand_chip_plugin_powered">Mit Erweiterungen</string>
     <string name="welcome_lets_go">Los geht\'s</string>
 
     <!-- Page 2: donations -->
     <string name="welcome_donate_eyebrow">Unterstützer halten uns am Laufen</string>
     <string name="welcome_donate_title">Mit Leidenschaft gebaut. Von dir am Leben gehalten.</string>
-    <string name="welcome_donate_message">Spotube ist zu 100 % kostenlos, frei und Open Source – keine Werbung, keine Abos, kein Tracking. Jede Funktion gibt es nur, weil Menschen wie du geholfen haben, die Entwicklung am Laufen zu halten.</string>
+    <string name="welcome_donate_message">Spotube ist zu 100 % kostenlos, frei und quelloffen – keine Werbung, keine Abos, kein Tracking. Jede Funktion gibt es nur, weil Menschen wie du geholfen haben, die Entwicklung am Laufen zu halten.</string>
     <string name="welcome_donate_patreon_title">Patreon</string>
-    <string name="welcome_donate_patreon_tag">Monatlicher Sponsor</string>
+    <string name="welcome_donate_patreon_tag">Monatlicher Unterstützer</string>
     <string name="welcome_donate_patreon_subtitle">Unterstütze laufende Entwicklung und Infrastruktur</string>
-    <string name="welcome_donate_bmac_title">Buy Me a Coffee</string>
+    <string name="welcome_donate_bmac_title">Kauf' mir einen Kaffee</string>
     <string name="welcome_donate_bmac_tag">Einmaliger Kaffee</string>
     <string name="welcome_donate_bmac_subtitle">Gib einer nächtlichen Coding-Session mit einem kleinen Trinkgeld Energie</string>
     <string name="welcome_donate_opencollective_title">Open Collective</string>
     <string name="welcome_donate_opencollective_tag">Community-Fonds</string>
-    <string name="welcome_donate_opencollective_subtitle">Transparente, von der Community verwaltete Finanzierung</string>
+    <string name="welcome_donate_opencollective_subtitle">Transparente, von der Gemeinschaft verwaltete Finanzierung</string>
     <string name="welcome_donate_thanks">Von Herzen danke, dass du an offene Musik glaubst.</string>
     <string name="welcome_donate_optional">Die Unterstützung ist völlig freiwillig – Spotube bleibt so oder so kostenlos.</string>
-    <string name="welcome_donate_action">Sponsern</string>
+    <string name="welcome_donate_action">Unterstützer</string>
     <string name="welcome_donate_open_content_description">%1$s öffnen</string>
 
     <!-- Support / donations -->
     <string name="support_button_label">Spotube unterstützen</string>
     <string name="support_dialog_title">Spotube unterstützen</string>
-    <string name="support_dialog_message">Spotube ist kostenlos, frei und Open Source – keine Werbung, keine Abos, kein Tracking. Wenn es dir Freude macht, unterstütze doch das Projekt.</string>
+    <string name="support_dialog_message">Spotube ist kostenlos, frei und quelloffen – keine Werbung, keine Abos, kein Tracking. Wenn es dir Freude macht, unterstütze doch das Projekt.</string>
     <string name="support_dialog_reminder_hint">Du kannst diese Erinnerungen unter Einstellungen → Unterstützen deaktivieren.</string>
     <string name="support_dialog_dismiss">Vielleicht später</string>
     <string name="settings_support_reminders_title">Unterstützungs-Erinnerungen</string>
@@ -433,13 +433,13 @@
     <!-- Page 3: plugins -->
     <string name="welcome_plugins_eyebrow">Modulare Architektur</string>
     <string name="welcome_plugins_title">Bestimme, woher deine Musik kommt.</string>
-    <string name="welcome_plugins_subtitle">Spotube trennt Katalogsuche, Audio-Streaming und synchronisierte Songtexte. Konfiguriere unten deine Engines oder wechsle sie jederzeit.</string>
+    <string name="welcome_plugins_subtitle">Spotube trennt Katalogsuche, Audio-Übertragung und synchronisierte Liedtexte. Konfiguriere unten dein Programm oder wechsle es jederzeit.</string>
     <string name="welcome_plugins_metadata_title">Metadaten-Engine</string>
-    <string name="welcome_plugins_metadata_description">Sorgt für Musikentdeckung, Suche, Titellisten und Playlists.</string>
+    <string name="welcome_plugins_metadata_description">Sorgt für Musikentdeckung, Suche, Titellisten und Wiedergabelisten.</string>
     <string name="welcome_plugins_audio_title">Audio-Engine</string>
-    <string name="welcome_plugins_audio_description">Lädt und dekodiert die abgespielten Audiostreams.</string>
-    <string name="welcome_plugins_lyrics_title">Songtext-Engine</string>
-    <string name="welcome_plugins_lyrics_description">Liefert zeitsynchrone Karaoke-Songtexte in Echtzeit.</string>
+    <string name="welcome_plugins_audio_description">Lädt und dekodiert die abgespielten Audioübertragung.</string>
+    <string name="welcome_plugins_lyrics_title">Liedtext-Engine</string>
+    <string name="welcome_plugins_lyrics_description">Liefert zeitsynchrone Karaoke-Liedtexte in Echtzeit.</string>
     <string name="welcome_plugins_scrobble_title">Scrobble-Engine</string>
     <string name="welcome_plugins_scrobble_description">Zeichnet deinen Hörverlauf bei Last.fm oder ListenBrainz auf.</string>
     <string name="welcome_plugins_badge_active">Aktiv</string>
@@ -449,8 +449,8 @@
     <string name="welcome_plugins_none_selected">Engine auswählen</string>
     <string name="welcome_plugins_installed_section">Installierte Engines</string>
     <string name="welcome_plugins_set_default">Als Standard festlegen</string>
-    <string name="welcome_plugins_builtin_note">NewPipe YouTube und LRCLib Lyrics sind integriert und sofort einsatzbereit.</string>
-    <string name="welcome_plugins_tip">Unter Einstellungen → Plugins kannst du jederzeit Community-Plugins verwalten oder hinzufügen.</string>
+    <string name="welcome_plugins_builtin_note">NewPipe, YouTube und LRCLib Lyrics sind integriert und sofort einsatzbereit.</string>
+    <string name="welcome_plugins_tip">Unter Einstellungen → Erweiterungen kannst du jederzeit Erweiterungen der Gemeinschaft verwalten oder hinzufügen.</string>
 
     <!-- Page 4: how it works -->
     <string name="welcome_how_eyebrow">Retro-moderne Architektur</string>
@@ -458,16 +458,16 @@
     <string name="welcome_how_subtitle">So steuert Spotube die dezentrale Wiedergabe direkt auf deinem Gerät.</string>
     <string name="welcome_how_status_badge">DIREKT PEER-TO-PEER • 256 KBPS OPUS</string>
     <string name="welcome_how_mockup_title">Blaue Stunde</string>
-    <string name="welcome_how_mockup_artist">Spotube · Player-Demo</string>
+    <string name="welcome_how_mockup_artist">Spotube · Spieler-Vorführung</string>
     <string name="welcome_how_mockup_lyric">Ein bisschen Musik für die Momente dazwischen.</string>
     <string name="welcome_how_step_search_title">1. Dezentrale Entdeckung</string>
-    <string name="welcome_how_step_search_desc">Suchanfragen gehen direkt an dein gewähltes Katalog-Plugin. Spotube erstellt nie ein Profil deines Geschmacks.</string>
-    <string name="welcome_how_step_stream_title">2. Direkte Stream-Auflösung</string>
-    <string name="welcome_how_step_stream_desc">Audio wird direkt von den Content-Servern auf dein Gerät gestreamt. Keine Proxy-Umwege, kein Datensammeln aus der Ferne.</string>
+    <string name="welcome_how_step_search_desc">Suchanfragen gehen direkt an deine gewähltes Katalog-Erweiterung. Spotube erstellt nie ein Profil deines Geschmacks.</string>
+    <string name="welcome_how_step_stream_title">2. Direkte Übertagungs-Auflösung</string>
+    <string name="welcome_how_step_stream_desc">Audio wird direkt von den Inhalt-Servern auf dein Gerät übertragen. Keine Proxy-Umwege, kein Datensammeln aus der Ferne.</string>
     <string name="welcome_how_step_playback_title">3. Lokales DSP &amp; Wiedergabe</string>
-    <string name="welcome_how_step_playback_desc">Lokal dekodiert und zwischengespeichert, mit Equalizer und optionalem Offline-Download.</string>
-    <string name="welcome_how_step_lyrics_title">4. Synchronisierte Songtexte &amp; Jam</string>
-    <string name="welcome_how_step_lyrics_desc">Karaoke-Songtexte folgen der Wiedergabeposition – dazu LAN-Fernsteuerung und Gruppen-Jam.</string>
+    <string name="welcome_how_step_playback_desc">Lokal dekodiert und zwischengespeichert, mit Equalizer und optionalem Herunterladen für Netzausfall.</string>
+    <string name="welcome_how_step_lyrics_title">4. Synchronisierte Liedtexte &amp; Zusammenspiel</string>
+    <string name="welcome_how_step_lyrics_desc">Karaoke-Liedtexte folgen der Wiedergabeposition – dazu LAN-Fernsteuerung und Gruppen-Zusammenspiel.</string>
     <string name="welcome_how_footer">Keine Zwischenserver. Die Wiedergabe läuft direkt auf deinem Gerät – privat aus Prinzip.</string>
 
     <!-- Devices: play destination picker -->
@@ -478,8 +478,8 @@
     <string name="devices_destination_action_play_next">Als Nächstes abspielen</string>
     <string name="devices_destination_this_device">Dieses Gerät</string>
     <string name="devices_destination_this_device_subtitle">Auf diesem Gerät</string>
-    <string name="devices_destination_remote_device">Remote-Gerät</string>
-    <string name="devices_destination_remote_device_host">Remote-Gerät (%1$s)</string>
+    <string name="devices_destination_remote_device">Fernzugriff-Gerät</string>
+    <string name="devices_destination_remote_device_host">Fernzugriff-Gerät (%1$s)</string>
     <string name="devices_destination_remote_subtitle">Auf dem verbundenen Gerät</string>
 
     <!-- Devices: connection errors -->
@@ -512,12 +512,12 @@
 
     <!-- Group Jam: play destination picker -->
     <string name="jam_destination_title">Wo abspielen?</string>
-    <string name="jam_destination_message">Du hast eine aktive Jam-Session. Wähle, wo diese Sammlung abgespielt werden soll.</string>
+    <string name="jam_destination_message">Du hast ein aktives Zusammenspiel. Wähle, wo diese Sammlung abgespielt werden soll.</string>
     <string name="jam_destination_play_here">Hier abspielen</string>
-    <string name="jam_destination_suggest">Für Jam vorschlagen</string>
+    <string name="jam_destination_suggest">Für Zusammenspiel vorschlagen</string>
 
     <!-- Group Jam: connection errors -->
-    <string name="jam_error_no_broker">Kein Jam-Broker konfiguriert</string>
+    <string name="jam_error_no_broker">Kein Zusammenspiel-Broker konfiguriert</string>
     <string name="jam_error_broker_host_empty">Broker-Host ist leer</string>
     <string name="jam_error_connection_failed">Verbindung fehlgeschlagen</string>
     <string name="jam_error_connection_lost">Verbindung unterbrochen</string>
@@ -527,10 +527,10 @@
     <string name="settings_jam_broker_username_placeholder">anonym</string>
 
     <!-- Group Jam: queue snackbar -->
-    <string name="jam_queue_added_track">Zur Jam-Warteschlange hinzugefügt</string>
+    <string name="jam_queue_added_track">Zur Zusammenspiel-Warteschlange hinzugefügt</string>
     <plurals name="jam_queue_added_tracks">
-        <item quantity="one">%1$d Titel zur Jam-Warteschlange hinzugefügt</item>
-        <item quantity="other">%1$d Titel zur Jam-Warteschlange hinzugefügt</item>
+        <item quantity="one">%1$d Titel zur Zusammenspiel-Warteschlange hinzugefügt</item>
+        <item quantity="other">%1$d Titel zur Zusammenspiel-Warteschlange hinzugefügt</item>
     </plurals>
 
     <!-- Remote control: connection request dialog -->
@@ -554,11 +554,11 @@
     <string name="search_loading_tracks">Titel werden geladen...</string>
     <string name="search_loading_albums">Alben werden geladen...</string>
     <string name="search_loading_artists">Künstler werden geladen...</string>
-    <string name="search_loading_playlists">Playlists werden geladen...</string>
+    <string name="search_loading_playlists">Wiedergabelisten werden geladen...</string>
     <string name="search_loading_users">Nutzer werden geladen...</string>
     <string name="search_no_albums">Keine Alben gefunden</string>
     <string name="search_no_artists">Keine Künstler gefunden</string>
-    <string name="search_no_playlists">Keine Playlists gefunden</string>
+    <string name="search_no_playlists">Keine Wiedergabelisten gefunden</string>
     <string name="search_no_users">Keine Nutzer gefunden</string>
     <string name="search_warm_crates">Wir wühlen in den Plattenkisten...</string>
     <string name="search_warm_cosmos">Wir durchsuchen den Kosmos...</string>
@@ -572,7 +572,7 @@
     <string name="search_error_tracks">Titelsuche fehlgeschlagen</string>
     <string name="search_error_albums">Albumsuche fehlgeschlagen</string>
     <string name="search_error_artists">Künstlersuche fehlgeschlagen</string>
-    <string name="search_error_playlists">Playlist-Suche fehlgeschlagen</string>
+    <string name="search_error_playlists">Wiedergabelisten-Suche fehlgeschlagen</string>
     <string name="search_error_users">Nutzersuche fehlgeschlagen</string>
 
     <!-- Home -->
@@ -581,14 +581,14 @@
     <!-- Lyrics -->
     <string name="lyrics_mode_synced">Synchron</string>
     <string name="lyrics_mode_plain">Nur Text</string>
-    <string name="lyrics_no_synced">Keine synchronisierten Songtexte verfügbar</string>
-    <string name="lyrics_no_plain">Keine Songtexte verfügbar</string>
+    <string name="lyrics_no_synced">Keine synchronisierten Liedtexte verfügbar</string>
+    <string name="lyrics_no_plain">Keine Liedtexte verfügbar</string>
 
     <!-- Settings: audio format/quality labels -->
     <string name="settings_audio_format_label">%1$s in %2$s</string>
     <string name="settings_audio_quality_lossy">%1$d kbps</string>
     <string name="settings_audio_quality_lossless">%1$s kHz • %2$d Kanäle</string>
-    <string name="search_error_no_metadata_plugin">Kein Metadaten-Plugin ausgewählt</string>
+    <string name="search_error_no_metadata_plugin">Kein Metadaten-Erweiterung ausgewählt</string>
 
     <!-- Common -->
     <string name="common_back">Zurück</string>
@@ -600,7 +600,7 @@
 
     <!-- Media cards -->
     <string name="media_user">Nutzer</string>
-    <string name="media_playlist">Playlist</string>
+    <string name="media_playlist">Wiedergabeliste</string>
 
     <!-- Error display -->
     <string name="error_title">Das tut uns wirklich leid</string>
@@ -615,19 +615,19 @@
     <string name="collection_details_shuffle_play">Zufällig abspielen</string>
     <string name="collection_details_follow">Folgen</string>
     <string name="collection_details_unfollow">Nicht mehr folgen</string>
-    <string name="collection_details_edit_playlist">Playlist bearbeiten</string>
+    <string name="collection_details_edit_playlist">Wiedergabeliste bearbeiten</string>
     <string name="collection_details_by_owner">Von %1$s</string>
 
     <!-- Track options -->
     <string name="track_options_title">Titeloptionen</string>
-    <string name="track_options_add_to_jam">Zur Jam hinzufügen</string>
+    <string name="track_options_add_to_jam">Zum Zusammenspiel hinzufügen</string>
     <string name="track_options_start_radio">Radio starten</string>
     <string name="track_options_play_next">Als Nächstes abspielen</string>
     <string name="track_options_move_to_next">Als Nächstes einreihen</string>
     <string name="track_options_remove_from_queue">Aus Warteschlange entfernen</string>
     <string name="track_options_remove_from_favorites">Aus Favoriten entfernen</string>
     <string name="track_options_save_as_favorite">Als Favorit speichern</string>
-    <string name="track_options_add_to_playlist">Zur Playlist hinzufügen</string>
+    <string name="track_options_add_to_playlist">Zur Wiedergabeliste hinzufügen</string>
     <string name="track_options_download">Herunterladen</string>
     <string name="track_options_share">Teilen</string>
 
@@ -647,10 +647,10 @@
     <string name="track_list_add_count_to_queue">%1$d zur Warteschlange hinzufügen</string>
     <string name="track_list_play_all_next">Alle als Nächstes abspielen</string>
     <string name="track_list_play_count_next">%1$d als Nächstes abspielen</string>
-    <string name="track_list_add_all_to_playlist">Alle zur Playlist hinzufügen</string>
-    <string name="track_list_add_count_to_playlist">%1$d zur Playlist hinzufügen</string>
-    <string name="track_list_add_all_to_jam">Alle zur Jam hinzufügen</string>
-    <string name="track_list_add_count_to_jam">%1$d zur Jam hinzufügen</string>
+    <string name="track_list_add_all_to_playlist">Alle zur Wiedergabeliste hinzufügen</string>
+    <string name="track_list_add_count_to_playlist">%1$d zur Wiedergabeliste hinzufügen</string>
+    <string name="track_list_add_all_to_jam">Alle zum Zusammenspiel hinzufügen</string>
+    <string name="track_list_add_count_to_jam">%1$d zum Zusammenspiel hinzufügen</string>
     <string name="track_list_more_artists">+%1$d weitere</string>
 
     <!-- WebView -->
@@ -669,8 +669,8 @@
 
     <!-- Downloads -->
     <string name="downloads_error_no_metadata">Keine Titel-Metadaten</string>
-    <string name="downloads_error_stream_unresolved_short">Stream-URL konnte nicht ermittelt werden</string>
-    <string name="downloads_error_stream_unresolved">Stream-URL konnte nicht ermittelt werden. Spiele den Titel zuerst ab.</string>
+    <string name="downloads_error_stream_unresolved_short">Übertragungs-URL konnte nicht ermittelt werden</string>
+    <string name="downloads_error_stream_unresolved">Übertragungs-URL konnte nicht ermittelt werden. Spiele den Titel zuerst ab.</string>
 
     <!-- Saved tracks -->
     <string name="saved_tracks_title">Gespeicherte Titel</string>
@@ -678,19 +678,19 @@
 
     <!-- Artist -->
     <string name="artist_following">Gefolgt</string>
-    <string name="artist_top_tracks">Top-Titel</string>
-    <string name="artist_play_top_tracks">Top-Titel abspielen</string>
-    <string name="artist_add_top_tracks_to_queue">Top-Titel zur Warteschlange hinzufügen</string>
+    <string name="artist_top_tracks">Beliebte Titel</string>
+    <string name="artist_play_top_tracks">Beliebte Titel abspielen</string>
+    <string name="artist_add_top_tracks_to_queue">Beliebte Titel zur Warteschlange hinzufügen</string>
     <string name="artist_related_artists">Ähnliche Künstler</string>
-    <string name="artist_featured_playlists">Empfohlene Playlists</string>
+    <string name="artist_featured_playlists">Empfohlene Wiedergabelisten</string>
     <string name="artist_error_load_failed">Künstlerübersicht konnte nicht geladen werden</string>
-    <string name="artist_followers_unavailable">Follower nicht verfügbar</string>
-    <string name="artist_followers_thousands">%1$s Tsd. Follower</string>
-    <string name="artist_followers_millions">%1$s Mio. Follower</string>
-    <string name="artist_followers_billions">%1$s Mrd. Follower</string>
+    <string name="artist_followers_unavailable">Mitverfolger nicht verfügbar</string>
+    <string name="artist_followers_thousands">%1$s Tsd. Mitverfolger</string>
+    <string name="artist_followers_millions">%1$s Mio. Mitverfolger</string>
+    <string name="artist_followers_billions">%1$s Mrd. Mitverfolger</string>
     <plurals name="artist_followers_count">
-        <item quantity="one">%1$d Follower</item>
-        <item quantity="other">%1$d Follower</item>
+        <item quantity="one">%1$d Mitverfolger</item>
+        <item quantity="other">%1$d Mitverfolger</item>
     </plurals>
 
     <!-- Player -->
@@ -712,41 +712,41 @@
     <string name="player_mute_content_description">Stummschalten</string>
     <string name="player_unmute_content_description">Stummschaltung aufheben</string>
     <string name="player_more_options_content_description">Weitere Optionen</string>
-    <string name="player_options_content_description">Player-Optionen</string>
-    <string name="player_collapse_content_description">Player minimieren</string>
-    <string name="player_expand_lyrics_content_description">Songtexte erweitern</string>
+    <string name="player_options_content_description">Spieler-Optionen</string>
+    <string name="player_collapse_content_description">Spieler minimieren</string>
+    <string name="player_expand_lyrics_content_description">Liedtexte erweitern</string>
     <string name="player_now_playing">Aktuelle Wiedergabe</string>
-    <string name="player_lyrics">Songtext</string>
+    <string name="player_lyrics">Liedtexte/string>
     <string name="player_alternative_source">Alternative Quelle</string>
     <string name="player_alternative_source_content_description">Alternative Quelle</string>
     <string name="player_download">Herunterladen</string>
     <string name="player_download_status_downloaded">Heruntergeladen</string>
     <string name="player_download_status_downloading">Wird heruntergeladen...</string>
     <string name="player_download_already_downloaded">Bereits heruntergeladen</string>
-    <string name="player_download_retrying">Download wird wiederholt...</string>
+    <string name="player_download_retrying">Herunterladen wird wiederholt...</string>
     <string name="player_download_started">%1$s wird heruntergeladen</string>
     <string name="player_sleep_timer_remaining">Die Wiedergabe wird in %1$s pausiert.</string>
     <string name="player_sleep_timer_description">Wiedergabe nach der ausgewählten Anzahl an Minuten pausieren.</string>
     <string name="player_sleep_timer_minutes_label">Minuten</string>
     <string name="player_sleep_timer_minutes_placeholder">Zwischen 1 und 600 Minuten wählen</string>
-    <string name="player_sleep_timer_cancel">Timer abbrechen</string>
+    <string name="player_sleep_timer_cancel">Schaltuhr abbrechen</string>
     <string name="player_sleep_timer_start">Starten</string>
-    <string name="player_track_details_stream_mismatch">Die Wiedergabe-URL wurde mit anderen Streaming-Einstellungen ermittelt. Der markierte Stream entspricht deiner aktuellen Einstellung; die aktive URL wird bei der nächsten Stream-Anfrage aktualisiert.</string>
+    <string name="player_track_details_stream_mismatch">Die Wiedergabe-URL wurde mit anderen Übertragungs-Einstellungen ermittelt. Die markierte Übertragung entspricht deiner aktuellen Einstellung; die aktive URL wird bei der nächsten Übertragungs-Anfrage aktualisiert.</string>
     <string name="player_track_details_matched_source">Zugeordnete Audioquelle</string>
     <string name="player_track_details_loading_source">Zugeordnete Quelle wird geladen…</string>
-    <string name="player_track_details_source_not_needed">Beim Abspielen der lokal zwischengespeicherten Datei wird keine zugeordnete Remote-Quelle benötigt.</string>
+    <string name="player_track_details_source_not_needed">Beim Abspielen der lokal zwischengespeicherten Datei wird keine zugeordnete Fernzugriff-Quelle benötigt.</string>
     <string name="player_track_details_no_source">Keine zugeordnete Quelle verfügbar.</string>
     <string name="player_track_details_no_cached_source">Für diesen Titel ist keine zugeordnete Audioquelle zwischengespeichert.</string>
-    <string name="player_track_details_streams_not_cached">Stream-Details sind noch nicht zwischengespeichert. Spiele den Titel zuerst ab, um sie zu laden.</string>
+    <string name="player_track_details_streams_not_cached">Übertragungs-Details sind noch nicht zwischengespeichert. Spiele den Titel zuerst ab, um sie zu laden.</string>
     <string name="player_track_details_load_failed">Titeldetails konnten nicht geladen werden.</string>
-    <string name="player_track_details_available_streams">Verfügbare Streams</string>
-    <string name="player_track_details_served_from_cache_description">Dieser Titel wird aus dem lokalen Cache abgespielt. Stream-Varianten werden für diese Wiedergabe nicht verwendet.</string>
-    <string name="player_track_details_loading_streams">Streams werden geladen…</string>
-    <string name="player_track_details_no_streams">Für diese Quelle sind keine Streams verfügbar.</string>
-    <string name="player_track_details_selected_stream_content_description">Aktuell ausgewählter Stream</string>
-    <string name="player_track_details_matches_preference">Entspricht deinen Einstellungen für Streaming-Format &amp; -Qualität</string>
+    <string name="player_track_details_available_streams">Verfügbare Übertragungen</string>
+    <string name="player_track_details_served_from_cache_description">Dieser Titel wird aus dem lokalen Zwischenspeicher abgespielt. Übertragungs-Varianten werden für diese Wiedergabe nicht verwendet.</string>
+    <string name="player_track_details_loading_streams">Übertragungen werden geladen…</string>
+    <string name="player_track_details_no_streams">Für diese Quelle sind keine Übertragungen verfügbar.</string>
+    <string name="player_track_details_selected_stream_content_description">Aktuell ausgewählte Übertragung</string>
+    <string name="player_track_details_matches_preference">Entspricht deinen Einstellungen für Übertragungs-Format &amp; -Qualität</string>
     <string name="player_track_details_active_url">Aktive Wiedergabe-URL</string>
-    <string name="player_track_details_served_from_cache">Aus lokalem Cache abgespielt</string>
+    <string name="player_track_details_served_from_cache">Aus lokalem Zwischenspeicher abgespielt</string>
     <string name="player_track_details_metadata_track">Metadaten-Titel</string>
     <string name="player_track_details_title">Titel</string>
     <string name="player_track_details_id">ID</string>
@@ -778,9 +778,9 @@
     <string name="alternative_track_active_source">Aktive Quelle</string>
 
     <!-- Queue -->
-    <string name="queue_participant_kick">Rauswerfen</string>
+    <string name="queue_participant_kick">Hinauswerfen</string>
     <string name="queue_participant_kick_description">Aus der Session entfernen</string>
-    <string name="queue_participant_ban_description">Rauswerfen und erneuten Beitritt verhindern</string>
+    <string name="queue_participant_ban_description">Hinauswerfen und erneuten Beitritt verhindern</string>
     <string name="queue_participant_remove_suggestions">Vorschläge entfernen</string>
     <string name="queue_participant_remove_suggestions_description">Alle Titel entfernen, die diese Person zur Warteschlange hinzugefügt hat</string>
     <string name="queue_reorder_content_description">Neu anordnen</string>
@@ -789,9 +789,9 @@
 
     <!-- Playlist -->
     <string name="playlist_owner_unknown">Unbekannt</string>
-    <string name="playlist_loading_title">Playlist wird geladen...</string>
+    <string name="playlist_loading_title">Wiedergabeliste wird geladen...</string>
     <string name="playlist_add_tracks_button">Titel hinzufügen</string>
-    <string name="playlist_add_tracks_title">Titel zur Playlist hinzufügen</string>
+    <string name="playlist_add_tracks_title">Titel zur Wiedergabeliste hinzufügen</string>
     <string name="playlist_add_tracks_search_placeholder">Titel suchen...</string>
     <string name="playlist_add_tracks_search_content_description">Suchen</string>
     <string name="playlist_add_tracks_no_results">Keine Titel gefunden</string>
@@ -804,24 +804,24 @@
     <string name="album_loading_title">Album wird geladen...</string>
 
     <!-- Library -->
-    <string name="library_add_to_playlist_title">Zu deiner Playlist hinzufügen</string>
+    <string name="library_add_to_playlist_title">Zu deiner Wiedergabeliste hinzufügen</string>
     <string name="library_add_to_playlist_search_content_description">Suchen</string>
-    <string name="library_add_to_playlist_search_placeholder">Deine Playlists durchsuchen...</string>
-    <string name="library_add_to_playlist_loading">Deine Playlists werden geladen...</string>
-    <string name="library_add_to_playlist_empty">Du hast noch keine eigenen Playlists.\nErstelle eine, um Titel hinzuzufügen.</string>
-    <string name="library_playlist_form_create_title">Playlist erstellen</string>
-    <string name="library_playlist_form_edit_title">Playlist bearbeiten</string>
+    <string name="library_add_to_playlist_search_placeholder">Deine Wiedergabeliste durchsuchen...</string>
+    <string name="library_add_to_playlist_loading">Deine Wiedergabelisten werden geladen...</string>
+    <string name="library_add_to_playlist_empty">Du hast noch keine eigenen Wiedergabelisten.\nErstelle eine, um Titel hinzuzufügen.</string>
+    <string name="library_playlist_form_create_title">Wiedergabeliste erstellen</string>
+    <string name="library_playlist_form_edit_title">Wiedergabeliste bearbeiten</string>
     <string name="library_playlist_form_create">Erstellen</string>
     <string name="library_playlist_form_name_label">Name</string>
-    <string name="library_playlist_form_name_placeholder">Name der Playlist</string>
+    <string name="library_playlist_form_name_placeholder">Name der Wiedergabeliste</string>
     <string name="library_playlist_form_description_label">Beschreibung</string>
     <string name="library_playlist_form_description_placeholder">Beschreibung (optional)</string>
     <string name="library_playlist_form_public">Öffentlich</string>
-    <string name="library_playlist_form_public_description">Alle können diese Playlist sehen</string>
+    <string name="library_playlist_form_public_description">Alle können diese Wiedergabeliste sehen</string>
     <string name="library_playlist_form_collaborative">Gemeinsam</string>
-    <string name="library_playlist_form_collaborative_description">Andere können Titel zu dieser Playlist hinzufügen</string>
-    <string name="library_playlist_form_cover_image">Coverbild</string>
-    <string name="library_playlist_form_cover_content_description">Playlist-Cover</string>
+    <string name="library_playlist_form_collaborative_description">Andere können Titel zu dieser Wiedergabeliste hinzufügen</string>
+    <string name="library_playlist_form_cover_image">Bild der Plattenhülle</string>
+    <string name="library_playlist_form_cover_content_description">Wiedergabelisten-Bild</string>
     <string name="library_playlist_form_no_image">Kein Bild</string>
     <string name="library_playlist_form_change_image">Bild ändern</string>
     <string name="library_playlist_form_pick_image">Bild auswählen</string>
@@ -832,28 +832,28 @@
     <string name="plugin_error_plugin_json_missing">plugin.json wurde in der ZIP-Datei nicht gefunden</string>
     <string name="plugin_error_zipline_manifest_missing">manifest.zipline.json wurde in der ZIP-Datei nicht gefunden</string>
     <string name="plugin_error_invalid_plugin_json">Ungültiges plugin.json-Format: %1$s</string>
-    <string name="plugin_error_read_failed">Plugin konnte nicht gelesen werden: %1$s</string>
-    <string name="plugin_error_install_failed">Plugin konnte nicht installiert werden: %1$s</string>
-    <string name="plugin_error_update_needs_confirmation">Eine neuere Version von %1$s ist verfügbar. Bestätige das Update vor der Installation.</string>
+    <string name="plugin_error_read_failed">Erweiterung konnte nicht gelesen werden: %1$s</string>
+    <string name="plugin_error_install_failed">Erweiterung konnte nicht installiert werden: %1$s</string>
+    <string name="plugin_error_update_needs_confirmation">Eine neuere Version von %1$s ist verfügbar. Bestätige die neue Version vor der Installation.</string>
     <string name="plugin_error_replace_needs_confirmation">%1$s ist bereits installiert. Bestätige das Ersetzen vor der Installation.</string>
-    <string name="plugin_error_builtin_add">Integrierte Plugins sind bereits enthalten und können nicht erneut hinzugefügt werden.</string>
-    <string name="plugin_error_builtin_remove">Integrierte Plugins können nicht entfernt werden.</string>
+    <string name="plugin_error_builtin_add">Integrierte Erweiterungen sind bereits enthalten und können nicht erneut hinzugefügt werden.</string>
+    <string name="plugin_error_builtin_remove">Integrierte Erweiterungen können nicht entfernt werden.</string>
     <string name="plugin_error_api_version_invalid">%1$s gibt eine ungültige apiVersion an (%2$s). Erwartet wird semantische Versionierung, kompatibel mit %3$s.</string>
-    <string name="plugin_error_app_api_version_invalid">Die Spotube-Plugin-API-Version %1$s ist ungültig.</string>
-    <string name="plugin_error_api_incompatible">%1$s ist für Plugin-API %2$s gebaut, Spotube unterstützt jedoch die Breaking-API-Version %3$s. Installiere ein Plugin, das für dieselbe Breaking-API-Version gebaut wurde.</string>
+    <string name="plugin_error_app_api_version_invalid">Die Spotube-Erweiterung-API-Version %1$s ist ungültig.</string>
+    <string name="plugin_error_api_incompatible">%1$s ist für Erweiterung-API %2$s gebaut, Spotube unterstützt jedoch die Breaking-API-Version %3$s. Installiere eine Erweiterung, die für dieselbe Breaking-API-Version gebaut wurde.</string>
 
     <!-- Plugin install prompts -->
-    <string name="plugin_prompt_incompatible_title">Plugin-API nicht kompatibel</string>
-    <string name="plugin_prompt_install_title">Plugin installieren?</string>
-    <string name="plugin_prompt_install_message">%1$s wird zu deinen installierten Plugins hinzugefügt.</string>
-    <string name="plugin_prompt_update_title">Plugin aktualisieren?</string>
+    <string name="plugin_prompt_incompatible_title">Erweiterungs-API nicht kompatibel</string>
+    <string name="plugin_prompt_install_title">Erweiterung installieren?</string>
+    <string name="plugin_prompt_install_message">%1$s wird zu deinen installierten Erweiterungen hinzugefügt.</string>
+    <string name="plugin_prompt_update_title">Erweiterung aktualisieren?</string>
     <string name="plugin_prompt_update_message">Eine ältere Version ist installiert (%1$s). Auf %2$s aktualisieren?</string>
-    <string name="plugin_prompt_replace_title">Installiertes Plugin ersetzen?</string>
-    <string name="plugin_prompt_replace_invalid_incoming">%1$s verwendet eine ungültige semantische Version (%2$s) und kann nicht als Update verglichen werden. Installiertes Plugin trotzdem ersetzen?</string>
+    <string name="plugin_prompt_replace_title">Installierte Erweiterung ersetzen?</string>
+    <string name="plugin_prompt_replace_invalid_incoming">%1$s verwendet eine ungültige semantische Version (%2$s) und kann nicht als neue Version verglichen werden. Installierte Erweiterung trotzdem ersetzen?</string>
     <string name="plugin_prompt_replace_invalid_installed">Die installierte Version (%1$s) lässt sich nicht per semantischer Versionierung vergleichen. Durch %2$s ersetzen?</string>
-    <string name="plugin_prompt_replace_same_version">Version %1$s ist bereits installiert. Vorhandenes Plugin durch die neue Kopie ersetzen?</string>
+    <string name="plugin_prompt_replace_same_version">Version %1$s ist bereits installiert. Vorhandene Erweiterung durch die neue Kopie ersetzen?</string>
     <string name="plugin_prompt_replace_downgrade">Die installierte Version %1$s ist neuer als die bereitgestellte Version %2$s. Trotzdem ersetzen?</string>
-    <string name="plugin_prompt_replace_generic">Installiertes Plugin durch die neue Kopie ersetzen?</string>
+    <string name="plugin_prompt_replace_generic">Installierte Erweiterung durch die neue Kopie ersetzen?</string>
 
     <!-- Plugin info dialog -->
     <string name="plugin_info_label_format">%1$s:</string>
@@ -863,7 +863,7 @@
     <string name="plugin_info_license">Lizenz</string>
     <string name="plugin_info_capabilities">Berechtigungen</string>
     <string name="plugin_info_abilities">Funktionen</string>
-    <string name="plugin_info_repository">Repository</string>
+    <string name="plugin_info_repository">Ablage</string>
     <string name="plugin_info_contact">Kontakt</string>
     <string name="plugin_info_report_bugs">Fehler melden</string>
     <string name="plugin_support_dialog_title">%1$s unterstützen</string>
@@ -872,12 +872,12 @@
     <string name="plugin_discover_badge_official">Offiziell</string>
     <string name="plugin_discover_badge_verified">Verifiziert</string>
     <string name="plugin_discover_stars_content_description">GitHub-Sterne</string>
-    <string name="plugin_discover_repository_content_description">URL des GitHub-Repositorys</string>
+    <string name="plugin_discover_repository_content_description">URL der GitHub-Ablage</string>
 
     <!-- Plugin release install dialog -->
-    <string name="plugin_install_no_releases">Keine Releases gefunden</string>
-    <string name="plugin_install_select_release_label">Release auswählen</string>
-    <string name="plugin_install_select_release_placeholder">Wähle ein Release</string>
+    <string name="plugin_install_no_releases">Keine Versionen gefunden</string>
+    <string name="plugin_install_select_release_label">Version auswählen</string>
+    <string name="plugin_install_select_release_placeholder">Wähle eine Version</string>
     <string name="plugin_install_prerelease">Vorabversion</string>
     <string name="plugin_install_release_notes">Versionshinweise</string>
 
