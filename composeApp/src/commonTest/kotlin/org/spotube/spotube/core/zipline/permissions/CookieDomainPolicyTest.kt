@@ -113,6 +113,15 @@ class CookieDomainPolicyTest {
     }
 
     @Test
+    fun withoutADownloadedListNoWildcardIsAccepted() {
+        val none = PublicSuffixList.Unavailable
+        assertEquals(listOf("*.example.com"), PluginPermissionValidator.invalidCookieDomains(
+            listOf("*.example.com", "example.com"), none))
+        val p = CookieDomainPolicy(listOf("*.example.com", "example.com"), none)
+        assertEquals(listOf(CookieDomainPattern.Exact("example.com")), p.patterns)
+    }
+
+    @Test
     fun publicSuffixRules() {
         val psl = testPublicSuffixes
         for (suffix in listOf("com", "co.uk", "github.io", "foo.ck", "xn--55qx5d.cn", "anytld")) {

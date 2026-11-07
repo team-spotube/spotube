@@ -17,19 +17,21 @@
 
 package org.spotube.spotube.core.zipline.permissions
 
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import spotube.composeapp.generated.resources.Res
-
 /**
  * The Public Suffix List (https://publicsuffix.org): domains under which anyone can register a
  * name, like `com`, `co.uk` or `github.io`. A plugin declaring `*.co.uk` would get every UK
  * company's cookies, so wildcards whose parent is a public suffix are refused.
  *
  * Both the ICANN and the private section count. Rules are stored in ASCII (punycode for IDNs), to
- * match the hosts the WebView reports.
+ * match the hosts the WebView reports. The list changes often, so the app downloads it daily
+ * ([PublicSuffixListRepository]) instead of shipping a copy.
  */
 class PublicSuffixList private constructor(
+    /**
+     * False for [Unavailable]: no list could be downloaded or read from the cache yet. Every
+     * domain then counts as a public suffix, so no wildcard is accepted until the list arrives.
+     */
+    val isAvailable: Boolean,
     private val exact: Set<String>,
     /** Parents of `*.parent` rules: every direct child of `parent` is a public suffix. */
     private val wildcardParents: Set<String>,
@@ -38,6 +40,7 @@ class PublicSuffixList private constructor(
 
     /** Whether [domain] (lowercase ASCII, no trailing dot) is itself a public suffix. */
     fun isPublicSuffix(domain: String): Boolean {
+        if (!isAvailable) return true
         if (domain in exceptions) return false
         if (domain in exact) return true
         if ('.' !in domain) return true // The list's implicit "*" rule: every TLD.
@@ -60,17 +63,23 @@ class PublicSuffixList private constructor(
                     else -> exact += toAscii(rule)
                 }
             }
-            return PublicSuffixList(exact, wildcardParents, exceptions)
+            return PublicSuffixList(true, exact, wildcardParents, exceptions)
         }
 
-        private const val RESOURCE_PATH = "files/public_suffix_list.dat"
-        private val loadLock = Mutex()
-        private var loaded: PublicSuffixList? = null
+        /** Stands in until a list has been downloaded: treats every domain as a public suffix. */
+        val Unavailable = PublicSuffixList(false, emptySet(), emptySet(), emptySet())
 
-        /** The bundled list, read and parsed once. */
-        suspend fun bundled(): PublicSuffixList = loaded ?: loadLock.withLock {
-            loaded ?: parse(Res.readBytes(RESOURCE_PATH).decodeToString()).also { loaded = it }
-        }
+        /** Only the implicit "every TLD" rule. For telling apart malformed entries from suffix ones. */
+        internal val TopLevelOnly = PublicSuffixList(true, emptySet(), emptySet(), emptySet())
+
+        /**
+         * Whether [list] (parsed from [text]) looks like the real list, not an error or captive
+         * portal page served with a 200.
+         */
+        internal fun looksComplete(text: String, list: PublicSuffixList): Boolean =
+            "===BEGIN ICANN DOMAINS===" in text &&
+                list.exact.size > 1000 &&
+                "com" in list.exact && "co.uk" in list.exact
 
         private fun toAscii(domain: String): String =
             domain.lowercase().split('.').joinToString(".") { label ->

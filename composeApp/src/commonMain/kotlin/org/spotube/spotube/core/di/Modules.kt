@@ -105,6 +105,7 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.module.dsl.withOptions
 import org.koin.dsl.module
+import org.spotube.spotube.core.zipline.permissions.PublicSuffixListRepository
 
 expect val platformModules: Module
 
@@ -143,6 +144,7 @@ val sharedModules = module {
     viewModel { (folderPath: String) -> LocalFolderViewModel(folderPath, get(), get()) }
 
     // Plugin system
+    single { PublicSuffixListRepository.create(get(), get()) } withOptions { createdAtStart() }
     singleOf(::PluginManager) {
         bind<PluginProvider>()
         bind<AudioPluginSource>()

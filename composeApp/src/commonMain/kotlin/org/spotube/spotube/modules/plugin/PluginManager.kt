@@ -28,6 +28,7 @@ import org.spotube.spotube.core.zipline.PluginServiceScope
 import org.spotube.spotube.core.zipline.ZiplinePluginService
 import org.spotube.spotube.core.zipline.permissions.PluginPermissionValidator
 import org.spotube.spotube.core.zipline.permissions.PublicSuffixList
+import org.spotube.spotube.core.zipline.permissions.PublicSuffixListRepository
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.utils.io.readRemaining
@@ -66,6 +67,7 @@ import okio.buffer
 import okio.use
 import org.spotube.spotube.core.i18n.getString
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.plugin_action_install
 import spotube.composeapp.generated.resources.plugin_action_replace
@@ -77,6 +79,7 @@ import spotube.composeapp.generated.resources.plugin_error_builtin_add
 import spotube.composeapp.generated.resources.plugin_error_builtin_remove
 import spotube.composeapp.generated.resources.plugin_error_install_failed
 import spotube.composeapp.generated.resources.plugin_error_invalid_cookie_domains
+import spotube.composeapp.generated.resources.plugin_error_suffix_list_unavailable
 import spotube.composeapp.generated.resources.plugin_error_invalid_plugin_json
 import spotube.composeapp.generated.resources.plugin_error_plugin_json_missing
 import spotube.composeapp.generated.resources.plugin_error_read_failed
@@ -127,6 +130,7 @@ class PluginManager(
     val paths: Paths,
     private val httpClientFactory: HttpClientFactory) : KoinComponent, PluginProvider, AudioPluginSource, ScrobblePluginSource {
     private val logger by injectLogger<PluginManager>()
+    private val publicSuffixes: PublicSuffixListRepository by inject()
 
     // plugin.json may carry fields newer than this app knows about (e.g. `entryPoint`).
     private val pluginJsonParser = Json { ignoreUnknownKeys = true }
@@ -828,9 +832,17 @@ class PluginManager(
     }
 
     private suspend fun getPluginPermissionError(pluginEntry: PluginEntry): String? {
-        val invalid = PluginPermissionValidator.invalidCookieDomains(
-            pluginEntry.cookieDomains, PublicSuffixList.bundled())
+        val suffixes = publicSuffixes.get()
+        val invalid = PluginPermissionValidator.invalidCookieDomains(pluginEntry.cookieDomains, suffixes)
         if (invalid.isEmpty()) return null
+        // Wildcards are only checkable against a downloaded list; say so instead of calling them invalid.
+        if (!suffixes.isAvailable &&
+            PluginPermissionValidator.invalidCookieDomains(invalid, PublicSuffixList.TopLevelOnly).isEmpty()) {
+            return getString(
+                Res.string.plugin_error_suffix_list_unavailable,
+                pluginEntry.name,
+                invalid.joinToString { "\"$it\"" })
+        }
         return getString(
             Res.string.plugin_error_invalid_cookie_domains,
             pluginEntry.name,

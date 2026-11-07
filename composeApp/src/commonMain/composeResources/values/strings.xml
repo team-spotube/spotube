@@ -1035,6 +1035,7 @@
     <string name="plugin_error_api_incompatible">%1$s targets plugin API %2$s, but Spotube supports breaking plugin API %3$s. Install a plugin built for the same breaking API version.</string>
     <string name="plugin_error_api_webview_outdated">%1$s targets plugin API %2$s, from before WebView plugins had to declare which sites they read cookies from. Install a version built for plugin API 0.1 or newer.</string>
     <string name="plugin_error_invalid_cookie_domains">%1$s declares invalid cookieDomains in plugin.json: %2$s. Use a host like example.com, or *.example.com for its subdomains. Shared suffixes such as *.co.uk or *.github.io aren\'t allowed.</string>
+    <string name="plugin_error_suffix_list_unavailable">%1$s asks for cookies from every subdomain of %2$s. Spotube checks these against the public suffix list from publicsuffix.org, which hasn\'t been downloaded yet. Connect to the internet and try again.</string>
     <string name="plugin_update_install_failed">Couldn\'t install the update: %1$s</string>
 
     <!-- Plugin install prompts -->
