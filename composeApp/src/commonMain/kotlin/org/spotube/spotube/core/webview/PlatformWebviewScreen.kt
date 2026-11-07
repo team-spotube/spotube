@@ -147,9 +147,10 @@ fun PlatformWebViewScreen(webViewController: WebViewController) {
         })
     }
 
+    val session = remember { webViewController.currentSession }
     DisposableEffect(Unit) {
         onDispose {
-            webViewController.dispose()
+            webViewController.dispose(session)
         }
     }
 

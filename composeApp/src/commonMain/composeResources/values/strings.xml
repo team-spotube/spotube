@@ -319,6 +319,11 @@
     <string name="plugin_permissions_capability_network_desc">Send and receive data over the internet</string>
     <string name="plugin_permissions_capability_webview_title">WebView</string>
     <string name="plugin_permissions_capability_webview_desc">Display web content inside the app</string>
+    <string name="plugin_permissions_cookie_domains_title">Can read cookies from</string>
+    <string name="plugin_permissions_cookie_domains_none">No cookie access</string>
+    <string name="plugin_permissions_cookie_domain_subdomains">Any subdomain of %1$s</string>
+    <string name="plugin_permissions_new_badge">New</string>
+    <string name="plugin_permissions_update_adds">This update asks for permissions the installed version doesn\'t have. Review them before updating.</string>
     <string name="settings_section_jam">Group Jam</string>
     <string name="settings_jam_server_title">Room server</string>
     <string name="settings_jam_server_url">Server URL</string>
@@ -1028,9 +1033,14 @@
     <string name="plugin_error_api_version_invalid">%1$s declares an invalid apiVersion (%2$s). Expected semantic versioning compatible with %3$s.</string>
     <string name="plugin_error_app_api_version_invalid">Spotube plugin API version %1$s is invalid.</string>
     <string name="plugin_error_api_incompatible">%1$s targets plugin API %2$s, but Spotube supports breaking plugin API %3$s. Install a plugin built for the same breaking API version.</string>
+    <string name="plugin_error_api_webview_outdated">%1$s targets plugin API %2$s, from before WebView plugins had to declare which sites they read cookies from. Install a version built for plugin API 0.1 or newer.</string>
+    <string name="plugin_error_invalid_cookie_domains">%1$s declares invalid cookieDomains in plugin.json: %2$s. Use a host like example.com, or *.example.com for its subdomains. Shared suffixes such as *.co.uk or *.github.io aren\'t allowed.</string>
+    <string name="plugin_error_suffix_list_unavailable">%1$s asks for cookies from every subdomain of %2$s. Spotube checks these against the public suffix list from publicsuffix.org, which hasn\'t been downloaded yet. Connect to the internet and try again.</string>
+    <string name="plugin_update_install_failed">Couldn\'t install the update: %1$s</string>
 
     <!-- Plugin install prompts -->
     <string name="plugin_prompt_incompatible_title">Plugin API not compatible</string>
+    <string name="plugin_prompt_invalid_title">Plugin can\'t be installed</string>
     <string name="plugin_prompt_install_title">Install plugin?</string>
     <string name="plugin_prompt_install_message">%1$s will be added to your installed plugins.</string>
     <string name="plugin_prompt_update_title">Update plugin?</string>
@@ -1049,6 +1059,7 @@
     <string name="plugin_info_author">Author</string>
     <string name="plugin_info_license">License</string>
     <string name="plugin_info_capabilities">Capabilities</string>
+    <string name="plugin_info_cookie_domains">Cookie access</string>
     <string name="plugin_info_abilities">Abilities</string>
     <string name="plugin_info_repository">Repository</string>
     <string name="plugin_info_contact">Contact</string>

@@ -26,6 +26,9 @@ import org.spotube.spotube.core.zipline.BuiltInPluginService
 import org.spotube.spotube.core.zipline.PluginService
 import org.spotube.spotube.core.zipline.PluginServiceScope
 import org.spotube.spotube.core.zipline.ZiplinePluginService
+import org.spotube.spotube.core.zipline.permissions.PluginPermissionValidator
+import org.spotube.spotube.core.zipline.permissions.PublicSuffixList
+import org.spotube.spotube.core.zipline.permissions.PublicSuffixListRepository
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.utils.io.readRemaining
@@ -64,15 +67,19 @@ import okio.buffer
 import okio.use
 import org.spotube.spotube.core.i18n.getString
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.plugin_action_install
 import spotube.composeapp.generated.resources.plugin_action_replace
 import spotube.composeapp.generated.resources.plugin_error_api_incompatible
+import spotube.composeapp.generated.resources.plugin_error_api_webview_outdated
 import spotube.composeapp.generated.resources.plugin_error_api_version_invalid
 import spotube.composeapp.generated.resources.plugin_error_app_api_version_invalid
 import spotube.composeapp.generated.resources.plugin_error_builtin_add
 import spotube.composeapp.generated.resources.plugin_error_builtin_remove
 import spotube.composeapp.generated.resources.plugin_error_install_failed
+import spotube.composeapp.generated.resources.plugin_error_invalid_cookie_domains
+import spotube.composeapp.generated.resources.plugin_error_suffix_list_unavailable
 import spotube.composeapp.generated.resources.plugin_error_invalid_plugin_json
 import spotube.composeapp.generated.resources.plugin_error_plugin_json_missing
 import spotube.composeapp.generated.resources.plugin_error_read_failed
@@ -82,17 +89,23 @@ import spotube.composeapp.generated.resources.plugin_error_zipline_manifest_miss
 import spotube.composeapp.generated.resources.plugin_prompt_incompatible_title
 import spotube.composeapp.generated.resources.plugin_prompt_install_message
 import spotube.composeapp.generated.resources.plugin_prompt_install_title
+import spotube.composeapp.generated.resources.plugin_prompt_invalid_title
 import spotube.composeapp.generated.resources.plugin_prompt_replace_downgrade
 import spotube.composeapp.generated.resources.plugin_prompt_replace_generic
 import spotube.composeapp.generated.resources.plugin_prompt_replace_invalid_incoming
 import spotube.composeapp.generated.resources.plugin_prompt_replace_invalid_installed
 import spotube.composeapp.generated.resources.plugin_prompt_replace_same_version
 import spotube.composeapp.generated.resources.plugin_prompt_replace_title
+import spotube.composeapp.generated.resources.plugin_permissions_update_adds
 import spotube.composeapp.generated.resources.plugin_prompt_update_message
 import spotube.composeapp.generated.resources.plugin_prompt_update_title
 import spotube.composeapp.generated.resources.update_action_update
 
-const val PLUGIN_API_VERSION = "0.0.1"
+/**
+ * 0.1.0: WebView plugins must declare `cookieDomains`, and cookie reads and scripts are limited to
+ * them. Nothing else changed, so 0.0.x plugins without the WebView capability still work.
+ */
+const val PLUGIN_API_VERSION = "0.1.0"
 
 interface PluginProvider {
     val selectedMetadataPlugin: StateFlow<PluginService?>
@@ -117,6 +130,7 @@ class PluginManager(
     val paths: Paths,
     private val httpClientFactory: HttpClientFactory) : KoinComponent, PluginProvider, AudioPluginSource, ScrobblePluginSource {
     private val logger by injectLogger<PluginManager>()
+    private val publicSuffixes: PublicSuffixListRepository by inject()
 
     // plugin.json may carry fields newer than this app knows about (e.g. `entryPoint`).
     private val pluginJsonParser = Json { ignoreUnknownKeys = true }
@@ -143,7 +157,22 @@ class PluginManager(
         val message: String,
         val bytes: ByteArray? = null,
         val existingEntry: PluginEntry? = null,
-        val confirmLabel: String? = null)
+        val confirmLabel: String? = null,
+        /** What the incoming build asks for beyond [existingEntry], highlighted in the prompt. */
+        val permissionChanges: PluginPermissionChanges = PluginPermissionChanges(),
+        /** [entry]'s permissions, ready to render. */
+        val permissions: PluginPermissionsSummary = entry.permissionsSummary(permissionChanges)) {
+        fun withMessage(message: String) = PendingPlugin(
+            entry, kind, title, message, bytes, existingEntry, confirmLabel, permissionChanges, permissions)
+    }
+
+    /** Outcome of [updatePluginFromURL]. */
+    sealed interface UpdateResult {
+        data object Installed : UpdateResult
+
+        /** The update asks for more permissions, so it wasn't installed; show [pending] to the user. */
+        data class NeedsPermissionReview(val pending: PendingPlugin) : UpdateResult
+    }
 
     val pendingPlugin = MutableStateFlow<PendingPlugin?>(null)
 
@@ -354,13 +383,51 @@ class PluginManager(
         }
     }
 
-    /** Downloads and installs a newer plugin build over the installed one, without prompting. */
-    suspend fun updatePluginFromURL(url: String) {
-        withContext(Dispatchers.IO) {
-            val response = httpClient.get(url)
-            val bytes = response.bodyAsChannel().readRemaining().readByteArray()
-            addPluginFromByteArray(bytes = bytes, allowReplacingInstalled = true)
+    /**
+     * Downloads a newer plugin build and installs it over the installed one without prompting,
+     * unless it asks for permissions (capabilities or cookie domains) the installed build didn't
+     * have. Then nothing is installed and the caller must let the user review it first.
+     */
+    suspend fun updatePluginFromURL(url: String): UpdateResult = withContext(Dispatchers.IO) {
+        val response = httpClient.get(url)
+        val bytes = response.bodyAsChannel().readRemaining().readByteArray()
+        val incoming = readPluginEntry(bytes)
+        val installed = findInstalledPlugin(incoming.id)
+        if (installed != null && !incoming.permissionChangesSince(installed).isEmpty) {
+            val pending = buildPendingPlugin(incoming, bytes)
+            // An INFO prompt (incompatible or invalid build) already says why it can't be installed.
+            return@withContext UpdateResult.NeedsPermissionReview(
+                if (pending.kind == InstallPromptKind.INFO) {
+                    pending
+                } else {
+                    pending.withMessage(getString(Res.string.plugin_permissions_update_adds))
+                })
         }
+        addPluginFromByteArray(bytes = bytes, allowReplacingInstalled = true)
+        UpdateResult.Installed
+    }
+
+    /** Reads plugin.json straight from a plugin archive, without extracting anything else. */
+    private suspend fun readPluginEntry(bytes: ByteArray): PluginEntry {
+        val pluginJson = okio.Buffer().apply { write(bytes) }.use { source ->
+            val zipIn = ZipInputStream(source)
+            var entry = zipIn.nextEntry
+            var json: String? = null
+            while (entry != null && json == null) {
+                if (!entry.isDirectory && entry.name.trimStart('/') == "plugin.json") {
+                    json = zipIn.readBytes().decodeToString()
+                }
+                entry = zipIn.nextEntry
+            }
+            json
+        } ?: throw IllegalArgumentException(getString(Res.string.plugin_error_plugin_json_missing))
+        return decodePluginEntry(pluginJson)
+    }
+
+    private suspend fun decodePluginEntry(pluginJson: String): PluginEntry = try {
+        pluginJsonParser.decodeFromString<PluginEntry>(pluginJson)
+    } catch (e: Exception) {
+        throw IllegalArgumentException(getString(Res.string.plugin_error_invalid_plugin_json, e.message.orEmpty()))
     }
 
     /** Parses the zip, reads plugin.json, then surfaces a PendingPlugin for the UI to confirm. */
@@ -400,11 +467,7 @@ class PluginManager(
 
                 val pluginJson =
                     FileSystem.SYSTEM.source(pluginJsonPath).buffer().use { it.readUtf8() }
-                val pluginEntry = try {
-                    pluginJsonParser.decodeFromString<PluginEntry>(pluginJson)
-                } catch (e: Exception) {
-                    throw IllegalArgumentException(getString(Res.string.plugin_error_invalid_plugin_json, e.message.orEmpty()))
-                }
+                val pluginEntry = decodePluginEntry(pluginJson)
 
                 // Preserve logo.png before deleting temp dir so the permission dialog can show it
                 val logoPngPath = tempDir / "logo.png".toPath()
@@ -522,13 +585,10 @@ class PluginManager(
                     source.readUtf8()
                 }
 
-                val pluginEntry = try {
-                    pluginJsonParser.decodeFromString<PluginEntry>(pluginJson)
-                } catch (e: Exception) {
-                    throw IllegalArgumentException(getString(Res.string.plugin_error_invalid_plugin_json, e.message.orEmpty()))
-                }
+                val pluginEntry = decodePluginEntry(pluginJson)
 
                 ensurePluginApiCompatible(pluginEntry)
+                getPluginPermissionError(pluginEntry)?.let { throw IllegalArgumentException(it) }
 
                 val installedPlugin = findInstalledPlugin(pluginEntry.id)
                 if (installedPlugin != null && !allowReplacingInstalled) {
@@ -674,6 +734,15 @@ class PluginManager(
                 message = apiError)
         }
 
+        val permissionError = getPluginPermissionError(pluginEntry)
+        if (permissionError != null) {
+            return PendingPlugin(
+                entry = pluginEntry,
+                kind = InstallPromptKind.INFO,
+                title = getString(Res.string.plugin_prompt_invalid_title),
+                message = permissionError)
+        }
+
         val installedPlugin = findInstalledPlugin(pluginEntry.id) ?: return PendingPlugin(
             entry = pluginEntry,
             kind = InstallPromptKind.INSTALL,
@@ -693,7 +762,8 @@ class PluginManager(
                     pluginEntry.version),
                 bytes = bytes,
                 existingEntry = installedPlugin,
-                confirmLabel = getString(Res.string.update_action_update))
+                confirmLabel = getString(Res.string.update_action_update),
+                permissionChanges = pluginEntry.permissionChangesSince(installedPlugin))
 
             VersionRelation.Replace -> PendingPlugin(
                 entry = pluginEntry,
@@ -702,7 +772,8 @@ class PluginManager(
                 message = buildReplaceMessage(installedPlugin, pluginEntry),
                 bytes = bytes,
                 existingEntry = installedPlugin,
-                confirmLabel = getString(Res.string.plugin_action_replace))
+                confirmLabel = getString(Res.string.plugin_action_replace),
+                permissionChanges = pluginEntry.permissionChangesSince(installedPlugin))
         }
     }
 
@@ -760,6 +831,24 @@ class PluginManager(
         }
     }
 
+    private suspend fun getPluginPermissionError(pluginEntry: PluginEntry): String? {
+        val suffixes = publicSuffixes.get()
+        val invalid = PluginPermissionValidator.invalidCookieDomains(pluginEntry.cookieDomains, suffixes)
+        if (invalid.isEmpty()) return null
+        // Wildcards are only checkable against a downloaded list; say so instead of calling them invalid.
+        if (!suffixes.isAvailable &&
+            PluginPermissionValidator.invalidCookieDomains(invalid, PublicSuffixList.TopLevelOnly).isEmpty()) {
+            return getString(
+                Res.string.plugin_error_suffix_list_unavailable,
+                pluginEntry.name,
+                invalid.joinToString { "\"$it\"" })
+        }
+        return getString(
+            Res.string.plugin_error_invalid_cookie_domains,
+            pluginEntry.name,
+            invalid.joinToString { "\"$it\"" })
+    }
+
     private suspend fun ensurePluginApiCompatible(pluginEntry: PluginEntry) {
         getPluginApiCompatibilityError(pluginEntry)?.let { error ->
             throw IllegalArgumentException(error)
@@ -775,6 +864,15 @@ class PluginManager(
                 PLUGIN_API_VERSION)
         val appApiVersion = parseSemVerOrNull(PLUGIN_API_VERSION)
             ?: return getString(Res.string.plugin_error_app_api_version_invalid, PLUGIN_API_VERSION)
+
+        val builtBeforeCookieDomains = pluginApiVersion.major == 0 && pluginApiVersion.minor == 0
+        if (builtBeforeCookieDomains && appApiVersion.major == 0 && appApiVersion.minor == 1) {
+            return if (PluginCapability.WEBVIEW in pluginEntry.capabilities) {
+                getString(Res.string.plugin_error_api_webview_outdated, pluginEntry.name, pluginEntry.apiVersion)
+            } else {
+                null
+            }
+        }
 
         val compatible = if (pluginApiVersion.major == 0 || appApiVersion.major == 0) {
             pluginApiVersion.major == appApiVersion.major && pluginApiVersion.minor == appApiVersion.minor

@@ -34,3 +34,4 @@ actual suspend fun platformClearWebviewData(pluginId: String?) {
     CookieManager.getInstance().flush()
     WebStorage.getInstance().deleteAllData()
 }
+actual val webViewCookiesWithoutDomainAreUrlScoped: Boolean = true
