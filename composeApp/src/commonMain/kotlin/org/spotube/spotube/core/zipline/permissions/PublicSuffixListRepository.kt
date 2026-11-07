@@ -23,22 +23,24 @@ import io.ktor.client.request.header
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import kotlinx.coroutines.IO
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
 import okio.SYSTEM
 import org.spotube.spotube.core.network.HttpClientFactory
 import org.spotube.spotube.core.paths.Paths
+import kotlin.concurrent.Volatile
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Clock
 import kotlin.time.Duration
@@ -51,15 +53,27 @@ import kotlin.time.Instant
  * conditional request, so an unchanged list costs a 304), keeps the last good copy on disk, and
  * falls back to that copy while offline.
  *
+ * None of this may slow the app down or crash it:
+ *  - Downloads and disk reads run on [scope], in the background. Constructing this does no work.
+ *  - [get] answers from the copy it has, even a stale one, and refreshes in the background. It
+ *    waits only when it has never had a list, and then for at most [DOWNLOAD_TIMEOUT].
+ *  - Every failure is logged and leaves the last good list in place; [scope] also catches
+ *    anything unexpected, so nothing escapes to the app.
+ *
  * Until a list has ever been fetched, [get] returns [PublicSuffixList.Unavailable], under which
  * no wildcard cookie domain is accepted. That only ever narrows access.
  */
 class PublicSuffixListRepository(
-    private val cacheDir: Path,
+    /** Resolved in the background, on first use. */
+    private val cacheDir: () -> Path,
     private val download: suspend (etag: String?) -> Download,
     private val fileSystem: FileSystem = FileSystem.SYSTEM,
     private val now: () -> Instant = { Clock.System.now() },
-    private val logger: Logger = Logger.withTag("PublicSuffixListRepository")) {
+    private val logger: Logger = Logger.withTag("PublicSuffixListRepository"),
+    private val scope: CoroutineScope = CoroutineScope(
+        SupervisorJob() + Dispatchers.IO + CoroutineExceptionHandler { _, e ->
+            logger.e(e) { "Public suffix list work failed" }
+        })) {
 
     sealed interface Download {
         data class Fetched(val text: String, val etag: String?) : Download
@@ -69,30 +83,56 @@ class PublicSuffixListRepository(
     private class Cached(val list: PublicSuffixList, val checkedAt: Instant, val etag: String?)
 
     private val lock = Mutex()
+    @Volatile
     private var cached: Cached? = null
+    @Volatile
     private var cacheRead = false
+    @Volatile
     private var lastFailureAt: Instant? = null
+    private var refreshJob: Job? = null
 
-    private val listFile get() = cacheDir / "public_suffix_list.dat"
-    private val metaFile get() = cacheDir / "public_suffix_list.meta"
+    private val listFile get() = cacheDir() / "public_suffix_list.dat"
+    private val metaFile get() = cacheDir() / "public_suffix_list.meta"
 
-    /** The current list, refreshing it first if the last check is more than a day old. */
-    suspend fun get(): PublicSuffixList = lock.withLock {
-        withContext(Dispatchers.IO) {
-            if (!cacheRead) {
-                cached = readCache()
-                cacheRead = true
-            }
-            val current = cached
-            val time = now()
-            val isFresh = current != null && time - current.checkedAt < MAX_AGE
-            val recentlyFailed = lastFailureAt?.let { time - it < RETRY_AFTER_FAILURE } == true
-            if (!isFresh && !recentlyFailed) refresh(current, time)
-            cached?.list ?: PublicSuffixList.Unavailable
+    /**
+     * The newest list available, starting a background refresh when the last check is more than a
+     * day old. Waits for that refresh only when there's no list at all yet.
+     */
+    suspend fun get(): PublicSuffixList {
+        cached?.let { current ->
+            if (isDue(current)) startRefresh()
+            return current.list
         }
+        startRefresh()?.join()
+        return cached?.list ?: PublicSuffixList.Unavailable
     }
 
-    private suspend fun refresh(current: Cached?, time: Instant) {
+    /** Reads the disk copy and refreshes it if due, in the background. Returns immediately. */
+    fun warmUp() {
+        scope.launch { get() }
+    }
+
+    private fun isDue(current: Cached?): Boolean {
+        val time = now()
+        if (current != null && time - current.checkedAt < MAX_AGE) return false
+        return lastFailureAt?.let { time - it >= RETRY_AFTER_FAILURE } ?: true
+    }
+
+    /** The running refresh, a new one if the list is due, or `null` if it's current. */
+    private suspend fun startRefresh(): Job? = lock.withLock {
+        refreshJob?.takeIf { it.isActive }?.let { return@withLock it }
+        if (cacheRead && !isDue(cached)) return@withLock null
+        scope.launch { refresh() }.also { refreshJob = it }
+    }
+
+    private suspend fun refresh() {
+        if (!cacheRead) {
+            cached = readCache()
+            cacheRead = true
+            if (!isDue(cached)) return
+        }
+        val current = cached
+        val time = now()
         try {
             when (val result = withTimeout(DOWNLOAD_TIMEOUT) { download(current?.etag) }) {
                 is Download.Fetched -> {
@@ -100,16 +140,14 @@ class PublicSuffixListRepository(
                     check(PublicSuffixList.looksComplete(result.text, list)) {
                         "Downloaded public suffix list looks incomplete"
                     }
-                    fileSystem.createDirectories(cacheDir)
-                    fileSystem.write(listFile) { writeUtf8(result.text) }
-                    writeMeta(time, result.etag)
                     cached = Cached(list, time, result.etag)
+                    saveCache(result.text, time, result.etag)
                 }
                 Download.NotModified -> {
                     // Only sent with the cached copy's ETag, so there's a copy to keep.
                     val unchanged = checkNotNull(current) { "304 without a cached list" }
-                    writeMeta(time, unchanged.etag)
                     cached = Cached(unchanged.list, time, unchanged.etag)
+                    saveCache(null, time, unchanged.etag)
                 }
             }
             lastFailureAt = null
@@ -126,11 +164,18 @@ class PublicSuffixListRepository(
         logger.w(e) { "Couldn't refresh the public suffix list; using ${if (current != null) "the cached copy" else "none"}" }
     }
 
-    private fun writeMeta(checkedAt: Instant, etag: String?) {
-        fileSystem.write(metaFile) {
-            writeUtf8(checkedAt.toEpochMilliseconds().toString())
-            writeUtf8("\n")
-            writeUtf8(etag.orEmpty())
+    /** Writes the list (unless [text] is null: unchanged) and when it was checked. Best effort. */
+    private fun saveCache(text: String?, checkedAt: Instant, etag: String?) {
+        try {
+            fileSystem.createDirectories(cacheDir())
+            if (text != null) fileSystem.write(listFile) { writeUtf8(text) }
+            fileSystem.write(metaFile) {
+                writeUtf8(checkedAt.toEpochMilliseconds().toString())
+                writeUtf8("\n")
+                writeUtf8(etag.orEmpty())
+            }
+        } catch (e: Exception) {
+            logger.w(e) { "Couldn't save the public suffix list; it stays in memory" }
         }
     }
 
@@ -155,9 +200,9 @@ class PublicSuffixListRepository(
         null
     }
 
-    /** Starts the daily check right away, so the list is ready before a plugin needs it. */
-    fun warmUp(scope: CoroutineScope) {
-        scope.launch { get() }
+    /** Waits for a refresh in progress. For tests. */
+    internal suspend fun awaitRefresh() {
+        lock.withLock { refreshJob }?.join()
     }
 
     companion object {
@@ -171,7 +216,7 @@ class PublicSuffixListRepository(
 
         fun create(paths: Paths, httpClientFactory: HttpClientFactory): PublicSuffixListRepository =
             PublicSuffixListRepository(
-                cacheDir = "${paths.getApplicationDataDirPath()}/public-suffix-list".toPath(),
+                cacheDir = { "${paths.getApplicationDataDirPath()}/public-suffix-list".toPath() },
                 download = { etag ->
                     val response = httpClientFactory.default.get(LIST_URL) {
                         if (etag != null) header(HttpHeaders.IfNoneMatch, etag)
@@ -181,6 +226,6 @@ class PublicSuffixListRepository(
                         HttpStatusCode.OK -> Download.Fetched(response.bodyAsText(), response.headers[HttpHeaders.ETag])
                         else -> error("HTTP ${response.status.value} from $LIST_URL")
                     }
-                }).also { it.warmUp(CoroutineScope(SupervisorJob() + Dispatchers.IO)) }
+                }).also { it.warmUp() }
     }
 }

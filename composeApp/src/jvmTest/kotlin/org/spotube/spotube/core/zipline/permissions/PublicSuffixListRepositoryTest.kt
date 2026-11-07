@@ -17,7 +17,9 @@
 
 package org.spotube.spotube.core.zipline.permissions
 
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
@@ -32,6 +34,7 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.Instant
 
 class PublicSuffixListRepositoryTest {
@@ -51,25 +54,30 @@ class PublicSuffixListRepositoryTest {
     @AfterTest
     fun cleanUp() = FileSystem.SYSTEM.deleteRecursively(dir)
 
-    private fun repo(respond: (etag: String?) -> Download) = PublicSuffixListRepository(
-        cacheDir = dir,
+    private fun repo(respond: suspend (etag: String?) -> Download) = PublicSuffixListRepository(
+        cacheDir = { dir },
         download = { etag -> requests += etag; respond(etag) },
         now = { time })
 
     private fun advance(by: Duration) { time += by }
 
+    /** [PublicSuffixListRepository.get], then waits for any background refresh it started. */
+    private suspend fun PublicSuffixListRepository.getSettled(): PublicSuffixList =
+        get().also { awaitRefresh() }
+
     @Test
     fun downloadsOnceADayAndCachesOnDisk() = runBlocking {
         val repo = repo { Download.Fetched(listText, "\"v1\"") }
         assertTrue(repo.get().isPublicSuffix("github.io"))
-        repo.get()
+        repo.getSettled()
         advance(23.hours)
-        repo.get()
+        repo.getSettled()
         assertEquals(listOf<String?>(null), requests, "fetched more than once within a day")
 
         // A restart reads the disk copy instead of downloading again.
         val restarted = repo { error("should not download") }
-        assertTrue(restarted.get().isPublicSuffix("co.uk"))
+        assertTrue(restarted.getSettled().isPublicSuffix("co.uk"))
+        assertEquals(1, requests.size)
     }
 
     @Test
@@ -79,11 +87,26 @@ class PublicSuffixListRepositoryTest {
         repo.get()
         unchanged = true
         advance(25.hours)
-        assertTrue(repo.get().isPublicSuffix("github.io"))
+        assertTrue(repo.getSettled().isPublicSuffix("github.io"))
         assertEquals(listOf(null, "\"v1\""), requests)
         // The 304 counts as today's check.
-        repo.get()
+        repo.getSettled()
         assertEquals(2, requests.size)
+    }
+
+    @Test
+    fun aStaleListIsServedWithoutWaitingForTheDownload() = runBlocking {
+        val hang = CompletableDeferred<Download>()
+        var stalled = false
+        val repo = repo { if (stalled) hang.await() else Download.Fetched(listText, null) }
+        repo.get()
+        stalled = true
+        advance(25.hours)
+        // Returns the old list straight away while the refresh hangs in the background.
+        val list = withTimeout(1.seconds) { repo.get() }
+        assertTrue(list.isPublicSuffix("github.io"))
+        hang.complete(Download.Fetched(listText, "\"v2\""))
+        repo.awaitRefresh()
     }
 
     @Test
@@ -93,22 +116,34 @@ class PublicSuffixListRepositoryTest {
         repo.get()
         offline = true
         advance(30.hours)
-        assertTrue(repo.get().isPublicSuffix("github.io"))
+        assertTrue(repo.getSettled().isPublicSuffix("github.io"))
         // Doesn't retry on every call while offline.
         advance(10.minutes)
-        repo.get()
+        repo.getSettled()
         assertEquals(2, requests.size)
         advance(1.hours)
-        repo.get()
+        repo.getSettled()
         assertEquals(3, requests.size)
     }
 
     @Test
     fun withNoListYetEveryDomainCountsAsASuffix() = runBlocking {
-        val list = repo { error("offline") }.get()
+        val repo = repo { error("offline") }
+        val list = repo.get()
         assertSame(PublicSuffixList.Unavailable, list)
         assertFalse(list.isAvailable)
         assertTrue(list.isPublicSuffix("example.com"))
+        // Later calls don't wait on the network again until the retry delay passes.
+        repo.getSettled()
+        assertEquals(1, requests.size)
+    }
+
+    @Test
+    fun failuresNeverEscape() = runBlocking {
+        val repo = repo { throw IllegalStateException("boom") }
+        repo.warmUp()
+        repo.awaitRefresh()
+        assertSame(PublicSuffixList.Unavailable, repo.get())
     }
 
     @Test
