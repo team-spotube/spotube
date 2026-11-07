@@ -2,12 +2,16 @@
   "name": "js_plugin_example",
   "version": "1.0.0",
   "description": "A simple JavaScript plugin example.",
-  "apiVersion": "0.0.1",
+  "apiVersion": "0.1.0",
   "author": "Kingkor Roy Tirtho",
   "capabilities": [
     "PERSISTENT_STORAGE",
     "NETWORK_REQUESTS",
     "WEBVIEW"
+  ],
+  "cookieDomains": [
+    "example.com",
+    "*.example.com"
   ],
   "abilities": [
     "METADATA",

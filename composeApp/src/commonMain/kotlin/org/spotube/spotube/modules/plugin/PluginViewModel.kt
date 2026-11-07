@@ -105,6 +105,8 @@ sealed interface PluginUiState {
         val showInstallSheet: Boolean = false,
         val showPluginInfo: PluginEntry? = null,
         val pluginInfoLogoPath: Path? = null,
+        /** The cookie domains of [showPluginInfo], as the user should see them. */
+        val pluginInfoCookieDomains: List<String> = emptyList(),
         /** False for built-in plugins, which can't be removed. */
         val pluginInfoRemovable: Boolean = false,
         val supportText: String? = null,
@@ -281,6 +283,7 @@ class PluginViewModel(
                 showInstallSheet = screen.showInstallSheet,
                 showPluginInfo = screen.showPluginInfo,
                 pluginInfoLogoPath = screen.pluginInfoLogoPath,
+                pluginInfoCookieDomains = screen.showPluginInfo?.displayedCookieDomains.orEmpty(),
                 pluginInfoRemovable = screen.showPluginInfo?.let { it !in BUILT_IN_PLUGINS } ?: false,
                 supportText = screen.supportText,
                 isLoadingSupport = screen.isLoadingSupport,

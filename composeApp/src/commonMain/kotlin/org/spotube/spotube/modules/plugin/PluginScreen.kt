@@ -130,6 +130,7 @@ import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.plugin_info_abilities
 import spotube.composeapp.generated.resources.plugin_info_api_version
 import spotube.composeapp.generated.resources.plugin_info_capabilities
+import spotube.composeapp.generated.resources.plugin_info_cookie_domains
 import spotube.composeapp.generated.resources.plugin_info_contact
 import spotube.composeapp.generated.resources.plugin_info_label_format
 import spotube.composeapp.generated.resources.plugin_info_license
@@ -210,6 +211,7 @@ internal fun PluginScreenContent(
                 message = pending.message,
                 confirmLabel = pending.confirmLabel,
                 existingPlugin = pending.existingEntry,
+                permissions = pending.permissions,
                 logoPath = state.pendingPluginLogoPath,
                 onConfirm = if (pending.kind != PluginManager.InstallPromptKind.INFO && pending.confirmLabel != null) {
                     { viewModel.confirmInstall() }
@@ -224,6 +226,7 @@ internal fun PluginScreenContent(
         state.showPluginInfo?.let { plugin ->
             PluginInfoDialog(
                 plugin = plugin,
+                cookieDomains = state.pluginInfoCookieDomains,
                 logoPath = state.pluginInfoLogoPath,
                 supportText = state.supportText,
                 isLoadingSupport = state.isLoadingSupport,
@@ -632,6 +635,7 @@ private fun InstallSheet(
 @Composable
 private fun PluginInfoDialog(
     plugin: PluginEntry,
+    cookieDomains: List<String>,
     logoPath: Path?,
     supportText: String?,
     isLoadingSupport: Boolean,
@@ -701,6 +705,11 @@ private fun PluginInfoDialog(
                         DetailChipsRow(
                             stringResource(Res.string.plugin_info_capabilities),
                             plugin.capabilities.map { it.name })
+                    }
+                    if (cookieDomains.isNotEmpty()) {
+                        DetailChipsRow(
+                            stringResource(Res.string.plugin_info_cookie_domains),
+                            cookieDomains)
                     }
                     if (plugin.abilities.isNotEmpty()) {
                         DetailChipsRow(
