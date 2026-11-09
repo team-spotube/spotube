@@ -1,6 +1,5 @@
 package org.spotube.spotube.core.server
 
-import org.spotube.spotube.PlatformType
 import org.spotube.plugin_interfaces.plugin_apis.audio.AudioFormat
 import org.spotube.plugin_interfaces.plugin_apis.audio.AudioQuality
 import org.spotube.plugin_interfaces.plugin_apis.audio.AudioStream
@@ -14,7 +13,6 @@ import kotlin.test.assertSame
  * Tests for the stream preference selection used by [StreamingUrlRepository].
  *
  * Ordering contract (best first):
- * 0. Playable by the platform's player (iOS: no WebM/Ogg containers, no DASH).
  * 1. Fewest codec/container mismatches against the preferred format.
  * 2. Matching quality family (lossy vs lossless).
  * 3. Closest bitrate / sample rate.
@@ -56,8 +54,7 @@ class StreamingUrlRepositoryTest {
     private fun select(
         streams: List<AudioStream>,
         format: AudioFormat = opusWebm(),
-        quality: AudioQuality = AudioQuality.Lossy(256_000),
-        platform: PlatformType = PlatformType.Linux) = selectPreferredAudioStream(streams, format, quality, platform)
+        quality: AudioQuality = AudioQuality.Lossy(256_000)) = selectPreferredAudioStream(streams, format, quality)
 
     // ---------- empty / single ----------
 
@@ -407,33 +404,20 @@ class StreamingUrlRepositoryTest {
         assertEquals("https://www.youtube.com", normalizeManifestUrl("", StreamProtocol.HLS))
     }
 
-    // ---------- device playability ----------
+    // ---------- no platform restrictions ----------
 
     @Test
-    fun `on iOS a playable m4a stream beats the preferred but unplayable opus webm`() {
+    fun `the preferred opus webm stream wins over aac`() {
         val opus = lossy("opus-160", 160_000)
         val aac = lossy("aac-128", 128_000, codec = "mp4a.40.2", container = "m4a")
-        assertSame(aac, select(listOf(opus, aac), platform = PlatformType.IOS))
+        assertSame(opus, select(listOf(aac, opus)))
     }
 
     @Test
-    fun `on iOS dash manifests are skipped in favour of progressive streams`() {
-        val dash = lossy("dash", 256_000, codec = "mp4a.40.2", container = "m4a", protocol = StreamProtocol.DASH)
+    fun `a dash manifest closest to the preferences is not skipped`() {
+        val dash = lossy("dash", 256_000, protocol = StreamProtocol.DASH)
         val progressive = lossy("aac-128", 128_000, codec = "mp4a.40.2", container = "m4a")
-        assertSame(progressive, select(listOf(dash, progressive), platform = PlatformType.IOS))
-    }
-
-    @Test
-    fun `on iOS an unplayable stream is still returned when nothing else exists`() {
-        val opus = lossy("opus-160", 160_000)
-        assertSame(opus, select(listOf(opus), platform = PlatformType.IOS))
-    }
-
-    @Test
-    fun `off iOS the preferred opus webm stream still wins`() {
-        val opus = lossy("opus-160", 160_000)
-        val aac = lossy("aac-128", 128_000, codec = "mp4a.40.2", container = "m4a")
-        assertSame(opus, select(listOf(opus, aac), platform = PlatformType.Android))
+        assertSame(dash, select(listOf(progressive, dash)))
     }
 
 }

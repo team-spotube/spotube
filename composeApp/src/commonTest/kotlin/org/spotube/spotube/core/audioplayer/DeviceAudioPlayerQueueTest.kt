@@ -8,8 +8,10 @@ import org.spotube.plugin_interfaces.plugin_apis.metadata.artist.MetadataArtist
 import org.spotube.plugin_interfaces.plugin_apis.metadata.common.Thumbnail
 import org.spotube.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
@@ -423,7 +425,10 @@ class DeviceAudioPlayerQueueTest {
         )
 
         val queue = createQueue()
-        withContext(Dispatchers.Default) { } // yield to let init coroutine run
+        // Restore runs on Dispatchers.IO; wait for it on real time rather than assuming one yield is enough.
+        withContext(Dispatchers.Default) {
+            withTimeout(5_000) { while (fakePlayer.loadCallCount == 0) delay(10) }
+        }
 
         assertEquals(1, fakePlayer.loadCallCount)
         assertEquals(QueueCollectionEntry.Playlist("pl-1"), queue.getCurrentCollectionEntry())

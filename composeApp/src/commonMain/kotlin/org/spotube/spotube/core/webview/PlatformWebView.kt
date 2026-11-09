@@ -41,6 +41,13 @@ class WebViewController(val navigationCommands: NavigationCommands): KoinCompone
     var currentPluginId: String? = null
         private set
 
+    /**
+     * Bumped every time a plugin opens the WebView. The screen hands it back to [dispose], so a
+     * screen leaving late can't tear down the session of the plugin that opened it next.
+     */
+    var currentSession: Int = 0
+        private set
+
     suspend fun getCookies(url: String): List<Cookie> {
         if (cookieManager == null) {
             logger.w { "CookieManager is not initialized. Returning empty cookie list." }
@@ -87,29 +94,40 @@ class WebViewController(val navigationCommands: NavigationCommands): KoinCompone
         this.cookieManager = cookieManager
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     fun closeWebview() {
+        navigationCommands.pop(Routes.WebView)
+        endSession()
+    }
+
+    /**
+     * The WebView screen of [session] left (back button, or the plugin closed it). Ends that
+     * session unless another plugin has already opened a new one.
+     */
+    fun dispose(session: Int) {
+        if (session == currentSession) endSession()
+    }
+
+    /**
+     * Forgets everything about the open WebView, including the replayed URL, "created" and message
+     * events and who owns it, so none of it reaches the next plugin that opens the WebView.
+     */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun endSession() {
         cookieManager = null
         content = null
         isHtmlContent = false
         webViewNavigator = null
-        navigationCommands.pop(Routes.WebView)
+        currentPluginId = null
         urlFlow.value = ""
         webViewCreated.resetReplayCache()
         _postMessagesFlow.resetReplayCache()
-    }
-
-    fun dispose() {
-        cookieManager = null
-        content = null
-        isHtmlContent = false
-        webViewNavigator = null
     }
 
     fun navigateTo(url: String, pluginId: String) {
         if (this.content != null) {
             throw IllegalStateException("WebView is already open. Please close the current WebView before navigating to a new URL.")
         }
+        this.currentSession++
         this.currentPluginId = pluginId
         this.content = url
         this.isHtmlContent = false
@@ -120,6 +138,7 @@ class WebViewController(val navigationCommands: NavigationCommands): KoinCompone
         if (this.content != null) {
             throw IllegalStateException("WebView is already open. Please close the current WebView before navigating to a new URL.")
         }
+        this.currentSession++
         this.currentPluginId = pluginId
         this.content = html
         this.isHtmlContent = true

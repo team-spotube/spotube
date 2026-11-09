@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import org.spotube.spotube.modules.support.DonationOption
 import org.jetbrains.compose.resources.stringResource
@@ -26,9 +27,10 @@ import spotube.composeapp.generated.resources.*
 fun DonationPage(
     donations: List<DonationOption>,
     onDonate: (String) -> Unit,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier,
+    contentPadding: Dp = 32.dp) {
     Column(
-        modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(32.dp),
+        modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(contentPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
         Text(

@@ -15,16 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-@file:OptIn(ExperimentalForeignApi::class)
-
 package org.spotube.spotube.core.audioplayer
 
-import kotlinx.cinterop.CValue
-import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,41 +28,39 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import platform.AVFoundation.AVPlayer
-import platform.AVFoundation.AVPlayerItem
-import platform.AVFoundation.AVPlayerTimeControlStatus
-import platform.AVFoundation.AVPlayerTimeControlStatusPaused
-import platform.AVFoundation.AVPlayerTimeControlStatusPlaying
-import platform.AVFoundation.AVPlayerTimeControlStatusWaitingToPlayAtSpecifiedRate
-import platform.AVFoundation.addPeriodicTimeObserverForInterval
-import platform.AVFoundation.currentItem
-import platform.AVFoundation.duration
-import platform.AVFoundation.loadedTimeRanges
-import platform.AVFoundation.pause
-import platform.AVFoundation.play
-import platform.AVFoundation.rate
-import platform.AVFoundation.replaceCurrentItemWithPlayerItem
-import platform.AVFoundation.seekToTime
-import platform.AVFoundation.timeControlStatus
-import platform.AVFoundation.volume
-import platform.CoreMedia.CMTime
-import platform.CoreMedia.CMTimeGetSeconds
-import platform.Foundation.NSURL
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Duration.Companion.milliseconds
 
+/**
+ * iOS player. Playback is done by MobileVLCKit through [NativePlayerEngine]; AVPlayer misreports the
+ * duration of some fragmented MP4 streams (doubling it, which leaves the second half silent).
+ * The engine plays a single URL, so the playlist, loop, shuffle and auto-advance live here.
+ */
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface {
 
     actual val context: Any = context
 
-    private val avPlayer: AVPlayer = AVPlayer()
+    private val engine: NativePlayerEngine = checkNotNull(NativePlayerRegistry.factory) {
+        "NativePlayerRegistry.factory must be set from Swift before the first AudioPlayer is created"
+    }.create()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    private val lock = Mutex()
+    private val mediaSession = IosMediaSession()
 
     private var disposed = false
 
+    private val originalPlaylist = mutableListOf<MediaItem>()
     private val currentPlaylist = mutableListOf<MediaItem>()
-    private val urlIndexMap = mutableMapOf<String, Int>()
+    private var currentIndex = -1
+    private var shuffleEnabled = false
+
+    // The engine holds media only after the first play(); until then a requested start position
+    // is kept here and handed over with the media.
+    private var engineHasMedia = false
+    private var pendingStartMs = 0L
 
     private val _playerState = MutableStateFlow(PlayerState.IDLE)
     private val _currentMediaItem = MutableStateFlow<MediaItem?>(null)
@@ -94,97 +88,182 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
     actual override val completionFlow: Flow<Unit> = _completion.asSharedFlow()
     actual override val errorFlow: Flow<Throwable> = _error.asSharedFlow()
 
-    private var lastTimeControlStatus: AVPlayerTimeControlStatus? = null
-
-    init {
-        avPlayer.addPeriodicTimeObserverForInterval(
-            interval = CMTimeMake(1, 4),
-            queue = null
-        ) { time ->
-            if (!disposed) {
-                val seconds = CMTimeGetSeconds(time)
-                _position.tryEmit(seconds.seconds)
-
-                avPlayer.currentItem?.let { item ->
-                    val durationSeconds = CMTimeGetSeconds(item.duration)
-                    if (durationSeconds > 0) {
-                        _duration.tryEmit(durationSeconds.seconds)
-                    }
-                    val loadedRanges = item.loadedTimeRanges
-//                    if (loadedRanges.count() > 0u) {
-//                        val range = loadedRanges.objectAtIndex(0u)
-//                    }
+    private val engineListener = object : NativePlayerListener {
+        override fun onState(state: NativePlayerState) {
+            if (disposed) return
+            when (state) {
+                NativePlayerState.IDLE -> _playerState.tryEmit(PlayerState.IDLE)
+                NativePlayerState.OPENING,
+                NativePlayerState.BUFFERING -> _playerState.tryEmit(PlayerState.BUFFERING)
+                NativePlayerState.PLAYING -> {
+                    _playerState.tryEmit(PlayerState.PLAYING)
+                    mediaSession.update(
+                        _currentMediaItem.value,
+                        _position.value.inWholeMilliseconds / 1000.0,
+                        _duration.value.inWholeMilliseconds / 1000.0,
+                        true)
                 }
+                NativePlayerState.PAUSED -> {
+                    _playerState.tryEmit(PlayerState.PAUSED)
+                    mediaSession.update(
+                        _currentMediaItem.value,
+                        _position.value.inWholeMilliseconds / 1000.0,
+                        _duration.value.inWholeMilliseconds / 1000.0,
+                        false)
+                }
+                NativePlayerState.ENDED -> scope.launch { lock.withLock { onMediaEndedLocked() } }
             }
         }
 
-        scope.launch {
-            while (!disposed) {
-                syncTimeControlStatus()
-                delay(500)
+        override fun onTime(positionMs: Long) {
+            if (disposed || positionMs < 0) return
+            _position.tryEmit(positionMs.milliseconds)
+            mediaSession.update(
+                _currentMediaItem.value,
+                positionMs / 1000.0,
+                _duration.value.inWholeMilliseconds / 1000.0,
+                _playerState.value == PlayerState.PLAYING)
+        }
+
+        override fun onDuration(durationMs: Long) {
+            if (disposed || durationMs <= 0) return
+            _duration.tryEmit(durationMs.milliseconds)
+        }
+
+        override fun onError(message: String) {
+            if (disposed) return
+            _playerState.tryEmit(PlayerState.IDLE)
+            _error.tryEmit(IllegalStateException("VLC playback error: $message"))
+        }
+    }
+
+    init {
+        engine.setListener(engineListener)
+        mediaSession.configure(
+            onPlay = { scope.launch { play() } },
+            onPause = { scope.launch { pause() } },
+            onSeek = { seconds -> scope.launch { seekTo(seconds.milliseconds) } },
+            onNext = { scope.launch { skipToNext() } },
+            onPrevious = { scope.launch { skipToPrevious() } })
+    }
+
+    /** Loads [currentPlaylist] at [currentIndex] into the engine. Caller holds [lock]. */
+    private fun loadCurrentIntoEngineLocked(autoPlay: Boolean) {
+        val item = currentPlaylist.getOrNull(currentIndex) ?: return
+        val startMs = pendingStartMs
+        pendingStartMs = 0L
+        engineHasMedia = true
+        _position.tryEmit(startMs.milliseconds)
+        _bufferingPosition.tryEmit(Duration.ZERO)
+        _duration.tryEmit(item.duration)
+        engine.load(item.url, autoPlay, startMs)
+    }
+
+    /** Switches to [index] and starts it. Caller holds [lock]. */
+    private fun playIndexLocked(index: Int) {
+        currentIndex = index
+        _currentMediaItem.tryEmit(currentPlaylist[index])
+        pendingStartMs = 0L
+        loadCurrentIntoEngineLocked(autoPlay = true)
+    }
+
+    private fun onMediaEndedLocked() {
+        if (disposed || currentPlaylist.isEmpty()) return
+        _completion.tryEmit(Unit)
+        when {
+            _loopState.value == LoopState.ONE -> playIndexLocked(currentIndex.coerceAtLeast(0))
+            currentIndex < currentPlaylist.lastIndex -> playIndexLocked(currentIndex + 1)
+            _loopState.value == LoopState.ALL -> playIndexLocked(0)
+            else -> {
+                _playerState.tryEmit(PlayerState.COMPLETED)
+                engineHasMedia = false
             }
         }
     }
 
-    private fun syncTimeControlStatus() {
-        val status = avPlayer.timeControlStatus
-        if (status == lastTimeControlStatus) return
-        lastTimeControlStatus = status
-
-        val playerState = when (status) {
-            AVPlayerTimeControlStatusPlaying -> PlayerState.PLAYING
-            AVPlayerTimeControlStatusPaused -> PlayerState.PAUSED
-            AVPlayerTimeControlStatusWaitingToPlayAtSpecifiedRate -> PlayerState.BUFFERING
-            else -> PlayerState.IDLE
+    actual override suspend fun play() {
+        lock.withLock {
+            if (disposed || currentPlaylist.isEmpty()) return
+            mediaSession.activate()
+            if (currentIndex !in currentPlaylist.indices) {
+                currentIndex = 0
+                _currentMediaItem.tryEmit(currentPlaylist[0])
+            }
+            if (engineHasMedia) engine.play() else loadCurrentIntoEngineLocked(autoPlay = true)
         }
-        _playerState.tryEmit(playerState)
+    }
 
-        if (avPlayer.currentItem == null) {
+    actual override suspend fun pause() {
+        lock.withLock {
+            if (disposed) return
+            engine.pause()
+        }
+    }
+
+    actual override suspend fun stop() {
+        lock.withLock {
+            if (disposed) return
+            engine.stop()
+            mediaSession.deactivate()
+            mediaSession.update(
+                _currentMediaItem.value,
+                0.0,
+                _duration.value.inWholeMilliseconds / 1000.0,
+                false)
+            engineHasMedia = false
+            pendingStartMs = 0L
+            _position.tryEmit(Duration.ZERO)
             _playerState.tryEmit(PlayerState.IDLE)
         }
     }
 
-    private fun resolveState(): PlayerState {
-        return when (avPlayer.timeControlStatus) {
-            AVPlayerTimeControlStatusPlaying -> PlayerState.PLAYING
-            AVPlayerTimeControlStatusPaused -> PlayerState.PAUSED
-            AVPlayerTimeControlStatusWaitingToPlayAtSpecifiedRate -> PlayerState.BUFFERING
-            else -> PlayerState.IDLE
+    actual override suspend fun seekTo(position: Duration) {
+        lock.withLock {
+            if (disposed) return
+            val maxMs = _duration.value.inWholeMilliseconds
+            val targetMs = if (maxMs > 0) {
+                position.inWholeMilliseconds.coerceIn(0, maxMs)
+            } else {
+                position.inWholeMilliseconds.coerceAtLeast(0)
+            }
+            if (engineHasMedia) engine.seekTo(targetMs) else pendingStartMs = targetMs
+            _position.tryEmit(targetMs.milliseconds)
         }
     }
 
-    private fun buildAVPlayerItem(url: String): AVPlayerItem? {
-        val nsUrl = NSURL.URLWithString(url) ?: return null
-        return AVPlayerItem(nsUrl)
-    }
-
-    actual override suspend fun play() {
-        avPlayer.play()
-    }
-
-    actual override suspend fun pause() {
-        avPlayer.pause()
-    }
-
-    actual override suspend fun stop() {
-        avPlayer.pause()
-        avPlayer.seekToTime(CMTimeMake(0, 1))
-        _playerState.tryEmit(PlayerState.IDLE)
-    }
-
-    actual override suspend fun seekTo(position: Duration) {
-        val seconds = position.inWholeMilliseconds / 1000.0
-        val cmTime = CMTimeMakeWithSeconds(seconds, 1000)
-        avPlayer.seekToTime(cmTime)
-        _position.tryEmit(position)
-    }
-
     actual override suspend fun loop(state: LoopState) {
-        _loopState.tryEmit(state)
+        lock.withLock {
+            if (disposed) return
+            _loopState.tryEmit(state)
+        }
     }
 
     actual override suspend fun shuffle(enabled: Boolean) {
-        _shuffleMode.tryEmit(enabled)
+        lock.withLock {
+            if (disposed || currentPlaylist.isEmpty() || shuffleEnabled == enabled) return
+
+            val currentItem = _currentMediaItem.value
+            val rebuilt = if (enabled) {
+                if (currentItem != null) {
+                    listOf(currentItem) + originalPlaylist.filterNot { it.url == currentItem.url }.shuffled()
+                } else {
+                    originalPlaylist.shuffled()
+                }
+            } else {
+                originalPlaylist.toList()
+            }
+
+            currentPlaylist.clear()
+            currentPlaylist.addAll(rebuilt)
+            shuffleEnabled = enabled
+            _shuffleMode.tryEmit(enabled)
+            _playlist.tryEmit(currentPlaylist.toList())
+
+            currentIndex = if (currentItem == null) 0 else {
+                currentPlaylist.indexOfFirst { it.url == currentItem.url }.takeIf { it >= 0 } ?: 0
+            }
+            _currentMediaItem.tryEmit(currentPlaylist.getOrNull(currentIndex))
+        }
     }
 
     actual override suspend fun load(
@@ -192,143 +271,186 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
         autoPlay: Boolean,
         startPosition: Int
     ) {
-        currentPlaylist.clear()
-        currentPlaylist.addAll(playlist)
-        urlIndexMap.clear()
-        playlist.forEachIndexed { index, item ->
-            urlIndexMap[item.url] = index
-        }
-        _playlist.tryEmit(currentPlaylist.toList())
+        lock.withLock {
+            if (disposed) return
 
-        if (playlist.isEmpty()) {
-            _playerState.tryEmit(PlayerState.IDLE)
-            _currentMediaItem.tryEmit(null)
+            originalPlaylist.clear()
+            originalPlaylist.addAll(playlist)
+            currentPlaylist.clear()
+            currentPlaylist.addAll(playlist)
+            shuffleEnabled = false
+            _shuffleMode.tryEmit(false)
+            _playlist.tryEmit(currentPlaylist.toList())
+
+            engine.stop()
+            engineHasMedia = false
+            pendingStartMs = 0L
             _position.tryEmit(Duration.ZERO)
-            _duration.tryEmit(Duration.ZERO)
-            return
-        }
+            _bufferingPosition.tryEmit(Duration.ZERO)
 
-        val safeIndex = startPosition.coerceIn(0, playlist.lastIndex)
-        val item = playlist[safeIndex]
-        val avItem = buildAVPlayerItem(item.url)
+            if (currentPlaylist.isEmpty()) {
+                currentIndex = -1
+                _currentMediaItem.tryEmit(null)
+                _playerState.tryEmit(PlayerState.IDLE)
+                _duration.tryEmit(Duration.ZERO)
+                return
+            }
 
-        if (avItem == null) {
-            _error.tryEmit(IllegalArgumentException("Invalid URL: ${item.url}"))
-            _playerState.tryEmit(PlayerState.IDLE)
-            return
-        }
+            currentIndex = startPosition.coerceIn(0, currentPlaylist.lastIndex)
+            _currentMediaItem.tryEmit(currentPlaylist[currentIndex])
+            _duration.tryEmit(currentPlaylist[currentIndex].duration)
+            mediaSession.update(
+                _currentMediaItem.value,
+                0.0,
+                _duration.value.inWholeMilliseconds / 1000.0,
+                false)
 
-        avPlayer.replaceCurrentItemWithPlayerItem(avItem)
-        _currentMediaItem.tryEmit(item)
-
-        if (autoPlay) {
-            avPlayer.play()
+            if (autoPlay) {
+                loadCurrentIntoEngineLocked(autoPlay = true)
+            } else {
+                _playerState.tryEmit(PlayerState.PAUSED)
+            }
         }
     }
 
     actual override suspend fun addMediaItem(mediaItem: MediaItem) {
-        currentPlaylist.add(mediaItem)
-        urlIndexMap[mediaItem.url] = currentPlaylist.lastIndex
-        _playlist.tryEmit(currentPlaylist.toList())
+        lock.withLock {
+            if (disposed) return
+            originalPlaylist.add(mediaItem)
+            currentPlaylist.add(mediaItem)
+            _playlist.tryEmit(currentPlaylist.toList())
+            if (currentIndex == -1) {
+                currentIndex = 0
+                _currentMediaItem.tryEmit(currentPlaylist.firstOrNull())
+            }
+        }
     }
 
     actual override suspend fun insertMediaItemAtNextIndex(mediaItem: MediaItem) {
-        val currentIndex = currentPlaylist.indexOfFirst {
-            it.url == _currentMediaItem.value?.url
+        lock.withLock {
+            if (disposed) return
+            val insertIndex = if (currentIndex >= 0) currentIndex + 1 else 0
+            originalPlaylist.add(insertIndex.coerceAtMost(originalPlaylist.size), mediaItem)
+            currentPlaylist.add(insertIndex, mediaItem)
+            _playlist.tryEmit(currentPlaylist.toList())
+            if (currentIndex == -1) {
+                currentIndex = 0
+                _currentMediaItem.tryEmit(currentPlaylist.firstOrNull())
+            }
         }
-        val insertIndex = if (currentIndex >= 0) currentIndex + 1 else currentPlaylist.size
-        currentPlaylist.add(insertIndex, mediaItem)
-        urlIndexMap.clear()
-        currentPlaylist.forEachIndexed { index, item ->
-            urlIndexMap[item.url] = index
-        }
-        _playlist.tryEmit(currentPlaylist.toList())
     }
 
     actual override suspend fun removeMediaItem(mediaItem: MediaItem) {
-        val index = urlIndexMap[mediaItem.url] ?: return
-        currentPlaylist.removeAt(index)
-        urlIndexMap.clear()
-        currentPlaylist.forEachIndexed { i, item ->
-            urlIndexMap[item.url] = i
+        lock.withLock {
+            if (disposed || currentPlaylist.isEmpty()) return
+
+            originalPlaylist.removeAll { it.url == mediaItem.url }
+            val currentUrl = _currentMediaItem.value?.url
+            val removedCurrent = currentUrl == mediaItem.url
+            val removalIndices = currentPlaylist.withIndex()
+                .filter { it.value.url == mediaItem.url }
+                .map { it.index }
+            if (removalIndices.isEmpty()) return
+
+            // Items before the playing one shift it down, so keep the index on the same item.
+            val removedBefore = removalIndices.count { it < currentIndex }
+            removalIndices.asReversed().forEach { currentPlaylist.removeAt(it) }
+
+            if (currentPlaylist.isEmpty()) {
+                currentIndex = -1
+                _currentMediaItem.tryEmit(null)
+                engine.stop()
+                engineHasMedia = false
+                _playerState.tryEmit(PlayerState.IDLE)
+            } else if (removedCurrent) {
+                currentIndex = currentIndex.coerceIn(0, currentPlaylist.lastIndex)
+                _currentMediaItem.tryEmit(currentPlaylist[currentIndex])
+                engine.stop()
+                engineHasMedia = false
+            } else {
+                currentIndex = (currentIndex - removedBefore).coerceIn(0, currentPlaylist.lastIndex)
+            }
+
+            _playlist.tryEmit(currentPlaylist.toList())
         }
-        _playlist.tryEmit(currentPlaylist.toList())
     }
 
     actual override suspend fun moveMediaItem(fromIndex: Int, toIndex: Int) {
-        if (fromIndex !in currentPlaylist.indices || toIndex !in currentPlaylist.indices || fromIndex == toIndex) return
-        val item = currentPlaylist.removeAt(fromIndex)
-        currentPlaylist.add(toIndex, item)
-        urlIndexMap.clear()
-        currentPlaylist.forEachIndexed { i, it ->
-            urlIndexMap[it.url] = i
+        lock.withLock {
+            if (disposed) return
+            if (fromIndex !in currentPlaylist.indices || toIndex !in currentPlaylist.indices || fromIndex == toIndex) return
+
+            val item = currentPlaylist.removeAt(fromIndex)
+            currentPlaylist.add(toIndex, item)
+
+            if (!shuffleEnabled && fromIndex in originalPlaylist.indices && toIndex in originalPlaylist.indices) {
+                originalPlaylist.add(toIndex, originalPlaylist.removeAt(fromIndex))
+            }
+
+            val currentUrl = _currentMediaItem.value?.url
+            currentIndex = currentUrl?.let { url ->
+                currentPlaylist.indexOfFirst { it.url == url }.takeIf { it >= 0 }
+            } ?: currentIndex.coerceIn(0, currentPlaylist.lastIndex)
+
+            _playlist.tryEmit(currentPlaylist.toList())
+            _currentMediaItem.tryEmit(currentPlaylist.getOrNull(currentIndex))
         }
-        _playlist.tryEmit(currentPlaylist.toList())
     }
 
     actual override suspend fun skipToNext() {
-        val currentIndex = currentPlaylist.indexOfFirst {
-            it.url == _currentMediaItem.value?.url
-        }
-        val nextIndex = currentIndex + 1
-        if (nextIndex < currentPlaylist.size) {
-            val nextItem = currentPlaylist[nextIndex]
-            val avItem = buildAVPlayerItem(nextItem.url)
-            if (avItem != null) {
-                avPlayer.replaceCurrentItemWithPlayerItem(avItem)
-                _currentMediaItem.tryEmit(nextItem)
-                avPlayer.play()
-            }
+        lock.withLock {
+            if (disposed || currentPlaylist.isEmpty()) return
+            playIndexLocked((currentIndex + 1).coerceAtMost(currentPlaylist.lastIndex))
         }
     }
 
     actual override suspend fun skipToPrevious() {
-        val currentIndex = currentPlaylist.indexOfFirst {
-            it.url == _currentMediaItem.value?.url
-        }
-        val prevIndex = currentIndex - 1
-        if (prevIndex >= 0) {
-            val prevItem = currentPlaylist[prevIndex]
-            val avItem = buildAVPlayerItem(prevItem.url)
-            if (avItem != null) {
-                avPlayer.replaceCurrentItemWithPlayerItem(avItem)
-                _currentMediaItem.tryEmit(prevItem)
-                avPlayer.play()
-            }
+        lock.withLock {
+            if (disposed || currentPlaylist.isEmpty()) return
+            playIndexLocked((currentIndex - 1).coerceAtLeast(0))
         }
     }
 
     actual override suspend fun jumpTo(index: Int) {
-        if (index in currentPlaylist.indices) {
-            val item = currentPlaylist[index]
-            val avItem = buildAVPlayerItem(item.url)
-            if (avItem != null) {
-                avPlayer.replaceCurrentItemWithPlayerItem(avItem)
-                _currentMediaItem.tryEmit(item)
-            }
+        lock.withLock {
+            if (disposed || index !in currentPlaylist.indices) return
+            playIndexLocked(index)
         }
     }
 
     actual override suspend fun setVolume(volume: Float) {
-        val clamped = volume.coerceIn(0f, 1f)
-        avPlayer.volume = clamped
-        _volume.tryEmit(clamped)
+        lock.withLock {
+            if (disposed) return
+            val clamped = volume.coerceIn(0f, 1f)
+            engine.setVolume(clamped)
+            _volume.tryEmit(clamped)
+        }
     }
 
     actual override suspend fun setPlaybackSpeed(speed: Float) {
-        val clamped = speed.coerceIn(0.25f, 4f)
-        avPlayer.rate = clamped
-        _playbackSpeed.tryEmit(clamped)
+        lock.withLock {
+            if (disposed) return
+            val clamped = speed.coerceIn(0.25f, 4f)
+            engine.setRate(clamped)
+            _playbackSpeed.tryEmit(clamped)
+        }
     }
 
     actual override fun isDisposed(): Boolean = disposed
 
     actual override fun dispose() {
+        if (disposed) return
         disposed = true
-        avPlayer.pause()
-        avPlayer.replaceCurrentItemWithPlayerItem(null)
+        engine.setListener(null)
+        engine.destroy()
+        mediaSession.deactivate()
+        mediaSession.clear()
+        scope.cancel()
+
+        originalPlaylist.clear()
         currentPlaylist.clear()
-        urlIndexMap.clear()
+        currentIndex = -1
+        engineHasMedia = false
 
         _playerState.tryEmit(PlayerState.IDLE)
         _currentMediaItem.tryEmit(null)
@@ -337,12 +459,4 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
         _position.tryEmit(Duration.ZERO)
         _bufferingPosition.tryEmit(Duration.ZERO)
     }
-}
-
-private fun CMTimeMake(value: Long, timescale: Int): CValue<CMTime> {
-    return platform.CoreMedia.CMTimeMake(value, timescale)
-}
-
-private fun CMTimeMakeWithSeconds(seconds: Double, preferredTimescale: Int): CValue<CMTime> {
-    return platform.CoreMedia.CMTimeMakeWithSeconds(seconds, preferredTimescale)
 }

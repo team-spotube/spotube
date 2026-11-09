@@ -40,8 +40,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import org.jetbrains.compose.resources.getPluralString
-import org.jetbrains.compose.resources.getString
+import org.spotube.spotube.core.i18n.getPluralString
+import org.spotube.spotube.core.i18n.getString
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.jam_queue_added_track
 import spotube.composeapp.generated.resources.jam_queue_added_tracks
@@ -202,7 +202,7 @@ class RemotePlaybackController(
 
     /**
      * Adds a single track to the active jam queue. The host applies it to the
-     * local (shared) queue directly; a guest suggests it to the host over MQTT.
+     * local (shared) queue directly; a guest suggests it to the host through the room server.
      */
     fun addTrackToJam(track: MetadataTrack) {
         if (jamRoomService.role.value == null) return
@@ -311,7 +311,13 @@ class RemotePlaybackController(
                     }
 
                     RemoteCollectionType.ArtistTopTracks -> when (request.action) {
-                        PlaybackDestinationAction.Play -> collectionPlaybackHelper.playArtistTopTracks(request.id)
+                        PlaybackDestinationAction.Play -> {
+                            if (startTrack != null) {
+                                collectionPlaybackHelper.playArtistTopTracksFromTrack(request.id, startTrack)
+                            } else {
+                                collectionPlaybackHelper.playArtistTopTracks(request.id)
+                            }
+                        }
                         PlaybackDestinationAction.AddToQueue -> collectionPlaybackHelper.addArtistTopTracksToQueue(request.id)
                         PlaybackDestinationAction.PlayNext -> collectionPlaybackHelper.playArtistTopTracksNext(request.id)
                     }

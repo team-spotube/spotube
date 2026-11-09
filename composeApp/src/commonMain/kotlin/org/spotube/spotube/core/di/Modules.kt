@@ -86,6 +86,7 @@ import org.spotube.spotube.modules.update.AppUpdateService
 import org.spotube.spotube.modules.update.PluginUpdateService
 import org.spotube.spotube.modules.settings.SettingsProvider
 import org.spotube.spotube.modules.settings.SettingsRepository
+import org.spotube.spotube.modules.settings.UserSettingsStore
 import org.spotube.spotube.modules.settings.UserSettingsSource
 import org.spotube.spotube.modules.settings.SettingsViewModel
 import org.spotube.spotube.modules.settings.JamSettingsViewModel
@@ -104,6 +105,7 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.core.module.dsl.withOptions
 import org.koin.dsl.module
+import org.spotube.spotube.core.zipline.permissions.PublicSuffixListRepository
 
 expect val platformModules: Module
 
@@ -142,6 +144,7 @@ val sharedModules = module {
     viewModel { (folderPath: String) -> LocalFolderViewModel(folderPath, get(), get()) }
 
     // Plugin system
+    single { PublicSuffixListRepository.create(get(), get()) } withOptions { createdAtStart() }
     singleOf(::PluginManager) {
         bind<PluginProvider>()
         bind<AudioPluginSource>()
@@ -151,7 +154,10 @@ val sharedModules = module {
     viewModelOf(::MetadataPluginGuardViewModel)
 
     // Settings
-    singleOf(::SettingsRepository) { bind<UserSettingsSource>() }
+    singleOf(::SettingsRepository) {
+        bind<UserSettingsSource>()
+        bind<UserSettingsStore>()
+    }
     viewModelOf(::SettingsViewModel) { bind<SettingsProvider>() }
     viewModelOf(::JamSettingsViewModel)
     viewModel {
@@ -283,7 +289,11 @@ val sharedModules = module {
     }
     single { RemotePlaybackController(get(), get(), get(), get(), get()) }
     singleOf(::JamRoomClient)
-    single { JamRoomService(get(), get(), get(), get()) }
+    single {
+        JamRoomService(
+            get(), get(), get(), get(), get(), get(), get(),
+            evictCachedAudio = get<CacheManager>()::invalidateCacheEntry)
+    }
     singleOf(::AudioPlayerQueueRepository) { bind<QueueStateRepository>() }
     single<AudioPlayerQueue> {
         DeviceAudioPlayerQueue(get(), get(), get(), get(), get())

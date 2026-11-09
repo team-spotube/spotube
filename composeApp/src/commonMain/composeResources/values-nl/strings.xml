@@ -292,25 +292,11 @@
     <string name="plugin_permissions_capability_webview_title">WebView</string>
     <string name="plugin_permissions_capability_webview_desc">Webcontent weergeven in de app</string>
     <string name="settings_section_jam">Group Jam</string>
-    <string name="settings_jam_broker_title">MQTT-broker</string>
-    <string name="settings_jam_broker_host">Broker-host</string>
-    <string name="settings_jam_broker_host_subtitle">%1$s:%2$d</string>
-    <string name="settings_jam_broker_port">Broker-poort</string>
-    <string name="settings_jam_broker_tls">TLS gebruiken</string>
-    <string name="settings_jam_broker_username">Gebruikersnaam (optioneel)</string>
-    <string name="settings_jam_broker_password">Wachtwoord (optioneel)</string>
-    <string name="settings_jam_broker_client_id">Voorvoegsel client-ID</string>
-    <string name="settings_jam_broker_client_id_subtitle">Wordt gebruikt om deze Spotube-installatie te herkennen</string>
-    <string name="settings_jam_broker_tls_subtitle">De verbinding met de broker versleutelen</string>
-    <string name="settings_jam_broker_diagnostics_subtitle">Controleer de huidige broker-instellingen voordat je een Jam start.</string>
-    <string name="settings_jam_broker_test">Verbinding testen</string>
-    <string name="settings_jam_broker_testing">Testen…</string>
-    <string name="settings_jam_broker_test_ok">Verbonden in %1$d ms</string>
-    <string name="settings_jam_broker_test_fail">Mislukt: %1$s</string>
-    <string name="settings_jam_broker_placeholder_note">Tijdelijke broker — stel je eigen broker in om zelf te hosten</string>
+    <string name="settings_jam_server_test">Verbinding testen</string>
+    <string name="settings_jam_server_testing">Testen…</string>
+    <string name="settings_jam_server_test_ok">Verbonden in %1$d ms</string>
+    <string name="settings_jam_server_test_fail">Mislukt: %1$s</string>
     <string name="settings_jam_section_connection">Verbinding</string>
-    <string name="settings_jam_section_credentials">Inloggegevens</string>
-    <string name="settings_jam_section_identity">Identiteit</string>
     <string name="settings_jam_section_diagnostics">Diagnose</string>
 
     <!-- Group Jam -->
@@ -323,9 +309,6 @@
     <string name="jam_setup_working">Verbinden…</string>
     <string name="jam_setup_code_label">Sessiecode</string>
     <string name="jam_setup_code_placeholder">ABC123</string>
-    <string name="jam_connection_host">Broker: %1$s</string>
-    <string name="jam_connection_missing">Stel een broker in bij Instellingen om een sessie te hosten of eraan deel te nemen.</string>
-    <string name="jam_connection_settings">Broker-instellingen</string>
     <string name="jam_session_connected">Verbonden</string>
     <string name="jam_session_connecting">Opnieuw verbinden…</string>
     <string name="jam_invite_copy">Code kopiëren</string>
@@ -345,6 +328,28 @@
     <string name="jam_error_join">Deelnemen aan Jam-sessie mislukt</string>
     <string name="jam_error_invalid_code">Voer een sessiecode van zes tekens in met letters en cijfers.</string>
     <string name="jam_share_message">Doe mee met mijn Spotube Jam met code: %1$s</string>
+    <string name="settings_jam_server_title">Sessieserver</string>
+    <string name="settings_jam_server_url">Server-URL</string>
+    <string name="settings_jam_server_url_invalid">Voer een URL in die begint met https://</string>
+    <string name="settings_jam_server_diagnostics_subtitle">Controleer de sessieserver voordat je een sessie start.</string>
+    <string name="settings_jam_server_note">Jam gebruikt de gratis sessieserver van Spotube. Wil je hem zelf hosten, deploy dan de server van github.com/team-spotube/jam-server en voer de URL in.</string>
+    <string name="settings_jam_section_you">Jij</string>
+    <string name="jam_connection_host">Server: %1$s</string>
+    <string name="jam_connection_missing">Stel in Instellingen een sessieserver in om een sessie te hosten of eraan deel te nemen.</string>
+    <string name="jam_connection_settings">Serverinstellingen</string>
+    <string name="jam_participants_you">%1$s (jij)</string>
+    <string name="jam_name_title">Je naam</string>
+    <string name="jam_name_subtitle">Anderen in de jam zien je als %1$s</string>
+    <string name="jam_name_description">Zichtbaar voor iedereen in de jam. Laat leeg om %1$s te gebruiken. Een nieuwe naam geldt vanaf de volgende keer dat je een sessie start of eraan deelneemt.</string>
+    <string name="jam_name_too_long">Gebruik maximaal %1$d tekens.</string>
+    <string name="jam_error_no_server">Geen jamserver ingesteld</string>
+    <string name="jam_error_server_unreachable">Kan de jamserver niet bereiken. Controleer je netwerk of de server-URL in Instellingen → Group Jam.</string>
+    <string name="jam_error_server_incompatible">De jamserver draait een incompatibele versie.</string>
+    <string name="jam_error_room_not_found">Geen sessie met die code. Controleer de code en probeer het opnieuw.</string>
+    <string name="jam_error_room_full">Deze sessie is vol.</string>
+    <string name="jam_error_banned">De host heeft je uit deze sessie verbannen.</string>
+    <string name="jam_error_kicked">De host heeft je uit de sessie verwijderd.</string>
+    <string name="jam_error_replaced">Deze sessie is opnieuw geopend op dit apparaat, dus deze verbinding is gesloten.</string>
 
     <string name="player_go_to_album">Naar album</string>
     <string name="player_sleep_timer">Slaaptimer</string>
@@ -517,14 +522,9 @@
     <string name="jam_destination_suggest">Voorstellen aan Jam</string>
 
     <!-- Group Jam: connection errors -->
-    <string name="jam_error_no_broker">Geen Jam-broker ingesteld</string>
-    <string name="jam_error_broker_host_empty">Broker-host is leeg</string>
     <string name="jam_error_connection_failed">Verbinding mislukt</string>
     <string name="jam_error_connection_lost">Verbinding verbroken</string>
 
-    <!-- Settings: Group Jam broker -->
-    <string name="settings_jam_broker_content_description">Broker</string>
-    <string name="settings_jam_broker_username_placeholder">anoniem</string>
 
     <!-- Group Jam: queue snackbar -->
     <string name="jam_queue_added_track">Toegevoegd aan de Jam-wachtrij</string>

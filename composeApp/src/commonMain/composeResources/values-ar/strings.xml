@@ -308,25 +308,11 @@
     <string name="plugin_permissions_capability_webview_title">WebView</string>
     <string name="plugin_permissions_capability_webview_desc">عرض محتوى الويب داخل التطبيق</string>
     <string name="settings_section_jam">الجام الجماعي</string>
-    <string name="settings_jam_broker_title">وسيط MQTT</string>
-    <string name="settings_jam_broker_host">مضيف الوسيط</string>
-    <string name="settings_jam_broker_host_subtitle">%1$s:%2$d</string>
-    <string name="settings_jam_broker_port">منفذ الوسيط</string>
-    <string name="settings_jam_broker_tls">استخدام TLS</string>
-    <string name="settings_jam_broker_username">اسم المستخدم (اختياري)</string>
-    <string name="settings_jam_broker_password">كلمة المرور (اختياري)</string>
-    <string name="settings_jam_broker_client_id">بادئة معرّف العميل</string>
-    <string name="settings_jam_broker_client_id_subtitle">تُستخدم لتعريف نسخة Spotube هذه</string>
-    <string name="settings_jam_broker_tls_subtitle">تشفير الاتصال بالوسيط</string>
-    <string name="settings_jam_broker_diagnostics_subtitle">تحقق من إعدادات الوسيط الحالية قبل بدء غرفة.</string>
-    <string name="settings_jam_broker_test">اختبار الاتصال</string>
-    <string name="settings_jam_broker_testing">جارٍ الاختبار…</string>
-    <string name="settings_jam_broker_test_ok">تم الاتصال خلال %1$d ms</string>
-    <string name="settings_jam_broker_test_fail">فشل: %1$s</string>
-    <string name="settings_jam_broker_placeholder_note">وسيط مؤقت — اضبط وسيطك الخاص للاستضافة الذاتية</string>
+    <string name="settings_jam_server_test">اختبار الاتصال</string>
+    <string name="settings_jam_server_testing">جارٍ الاختبار…</string>
+    <string name="settings_jam_server_test_ok">تم الاتصال خلال %1$d ms</string>
+    <string name="settings_jam_server_test_fail">فشل: %1$s</string>
     <string name="settings_jam_section_connection">الاتصال</string>
-    <string name="settings_jam_section_credentials">بيانات الاعتماد</string>
-    <string name="settings_jam_section_identity">الهوية</string>
     <string name="settings_jam_section_diagnostics">التشخيص</string>
 
     <!-- Group Jam -->
@@ -339,9 +325,6 @@
     <string name="jam_setup_working">جارٍ الاتصال…</string>
     <string name="jam_setup_code_label">رمز الغرفة</string>
     <string name="jam_setup_code_placeholder">ABC123</string>
-    <string name="jam_connection_host">الوسيط: %1$s</string>
-    <string name="jam_connection_missing">اضبط وسيطًا في الإعدادات لاستضافة غرفة أو الانضمام إليها.</string>
-    <string name="jam_connection_settings">إعدادات الوسيط</string>
     <string name="jam_session_connected">متصل</string>
     <string name="jam_session_connecting">جارٍ إعادة الاتصال…</string>
     <string name="jam_invite_copy">نسخ الرمز</string>
@@ -361,6 +344,28 @@
     <string name="jam_error_join">تعذّر الانضمام إلى جلسة الجام</string>
     <string name="jam_error_invalid_code">أدخل رمز غرفة مكوّنًا من ستة أحرف وأرقام.</string>
     <string name="jam_share_message">انضم إلى جام Spotube الخاص بي باستخدام الرمز: %1$s</string>
+    <string name="settings_jam_server_title">خادم الغرف</string>
+    <string name="settings_jam_server_url">رابط الخادم</string>
+    <string name="settings_jam_server_url_invalid">أدخل رابطًا يبدأ بـ https://</string>
+    <string name="settings_jam_server_diagnostics_subtitle">تحقّق من خادم الغرف قبل بدء غرفة.</string>
+    <string name="settings_jam_server_note">يستخدم الجام خادم الغرف المجاني من Spotube. للاستضافة الذاتية، انشر الخادم من github.com/team-spotube/jam-server وأدخل رابطه.</string>
+    <string name="settings_jam_section_you">أنت</string>
+    <string name="jam_connection_host">الخادم: %1$s</string>
+    <string name="jam_connection_missing">حدّد خادم غرف في الإعدادات لاستضافة غرفة أو الانضمام إليها.</string>
+    <string name="jam_connection_settings">إعدادات الخادم</string>
+    <string name="jam_participants_you">%1$s (أنت)</string>
+    <string name="jam_name_title">اسمك</string>
+    <string name="jam_name_subtitle">يراك الآخرون في الجام باسم %1$s</string>
+    <string name="jam_name_description">يظهر لجميع من في الجام. اتركه فارغًا لاستخدام %1$s. يُطبَّق الاسم الجديد في المرة القادمة التي تنشئ فيها غرفة أو تنضم إليها.</string>
+    <string name="jam_name_too_long">استخدم %1$d حرفًا كحد أقصى.</string>
+    <string name="jam_error_no_server">لم يتم إعداد خادم للجام</string>
+    <string name="jam_error_server_unreachable">تعذّر الوصول إلى خادم الجام. تحقّق من الشبكة أو من رابط الخادم في الإعدادات ← الجام الجماعي.</string>
+    <string name="jam_error_server_incompatible">يعمل خادم الجام بإصدار غير متوافق.</string>
+    <string name="jam_error_room_not_found">لا توجد غرفة بهذا الرمز. تحقّق منه وحاول مجددًا.</string>
+    <string name="jam_error_room_full">هذه الغرفة ممتلئة.</string>
+    <string name="jam_error_banned">حظرك المضيف من هذه الغرفة.</string>
+    <string name="jam_error_kicked">أزالك المضيف من الغرفة.</string>
+    <string name="jam_error_replaced">فُتحت هذه الغرفة مجددًا على هذا الجهاز، لذا أُغلق هذا الاتصال.</string>
 
     <string name="player_go_to_album">الانتقال إلى الألبوم</string>
     <string name="player_sleep_timer">مؤقت النوم</string>
@@ -533,14 +538,9 @@
     <string name="jam_destination_suggest">اقتراح للجام</string>
 
     <!-- Group Jam: connection errors -->
-    <string name="jam_error_no_broker">لم يتم ضبط وسيط للجام</string>
-    <string name="jam_error_broker_host_empty">مضيف الوسيط فارغ</string>
     <string name="jam_error_connection_failed">فشل الاتصال</string>
     <string name="jam_error_connection_lost">انقطع الاتصال</string>
 
-    <!-- Settings: Group Jam broker -->
-    <string name="settings_jam_broker_content_description">الوسيط</string>
-    <string name="settings_jam_broker_username_placeholder">مجهول</string>
 
     <!-- Group Jam: queue snackbar -->
     <string name="jam_queue_added_track">تمت الإضافة إلى قائمة انتظار الجام</string>

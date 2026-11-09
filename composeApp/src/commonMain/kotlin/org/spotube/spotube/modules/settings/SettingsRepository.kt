@@ -34,7 +34,12 @@ interface UserSettingsSource {
     val userSettings: StateFlow<UserSettings>
 }
 
-class SettingsRepository(private val database: Database) : UserSettingsSource {
+/** [UserSettingsSource] that can also save, for consumers that update a setting or two. */
+interface UserSettingsStore : UserSettingsSource {
+    suspend fun updateSettings(newSettings: UserSettings)
+}
+
+class SettingsRepository(private val database: Database) : UserSettingsStore {
     companion object {
         private val SETTINGS_KEY = stringPreferencesKey("user_settings")
 
@@ -54,7 +59,7 @@ class SettingsRepository(private val database: Database) : UserSettingsSource {
     override val userSettings: StateFlow<UserSettings> = database.settingsDataStore.data.map { prefs ->
         val json = prefs[SETTINGS_KEY]
         if (json != null) {
-            settingsJson.decodeFromString<UserSettings>(json as String).withPlayableStreamingFormat()
+            settingsJson.decodeFromString<UserSettings>(json as String)
         } else {
             UserSettings() // Default value
         }
@@ -64,7 +69,7 @@ class SettingsRepository(private val database: Database) : UserSettingsSource {
         initialValue = UserSettings() // Default value
     )
 
-    suspend fun updateSettings(newSettings: UserSettings) {
+    override suspend fun updateSettings(newSettings: UserSettings) {
         database.settingsDataStore.edit { prefs ->
             prefs[SETTINGS_KEY] = settingsJson.encodeToString(newSettings)
         }
@@ -73,6 +78,6 @@ class SettingsRepository(private val database: Database) : UserSettingsSource {
     suspend fun getCurrentSettings(): UserSettings {
         val preferences = database.settingsDataStore.data.first()
         val storedJson = preferences[SETTINGS_KEY] ?: return UserSettings()
-        return settingsJson.decodeFromString<UserSettings>(storedJson).withPlayableStreamingFormat()
+        return settingsJson.decodeFromString<UserSettings>(storedJson)
     }
 }

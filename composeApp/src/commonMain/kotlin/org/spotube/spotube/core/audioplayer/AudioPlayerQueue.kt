@@ -44,6 +44,12 @@ interface AudioPlayerQueue {
 	suspend fun getCurrentCollectionEntry(): QueueCollectionEntry?
 	suspend fun getCollectionHistory(): List<QueueCollectionEntry>
 
+	/**
+	 * Stops endless playback from adding recommendations when the queue runs out. A jam
+	 * guest's queue belongs to the host; recommendations of its own would split them.
+	 */
+	fun setEndlessPlaybackSuppressed(suppressed: Boolean) = Unit
+
 	fun isPlaylistPlaying(playlistId: String? = null): Boolean {
 		val entry = currentCollectionEntryFlow.value as? QueueCollectionEntry.Playlist ?: return false
 		return playlistId == null || entry.id == playlistId

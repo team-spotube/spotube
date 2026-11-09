@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.spotube.spotube.modules.welcome.WelcomeWordmark
@@ -19,9 +20,9 @@ import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.*
 
 @Composable
-fun BrandingPage(modifier: Modifier = Modifier) {
+fun BrandingPage(modifier: Modifier = Modifier, contentPadding: Dp = 32.dp) {
     Column(
-        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(32.dp),
+        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(contentPadding),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
         Image(painterResource(Res.drawable.spotube_logo), null, Modifier.size(88.dp))

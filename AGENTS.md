@@ -8,6 +8,7 @@
 - Desktop/JVM: `composeApp/src/jvmMain/kotlin/org/spotube/spotube/main.kt` (`mainClass = org.spotube.spotube.MainKt`).
 - Android: `composeApp/src/androidMain/kotlin/org/spotube/spotube/MainActivity.kt`.
 - iOS bridge: `composeApp/src/iosMain/kotlin/org/spotube/spotube/MainViewController.kt` and `iosApp/iosApp/ContentView.swift`.
+- iOS audio: MobileVLCKit from CocoaPods (`iosApp/Podfile`), driven by `iosApp/iosApp/VlcPlayerEngine.swift` through `NativePlayerEngine` (iosMain). Run `pod install` in `iosApp/` first, then build `iosApp/iosApp.xcworkspace` (not the `.xcodeproj`, which can't build the Pods). Android Studio's iOS run config must point at the workspace too.
 
 ## High-value commands
 - Use Gradle wrapper (`./gradlew` or `./gradlew.bat`) only.
@@ -25,6 +26,15 @@
 ## Networking
 - Never call `HttpClient(...)` directly. Inject `HttpClientFactory` (`commonMain/.../core/network/HttpClientFactory.kt`, a Koin single) and use `.default` / `.json` (shared, never close them) or `.create { ... }` for extra plugins (caller owns and may close it). It owns the one engine-backed client, so the platform default engine is used everywhere (Darwin on iOS, OkHttp on Android/desktop).
 - Do not add `ktor-client-cio`: on iOS it competes with Darwin as the default engine and has no TLS on Kotlin/Native, so every HTTPS request fails.
+
+## Group Jam
+- Room server: separate repository, https://github.com/team-spotube/jam-server (Cloudflare Worker + one Durable Object per six-letter room code, TypeScript, wrangler). It relays/retains small JSON frames and serves the clock; no audio passes through it. Protocol in its `src/protocol.ts`; keep it in sync with the wire frames in `core/jam/JamRoomClient.kt` (bump `PROTOCOL_VERSION` on both sides for breaking changes, and land both changes together).
+- App side: `core/jam/` — `JamRoomClient` (Ktor WebSocket, reconnects, keep-alives, clock pings), `JamClock`/`JamDriftCorrector` (sync math), `JamRoomService` (host broadcasts queue + playback anchors in server time; guests follow by nudging playback rate, seeking only when far off).
+- Cost and battery: the room is billed per incoming message and storage write, and on phones each transmission wakes the cellular radio. Don't add periodic frames or polling. Keep-alives go out once a minute. Guests' sync loop sleeps while the room is paused or buffering, and the host checks its own drift only while playing. Anchors go out on change (plus host drift and a 60 s heartbeat), keep-alives are runtime auto-responses, and anchors aren't persisted. See the jam-server README.
+- Security: the server enforces identity (per-install secret → per-room key → public id), device-level bans (`JamDevice.kt` traits, only ever sent hashed), host-only powers and flood limits. The app treats everything from peers as untrusted and runs it through `JamMediaItem.sanitized` before loading it. See "Security" in the jam-server README.
+- A network drop must never crash the app: `JamRoomClient.pump` turns socket failures into a reconnect. `JamSessionSimulationTest.roomSurvivesNetworkLoss` cuts the network with `TcpProxy`.
+- Server URL setting: `UserSettings.jamServerUrl` (default `DEFAULT_JAM_SERVER_URL` in `SettingsModels.kt`).
+- Tests: `JamSyncTest` (pure), plus `JamRoomClientIntegrationTest` and `JamSessionSimulationTest`, which only run with `JAM_TEST_URL` set (run `npm run dev` in a jam-server checkout).
 
 ## GraalVM native image (desktop)
 - Enabled via `graalvm { }` inside `nucleus.application` in `composeApp/build.gradle.kts`. Nucleus downloads GraalVM CE itself (or uses `$GRAALVM_HOME`). Linux needs `gcc` + `patchelf`.
@@ -45,6 +55,7 @@
 
 ## UI component patterns
 - **ALL user-facing strings MUST come from `composeApp/src/commonMain/composeResources/values/strings.xml` via `stringResource(Res.string.xxx)`.** Never hardcode a literal string in a `Text(...)`, dialog title, button label, content description, placeholder, or error message inside `@Composable` code. If the string you need doesn't exist yet, add a new `<string name="...">` entry to `strings.xml` (grouped near related keys, following the existing `feature_context_purpose` naming convention) and reference it — do not inline the text "just this once". This applies to every module, including ones you're about to add (dialogs, screens, snackbars, etc.), not just `modules/settings`. `strings.xml` is the single source of truth for copy, not a showcase file for one screen.
+- Outside composables (ViewModels, services, snackbars), import `getString` / `getPluralString` / `getStringArray` from `org.spotube.spotube.core.i18n`, never from `org.jetbrains.compose.resources`. The library versions ask Skiko for the system theme on every call, which on Linux is a blocking D-Bus call that segfaulted the desktop app from background threads (#3183). `NonComposableStringLookupTest` enforces this.
 - **ViewModels own ALL state and logic.** Composables are dumb renderers: they collect a single `StateFlow<UiState>` from the ViewModel and forward user events (clicks, text input, drag callbacks) back to ViewModel functions. No business logic, filtering, derivation, reordering buffers, or `LaunchedEffect`-based state syncing belongs in a composable — it goes in the ViewModel. The `combine`/`stateIn` flow chain in the ViewModel must produce fully-computed, ready-to-render UI state so the composable never needs intermediate `remember` derivations or `mutableStateListOf` mirrors.
 - **AdaptiveDropdownBottomSheet** (`commonMain/.../core/ui/component/AdaptiveDropdownBottomSheet.kt`): switches between `DropdownMenu` (large screen) and `ModalBottomSheet` (small screen) via `currentWindowAdaptiveInfo()`. Do NOT use expect/actual — all adaptive components that rely ONLY on Compose/Material3 APIs belong in commonMain.
 - **AdaptiveDialogBottomSheet** (`commonMain/.../core/ui/component/AdaptiveDialogBottomSheet.kt`): switches between `ThemedDialog` (large screen) and `ModalBottomSheet` (small screen) via `currentWindowAdaptiveInfo()`. Same rule — keep in commonMain unless platform-specific APIs are required.

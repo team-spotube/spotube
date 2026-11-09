@@ -292,25 +292,11 @@
     <string name="plugin_permissions_capability_webview_title">WebView</string>
     <string name="plugin_permissions_capability_webview_desc">অ্যাপের ভেতরে ওয়েব কনটেন্ট দেখানো</string>
     <string name="settings_section_jam">গ্রুপ জ্যাম</string>
-    <string name="settings_jam_broker_title">MQTT ব্রোকার</string>
-    <string name="settings_jam_broker_host">ব্রোকার হোস্ট</string>
-    <string name="settings_jam_broker_host_subtitle">%1$s:%2$d</string>
-    <string name="settings_jam_broker_port">ব্রোকার পোর্ট</string>
-    <string name="settings_jam_broker_tls">TLS ব্যবহার করুন</string>
-    <string name="settings_jam_broker_username">ইউজারনেম (ঐচ্ছিক)</string>
-    <string name="settings_jam_broker_password">পাসওয়ার্ড (ঐচ্ছিক)</string>
-    <string name="settings_jam_broker_client_id">ক্লায়েন্ট ID প্রিফিক্স</string>
-    <string name="settings_jam_broker_client_id_subtitle">এই Spotube শনাক্ত করতে ব্যবহৃত হয়</string>
-    <string name="settings_jam_broker_tls_subtitle">ব্রোকার কানেকশন এনক্রিপ্ট করুন</string>
-    <string name="settings_jam_broker_diagnostics_subtitle">রুম শুরু করার আগে বর্তমান ব্রোকার সেটিংস যাচাই করুন।</string>
-    <string name="settings_jam_broker_test">কানেকশন পরীক্ষা করুন</string>
-    <string name="settings_jam_broker_testing">পরীক্ষা চলছে…</string>
-    <string name="settings_jam_broker_test_ok">%1$d ms-এ কানেক্ট হয়েছে</string>
-    <string name="settings_jam_broker_test_fail">ব্যর্থ: %1$s</string>
-    <string name="settings_jam_broker_placeholder_note">প্লেসহোল্ডার ব্রোকার — সেলফ-হোস্ট করতে নিজেরটি কনফিগার করুন</string>
+    <string name="settings_jam_server_test">কানেকশন পরীক্ষা করুন</string>
+    <string name="settings_jam_server_testing">পরীক্ষা চলছে…</string>
+    <string name="settings_jam_server_test_ok">%1$d ms-এ কানেক্ট হয়েছে</string>
+    <string name="settings_jam_server_test_fail">ব্যর্থ: %1$s</string>
     <string name="settings_jam_section_connection">কানেকশন</string>
-    <string name="settings_jam_section_credentials">ক্রেডেনশিয়াল</string>
-    <string name="settings_jam_section_identity">পরিচিতি</string>
     <string name="settings_jam_section_diagnostics">ডায়াগনস্টিকস</string>
 
     <!-- Group Jam -->
@@ -323,9 +309,6 @@
     <string name="jam_setup_working">কানেক্ট হচ্ছে…</string>
     <string name="jam_setup_code_label">রুম কোড</string>
     <string name="jam_setup_code_placeholder">ABC123</string>
-    <string name="jam_connection_host">ব্রোকার: %1$s</string>
-    <string name="jam_connection_missing">রুম হোস্ট করতে বা যোগ দিতে সেটিংসে একটি ব্রোকার সেট আপ করুন।</string>
-    <string name="jam_connection_settings">ব্রোকার সেটিংস</string>
     <string name="jam_session_connected">কানেক্টেড</string>
     <string name="jam_session_connecting">আবার কানেক্ট হচ্ছে…</string>
     <string name="jam_invite_copy">কোড কপি করুন</string>
@@ -345,6 +328,28 @@
     <string name="jam_error_join">জ্যাম সেশনে যোগ দেওয়া যায়নি</string>
     <string name="jam_error_invalid_code">অক্ষর ও সংখ্যা দিয়ে ছয় অক্ষরের একটি রুম কোড দিন।</string>
     <string name="jam_share_message">এই কোড দিয়ে আমার Spotube জ্যামে যোগ দিন: %1$s</string>
+    <string name="settings_jam_server_title">রুম সার্ভার</string>
+    <string name="settings_jam_server_url">সার্ভার URL</string>
+    <string name="settings_jam_server_url_invalid">https:// দিয়ে শুরু হওয়া একটি URL দিন</string>
+    <string name="settings_jam_server_diagnostics_subtitle">রুম শুরু করার আগে রুম সার্ভার পরীক্ষা করুন।</string>
+    <string name="settings_jam_server_note">জ্যাম Spotube-এর বিনামূল্যের রুম সার্ভার ব্যবহার করে। নিজে হোস্ট করতে github.com/team-spotube/jam-server থেকে সার্ভার ডিপ্লয় করে তার URL দিন।</string>
+    <string name="settings_jam_section_you">আপনি</string>
+    <string name="jam_connection_host">সার্ভার: %1$s</string>
+    <string name="jam_connection_missing">রুম হোস্ট করতে বা যোগ দিতে সেটিংসে একটি রুম সার্ভার সেট করুন।</string>
+    <string name="jam_connection_settings">সার্ভার সেটিংস</string>
+    <string name="jam_participants_you">%1$s (আপনি)</string>
+    <string name="jam_name_title">আপনার নাম</string>
+    <string name="jam_name_subtitle">জ্যামের অন্যরা আপনাকে %1$s নামে দেখবে</string>
+    <string name="jam_name_description">জ্যামের সবাই দেখতে পাবে। %1$s ব্যবহার করতে ফাঁকা রাখুন। নতুন নাম পরের বার রুম তৈরি বা যোগ দেওয়ার সময় থেকে কার্যকর হবে।</string>
+    <string name="jam_name_too_long">সর্বোচ্চ %1$dটি অক্ষর ব্যবহার করুন।</string>
+    <string name="jam_error_no_server">কোনো জ্যাম সার্ভার সেট করা নেই</string>
+    <string name="jam_error_server_unreachable">জ্যাম সার্ভারে পৌঁছানো যায়নি। আপনার নেটওয়ার্ক বা সেটিংস → গ্রুপ জ্যাম-এ সার্ভার URL পরীক্ষা করুন।</string>
+    <string name="jam_error_server_incompatible">জ্যাম সার্ভারের সংস্করণটি সামঞ্জস্যপূর্ণ নয়।</string>
+    <string name="jam_error_room_not_found">এই কোডের কোনো রুম নেই। কোডটি দেখে আবার চেষ্টা করুন।</string>
+    <string name="jam_error_room_full">এই রুমটি পূর্ণ।</string>
+    <string name="jam_error_banned">হোস্ট আপনাকে এই রুম থেকে ব্যান করেছেন।</string>
+    <string name="jam_error_kicked">হোস্ট আপনাকে রুম থেকে সরিয়ে দিয়েছেন।</string>
+    <string name="jam_error_replaced">এই রুমটি এই ডিভাইসে আবার খোলা হয়েছে, তাই এই কানেকশনটি বন্ধ করা হয়েছে।</string>
 
     <string name="player_go_to_album">অ্যালবামে যান</string>
     <string name="player_sleep_timer">স্লিপ টাইমার</string>
@@ -517,14 +522,9 @@
     <string name="jam_destination_suggest">জ্যামে সাজেস্ট করুন</string>
 
     <!-- Group Jam: connection errors -->
-    <string name="jam_error_no_broker">কোনো জ্যাম ব্রোকার কনফিগার করা নেই</string>
-    <string name="jam_error_broker_host_empty">ব্রোকার হোস্ট ফাঁকা</string>
     <string name="jam_error_connection_failed">কানেকশন ব্যর্থ হয়েছে</string>
     <string name="jam_error_connection_lost">কানেকশন বিচ্ছিন্ন হয়েছে</string>
 
-    <!-- Settings: Group Jam broker -->
-    <string name="settings_jam_broker_content_description">ব্রোকার</string>
-    <string name="settings_jam_broker_username_placeholder">anonymous</string>
 
     <!-- Group Jam: queue snackbar -->
     <string name="jam_queue_added_track">জ্যাম কিউতে যোগ করা হয়েছে</string>

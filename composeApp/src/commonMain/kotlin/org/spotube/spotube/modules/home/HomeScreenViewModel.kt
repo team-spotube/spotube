@@ -35,7 +35,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import org.jetbrains.compose.resources.getString
+import org.spotube.spotube.core.i18n.getString
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.common_unknown_error
 

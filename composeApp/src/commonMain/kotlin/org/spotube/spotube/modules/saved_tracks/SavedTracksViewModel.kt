@@ -59,7 +59,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.core.component.KoinComponent
-import org.jetbrains.compose.resources.getString
+import org.spotube.spotube.core.i18n.getString
 import spotube.composeapp.generated.resources.*
 
 const val SAVED_TRACKS_COLLECTION_ID = "saved_tracks"
@@ -152,7 +152,7 @@ class SavedTracksViewModel(
                     .filterNotNull()
                     .flatMapLatest { it.loggedInFlow }
                     .distinctUntilChanged(),
-                repository.savedTracksIdsFlow
+                repository.libraryChanges
             ) { _, _ -> }.collect {
                 loadInitialData()
                 loadCurrentUser()

@@ -59,13 +59,17 @@ data class PluginListItem(
     val authState: PluginAuthState,
     val logoPath: Path?,
     val isAuthInProgress: Boolean = false,
-    val isRemoving: Boolean = false)
+    val isRemoving: Boolean = false,
+    val isBuiltIn: Boolean = false)
 
 data class AbilitySelection(
     val ability: PluginAbility,
     val plugins: List<PluginEntry>,
     val selectedPlugin: PluginEntry?,
-    val pluginLogoPaths: Map<String, Path?> = emptyMap())
+    val pluginLogoPaths: Map<String, Path?> = emptyMap(),
+    /** Auth state of [selectedPlugin], so the row can offer Login / Logout right where it's used. */
+    val selectedAuthState: PluginAuthState = PluginAuthState(),
+    val isAuthInProgress: Boolean = false)
 
 data class PluginDiscoverState(
     val repos: List<GitHubRepo> = emptyList(),
@@ -101,7 +105,10 @@ sealed interface PluginUiState {
         val showInstallSheet: Boolean = false,
         val showPluginInfo: PluginEntry? = null,
         val pluginInfoLogoPath: Path? = null,
-        val showPluginSupport: PluginEntry? = null,
+        /** The cookie domains of [showPluginInfo], as the user should see them. */
+        val pluginInfoCookieDomains: List<String> = emptyList(),
+        /** False for built-in plugins, which can't be removed. */
+        val pluginInfoRemovable: Boolean = false,
         val supportText: String? = null,
         val isLoadingSupport: Boolean = false,
         val installDialogRepo: GitHubRepo? = null,
@@ -131,7 +138,6 @@ private data class PluginScreenState(
     val showInstallSheet: Boolean = false,
     val showPluginInfo: PluginEntry? = null,
     val pluginInfoLogoPath: Path? = null,
-    val showPluginSupport: PluginEntry? = null,
     val supportText: String? = null,
     val isLoadingSupport: Boolean = false,
     val installDialogRepo: GitHubRepo? = null,
@@ -239,7 +245,18 @@ class PluginViewModel(
         pluginLogoPaths) { snapshot, screen, authStates, logoPaths ->
         when (val state = snapshot.state) {
             is PluginManagerStates.Loading -> PluginUiState.Loading
-            is PluginManagerStates.Data -> PluginUiState.Data(
+            is PluginManagerStates.Data -> {
+                fun abilitySelection(ability: PluginAbility, plugins: List<PluginEntry>): AbilitySelection {
+                    val selected = state.selectedPlugins[ability]
+                    return AbilitySelection(
+                        ability = ability,
+                        plugins = plugins,
+                        selectedPlugin = selected,
+                        pluginLogoPaths = logoPaths,
+                        selectedAuthState = selected?.let { authStates[it.id] } ?: PluginAuthState(),
+                        isAuthInProgress = selected != null && selected.id in screen.authInProgressIds)
+                }
+                PluginUiState.Data(
                 onboardingDiscover = screen.onboardingDiscover,
                 plugins = state.plugins.map { plugin ->
                     PluginListItem(
@@ -248,29 +265,14 @@ class PluginViewModel(
                         authState = authStates[plugin.id] ?: PluginAuthState(),
                         logoPath = logoPaths[plugin.id],
                         isAuthInProgress = plugin.id in screen.authInProgressIds,
-                        isRemoving = plugin.id in screen.removingIds)
+                        isRemoving = plugin.id in screen.removingIds,
+                        isBuiltIn = plugin.isBuiltIn)
                 },
                 abilitySelections = listOf(
-                    AbilitySelection(
-                        PluginAbility.METADATA,
-                        snapshot.metadataPlugins,
-                        state.selectedPlugins[PluginAbility.METADATA],
-                        logoPaths),
-                    AbilitySelection(
-                        PluginAbility.AUDIO,
-                        snapshot.audioPlugins,
-                        state.selectedPlugins[PluginAbility.AUDIO],
-                        logoPaths),
-                    AbilitySelection(
-                        PluginAbility.LYRICS,
-                        snapshot.lyricsPlugins,
-                        state.selectedPlugins[PluginAbility.LYRICS],
-                        logoPaths),
-                    AbilitySelection(
-                        PluginAbility.SCROBBLE,
-                        snapshot.scrobblePlugins,
-                        state.selectedPlugins[PluginAbility.SCROBBLE],
-                        logoPaths)),
+                    abilitySelection(PluginAbility.METADATA, snapshot.metadataPlugins),
+                    abilitySelection(PluginAbility.AUDIO, snapshot.audioPlugins),
+                    abilitySelection(PluginAbility.LYRICS, snapshot.lyricsPlugins),
+                    abilitySelection(PluginAbility.SCROBBLE, snapshot.scrobblePlugins)),
                 pendingPlugin = snapshot.pendingPlugin,
                 pendingPluginLogoPath = snapshot.pendingPlugin?.entry?.id?.let { getLogoPath(it) },
                 urlInput = screen.urlInput,
@@ -281,13 +283,15 @@ class PluginViewModel(
                 showInstallSheet = screen.showInstallSheet,
                 showPluginInfo = screen.showPluginInfo,
                 pluginInfoLogoPath = screen.pluginInfoLogoPath,
-                showPluginSupport = screen.showPluginSupport,
+                pluginInfoCookieDomains = screen.showPluginInfo?.displayedCookieDomains.orEmpty(),
+                pluginInfoRemovable = screen.showPluginInfo?.let { !it.isBuiltIn } ?: false,
                 supportText = screen.supportText,
                 isLoadingSupport = screen.isLoadingSupport,
                 installDialogRepo = screen.installDialogRepo,
                 releases = screen.releases,
                 isLoadingReleases = screen.isLoadingReleases,
                 discover = screen.discover)
+            }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PluginUiState.Loading)
 
@@ -399,46 +403,41 @@ class PluginViewModel(
         _screenState.update { it.copy(showInstallSheet = false) }
     }
 
+    private var supportJob: Job? = null
+
+    /** Opens the details sheet and loads the plugin's support text into its Support section. */
     fun showPluginInfo(plugin: PluginEntry) {
+        supportJob?.cancel()
         _screenState.update {
             it.copy(
                 showPluginInfo = plugin,
-                pluginInfoLogoPath = getLogoPath(plugin.id))
+                pluginInfoLogoPath = getLogoPath(plugin.id),
+                supportText = null,
+                isLoadingSupport = true)
+        }
+        supportJob = viewModelScope.launch {
+            val text = try {
+                pluginManager.withPluginService(plugin) { coreAPI.supportMarkdownText(SemVer.parse(plugin.version)) }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                logger.e(e) { "Failed to load support text for ${plugin.name}" }
+                null
+            }
+            _screenState.update {
+                if (it.showPluginInfo?.id != plugin.id) it
+                else it.copy(supportText = text, isLoadingSupport = false)
+            }
         }
     }
 
     fun dismissPluginInfo() {
-        _screenState.update { it.copy(showPluginInfo = null, pluginInfoLogoPath = null) }
-    }
-
-    fun loadSupport(plugin: PluginEntry) {
+        supportJob?.cancel()
+        supportJob = null
         _screenState.update {
             it.copy(
-                showPluginSupport = plugin,
-                isLoadingSupport = true,
-                supportText = null)
-        }
-        viewModelScope.launch {
-            val service = findServiceForPlugin(plugin.id)
-            if (service == null) {
-                _screenState.update { it.copy(isLoadingSupport = false) }
-                return@launch
-            }
-            runCatching {
-                service.use { coreAPI.supportMarkdownText(SemVer.parse(plugin.version)) }
-            }.onSuccess { text ->
-                _screenState.update { it.copy(supportText = text, isLoadingSupport = false) }
-            }.onFailure { e ->
-                logger.e(e) { "Failed to load support text" }
-                _screenState.update { it.copy(isLoadingSupport = false) }
-            }
-        }
-    }
-
-    fun dismissSupport() {
-        _screenState.update {
-            it.copy(
-                showPluginSupport = null,
+                showPluginInfo = null,
+                pluginInfoLogoPath = null,
                 supportText = null,
                 isLoadingSupport = false)
         }
@@ -474,6 +473,14 @@ class PluginViewModel(
 
     fun showOnboardingDiscovery(show: Boolean) {
         _screenState.update { it.copy(onboardingDiscover = show) }
+    }
+
+    /** Removes the plugin whose details are open, and closes them. */
+    fun removeShownPlugin() {
+        val plugin = _screenState.value.showPluginInfo ?: return
+        if (plugin.isBuiltIn) return
+        dismissPluginInfo()
+        removePlugin(plugin)
     }
 
     fun removePlugin(plugin: PluginEntry) {

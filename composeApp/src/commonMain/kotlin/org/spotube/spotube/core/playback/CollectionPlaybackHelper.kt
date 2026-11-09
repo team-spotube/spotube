@@ -162,6 +162,20 @@ class CollectionPlaybackHelper(
         }
     }
 
+    suspend fun playArtistTopTracksFromTrack(artistId: String, track: MetadataTrack) {
+        val entries = fetchArtistTopTracks(artistId)
+        if (entries.isEmpty()) return
+
+        when (val start = planStartFromTrack(audioPlayerQueue.getQueue(), entries, track)) {
+            is StartFromTrack.Jump -> audioPlayerQueue.jumpTo(start.index)
+            is StartFromTrack.Load -> audioPlayerQueue.load(
+                entries = entries,
+                autoPlay = true,
+                startPosition = start.startPosition,
+                collectionEntry = null)
+        }
+    }
+
     suspend fun addArtistTopTracksToQueue(artistId: String) {
         val entries = fetchArtistTopTracks(artistId)
         if (entries.isNotEmpty()) {
@@ -305,15 +319,45 @@ class CollectionPlaybackHelper(
         blacklistedArtistIds: Set<String>): Boolean {
         return track.id in blacklistedTrackIds || track.artists.any { it.id in blacklistedArtistIds }
     }
+}
 
-    private fun MetadataTrack.matchesTrack(other: MetadataTrack): Boolean {
-        if (id.isNotBlank() && other.id.isNotBlank()) {
-            return id == other.id
-        }
+internal sealed interface StartFromTrack {
+    /** The queue already holds this list: just jump to the tapped track. */
+    data class Jump(val index: Int) : StartFromTrack
+    /** Load the list and start at the tapped track. */
+    data class Load(val startPosition: Int) : StartFromTrack
+}
 
-        return title == other.title &&
-                durationMs == other.durationMs &&
-                album?.id == other.album?.id &&
-                artists.map { it.id.ifBlank { it.name } } == other.artists.map { it.id.ifBlank { it.name } }
+/**
+ * Where to start when [track] is tapped in a list of [entries] that has no collection entry
+ * (e.g. an artist's top tracks). The queue only counts as "already this list" when it holds
+ * exactly the same tracks in the same order; otherwise a matching track that happens to be in
+ * some other playlist would be jumped to inside that playlist. A track not found in [entries]
+ * starts from the top.
+ */
+internal fun planStartFromTrack(
+    queue: List<QueueEntry>,
+    entries: List<QueueEntry>,
+    track: MetadataTrack): StartFromTrack {
+    val startPosition = entries.indexOfFirst { it.streamingTrack?.matchesTrack(track) == true }.coerceAtLeast(0)
+    val isSameQueue = queue.size == entries.size && queue.zip(entries).all { (queued, entry) ->
+        val queuedTrack = queued.streamingTrack
+        val entryTrack = entry.streamingTrack
+        queuedTrack != null && entryTrack != null && queuedTrack.matchesTrack(entryTrack)
     }
+    return if (isSameQueue) StartFromTrack.Jump(startPosition) else StartFromTrack.Load(startPosition)
+}
+
+private val QueueEntry.streamingTrack: MetadataTrack?
+    get() = (this as? QueueEntry.StreamingTrack)?.track
+
+private fun MetadataTrack.matchesTrack(other: MetadataTrack): Boolean {
+    if (id.isNotBlank() && other.id.isNotBlank()) {
+        return id == other.id
+    }
+
+    return title == other.title &&
+            durationMs == other.durationMs &&
+            album?.id == other.album?.id &&
+            artists.map { it.id.ifBlank { it.name } } == other.artists.map { it.id.ifBlank { it.name } }
 }

@@ -27,6 +27,7 @@ import io.ktor.http.append
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.spotube.spotube.core.extras.kebabToTitleCase
 
 @Serializable
 data class GitHubRepoSearchResponse(
@@ -42,6 +43,17 @@ data class GitHubRepo(
     @SerialName("stargazers_count") val stargazersCount: Int = 0,
     @SerialName("html_url") val htmlUrl: String,
     val owner: GitHubOwner)
+
+private val OFFICIAL_PLUGIN_OWNERS = setOf("KRTirtho", "team-spotube")
+private val VERIFIED_PLUGIN_OWNERS = setOf<String>()
+
+/** Human name for a plugin repo: `spotube-plugin-last-fm` → `Last Fm`. */
+val GitHubRepo.pluginDisplayName: String
+    get() = fullName.substringAfterLast('/').removePrefix("spotube-plugin-").kebabToTitleCase()
+
+val GitHubRepo.isOfficialPlugin: Boolean get() = owner.login in OFFICIAL_PLUGIN_OWNERS
+
+val GitHubRepo.isVerifiedPlugin: Boolean get() = !isOfficialPlugin && owner.login in VERIFIED_PLUGIN_OWNERS
 
 @Serializable
 data class GitHubOwner(

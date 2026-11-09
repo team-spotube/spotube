@@ -659,6 +659,18 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
+      # MobileVLCKit comes from CocoaPods; iosApp/Pods/ is gitignored and the workspace needs it.
+      - name: Cache CocoaPods
+        uses: actions/cache@v6
+        with:
+          path: iosApp/Pods
+          key: pods-${{ runner.os }}-${{ hashFiles('iosApp/Podfile.lock') }}
+
+      # Not --deployment: that fails whenever the runner's CocoaPods version differs from the one that
+      # wrote Podfile.lock. A plain install still installs the pod versions pinned in Podfile.lock.
+      - name: Install CocoaPods dependencies
+        run: pod install --project-directory=iosApp
+
       # Unsigned on purpose: there is no Apple developer account in CI. The IPA is meant for sideloading
       # (AltStore, Sideloadly, ...), which re-signs it with the user's own certificate.
       # The Gradle build phase inside Xcode reads these as project properties.
@@ -668,7 +680,7 @@ jobs:
           ORG_GRADLE_PROJECT_buildNumber: ${{ github.run_number }}
         run: >
           xcodebuild
-          -project iosApp/iosApp.xcodeproj
+          -workspace iosApp/iosApp.xcworkspace
           -scheme iosApp
           -configuration Release
           -sdk iphoneos

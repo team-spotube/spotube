@@ -300,25 +300,11 @@
     <string name="plugin_permissions_capability_webview_title">WebView</string>
     <string name="plugin_permissions_capability_webview_desc">Показ вебвмісту всередині застосунку</string>
     <string name="settings_section_jam">Груповий джем</string>
-    <string name="settings_jam_broker_title">MQTT-брокер</string>
-    <string name="settings_jam_broker_host">Хост брокера</string>
-    <string name="settings_jam_broker_host_subtitle">%1$s:%2$d</string>
-    <string name="settings_jam_broker_port">Порт брокера</string>
-    <string name="settings_jam_broker_tls">Використовувати TLS</string>
-    <string name="settings_jam_broker_username">Ім’я користувача (необов’язково)</string>
-    <string name="settings_jam_broker_password">Пароль (необов’язково)</string>
-    <string name="settings_jam_broker_client_id">Префікс ID клієнта</string>
-    <string name="settings_jam_broker_client_id_subtitle">Використовується для ідентифікації цього екземпляра Spotube</string>
-    <string name="settings_jam_broker_tls_subtitle">Шифрувати підключення до брокера</string>
-    <string name="settings_jam_broker_diagnostics_subtitle">Перевірте поточні налаштування брокера перед створенням кімнати.</string>
-    <string name="settings_jam_broker_test">Перевірити підключення</string>
-    <string name="settings_jam_broker_testing">Перевірка…</string>
-    <string name="settings_jam_broker_test_ok">Підключено за %1$d мс</string>
-    <string name="settings_jam_broker_test_fail">Помилка: %1$s</string>
-    <string name="settings_jam_broker_placeholder_note">Тимчасовий брокер — налаштуйте власний, щоб розміщувати джеми самостійно</string>
+    <string name="settings_jam_server_test">Перевірити підключення</string>
+    <string name="settings_jam_server_testing">Перевірка…</string>
+    <string name="settings_jam_server_test_ok">Підключено за %1$d мс</string>
+    <string name="settings_jam_server_test_fail">Помилка: %1$s</string>
     <string name="settings_jam_section_connection">Підключення</string>
-    <string name="settings_jam_section_credentials">Облікові дані</string>
-    <string name="settings_jam_section_identity">Ідентифікація</string>
     <string name="settings_jam_section_diagnostics">Діагностика</string>
 
     <!-- Group Jam -->
@@ -331,9 +317,6 @@
     <string name="jam_setup_working">Підключення…</string>
     <string name="jam_setup_code_label">Код кімнати</string>
     <string name="jam_setup_code_placeholder">ABC123</string>
-    <string name="jam_connection_host">Брокер: %1$s</string>
-    <string name="jam_connection_missing">Налаштуйте брокер у налаштуваннях, щоб створити кімнату або приєднатися до неї.</string>
-    <string name="jam_connection_settings">Налаштування брокера</string>
     <string name="jam_session_connected">Підключено</string>
     <string name="jam_session_connecting">Повторне підключення…</string>
     <string name="jam_invite_copy">Копіювати код</string>
@@ -353,6 +336,28 @@
     <string name="jam_error_join">Не вдалося приєднатися до джему</string>
     <string name="jam_error_invalid_code">Введіть код кімнати з шести літер і цифр.</string>
     <string name="jam_share_message">Приєднуйся до мого джему в Spotube за кодом: %1$s</string>
+    <string name="settings_jam_server_title">Сервер кімнат</string>
+    <string name="settings_jam_server_url">URL сервера</string>
+    <string name="settings_jam_server_url_invalid">Введіть URL, що починається з https://</string>
+    <string name="settings_jam_server_diagnostics_subtitle">Перевірте сервер кімнат перед створенням кімнати.</string>
+    <string name="settings_jam_server_note">Джем використовує безкоштовний сервер кімнат Spotube. Щоб розгорнути власний, встановіть сервер із github.com/team-spotube/jam-server і вкажіть його URL.</string>
+    <string name="settings_jam_section_you">Ви</string>
+    <string name="jam_connection_host">Сервер: %1$s</string>
+    <string name="jam_connection_missing">Укажіть сервер кімнат у налаштуваннях, щоб створити кімнату або приєднатися до неї.</string>
+    <string name="jam_connection_settings">Налаштування сервера</string>
+    <string name="jam_participants_you">%1$s (ви)</string>
+    <string name="jam_name_title">Ваше ім’я</string>
+    <string name="jam_name_subtitle">Інші учасники джему бачать вас як %1$s</string>
+    <string name="jam_name_description">Видно всім у джемі. Залиште порожнім, щоб використовувати %1$s. Нове ім’я застосується, коли ви наступного разу створите кімнату або приєднаєтеся до неї.</string>
+    <string name="jam_name_too_long">Не більше %1$d символів.</string>
+    <string name="jam_error_no_server">Сервер джему не налаштовано</string>
+    <string name="jam_error_server_unreachable">Не вдалося підключитися до сервера джему. Перевірте мережу або URL сервера в розділі Налаштування → Груповий джем.</string>
+    <string name="jam_error_server_incompatible">Сервер джему використовує несумісну версію.</string>
+    <string name="jam_error_room_not_found">Кімнати з таким кодом немає. Перевірте код і спробуйте ще раз.</string>
+    <string name="jam_error_room_full">Ця кімната заповнена.</string>
+    <string name="jam_error_banned">Організатор заблокував вас у цій кімнаті.</string>
+    <string name="jam_error_kicked">Організатор видалив вас із кімнати.</string>
+    <string name="jam_error_replaced">Цю кімнату знову відкрито на цьому пристрої, тому це підключення закрито.</string>
 
     <string name="player_go_to_album">Перейти до альбому</string>
     <string name="player_sleep_timer">Таймер сну</string>
@@ -525,14 +530,9 @@
     <string name="jam_destination_suggest">Запропонувати в джем</string>
 
     <!-- Group Jam: connection errors -->
-    <string name="jam_error_no_broker">Брокер для джему не налаштовано</string>
-    <string name="jam_error_broker_host_empty">Не вказано хост брокера</string>
     <string name="jam_error_connection_failed">Не вдалося підключитися</string>
     <string name="jam_error_connection_lost">З’єднання втрачено</string>
 
-    <!-- Settings: Group Jam broker -->
-    <string name="settings_jam_broker_content_description">Брокер</string>
-    <string name="settings_jam_broker_username_placeholder">anonymous</string>
 
     <!-- Group Jam: queue snackbar -->
     <string name="jam_queue_added_track">Додано до черги джему</string>

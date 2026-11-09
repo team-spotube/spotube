@@ -25,7 +25,6 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.http.HttpHeaders
-import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -33,9 +32,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import net.swiftzer.semver.SemVer
 import org.koin.core.component.KoinComponent
 
 data class AvailableAppUpdate(
@@ -71,17 +67,16 @@ class AppUpdateService(
             val settings = settingsRepository.getCurrentSettings()
             if (!settings.autoCheckForUpdates) return
 
-            val release = httpClient.get(AppBuildInfo.LATEST_RELEASE_API_URL) {
-                header(HttpHeaders.Accept, "application/vnd.github+json")
-                header(HttpHeaders.UserAgent, "Spotube/${AppBuildInfo.VERSION}")
-            }.body<GitHubRelease>()
-
-            val latestVersion = parseVersion(release.tagName.removePrefix("v"))
-                ?: return logger.w { "Ignoring release with invalid SemVer tag: ${release.tagName}" }
-            val currentVersion = parseVersion(AppBuildInfo.VERSION)
+            val currentVersion = AppReleaseSelector.parseTag(AppBuildInfo.VERSION)
                 ?: return logger.w { "Ignoring update check for invalid app version: ${AppBuildInfo.VERSION}" }
 
-            if (latestVersion > currentVersion && release.tagName != settings.ignoredAppUpdateVersion) {
+            val releases = httpClient.get(AppBuildInfo.RELEASES_API_URL) {
+                header(HttpHeaders.Accept, "application/vnd.github+json")
+                header(HttpHeaders.UserAgent, "Spotube/${AppBuildInfo.VERSION}")
+            }.body<List<GitHubRelease>>()
+
+            val release = AppReleaseSelector.select(currentVersion, releases, settings.ignoredAppUpdateVersion)
+            if (release != null) {
                 _availableUpdate.value = AvailableAppUpdate(
                     tag = release.tagName,
                     releaseNotesMarkdown = release.body.orEmpty())
@@ -107,13 +102,5 @@ class AppUpdateService(
     fun dismissUpdate() {
         _availableUpdate.value = null
     }
-
-    private fun parseVersion(version: String): SemVer? = runCatching {
-        SemVer.parse(version)
-    }.getOrNull()
 }
 
-@Serializable
-private data class GitHubRelease(
-    @SerialName("tag_name") val tagName: String,
-    val body: String? = null)

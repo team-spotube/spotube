@@ -123,7 +123,7 @@ import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.milliseconds
-import org.jetbrains.compose.resources.getString
+import org.spotube.spotube.core.i18n.getString
 import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.downloads_status_cancelled

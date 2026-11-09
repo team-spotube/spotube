@@ -196,22 +196,18 @@ class CacheManager(
                 val (start, end) = range
                 val length = end - start + 1
                 val contentRange = "bytes $start-$end/$fileSize"
-                fileSystem.source(filePath).buffer().use { source ->
-                    source.skip(start)
-                    val bytes = source.readByteArray(length)
-                    call.respond(object : OutgoingContent.WriteChannelContent() {
-                        override val status: HttpStatusCode = HttpStatusCode.PartialContent
-                        override val contentLength: Long = bytes.size.toLong()
-                        override val contentType: ContentType = entry.toContentType()
-                        override val headers: Headers = HeadersBuilder().apply {
-                            append(HttpHeaders.ContentRange, contentRange)
-                            append(HttpHeaders.AcceptRanges, "bytes")
-                        }.build()
-                        override suspend fun writeTo(channel: io.ktor.utils.io.ByteWriteChannel) {
-                            channel.writeFully(bytes)
-                        }
-                    })
-                }
+                call.respond(object : OutgoingContent.WriteChannelContent() {
+                    override val status: HttpStatusCode = HttpStatusCode.PartialContent
+                    override val contentLength: Long = length
+                    override val contentType: ContentType = entry.toContentType()
+                    override val headers: Headers = HeadersBuilder().apply {
+                        append(HttpHeaders.ContentRange, contentRange)
+                        append(HttpHeaders.AcceptRanges, "bytes")
+                    }.build()
+                    override suspend fun writeTo(channel: io.ktor.utils.io.ByteWriteChannel) {
+                        streamFileRange(fileSystem, filePath, start, length, channel)
+                    }
+                })
                 return
             }
             call.respond(object : OutgoingContent.NoContent() {
@@ -223,19 +219,42 @@ class CacheManager(
             return
         }
 
-        fileSystem.source(filePath).buffer().use { source ->
-            val bytes = source.readByteArray()
-            call.respond(object : OutgoingContent.WriteChannelContent() {
-                override val status: HttpStatusCode = HttpStatusCode.OK
-                override val contentLength: Long = bytes.size.toLong()
-                override val contentType: ContentType = entry.toContentType()
-                override val headers: Headers = HeadersBuilder().apply {
-                    append(HttpHeaders.AcceptRanges, "bytes")
-                }.build()
-                override suspend fun writeTo(channel: io.ktor.utils.io.ByteWriteChannel) {
-                    channel.writeFully(bytes)
-                }
-            })
+        call.respond(object : OutgoingContent.WriteChannelContent() {
+            override val status: HttpStatusCode = HttpStatusCode.OK
+            override val contentLength: Long = fileSize
+            override val contentType: ContentType = entry.toContentType()
+            override val headers: Headers = HeadersBuilder().apply {
+                append(HttpHeaders.AcceptRanges, "bytes")
+            }.build()
+            override suspend fun writeTo(channel: io.ktor.utils.io.ByteWriteChannel) {
+                streamFileRange(fileSystem, filePath, 0, fileSize, channel)
+            }
+        })
+    }
+
+}
+
+private const val STREAM_CHUNK_BYTES = 64 * 1024
+
+/**
+ * Copies [length] bytes from [start] in fixed-size chunks. Cached tracks are tens of MB and the
+ * player re-requests them on every seek, so they must never be read into the heap whole.
+ */
+internal suspend fun streamFileRange(
+    fileSystem: FileSystem,
+    filePath: Path,
+    start: Long,
+    length: Long,
+    channel: io.ktor.utils.io.ByteWriteChannel) {
+    fileSystem.source(filePath).buffer().use { source ->
+        source.skip(start)
+        val chunk = ByteArray(STREAM_CHUNK_BYTES)
+        var remaining = length
+        while (remaining > 0) {
+            val read = source.read(chunk, 0, minOf(chunk.size.toLong(), remaining).toInt())
+            if (read == -1) break
+            channel.writeFully(chunk, 0, read)
+            remaining -= read
         }
     }
 }

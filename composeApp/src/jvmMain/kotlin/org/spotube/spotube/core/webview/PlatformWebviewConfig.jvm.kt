@@ -40,3 +40,4 @@ actual suspend fun platformClearWebviewData(pluginId: String?) {
         FileSystem.SYSTEM.deleteRecursively(dataDir)
     }
 }
+actual val webViewCookiesWithoutDomainAreUrlScoped: Boolean = false

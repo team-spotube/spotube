@@ -8,8 +8,9 @@ command: spotube
 finish-args:
   - --share=ipc
   - --share=network
-  # Compose renders through AWT/Skiko, which needs X11 (XWayland on Wayland sessions)
-  - --socket=x11
+  # The window is a Tao (Wayland/X11) one, so Wayland is used natively and X11 only as a fallback
+  - --socket=wayland
+  - --socket=fallback-x11
   - --socket=pulseaudio
   - --device=dri
   # Downloaded tracks go to ~/Downloads/Spotube; local tracks are scanned from ~/Music and ~/Downloads

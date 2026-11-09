@@ -72,7 +72,7 @@ abstract class DownloadLinuxGtkBundleTask : DefaultTask() {
         "libjpeg8", "libk5crypto3", "libkeyutils1", "libkrb5-3", "libkrb5support0", "liblcms2-2",
         "liblz4-1", "liblzma5", "libmanette-0.2-0", "libnettle8t64", "libnghttp2-14", "liborc-0.4-0t64",
         "libp11-kit0", "libpango-1.0-0", "libpangocairo-1.0-0", "libpangoft2-1.0-0", "libpixman-1-0",
-        "libpng16-16t64", "libpsl5t64", "libseccomp2", "libsecret-1-0", "libsharpyuv0", "libsoup-3.0-0",
+        "libpng16-16t64", "libpsl5t64", "libseccomp2", "libsecret-1-0", "libselinux1", "libsharpyuv0", "libsoup-3.0-0",
         "libsqlite3-0", "libsystemd0", "libtasn1-6", "libthai0", "libudev1", "libunistring5", "libunwind8",
         "libwebp7", "libwebpdemux2", "libwebpmux3", "libxcb-render0", "libxcb-shm0", "libxcomposite1",
         "libxcursor1", "libxdamage1", "libxext6", "libxfixes3", "libxi6", "libxinerama1", "libxkbcommon0",
@@ -80,7 +80,8 @@ abstract class DownloadLinuxGtkBundleTask : DefaultTask() {
     )
 
     // Provided by the host, per the AppImage exclude list (which includes the wayland libraries). Never
-    // copied even if a bundled package carries them.
+    // copied even if a bundled package carries them. libselinux is NOT one of them: Ubuntu's libgio needs
+    // it, but Arch and its derivatives don't ship it (#3205), so it is bundled (libselinux1 above).
     private val hostLibraries = setOf(
         "libc.so.6", "libm.so.6", "libdl.so.2", "libpthread.so.0", "librt.so.1", "libresolv.so.2",
         "libutil.so.1", "libnsl.so.1", "libstdc++.so.6", "libgcc_s.so.1", "libz.so.1", "libGL.so.1",
@@ -89,7 +90,7 @@ abstract class DownloadLinuxGtkBundleTask : DefaultTask() {
         "libfontconfig.so.1", "libfreetype.so.6", "libharfbuzz.so.0", "libexpat.so.1", "libgmp.so.10",
         "libwayland-client.so.0", "libwayland-server.so.0", "libwayland-cursor.so.0",
         "libwayland-egl.so.1", "libuuid.so.1", "libgpg-error.so.0", "libfribidi.so.0", "libXau.so.6",
-        "libXdmcp.so.6", "libpcre2-8.so.0", "libselinux.so.1", "libmount.so.1", "libblkid.so.1",
+        "libXdmcp.so.6", "libpcre2-8.so.0", "libmount.so.1", "libblkid.so.1",
     )
 
     private val rootLibraries = listOf(

@@ -46,6 +46,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -80,6 +81,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -96,6 +98,7 @@ import org.spotube.plugin_interfaces.plugin_apis.metadata.artist.MetadataArtist
 import org.spotube.plugin_interfaces.plugin_apis.metadata.common.Thumbnail
 import org.spotube.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import org.spotube.spotube.core.ui.misc.SkeletonTree
+import org.spotube.spotube.core.ui.misc.uniqueLazyKeys
 import org.spotube.spotube.core.ui.misc.TextWithShimmer
 import org.spotube.spotube.core.ui.misc.shimmerApply
 import org.spotube.spotube.getPlatform
@@ -118,6 +121,42 @@ import spotube.composeapp.generated.resources.*
 private val CompactTrackListBreakpoint = 600.dp
 private val LargeTrackListBreakpoint = 840.dp
 private const val ShimmerRowCount = 6
+
+private val TrackCardOuterPadding = 8.dp
+private val TrackCardInnerPadding = 12.dp
+private const val TrackCardTopKey = "track-card-top"
+private const val TrackCardRowKeyPrefix = "track-card-row:"
+private const val TrackCardFooterKey = "track-card-footer"
+private const val TrackCardBottomKey = "track-card-bottom"
+
+private fun Any.isTrackCardKey() = this is String && startsWith("track-card-")
+
+/**
+ * Sizes the card drawn behind a [TrackList]'s rows to the rows the list has laid out. Edges that
+ * are scrolled away are pushed a few viewports past the screen, far enough that the card's rounded
+ * corners, shadow and edge gradient stay off-screen, while the height stays bounded for huge lists.
+ */
+private fun Modifier.trackCardBounds(listState: LazyListState, edgeInsetPx: Int): Modifier =
+    layout { measurable, constraints ->
+        val info = listState.layoutInfo
+        val cardItems = info.visibleItemsInfo.filter { it.key.isTrackCardKey() }
+        if (cardItems.isEmpty()) return@layout layout(constraints.maxWidth, constraints.maxHeight) {}
+
+        // Item offsets are relative to the viewport start, which is negative by the top padding.
+        val toLocal = -info.viewportStartOffset
+        val viewport = info.viewportEndOffset - info.viewportStartOffset
+        val overscan = viewport * 3
+        val first = cardItems.first()
+        val last = cardItems.last()
+        val top = if (first.key == TrackCardTopKey) first.offset + toLocal + edgeInsetPx else -overscan
+        val bottom = if (last.key == TrackCardBottomKey) {
+            last.offset + last.size + toLocal - edgeInsetPx
+        } else viewport + overscan
+        val height = (bottom - top).coerceAtLeast(0)
+        val placeable = measurable.measure(
+            constraints.copy(minHeight = height, maxHeight = height))
+        layout(constraints.maxWidth, constraints.maxHeight) { placeable.place(0, top) }
+    }
 
 enum class TrackSortOption(val label: StringResource) {
     None(Res.string.track_list_sort_original),
@@ -198,7 +237,7 @@ fun TrackList(
     val shouldLoadMore = remember(density) {
         derivedStateOf {
             val loadMoreThreshold = with(density) { 200.dp.toPx() }
-            val cardItem = listState.layoutInfo.visibleItemsInfo.find { it.key == "track-card" }
+            val cardItem = listState.layoutInfo.visibleItemsInfo.find { it.key == TrackCardBottomKey }
             // Trigger when the bottom of the track card is close to/inside the viewport,
             // which means the user has scrolled through (or is about to scroll through)
             // all loaded tracks.
@@ -219,115 +258,124 @@ fun TrackList(
     val showAlbum = !isCompact
     val useDropdownForOptions = isDesktop && !isCompact
 
+    val trackRow: @Composable (Int, MetadataTrack) -> Unit = { displayedIndex, track ->
+        TrackListRow(
+            index = displayedIndex + 1,
+            track = track,
+            showIndex = showIndex,
+            showAlbum = showAlbum,
+            useDropdownForOptions = useDropdownForOptions,
+            isCurrentTrack = track.id == currentTrackId,
+            // Only the current row depends on it, so play/pause/buffering flips don't recompose every row.
+            isCurrentTrackPlaying = isCurrentTrackPlaying && track.id == currentTrackId,
+            isSelectionMode = isSelectionMode,
+            isSelected = selectedTrackIds.contains(track.id),
+            onTrackClick = {
+                if (isSelectionMode) {
+                    selectedTrackIds =
+                        if (selectedTrackIds.contains(track.id)) {
+                            selectedTrackIds - track.id
+                        } else {
+                            selectedTrackIds + track.id
+                        }
+                } else if (isJamGuest) {
+                    onTrackOptionsAction(track, TrackOptionsAction.AddToJam)
+                } else {
+                    onTrackClick(track)
+                }
+            },
+            onLongClick = {
+                if (!useDropdownForOptions && !isSelectionMode) {
+                    isSelectionMode = true
+                    selectedTrackIds = setOf(track.id)
+                } else if (!useDropdownForOptions) {
+                    selectedTrackForOptions = track
+                }
+            },
+            onSelectionToggle = { checked ->
+                isSelectionMode = true
+                selectedTrackIds = if (checked) {
+                    selectedTrackIds + track.id
+                } else {
+                    selectedTrackIds - track.id
+                }
+            },
+            onTrackOptionsAction = { action ->
+                onTrackOptionsAction(
+                    track,
+                    action
+                )
+            },
+            trackOptionsState = trackOptionsState(track),
+            isInJam = isInJam,
+            isJamGuest = isJamGuest,
+            onShowOptionsClick = { selectedTrackForOptions = track },
+            onArtistClick = onArtistClick,
+            onAlbumClick = onAlbumClick,
+            onArtistsOverflowClick = { onArtistsOverflowClick(track) })
+    }
+
+    // Shimmer, error, empty and next-page rows at the end of the card.
+    val trackCardFooter: @Composable () -> Unit = {
+        if (isLoading && tracks.isEmpty()) {
+            repeat(ShimmerRowCount) { shimmerIndex ->
+                if (visibleTracks.isNotEmpty() || shimmerIndex > 0) {
+                    MillenniumSeparator(
+                        modifier = Modifier.padding(horizontal = 8.dp))
+                }
+                ShimmerTrackListRow(
+                    index = shimmerIndex + 1,
+                    showIndex = showIndex,
+                    showAlbum = showAlbum,
+                    useDropdownForOptions = useDropdownForOptions)
+            }
+        }
+
+        if (error != null) {
+            if (visibleTracks.isNotEmpty()) {
+                MillenniumSeparator(
+                    modifier = Modifier.padding(horizontal = 8.dp))
+            }
+            TrackListFeedbackRow(
+                message = error,
+                isError = true)
+        }
+
+        if (showEmptyMessage && !isLoading && visibleTracks.isEmpty() && error == null) {
+            TrackListFeedbackRow(stringResource(Res.string.track_list_no_tracks))
+        }
+
+        if (isLoadingNextPage) {
+            if (visibleTracks.isNotEmpty()) {
+                MillenniumSeparator(
+                    modifier = Modifier.padding(horizontal = 8.dp))
+            }
+            ShimmerTrackListRow(
+                index = visibleTracks.size + 1,
+                showIndex = showIndex,
+                showAlbum = showAlbum,
+                useDropdownForOptions = useDropdownForOptions)
+        }
+    }
+
     val trackCardContent: @Composable () -> Unit = {
         MillenniumCard(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                .padding(vertical = TrackCardOuterPadding),
             contentPadding = PaddingValues(0.dp)) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 12.dp, bottom = 12.dp)
+                    .padding(top = TrackCardInnerPadding, bottom = TrackCardInnerPadding)
             ) {
                 visibleTracks.forEachIndexed { displayedIndex, track ->
                     if (displayedIndex > 0) {
                         MillenniumSeparator()
                     }
-                    TrackListRow(
-                        index = displayedIndex + 1,
-                        track = track,
-                        showIndex = showIndex,
-                        showAlbum = showAlbum,
-                        useDropdownForOptions = useDropdownForOptions,
-                        isCurrentTrack = track.id == currentTrackId,
-                        isCurrentTrackPlaying = isCurrentTrackPlaying,
-                        isSelectionMode = isSelectionMode,
-                        isSelected = selectedTrackIds.contains(track.id),
-                        onTrackClick = {
-                            if (isSelectionMode) {
-                                selectedTrackIds =
-                                    if (selectedTrackIds.contains(track.id)) {
-                                        selectedTrackIds - track.id
-                                    } else {
-                                        selectedTrackIds + track.id
-                                    }
-                            } else if (isJamGuest) {
-                                onTrackOptionsAction(track, TrackOptionsAction.AddToJam)
-                            } else {
-                                onTrackClick(track)
-                            }
-                        },
-                        onLongClick = {
-                            if (!useDropdownForOptions && !isSelectionMode) {
-                                isSelectionMode = true
-                                selectedTrackIds = setOf(track.id)
-                            } else if (!useDropdownForOptions) {
-                                selectedTrackForOptions = track
-                            }
-                        },
-                        onSelectionToggle = { checked ->
-                            isSelectionMode = true
-                            selectedTrackIds = if (checked) {
-                                selectedTrackIds + track.id
-                            } else {
-                                selectedTrackIds - track.id
-                            }
-                        },
-                        onTrackOptionsAction = { action ->
-                            onTrackOptionsAction(
-                                track,
-                                action
-                            )
-                        },
-                        trackOptionsState = trackOptionsState(track),
-                        isInJam = isInJam,
-                        isJamGuest = isJamGuest,
-                        onShowOptionsClick = { selectedTrackForOptions = track },
-                        onArtistClick = onArtistClick,
-                        onAlbumClick = onAlbumClick,
-                        onArtistsOverflowClick = { onArtistsOverflowClick(track) })
+                    trackRow(displayedIndex, track)
                 }
-
-                if (isLoading && tracks.isEmpty()) {
-                    repeat(ShimmerRowCount) { shimmerIndex ->
-                        if (visibleTracks.isNotEmpty() || shimmerIndex > 0) {
-                            MillenniumSeparator(
-                                modifier = Modifier.padding(horizontal = 8.dp))
-                        }
-                        ShimmerTrackListRow(
-                            index = shimmerIndex + 1,
-                            showIndex = showIndex,
-                            showAlbum = showAlbum,
-                            useDropdownForOptions = useDropdownForOptions)
-                    }
-                }
-
-                if (error != null) {
-                    if (visibleTracks.isNotEmpty()) {
-                        MillenniumSeparator(
-                            modifier = Modifier.padding(horizontal = 8.dp))
-                    }
-                    TrackListFeedbackRow(
-                        message = error,
-                        isError = true)
-                }
-
-                if (showEmptyMessage && !isLoading && visibleTracks.isEmpty() && error == null) {
-                    TrackListFeedbackRow(stringResource(Res.string.track_list_no_tracks))
-                }
-
-                if (isLoadingNextPage) {
-                    if (visibleTracks.isNotEmpty()) {
-                        MillenniumSeparator(
-                            modifier = Modifier.padding(horizontal = 8.dp))
-                    }
-                    ShimmerTrackListRow(
-                        index = visibleTracks.size + 1,
-                        showIndex = showIndex,
-                        showAlbum = showAlbum,
-                        useDropdownForOptions = useDropdownForOptions)
-                }
+                trackCardFooter()
             }
         }
     }
@@ -454,29 +502,57 @@ fun TrackList(
 
     if (scrollable) {
         Box(modifier = modifier.fillMaxWidth()) {
+          Box(
+              modifier = Modifier
+                  .widthIn(max = 1280.dp)
+                  .align(Alignment.TopCenter)
+                  .padding(horizontal = if (isCompact) 6.dp else 16.dp, vertical = 8.dp)) {
+            // Rows are separate lazy items (only on-screen ones are composed, #3200), so the card
+            // they sit on is drawn once behind the list, spanning the card's laid-out items.
+            MillenniumCard(
+                modifier = Modifier
+                    .matchParentSize()
+                    .trackCardBounds(listState, with(density) { TrackCardOuterPadding.roundToPx() }),
+                contentPadding = PaddingValues(0.dp)) {}
+            // No arrangement spacing: it would also open gaps between the card's rows. The 2.dp
+            // gaps around the card are applied to the items before and after it instead.
             LazyColumn(
                 state = listState,
-                modifier = Modifier
-                    .widthIn(max = 1280.dp)
-                    .align(Alignment.TopCenter)
-                    .padding(horizontal = if (isCompact) 6.dp else 16.dp, vertical = 8.dp),
-                contentPadding = contentPadding,
-                verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                contentPadding = contentPadding) {
                 if (headerContent != null) {
                     item {
-                        headerContent()
+                        Box(Modifier.padding(bottom = 2.dp)) { headerContent() }
                     }
                 }
                 if (!simplified) {
-                    item { filterSortRow() }
+                    item { Box(Modifier.padding(bottom = 2.dp)) { filterSortRow() } }
                 }
-                item(key = "track-card") { trackCardContent() }
+                item(key = TrackCardTopKey) {
+                    Spacer(Modifier.fillMaxWidth().height(TrackCardOuterPadding + TrackCardInnerPadding))
+                }
+                // Plugin ids can repeat (the same track twice in a playlist).
+                val rowKeys = uniqueLazyKeys(visibleTracks) { it.id }
+                items(visibleTracks.size, key = { TrackCardRowKeyPrefix + rowKeys[it] }) { displayedIndex ->
+                    Column(Modifier.fillMaxWidth()) {
+                        if (displayedIndex > 0) {
+                            MillenniumSeparator()
+                        }
+                        trackRow(displayedIndex, visibleTracks[displayedIndex])
+                    }
+                }
+                item(key = TrackCardFooterKey) {
+                    Column(Modifier.fillMaxWidth()) { trackCardFooter() }
+                }
+                item(key = TrackCardBottomKey) {
+                    Spacer(Modifier.fillMaxWidth().height(TrackCardInnerPadding + TrackCardOuterPadding))
+                }
                 if (footerContent != null) {
                     item {
-                        footerContent()
+                        Box(Modifier.padding(top = 2.dp)) { footerContent() }
                     }
                 }
             }
+          }
 
             if (!useDropdownForOptions) {
                 selectedTrackForOptions?.let { track ->

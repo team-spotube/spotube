@@ -62,6 +62,7 @@ import org.spotube.spotube.core.navigation.NavigationCommands
 import org.spotube.spotube.core.navigation.Routes
 import org.spotube.spotube.core.ui.component.ApplicationMainBar
 import org.spotube.spotube.core.ui.theming.AppTheme
+import org.spotube.spotube.modules.settings.sections.JamNameSettingCard
 import org.spotube.spotube.modules.shell.LocalAppShellBottomInset
 import org.spotube.spotube.resources.iconsax.Iconsax
 import org.spotube.spotube.resources.iconsax.IconsaxSetting2
@@ -138,8 +139,17 @@ fun JamScreen(navigationCommands: NavigationCommands) {
                         viewModel::createSession,
                         viewModel::joinSession
                     )
+                    // Pick a name before starting or joining, without a detour through Settings.
+                    JamPanel {
+                        JamNameSettingCard(
+                            customName = state.customName,
+                            defaultName = state.defaultName,
+                            onNameSaved = viewModel::setParticipantName,
+                            enabled = !state.isBusy
+                        )
+                    }
                 }
-                BrokerStatus(state) { navigationCommands.navigateTo(Routes.JamSettings) }
+                ServerStatus(state) { navigationCommands.navigateTo(Routes.JamSettings) }
             }
         }
     }
@@ -412,7 +422,11 @@ internal fun SessionPanel(
                     }
                     Column(Modifier.weight(1f)) {
                         Text(
-                            participant.displayName,
+                            if (participant.isYou) {
+                                stringResource(Res.string.jam_participants_you, participant.displayName)
+                            } else {
+                                participant.displayName
+                            },
                             style = AppTheme.typography.bodyMedium,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
@@ -461,16 +475,16 @@ internal fun SessionPanel(
 }
 
 @Composable
-internal fun BrokerStatus(state: JamUiState, onConfigure: () -> Unit) {
+internal fun ServerStatus(state: JamUiState, onConfigure: () -> Unit) {
     Row(
         Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            if (state.brokerConfigured) stringResource(
+            if (state.serverConfigured) stringResource(
                 Res.string.jam_connection_host,
-                state.brokerHost
+                state.serverHost
             ) else stringResource(Res.string.jam_connection_missing),
             style = AppTheme.typography.bodySmall,
             color = AppTheme.colors.onSurfaceVariant,
