@@ -65,3 +65,13 @@ fun builtInPluginLogo(plugin: PluginEntry): DrawableResource? = when (plugin.id)
     LRCLIB_BUILT_IN_PLUGIN.id -> Res.drawable.plugin_logo_lrclib
     else -> null
 }
+
+private val BUILT_IN_PLUGIN_IDS = BUILT_IN_PLUGINS.mapTo(HashSet()) { it.id }
+
+/**
+ * Whether this is one of [BUILT_IN_PLUGINS]. Matches by [PluginEntry.id], not by equality:
+ * an entry saved by an older app version can differ from the current built-in definition
+ * (version, description, new fields) and must still count as built-in.
+ */
+val PluginEntry.isBuiltIn: Boolean
+    get() = id in BUILT_IN_PLUGIN_IDS

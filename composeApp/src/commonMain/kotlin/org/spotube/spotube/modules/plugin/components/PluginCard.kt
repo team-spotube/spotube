@@ -74,12 +74,14 @@ import spotube.composeapp.generated.resources.plugin_action_remove
 
 /**
  * One installed plugin: logo, name, and what it does. The whole row opens its details, which
- * hold everything else (support, account, remove).
+ * hold everything else (support, account). User-installed plugins also get a remove button
+ * on the row; built-in ones can't be removed.
  */
 @Composable
 internal fun PluginCard(
     item: PluginListItem,
-    onInfo: () -> Unit) {
+    onInfo: () -> Unit,
+    onRemove: () -> Unit) {
     val plugin = item.plugin
     val colors = MillenniumTheme.colors
     val interaction = remember { MutableInteractionSource() }
@@ -130,6 +132,17 @@ internal fun PluginCard(
         if (item.isRemoving) {
             MillenniumSpokeSpinner(size = 16.dp)
         } else {
+            if (!item.isBuiltIn) {
+                MillenniumIconButton(
+                    onClick = onRemove,
+                    style = MillenniumIconButtonStyle.Quiet) {
+                    MillenniumIcon(
+                        Iconsax.IconsaxTrash,
+                        contentDescription = stringResource(Res.string.plugin_action_remove),
+                        modifier = Modifier.size(16.dp),
+                        tint = AppTheme.colors.error)
+                }
+            }
             MillenniumIcon(
                 FeatherIcons.ChevronRight,
                 contentDescription = null,

@@ -192,17 +192,12 @@ class PluginManager(
             } else {
                 try {
                     val res = Json.decodeFromString<PluginManagerStates.Data>(json)
-                    val plugins = res.plugins.map {
-                        // Replace plugins that match built-in plugin IDs with the built-in
-                        // plugin entries. This ensures that any updates to built-in plugins
-                        // are reflected in the UI, while still allowing user-installed plugins
-                        // to be loaded from disk.
-                        if (it in BUILT_IN_PLUGINS) {
-                            BUILT_IN_PLUGINS.first { builtIn -> builtIn.id == it.id }
-                        } else it
-                    }.toSet()
-
-                    val resolvedPlugins = (plugins union BUILT_IN_PLUGINS).toList()
+                    // Built-in plugins always come from the current app build, never from the
+                    // saved state: a saved copy can be from an older version and differ from
+                    // today's definition, so match by id and drop it, then add the current
+                    // built-ins. Saved user plugins are deduplicated by id too.
+                    val resolvedPlugins = BUILT_IN_PLUGINS +
+                        res.plugins.filterNot { it.isBuiltIn }.distinctBy { it.id }
                     val resolvedPluginsById = resolvedPlugins.associateBy { it.id }
                     // Drop selections for plugins that don't actually declare the ability
                     // (e.g. a scrobble selection left over from a removed built-in plugin)
@@ -285,7 +280,7 @@ class PluginManager(
         )
 
     private fun createService(plugin: PluginEntry): PluginService =
-        if (plugin in BUILT_IN_PLUGINS) {
+        if (plugin.isBuiltIn) {
             BuiltInPluginService(plugin)
         } else {
             ZiplinePluginService(
@@ -655,7 +650,7 @@ class PluginManager(
     }
 
     private suspend fun addPlugin(plugin: PluginEntry) {
-        if (plugin in BUILT_IN_PLUGINS) {
+        if (plugin.isBuiltIn) {
             throw IllegalArgumentException(getString(Res.string.plugin_error_builtin_add))
         }
 
@@ -677,7 +672,7 @@ class PluginManager(
     }
 
     suspend fun removePlugin(plugin: PluginEntry) {
-        if (plugin in BUILT_IN_PLUGINS) {
+        if (plugin.isBuiltIn) {
             throw IllegalArgumentException(getString(Res.string.plugin_error_builtin_remove))
         }
 

@@ -377,7 +377,8 @@ internal fun PluginScreenContent(
                                         if (index > 0) PluginRowSeparator()
                                         PluginCard(
                                             item = item,
-                                            onInfo = { viewModel.showPluginInfo(item.plugin) })
+                                            onInfo = { viewModel.showPluginInfo(item.plugin) },
+                                            onRemove = { viewModel.removePlugin(item.plugin) })
                                     }
                                 }
                             }

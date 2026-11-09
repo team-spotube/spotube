@@ -266,7 +266,7 @@ class PluginViewModel(
                         logoPath = logoPaths[plugin.id],
                         isAuthInProgress = plugin.id in screen.authInProgressIds,
                         isRemoving = plugin.id in screen.removingIds,
-                        isBuiltIn = plugin in BUILT_IN_PLUGINS)
+                        isBuiltIn = plugin.isBuiltIn)
                 },
                 abilitySelections = listOf(
                     abilitySelection(PluginAbility.METADATA, snapshot.metadataPlugins),
@@ -284,7 +284,7 @@ class PluginViewModel(
                 showPluginInfo = screen.showPluginInfo,
                 pluginInfoLogoPath = screen.pluginInfoLogoPath,
                 pluginInfoCookieDomains = screen.showPluginInfo?.displayedCookieDomains.orEmpty(),
-                pluginInfoRemovable = screen.showPluginInfo?.let { it !in BUILT_IN_PLUGINS } ?: false,
+                pluginInfoRemovable = screen.showPluginInfo?.let { !it.isBuiltIn } ?: false,
                 supportText = screen.supportText,
                 isLoadingSupport = screen.isLoadingSupport,
                 installDialogRepo = screen.installDialogRepo,
@@ -478,7 +478,7 @@ class PluginViewModel(
     /** Removes the plugin whose details are open, and closes them. */
     fun removeShownPlugin() {
         val plugin = _screenState.value.showPluginInfo ?: return
-        if (plugin in BUILT_IN_PLUGINS) return
+        if (plugin.isBuiltIn) return
         dismissPluginInfo()
         removePlugin(plugin)
     }
