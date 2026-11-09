@@ -1,5 +1,35 @@
 # Changelog
 
+## [6.0.0](https://github.com/team-spotube/spotube/compare/v6.0.0-beta.0...v6.0.0) (2026-11-09)
+
+### Features
+
+- **jam**: Replace MQTT with a Durable Object room server and synced playback
+- **jam**: Harden the room server, add device bans and friendly names
+- **ios**: Play audio with VLCKit instead of AVPlayer
+- **ios**: Drop AVPlayer-era streaming format restrictions
+- Add iOS background playback support ([#3170](https://github.com/team-spotube/spotube/issues/3170))
+- **update**: Compare app releases with full SemVer
+- **plugins**: Redesign the plugin manager
+- **plugins**: Limit WebView cookie and script access to declared domains
+- **plugins**: Download the public suffix list daily instead of bundling it
+- **plugins**: Enhance built-in plugin handling and add removal option for user-installed plugins
+
+### Bug Fixes
+
+- **android**: Use desugar_jdk_libs_nio so URLEncoder.encode(String, Charset) is backported on API < 33
+- **flatpak**: Grant the Wayland socket so the webview doesn't render black
+- **jam**: Keep guests on the host's recording across song changes
+- **desktop**: Stop non-composable string lookups from querying the system theme
+- Stop memory blow-ups and crashes with large lists and local media
+- **ios**: Use MobileVLCKit from CocoaPods instead of a git Swift package
+- Crash at startup from a Koin cycle in DeviceAudioPlayerQueue
+- Update default Jam server URL to new endpoint
+- **linux**: Bundle libselinux in the AppImage
+- **artist**: Play the tapped top track instead of the first one
+- **welcome**: Keep step tabs and pages readable on narrow windows
+- **plugins**: Keep public suffix list updates off the startup and call paths
+
 ## [6.0.0-beta.0](https://github.com/team-spotube/spotube/compare/v5.1.2...v6.0.0-beta.0) (2026-10-26)
 
 ### Features

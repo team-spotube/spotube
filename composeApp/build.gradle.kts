@@ -50,9 +50,9 @@ val bundleId = "org.spotube.spotube"
 val version = "6.0.0"
 // Set to N to release <version>-beta.N (same app id, icons and name as stable); null for a plain stable release.
 // Installer metadata (packageVersion) must stay numeric, so it keeps using plain `version`.
-val betaNumber: Int? = 0
+val betaNumber: Int? = null
 // Betas share the stable app id, so bump this for every beta: Android only updates to a higher versionCode.
-val buildNumber = 46
+val buildNumber = 47
 // Desktop icon channel; Android picks its icons via the stable/nightly product flavor. Use -Pnightly=true.
 val isNightly = providers.gradleProperty("nightly").map { it.toBoolean() }.getOrElse(false)
 val desktopIconDir = if (isNightly) "icons/nightly" else "icons/stable"
