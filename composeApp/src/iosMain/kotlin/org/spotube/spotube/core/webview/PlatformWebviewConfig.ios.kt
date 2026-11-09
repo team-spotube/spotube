@@ -41,3 +41,4 @@ actual suspend fun platformClearWebviewData(pluginId: String?) {
     
     NSHTTPCookieStorage.sharedHTTPCookieStorage.removeCookiesSinceDate(NSDate.distantPast)
 }
+actual val webViewCookiesWithoutDomainAreUrlScoped: Boolean = false

@@ -64,6 +64,8 @@ import org.spotube.spotube.core.zipline.host_apis.RealHttpClientAPI
 import org.spotube.spotube.core.zipline.host_apis.RealPersistedStorageAPI
 import org.spotube.spotube.core.zipline.host_apis.RealSystemInformationAPI
 import org.spotube.spotube.core.zipline.host_apis.RealWebViewAPI
+import org.spotube.spotube.core.zipline.permissions.CookieDomainPolicy
+import org.spotube.spotube.core.zipline.permissions.PublicSuffixListRepository
 import org.spotube.spotube.modules.plugin.PluginAbility
 import org.spotube.spotube.modules.plugin.PluginCapability
 import org.spotube.spotube.modules.plugin.PluginEntry
@@ -118,6 +120,7 @@ open class ZiplinePluginService(
 
     private val logger by injectLogger<ZiplinePluginService>()
     private val webViewController: WebViewController by inject()
+    private val publicSuffixes: PublicSuffixListRepository by inject()
 
     private val scope = CoroutineScope(SupervisorJob() + ziplineDispatcher.dispatcher)
     private val ziplineExceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -141,7 +144,11 @@ open class ZiplinePluginService(
     }
 
     private val realHttpClientAPI = RealHttpClientAPI()
-    private val realWebViewAPI = RealWebViewAPI(scope, webViewController, pluginInfo.id)
+    private val realWebViewAPI = RealWebViewAPI(
+        scope = scope,
+        webViewController = webViewController,
+        pluginId = pluginInfo.id,
+        cookiePolicy = { CookieDomainPolicy(pluginInfo.cookieDomains, publicSuffixes.get()) })
 
     private val persistedStorageAPI = RealPersistedStorageAPI(pluginInfo)
     private val cryptoAPI = RealCryptoAPI(scope.coroutineContext)

@@ -36,6 +36,8 @@ import org.spotube.spotube.core.ui.component.AdaptiveDialogBottomSheet
 import org.spotube.spotube.core.ui.theming.AppTheme
 import org.spotube.spotube.modules.plugin.PluginCapability
 import org.spotube.spotube.modules.plugin.PluginEntry
+import org.spotube.spotube.modules.plugin.CookieDomainPermission
+import org.spotube.spotube.modules.plugin.PluginPermissionsSummary
 import org.spotube.spotube.resources.iconsax.Iconsax
 import org.spotube.spotube.resources.iconsax.IconsaxCheckCircle
 import org.spotube.spotube.resources.iconsax.IconsaxEye
@@ -57,7 +59,11 @@ import spotube.composeapp.generated.resources.plugin_permissions_capability_stor
 import spotube.composeapp.generated.resources.plugin_permissions_capability_webview_desc
 import spotube.composeapp.generated.resources.plugin_permissions_capability_webview_title
 import spotube.composeapp.generated.resources.plugin_permissions_compare_title
+import spotube.composeapp.generated.resources.plugin_permissions_cookie_domain_subdomains
+import spotube.composeapp.generated.resources.plugin_permissions_cookie_domains_none
+import spotube.composeapp.generated.resources.plugin_permissions_cookie_domains_title
 import spotube.composeapp.generated.resources.plugin_permissions_installed_label
+import spotube.composeapp.generated.resources.plugin_permissions_new_badge
 import spotube.composeapp.generated.resources.plugin_permissions_none
 import spotube.composeapp.generated.resources.plugin_permissions_requested_title
 import spotube.composeapp.generated.resources.plugin_permissions_supplied_label
@@ -70,6 +76,8 @@ fun PluginPermissionDialog(
     message: String,
     confirmLabel: String?,
     existingPlugin: PluginEntry? = null,
+    /** [pluginInfo]'s permissions, with what's new since [existingPlugin] flagged. */
+    permissions: PluginPermissionsSummary,
     logoPath: Path? = null,
     onConfirm: (() -> Unit)? = null,
     isConfirming: Boolean = false,
@@ -130,10 +138,10 @@ fun PluginPermissionDialog(
 
             PluginSectionLabel(
                 stringResource(Res.string.plugin_permissions_requested_title),
-                badge = pluginInfo.capabilities.size.takeIf { it > 0 }?.toString())
+                badge = permissions.capabilities.size.takeIf { it > 0 }?.toString())
 
             PluginPanel {
-                if (pluginInfo.capabilities.isEmpty()) {
+                if (permissions.capabilities.isEmpty()) {
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(14.dp),
                         verticalAlignment = Alignment.CenterVertically,
@@ -145,9 +153,12 @@ fun PluginPermissionDialog(
                             color = AppTheme.colors.onSurfaceVariant)
                     }
                 } else {
-                    pluginInfo.capabilities.forEachIndexed { index, capability ->
+                    permissions.capabilities.forEachIndexed { index, item ->
                         if (index > 0) MillenniumSeparator()
-                        CapabilityRow(capability)
+                        CapabilityRow(capability = item.capability, isNew = item.isNew)
+                        if (item.capability == PluginCapability.WEBVIEW) {
+                            CookieDomainsList(permissions.cookieDomains)
+                        }
                     }
                 }
             }
@@ -212,7 +223,7 @@ private fun VersionStat(label: String, value: String, highlighted: Boolean = fal
 }
 
 @Composable
-private fun CapabilityRow(capability: PluginCapability) {
+private fun CapabilityRow(capability: PluginCapability, isNew: Boolean) {
     val (icon, label, description) = when (capability) {
         PluginCapability.PERSISTENT_STORAGE -> Triple(
             Iconsax.PhosphorDatabaseDuotone,
@@ -233,7 +244,9 @@ private fun CapabilityRow(capability: PluginCapability) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         PluginIconTile(icon)
-        Column(verticalArrangement = Arrangement.spacedBy(1.dp)) {
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(1.dp)) {
             Text(
                 label,
                 style = AppTheme.typography.bodyMedium,
@@ -243,5 +256,58 @@ private fun CapabilityRow(capability: PluginCapability) {
                 style = AppTheme.typography.labelSmall,
                 color = AppTheme.colors.onSurfaceVariant)
         }
+        if (isNew) NewPermissionPill()
     }
+}
+
+/** The hosts a WebView plugin may read cookies from, listed under its WebView capability. */
+@Composable
+private fun CookieDomainsList(domains: List<CookieDomainPermission>) {
+    Column(
+        // Indented to line up with the capability text, past the 14dp inset, 38dp icon tile and 12dp gap.
+        modifier = Modifier.fillMaxWidth().padding(start = 64.dp, end = 14.dp, bottom = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(
+            stringResource(Res.string.plugin_permissions_cookie_domains_title),
+            style = AppTheme.typography.labelSmall,
+            fontWeight = FontWeight.SemiBold,
+            color = AppTheme.colors.onSurfaceVariant)
+        if (domains.isEmpty()) {
+            Text(
+                stringResource(Res.string.plugin_permissions_cookie_domains_none),
+                style = AppTheme.typography.labelSmall,
+                color = AppTheme.colors.onSurfaceVariant)
+        }
+        domains.forEach { item ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        item.domain,
+                        style = AppTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Medium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis)
+                    item.subdomainsOf?.let { parent ->
+                        Text(
+                            stringResource(Res.string.plugin_permissions_cookie_domain_subdomains, parent),
+                            style = AppTheme.typography.labelSmall,
+                            color = AppTheme.colors.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis)
+                    }
+                }
+                if (item.isNew) NewPermissionPill()
+            }
+        }
+    }
+}
+
+@Composable
+private fun NewPermissionPill() {
+    PluginPill(
+        stringResource(Res.string.plugin_permissions_new_badge),
+        tint = AppTheme.colors.error)
 }
