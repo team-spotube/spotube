@@ -560,6 +560,7 @@ jobs:
         with:
           limit-access-to-actor: true
 
+  # Apple silicon only: GraalVM native-image can't cross-compile, and Intel macs aren't supported
   build-macos:
     name: macOS Desktop
     needs: [validate-inputs, prepare-deps]
@@ -615,13 +616,13 @@ jobs:
       - name: Rename macOS artifact
         run: |
           DMG_FILE=$(find composeApp/build/compose/binaries/main/graalvm-dmg -maxdepth 1 -name "*.dmg" -type f | head -1)
-          cp "$DMG_FILE" Spotube-macos-universal.dmg
+          cp "$DMG_FILE" Spotube-macos-apple-silicon.dmg
 
       - name: Upload DMG
         uses: actions/upload-artifact@v7
         with:
           name: macos-dmg
-          path: Spotube-macos-universal.dmg
+          path: Spotube-macos-apple-silicon.dmg
 
       - name: Setup tmate session on failure
         if: ${{ inputs.debug_ssh && failure() }}

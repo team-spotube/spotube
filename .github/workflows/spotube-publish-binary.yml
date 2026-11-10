@@ -10,6 +10,7 @@ name: Publish
 #   AUR_USERNAME, AUR_EMAIL, AUR_SSH_PRIVATE_KEY   AUR account that maintains spotube-bin
 #   WINGET_TOKEN         classic PAT (public_repo) that can push to team-spotube/winget-pkgs and open PRs
 #   CHOCO_API_KEY        chocolatey.org API key
+#   HOMEBREW_TOKEN       PAT with push access to team-spotube/homebrew-apps
 
 on:
   workflow_dispatch:
@@ -19,10 +20,10 @@ on:
         required: true
         type: string
       jobs:
-        description: Jobs to run (flathub,aur,winget,chocolatey)
+        description: Jobs to run (flathub,aur,winget,chocolatey,homebrew)
         required: true
         type: string
-        default: flathub,aur,winget,chocolatey
+        default: flathub,aur,winget,chocolatey,homebrew
       aur_pkgrel:
         description: AUR pkgrel (bump to re-release the same version)
         required: true
@@ -92,7 +93,8 @@ jobs:
       - name: Download release assets
         run: |
           gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --dir release-assets \
-            --pattern 'spotube-linux-*.tar.xz' --pattern 'Spotube-windows-x86_64-setup.exe'
+            --pattern 'spotube-linux-*.tar.xz' --pattern 'Spotube-windows-x86_64-setup.exe' \
+            --pattern 'Spotube-macos-apple-silicon.dmg'
 
       - name: Render packages
         env:
@@ -101,8 +103,9 @@ jobs:
           chmod +x gradlew
           ./gradlew :composeApp:renderPackagingFlatpak :composeApp:renderPackagingAur \
             :composeApp:renderPackagingWinget :composeApp:renderPackagingChocolatey \
+            :composeApp:renderPackagingHomebrew \
             -Pnightly=false -Ppkgrel="$PKGREL" -PpackagingArtifactsDir=release-assets
-          for f in composeApp/build/packaging/{flatpak/*.yml,aur/PKGBUILD,winget/*.yaml,chocolatey/*.nuspec}; do
+          for f in composeApp/build/packaging/{flatpak/*.yml,aur/PKGBUILD,winget/*.yaml,chocolatey/*.nuspec,homebrew/*.rb}; do
             echo "::group::$f"
             cat "$f"
             echo "::endgroup::"
@@ -117,6 +120,7 @@ jobs:
             composeApp/build/packaging/aur
             composeApp/build/packaging/winget
             composeApp/build/packaging/chocolatey
+            composeApp/build/packaging/homebrew
 
       # Chocolatey embeds the installer in the package
       - name: Upload Windows installer
@@ -197,6 +201,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VERSION: ${{ needs.render.outputs.version }}
+      UPSTREAM: microsoft/winget-pkgs
       FORK: team-spotube/winget-pkgs
       MANIFEST_DIR: manifests/k/KRTirtho/Spotube
     steps:
@@ -209,7 +214,12 @@ jobs:
         if: ${{ !inputs.dry_run }}
         env:
           GH_TOKEN: ${{ secrets.WINGET_TOKEN }}
-        run: gh repo sync "$FORK" --source microsoft/winget-pkgs --branch master
+        run: |
+          if [ "$(gh api "repos/$FORK" --jq .source.full_name 2>/dev/null)" != "$UPSTREAM" ]; then
+            echo "::error::$FORK is missing or not a fork of $UPSTREAM"
+            exit 1
+          fi
+          gh repo sync "$FORK" --source "$UPSTREAM" --branch master
 
       # winget-pkgs is huge: only fetch this package's directory
       - uses: actions/checkout@v7
@@ -234,9 +244,10 @@ jobs:
           mkdir -p "$MANIFEST_DIR/$VERSION"
           cp ../packaging/winget/*.yaml "$MANIFEST_DIR/$VERSION/"
           git add "$MANIFEST_DIR/$VERSION"
+          git diff --cached
           git commit -m "New version: KRTirtho.Spotube version $VERSION"
           git push -u origin "$branch"
-          gh pr create --repo microsoft/winget-pkgs --base master --head "${FORK%%/*}:$branch" \
+          gh pr create --repo "$UPSTREAM" --base master --head "${FORK%%/*}:$branch" \
             --title "New version: KRTirtho.Spotube version $VERSION" \
             --body "Release notes: https://github.com/$GITHUB_REPOSITORY/releases/tag/$TAG"
 
@@ -272,3 +283,49 @@ jobs:
         env:
           CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
         run: choco push "dist/spotube.$env:VERSION.nupkg" --source https://push.chocolatey.org/ --api-key "$env:CHOCO_API_KEY"
+
+  homebrew:
+    name: Homebrew
+    needs: render
+    if: contains(inputs.jobs, 'homebrew')
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.render.outputs.version }}
+      TAP_REPO: team-spotube/homebrew-apps
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: packaging
+          path: packaging
+
+      - name: Check cask syntax
+        run: ruby -c packaging/homebrew/spotube.rb
+
+      - uses: actions/checkout@v7
+        with:
+          repository: ${{ env.TAP_REPO }}
+          token: ${{ secrets.HOMEBREW_TOKEN }}
+          path: homebrew-apps
+
+      # The tap is ours: commit straight to its default branch
+      - name: Commit
+        id: commit
+        working-directory: homebrew-apps
+        run: |
+          cp ../packaging/homebrew/spotube.rb Casks/spotube.rb
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Casks/spotube.rb
+          git diff --cached
+          if git diff --cached --quiet; then
+            echo "Cask is already up to date"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "spotube $VERSION"
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Push
+        if: ${{ !inputs.dry_run && steps.commit.outputs.changed == 'true' }}
+        working-directory: homebrew-apps
+        run: git push origin HEAD
