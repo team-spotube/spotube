@@ -16,8 +16,16 @@ finish-args:
   # Downloaded tracks go to ~/Downloads/Spotube; local tracks are scanned from ~/Music and ~/Downloads
   - --filesystem=xdg-download
   - --filesystem=xdg-music:ro
-  # Tray icon (StatusNotifierItem)
+  # Tray icon (StatusNotifierItem). The tray library registers as org.kde.StatusNotifierItem-<pid>-1,
+  # and the app is always PID 2 in the sandbox; without owning that name the icon dies on first click.
   - --talk-name=org.kde.StatusNotifierWatcher
+  - --own-name=org.kde.StatusNotifierItem-2-1
+  # Media keys and the desktop's now-playing controls (MPRIS; the name comes from the app's own ID)
+  - --own-name=org.mpris.MediaPlayer2.org.spotube.spotube
+  # Discord Rich Presence: the IPC socket of native Discord, Flatpak Discord and Flatpak Vesktop
+  - --filesystem=xdg-run/discord-ipc-0
+  - --filesystem=xdg-run/app/com.discordapp.Discord:create
+  - --filesystem=xdg-run/app/dev.vencord.Vesktop:create
 
 cleanup:
   - /include
