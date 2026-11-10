@@ -94,7 +94,7 @@ val gitCliffContext = tasks.register<GitCliffContextTask>("gitCliffContext") {
 }
 val packagingRootDir = rootProject.layout.projectDirectory
 val packagingArtifactsDir = packagingRootDir.dir(providers.gradleProperty("packagingArtifactsDir"))
-listOf("linux", "aur", "flatpak", "winget", "chocolatey").forEach { target ->
+listOf("linux", "aur", "flatpak", "winget", "chocolatey", "homebrew").forEach { target ->
     tasks.register<RenderPackagingTask>("renderPackaging${target.replaceFirstChar { it.uppercase() }}") {
         description = "Renders packaging/$target into build/packaging/$target."
         templateDir.set(packagingRootDir.dir("packaging/$target"))
@@ -106,6 +106,7 @@ listOf("linux", "aur", "flatpak", "winget", "chocolatey").forEach { target ->
                 "linuxX86_64" to "spotube-linux-$appVersionName-x86_64.tar.xz",
                 "linuxAarch64" to "spotube-linux-$appVersionName-aarch64.tar.xz",
                 "windowsX64" to "Spotube-windows-x86_64-setup.exe",
+                "macosArm64" to "Spotube-macos-apple-silicon.dmg",
             )
         )
         artifactsDir.set(packagingArtifactsDir)

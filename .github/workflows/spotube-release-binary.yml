@@ -560,6 +560,7 @@ jobs:
         with:
           limit-access-to-actor: true
 
+  # Apple silicon only: GraalVM native-image can't cross-compile, and Intel macs aren't supported
   build-macos:
     name: macOS Desktop
     needs: [validate-inputs, prepare-deps]
@@ -615,13 +616,13 @@ jobs:
       - name: Rename macOS artifact
         run: |
           DMG_FILE=$(find composeApp/build/compose/binaries/main/graalvm-dmg -maxdepth 1 -name "*.dmg" -type f | head -1)
-          cp "$DMG_FILE" Spotube-macos-universal.dmg
+          cp "$DMG_FILE" Spotube-macos-apple-silicon.dmg
 
       - name: Upload DMG
         uses: actions/upload-artifact@v7
         with:
           name: macos-dmg
-          path: Spotube-macos-universal.dmg
+          path: Spotube-macos-apple-silicon.dmg
 
       - name: Setup tmate session on failure
         if: ${{ inputs.debug_ssh && failure() }}
@@ -768,21 +769,6 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v8
 
-      - name: Generate release notes
-        if: ${{ inputs.platform == 'all' }}
-        run: |
-          echo "## Downloads" > release-notes.md
-          echo "" >> release-notes.md
-          for dir in android-apk linux-deb linux-rpm linux-appimage linux-tarball linux-deb-arm64 linux-rpm-arm64 linux-appimage-arm64 linux-tarball-arm64 windows-exe macos-dmg ios-ipa; do
-            if [ -d "$dir" ]; then
-              echo "### $dir" >> release-notes.md
-              for f in "$dir"/*; do
-                echo "- \`$(basename "$f")\`" >> release-notes.md
-              done
-              echo "" >> release-notes.md
-            fi
-          done
-
       - name: Create Release
         uses: softprops/action-gh-release@v3
         with:
@@ -792,9 +778,9 @@ jobs:
           # A single platform build only has its own artifacts
           fail_on_unmatched_files: ${{ inputs.platform == 'all' }}
           # A single platform build only replaces that platform's assets (same file names are overwritten),
-          # so leave the existing release's name and notes alone
+          # so leave the existing release's name alone
           name: ${{ inputs.platform == 'all' && steps.vars.outputs.release_name || '' }}
-          body_path: ${{ inputs.platform == 'all' && 'release-notes.md' || '' }}
+          # No body/body_path: the release notes are written by hand and must never be overwritten
           draft: ${{ steps.vars.outputs.is_draft }}
           prerelease: ${{ steps.vars.outputs.is_prerelease }}
           files: |
