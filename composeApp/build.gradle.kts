@@ -85,11 +85,13 @@ tasks.register("printVersion") {
 
 // Package manager manifests: packaging/<target> rendered into build/packaging/<target> with the version, the
 // release assets' checksums (-PpackagingArtifactsDir=<dir>) and the git-cliff changelog. See RenderPackagingTask.
+// -PpackagingVersion=<x.y.z> packages an already tagged release from a newer checkout (the publish workflow).
+val packagingVersion = providers.gradleProperty("packagingVersion").getOrElse(appVersionName)
 val gitCliffContext = tasks.register<GitCliffContextTask>("gitCliffContext") {
     configFile.set(rootProject.layout.projectDirectory.file("cliff.toml"))
     repositoryDir.set(rootProject.layout.projectDirectory)
     // Nightlies are not a release: their commits stay unreleased
-    if (!isNightly) tag.set("v$appVersionName")
+    if (!isNightly) tag.set("v$packagingVersion")
     outputFile.set(layout.buildDirectory.file("packaging/changelog-context.json"))
 }
 val packagingRootDir = rootProject.layout.projectDirectory
@@ -98,13 +100,13 @@ listOf("linux", "aur", "flatpak", "winget", "chocolatey", "homebrew").forEach { 
     tasks.register<RenderPackagingTask>("renderPackaging${target.replaceFirstChar { it.uppercase() }}") {
         description = "Renders packaging/$target into build/packaging/$target."
         templateDir.set(packagingRootDir.dir("packaging/$target"))
-        version.set(appVersionName)
+        version.set(packagingVersion)
         pkgrel.set(providers.gradleProperty("pkgrel").orElse("1"))
         repositoryUrl.set(appRepositoryUrl)
         artifactNames.set(
             mapOf(
-                "linuxX86_64" to "spotube-linux-$appVersionName-x86_64.tar.xz",
-                "linuxAarch64" to "spotube-linux-$appVersionName-aarch64.tar.xz",
+                "linuxX86_64" to "spotube-linux-$packagingVersion-x86_64.tar.xz",
+                "linuxAarch64" to "spotube-linux-$packagingVersion-aarch64.tar.xz",
                 "windowsX64" to "Spotube-windows-x86_64-setup.exe",
                 "macosArm64" to "Spotube-macos-apple-silicon.dmg",
             )

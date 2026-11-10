@@ -73,7 +73,8 @@ abstract class GitCliffContextTask @Inject constructor(private val execOperation
         val args = buildList {
             add(executable.get())
             addAll(listOf("--config", configFile.get().asFile.absolutePath, "--context"))
-            tag.orNull?.let { addAll(listOf("--tag", it)) }
+            // An existing tag already has its release; --tag would also stamp the commits after it with it
+            tag.orNull?.takeUnless(::tagExists)?.let { addAll(listOf("--tag", it)) }
             addAll(listOf("--output", output.absolutePath))
         }
         try {
@@ -89,4 +90,11 @@ abstract class GitCliffContextTask @Inject constructor(private val execOperation
             )
         }
     }
+
+    private fun tagExists(tag: String): Boolean = execOperations.exec {
+        workingDir = repositoryDir.get().asFile
+        commandLine("git", "rev-parse", "--quiet", "--verify", "refs/tags/$tag")
+        isIgnoreExitValue = true
+        standardOutput = java.io.OutputStream.nullOutputStream()
+    }.exitValue == 0
 }

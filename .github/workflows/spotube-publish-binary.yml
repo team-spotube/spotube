@@ -66,10 +66,11 @@ jobs:
           fi
           echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
 
+      # The workflow's own commit, not the tag: the render tasks and templates must match this workflow
+      # (an older tag may predate a target). The version comes from the tag via -PpackagingVersion.
       # Full history: git-cliff builds the release notes from it
       - uses: actions/checkout@v7
         with:
-          ref: ${{ inputs.tag }}
           fetch-depth: 0
 
       - name: Set up JDK 21
@@ -104,7 +105,7 @@ jobs:
           ./gradlew :composeApp:renderPackagingFlatpak :composeApp:renderPackagingAur \
             :composeApp:renderPackagingWinget :composeApp:renderPackagingChocolatey \
             :composeApp:renderPackagingHomebrew \
-            -Pnightly=false -Ppkgrel="$PKGREL" -PpackagingArtifactsDir=release-assets
+            -Pnightly=false -PpackagingVersion="${TAG#v}" -Ppkgrel="$PKGREL" -PpackagingArtifactsDir=release-assets
           for f in composeApp/build/packaging/{flatpak/*.yml,aur/PKGBUILD,winget/*.yaml,chocolatey/*.nuspec,homebrew/*.rb}; do
             echo "::group::$f"
             cat "$f"
