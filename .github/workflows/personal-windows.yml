@@ -1,0 +1,91 @@
+# Personal build: the Windows installer only, in one job.
+# Upstream's Release workflow builds the WebView libraries for every OS (Linux, macOS, Windows) before any
+# app build, because one shared library jar has to carry them all. A Windows-only build only needs the
+# Windows one, so this skips the rest. Kept as a separate file so upstream's workflows merge untouched.
+name: Personal Windows build
+
+# Runs by itself on every push to the theme branch (so a fix pushed there rebuilds), or by hand.
+on:
+  push:
+    branches: [feishin-theme]
+  workflow_dispatch:
+
+concurrency:
+  group: personal-windows-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  # Same pin as spotube-release-binary.yml; update both together.
+  COMPOSE_WEBVIEW_REPO: KRTirtho/ComposeNativeWebview
+  COMPOSE_WEBVIEW_COMMIT: b11ac748de1219f9432338c067a2c5dafef3072a
+
+jobs:
+  windows:
+    name: Windows installer
+    runs-on: windows-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Checkout ComposeNativeWebview
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ env.COMPOSE_WEBVIEW_REPO }}
+          ref: ${{ env.COMPOSE_WEBVIEW_COMMIT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: compose-webview
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      # native-image links with MSVC
+      - name: Set up MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Build Windows WebView native library
+        working-directory: compose-webview
+        shell: cmd
+        run: webview-compose\src\jvmMain\native\windows\build.bat
+
+      - name: Publish compose-webview to mavenLocal
+        working-directory: compose-webview
+        shell: bash
+        run: ./gradlew publishToMavenLocal
+
+      - name: Cache GraalVM toolchain
+        uses: actions/cache@v6
+        with:
+          path: ~/.gradle/nucleus/graalvm
+          key: graalvm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('gradle/libs.versions.toml', 'composeApp/build.gradle.kts') }}
+          restore-keys: graalvm-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Package EXE
+        env:
+          # Nucleus lists GraalVM CE releases via the GitHub API; unauthenticated calls hit the 60/hour limit
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew :composeApp:packageGraalvmExe -Pnightly=true -PbuildNumber=${{ github.run_number }}
+
+      - name: Rename Windows artifacts
+        shell: pwsh
+        run: |
+          $EXE_FILE = Get-ChildItem -Path composeApp/build/compose/binaries/main/graalvm-exe -Filter "*.exe" |
+            Where-Object { $_.Name -notlike '__*' } | Select-Object -First 1
+          Copy-Item $EXE_FILE.FullName Spotube-Personal-windows-x86_64-setup.exe
+
+      - name: Upload EXE
+        uses: actions/upload-artifact@v7
+        with:
+          name: windows-exe
+          path: Spotube-Personal-windows-x86_64-setup.exe
