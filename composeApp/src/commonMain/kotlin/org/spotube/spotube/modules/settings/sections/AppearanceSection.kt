@@ -47,7 +47,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import org.spotube.spotube.core.ui.theming.AppPalette
 import org.spotube.spotube.core.ui.theming.AppTheme
+import org.spotube.spotube.core.ui.theming.activePalette
 import org.spotube.spotube.core.ui.theming.isLightAppearance
 import org.spotube.spotube.modules.settings.SettingsViewModel
 import org.spotube.spotube.modules.settings.Theme
@@ -63,11 +65,8 @@ import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumDialog
 import org.spotube.millennium.composables.MillenniumSeparator
 import org.spotube.millennium.composables.MillenniumText
-import org.spotube.millennium.theme.MillenniumColorSchemes
-import org.spotube.millennium.theme.MillenniumPalette
 import org.spotube.millennium.theme.MillenniumTheme
 import org.spotube.millennium.theme.MillenniumThemeConfig
-import org.spotube.millennium.theme.resolve
 import spotube.composeapp.generated.resources.*
 
 internal fun LazyListScope.appearanceSection(
@@ -101,7 +100,7 @@ internal fun LazyListScope.appearanceSection(
             },
             {
                 AppearanceSettingCard(
-                    selectedPalette = settings.palette,
+                    selectedPalette = settings.activePalette,
                     icon = {
                         SettingsItemIcon(
                             Iconsax.IconsaxMagic,
@@ -110,7 +109,8 @@ internal fun LazyListScope.appearanceSection(
                     },
                     onSaved = { palette ->
                         settingsViewModel.updateSettings {
-                            copy(palette = palette)
+                            // Keep the stock field on a Millennium family so an official build still reads it.
+                            copy(palette = palette.millennium, appPalette = palette)
                         }
                     })
             })
@@ -127,17 +127,18 @@ private fun Theme.displayLabel(): String {
 }
 
 @Composable
-private fun MillenniumPalette.displayLabel(): String = when (this) {
-    MillenniumPalette.Blue -> stringResource(Res.string.settings_palette_blue)
-    MillenniumPalette.Orange -> stringResource(Res.string.settings_palette_orange)
-    MillenniumPalette.Lime -> stringResource(Res.string.settings_palette_lime)
+private fun AppPalette.displayLabel(): String = when (this) {
+    AppPalette.Blue -> stringResource(Res.string.settings_palette_blue)
+    AppPalette.Orange -> stringResource(Res.string.settings_palette_orange)
+    AppPalette.Lime -> stringResource(Res.string.settings_palette_lime)
+    AppPalette.Feishin -> stringResource(Res.string.settings_palette_feishin)
 }
 
 @Composable
 private fun AppearanceSettingCard(
-    selectedPalette: MillenniumPalette,
+    selectedPalette: AppPalette,
     icon: (@Composable () -> Unit)? = null,
-    onSaved: (MillenniumPalette) -> Unit) {
+    onSaved: (AppPalette) -> Unit) {
     var isDialogOpen by remember { mutableStateOf(false) }
 
     SettingCardItem(
@@ -171,7 +172,7 @@ private fun AppearanceSettingCard(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                MillenniumPalette.entries.forEach { palette ->
+                AppPalette.entries.forEach { palette ->
                     PaletteSwatch(
                         palette = palette,
                         label = palette.displayLabel(),
@@ -202,17 +203,17 @@ private fun AppearanceSettingCard(
 
 @Composable
 private fun PaletteSwatch(
-    palette: MillenniumPalette,
+    palette: AppPalette,
     label: String,
     selected: Boolean,
     onClick: () -> Unit) {
     val dark = !isLightAppearance()
-    val scheme = remember(palette, dark) { MillenniumColorSchemes().resolve(palette, dark = dark) }
+    val scheme = remember(palette, dark) { palette.colors(dark) }
     Box(
         modifier = Modifier
             .size(40.dp)
             .clip(CircleShape)
-            .background(scheme.accent)
+            .background(scheme.accentTop)
             .border(
                 width = if (selected) 3.dp else 1.dp,
                 color = if (selected) AppTheme.colors.onSurface else AppTheme.colors.outlineVariant,
@@ -222,9 +223,9 @@ private fun PaletteSwatch(
 }
 
 @Composable
-private fun PaletteTrailingSwatch(palette: MillenniumPalette) {
+private fun PaletteTrailingSwatch(palette: AppPalette) {
     val dark = !isLightAppearance()
-    val scheme = remember(palette, dark) { MillenniumColorSchemes().resolve(palette, dark = dark) }
+    val scheme = remember(palette, dark) { palette.colors(dark) }
     Row(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically) {
@@ -242,9 +243,11 @@ private fun PaletteTrailingSwatch(palette: MillenniumPalette) {
 }
 
 @Composable
-private fun PalettePreview(palette: MillenniumPalette) {
+private fun PalettePreview(palette: AppPalette) {
     val dark = !isLightAppearance()
-    MillenniumTheme(dark = dark, config = MillenniumThemeConfig(palette = palette)) {
+    MillenniumTheme(
+        dark = dark,
+        config = MillenniumThemeConfig(colorSchemes = palette.colorSchemes, palette = palette.millennium)) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
