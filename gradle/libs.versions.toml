@@ -14,6 +14,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 [versions]
+composeunstyled = "2.10.0"
 android-compileSdk = "37"
 android-minSdk = "28"
 android-targetSdk = "37"
@@ -67,6 +68,11 @@ mokkery = "3.5.1"
 jmustache = "1.16"
 
 [libraries]
+# Millennium (vendored into composeApp: org/spotube/millennium) and the Compose Unstyled libraries it builds on
+composeunstyled = { module = "com.composables:composeunstyled", version.ref = "composeunstyled" }
+composeunstyled-primitives = { module = "com.composables:composeunstyled-primitives", version.ref = "composeunstyled" }
+composeunstyled-theming = { module = "com.composables:composeunstyled-theming", version.ref = "composeunstyled" }
+composeunstyled-colored-indication = { module = "com.composables:composeunstyled-colored-indication", version.ref = "composeunstyled" }
 # buildSrc: renders the package manager manifests in packaging/
 jmustache = { module = "com.samskivert:jmustache", version.ref = "jmustache" }
 appdirs = { module = "net.harawata:appdirs", version.ref = "appdirs" }
