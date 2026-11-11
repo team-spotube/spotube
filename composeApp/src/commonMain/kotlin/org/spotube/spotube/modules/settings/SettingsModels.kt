@@ -40,6 +40,8 @@ data class UserSettings(
     // Appearance
     val theme: Theme = Theme.SYSTEM,
     val palette: MillenniumPalette = MillenniumPalette.Blue,
+    /** A palette family added by this build (see AppPalette); null means the Millennium [palette] above. */
+    val appPalette: org.spotube.spotube.core.ui.theming.AppPalette? = null,
 
     // Playback
     val streamingMusicFormat: AudioFormat = defaultStreamingMusicFormat(),

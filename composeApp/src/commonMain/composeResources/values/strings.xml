@@ -171,6 +171,7 @@
     <string name="settings_palette_blue">Blue</string>
     <string name="settings_palette_orange">Orange</string>
     <string name="settings_palette_lime">Lime</string>
+    <string name="settings_palette_feishin">Feishin</string>
 
     <string name="settings_download_folder_title">Download folder override</string>
     <string name="settings_download_folder_current">Current folder: %1$s</string>

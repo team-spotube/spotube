@@ -221,8 +221,12 @@ kotlin {
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.dns.sd.kt)
 
-                // Millennium UI
-                implementation(libs.millennium)
+                // Millennium UI: vendored into this module (org/spotube/millennium, v0.1.1 source) so the
+                // personal build can restyle it; it builds on Compose Unstyled.
+                implementation(libs.composeunstyled)
+                implementation(libs.composeunstyled.primitives)
+                implementation(libs.composeunstyled.theming)
+                implementation(libs.composeunstyled.colored.indication)
 
                 // Navigation
                 implementation(libs.jetbrains.navigation3.ui)

@@ -206,7 +206,8 @@ fun SpotubeTheme(
         Theme.DARK -> true
         Theme.SYSTEM -> isSystemDarkTheme()
     }
-    val palette: MillenniumPalette = settings.palette
+    val appPalette = settings.activePalette
+    val palette: MillenniumPalette = appPalette.millennium
 
     val darkTheme = MillenniumDarkThemeComponents
     val lightTheme = MillenniumLightThemeComponents
@@ -214,6 +215,7 @@ fun SpotubeTheme(
     MillenniumTheme(
         dark = isDarkTheme,
         config = MillenniumThemeConfig(
+            colorSchemes = appPalette.colorSchemes,
             palette = palette,
             dark = darkTheme.copy(
                 topAppBarTheme = MillenniumTopAppBarTheme(
