@@ -1798,13 +1798,15 @@ private fun SidebarItemContainer(
             MillenniumControlState.Disabled -> colors.muted
             MillenniumControlState.Selected, MillenniumControlState.Hovered,
             MillenniumControlState.Focused, MillenniumControlState.Pressed,
-                -> colors.accent
+                -> if (colors.flat) colors.text else colors.accent
 
             else -> colors.muted
         }
     }
-    val resolvedBackground = background ?: properties.background ?: if (selected) {
-        gelBrush(colors.accentTop, colors.accentBottom)
+    val resolvedBackground = background ?: properties.background ?: if (selected || state == MillenniumControlState.Selected) {
+        // Flat palette (Feishin): the current page is a quiet wash, not a filled accent bar.
+        if (colors.flat) androidx.compose.ui.graphics.SolidColor(colors.text.copy(alpha = 0.10f))
+        else gelBrush(colors.accentTop, colors.accentBottom)
     } else when (state) {
         MillenniumControlState.Selected -> gelBrush(colors.accentTop, colors.accentBottom)
         MillenniumControlState.Hovered -> Brush.verticalGradient(

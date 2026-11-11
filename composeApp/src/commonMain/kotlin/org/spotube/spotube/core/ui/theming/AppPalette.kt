@@ -54,6 +54,7 @@ val FeishinDarkColors = MillenniumColors(
     success = Color(0xFF32CC32),      // [src] state-success
     danger = Color(0xFFE05252),       // [derived] state-error (#CC3232) lifted to >= 4.5:1 as text
     scrim = Color(0xA6000000),        // black at 65%
+    flat = true,                      // no gel, glow, rim, orb or glossy hover; small radii
 )
 
 /** Feishin Default Light. */
@@ -73,6 +74,7 @@ val FeishinLightColors = MillenniumColors(
     success = Color(0xFF177332),      // [derived] state-success (#30D158) darkened to read as text
     danger = Color(0xFFB8231A),       // [derived] state-error (#FF3B30) darkened to read as text
     scrim = Color(0xA6000000),
+    flat = true,
 )
 
 private val MillenniumBuiltInSchemes = MillenniumColorSchemes()

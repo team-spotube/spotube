@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.lerp
@@ -374,10 +375,15 @@ fun MillenniumButton(
         ?: resolvedTextStyle.color.takeUnless { it == Color.Unspecified }
         ?: when (style) {
             MillenniumButtonStyle.Primary -> colors.onAccent
-            MillenniumButtonStyle.Danger -> colors.surface
+            MillenniumButtonStyle.Danger -> if (colors.flat) Color.White else colors.surface
             else -> colors.text
         }
-    val resolvedBackground = background ?: properties.background ?: when (style) {
+    val resolvedBackground = background ?: properties.background ?: if (colors.flat) when (style) {
+        // Flat palette (Feishin): solid fills; secondary is an outlined, transparent button.
+        MillenniumButtonStyle.Primary -> SolidColor(colors.accentTop)
+        MillenniumButtonStyle.Danger -> SolidColor(colors.danger)
+        else -> SolidColor(Color.Transparent)
+    } else when (style) {
         MillenniumButtonStyle.Primary -> gelBrush(colors.accentTop, colors.accentBottom)
         MillenniumButtonStyle.Secondary -> millenniumBevelBrush(colors)
         MillenniumButtonStyle.Quiet -> if (state == MillenniumControlState.Hovered || state == MillenniumControlState.Focused || state == MillenniumControlState.Pressed) {
@@ -458,7 +464,7 @@ fun MillenniumButton(
                 animationMillis = resolvedMotion.stateChangeMillis),
         contentPadding = padding ?: properties.padding,
     ) {
-        val labelStyle = if (style == MillenniumButtonStyle.Primary && resolvedTextStyle.shadow == null) {
+        val labelStyle = if (style == MillenniumButtonStyle.Primary && resolvedTextStyle.shadow == null && !colors.flat) {
             resolvedTextStyle.copy(shadow = Shadow(colors.accentBottom, Offset(0f, 1f), 1f))
         } else resolvedTextStyle
         MillenniumStyledContent(labelStyle, resolvedForeground) {

@@ -50,6 +50,20 @@ internal fun Modifier.millenniumInteractionSurface(
     val (hoverTarget, pressTarget) = millenniumInteractionLevels(state)
     val hover by animateFloatAsState(hoverTarget, tween(animationMillis))
     val press by animateFloatAsState(pressTarget, tween(animationMillis))
+    val flatColors = MillenniumTheme.colors
+    if (flatColors.flat) {
+        // Flat palette: a plain wash of the text colour, no light, rim or bevel.
+        val flatShape = shape.millenniumFlatShape()
+        val wash = flatColors.text
+        return drawWithCache {
+            val outline = flatShape.createOutline(size, layoutDirection, this)
+            onDrawWithContent {
+                val alpha = 0.07f * hover + 0.12f * press
+                if (alpha > 0f) drawOutline(outline, wash.copy(alpha = alpha))
+                drawContent()
+            }
+        }
+    }
     return drawWithCache {
         val face = Brush.verticalGradient(
             0f to Color.White.copy(alpha = 0.20f * hover),
@@ -87,6 +101,10 @@ internal fun Modifier.millenniumInteractionSurface(
  * @param pressed `true` for the inverted pressed lighting.
  */
 internal fun millenniumQuietEnamelStops(colors: MillenniumColors, pressed: Boolean): List<Pair<Float, Color>> {
+    if (colors.flat) {
+        val fill = colors.text.copy(alpha = if (pressed) 0.12f else 0.07f)
+        return listOf(0f to fill, 1f to fill)
+    }
     val top = lerp(colors.raised, colors.accent, if (pressed) 0.22f else 0.06f)
     val middle = lerp(colors.surface, colors.accent, if (pressed) 0.16f else 0.10f)
     val lower = lerp(colors.inset, colors.accent, if (pressed) 0.12f else 0.20f)

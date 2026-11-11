@@ -5,7 +5,9 @@ import androidx.compose.foundation.border
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.shadow
@@ -15,11 +17,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.composeunstyled.LocalContentColor
@@ -191,7 +195,8 @@ internal fun millenniumGelStops(top: Color, bottom: Color): List<Pair<Float, Col
  * @see gelBrush
  */
 fun millenniumSelectedGelBrush(colors: MillenniumColors, strength: Float = 0.35f): Brush =
-    Brush.verticalGradient(*millenniumSelectedGelStops(colors, strength).toTypedArray())
+    if (colors.flat) SolidColor(lerp(colors.surface, colors.accentTop, strength.coerceIn(0f, 1f) * 0.6f))
+    else Brush.verticalGradient(*millenniumSelectedGelStops(colors, strength).toTypedArray())
 
 /** The individual stops behind [millenniumSelectedGelBrush] (fraction to colour), exposed for contrast tests. */
 internal fun millenniumSelectedGelStops(colors: MillenniumColors, strength: Float = 0.35f): List<Pair<Float, Color>> {
@@ -221,7 +226,9 @@ fun millenniumBevelBrush(
     colors: MillenniumColors,
     accent: Boolean = false,
     sunken: Boolean = false,
-): Brush = if (accent) {
+): Brush = if (colors.flat) {
+    SolidColor(if (accent) colors.accentTop else if (sunken) colors.inset else colors.raised)
+} else if (accent) {
     gelBrush(colors.accentTop, colors.accentBottom)
 } else {
     millenniumNeutralBrush(colors, sunken)
@@ -254,7 +261,7 @@ private fun millenniumNeutralBrush(colors: MillenniumColors, sunken: Boolean): B
  * @param colors Palette to build from.
  * @return a vertical gradient [Brush].
  */
-fun millenniumPanelBrush(colors: MillenniumColors): Brush = Brush.verticalGradient(
+fun millenniumPanelBrush(colors: MillenniumColors): Brush = if (colors.flat) SolidColor(colors.surface) else Brush.verticalGradient(
     0f to colors.raised,
     0.12f to lerp(colors.raised, colors.surface, 0.45f),
     0.22f to colors.surface,
@@ -343,8 +350,17 @@ fun Modifier.millenniumSurface(
     orbColor: Color? = null,
     orbBottomFraction: Float = 0.55f,
     orbDepthFraction: Float = 0.16f,
-): Modifier {
-    var result = this
+): Modifier = composed {
+    if (MillenniumTheme.colors.flat) {
+        // Flat palette: the fill and border only, on a small-radius shape.
+        val flatShape = shape.millenniumFlatShape()
+        var flatResult: Modifier = Modifier.clip(flatShape).background(background, flatShape)
+        if (borderColor != null && borderWidth > 0.dp) {
+            flatResult = flatResult.border(borderWidth, borderColor, flatShape)
+        }
+        return@composed flatResult
+    }
+    var result: Modifier = Modifier
     if (shadowElevation > 0.dp && opaqueFill) {
         val colors = shadowColors?.takeIf { it.isNotEmpty() } ?: listOf(shadowColor)
         colors.forEach { color ->
@@ -447,7 +463,7 @@ fun Modifier.millenniumSurface(
             }
         }
     }
-    return result
+    result
 }
 
 /**
@@ -475,4 +491,27 @@ internal fun MillenniumStyledContent(
         LocalContentColor provides foreground,
         content = content,
     )
+}
+
+
+/** Corner radius used by flat palettes (Feishin's medium radius). */
+val MillenniumFlatRadius: Dp = 5.dp
+
+/**
+ * Personal build: the shape a flat palette draws [this] with. Circles and pills stay round;
+ * every other rounded shape gets [MillenniumFlatRadius] corners.
+ */
+fun Shape.millenniumFlatShape(): Shape {
+    if (this !is RoundedCornerShape) return this
+    val probe = Size(100f, 100f)
+    val unit = Density(1f)
+    val largest = maxOf(
+        topStart.toPx(probe, unit), topEnd.toPx(probe, unit),
+        bottomStart.toPx(probe, unit), bottomEnd.toPx(probe, unit),
+    )
+    return when {
+        largest >= 40f -> this                       // circle or pill
+        largest <= MillenniumFlatRadius.value -> this
+        else -> RoundedCornerShape(MillenniumFlatRadius)
+    }
 }

@@ -277,7 +277,8 @@ fun MillenniumSwitch(
     val resolvedTrackGlowColor = trackGlowColor ?: properties.trackGlowColor
     ?: if (checked) colors.highlight.copy(alpha = 0.35f) else null
     val resolvedThumbBackground =
-        thumbBackground ?: properties.thumbBackground ?: gelBrush(colors.raised, colors.inset)
+        thumbBackground ?: properties.thumbBackground
+            ?: if (colors.flat) androidx.compose.ui.graphics.SolidColor(colors.text) else gelBrush(colors.raised, colors.inset)
     val resolvedLabelForeground = labelForeground ?: properties.labelForeground
     ?: if (state == MillenniumControlState.Disabled) colors.muted else colors.text
     val animatedThumbElevation by animateDpAsState(

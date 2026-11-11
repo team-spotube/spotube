@@ -24,6 +24,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawOutline
@@ -474,7 +475,12 @@ private fun IconButtonContainer(
         colors.accentBottom
     }
     val resolvedMotion = motion ?: properties.motion
-    val resolvedForeground = foreground ?: properties.foreground ?: when (style) {
+    val resolvedForeground = foreground ?: properties.foreground ?: if (colors.flat) when (style) {
+        // Flat palette (Feishin): the main button is a text-coloured disc with a background-coloured icon.
+        MillenniumIconButtonStyle.Primary -> colors.background
+        MillenniumIconButtonStyle.Danger -> Color.White
+        else -> colors.text
+    } else when (style) {
         MillenniumIconButtonStyle.Primary -> if (resolvedOrb) Color.White else colors.onAccent
         MillenniumIconButtonStyle.Danger -> if (resolvedOrb) Color.White else colors.surface
         MillenniumIconButtonStyle.Quiet -> when (state) {
@@ -494,7 +500,11 @@ private fun IconButtonContainer(
         targetValue = resolvedForeground,
         animationSpec = tween(resolvedMotion.stateChangeMillis),
     )
-    val resolvedBackground = background ?: properties.background ?: if (resolvedOrb) {
+    val resolvedBackground = background ?: properties.background ?: if (colors.flat) when (style) {
+        MillenniumIconButtonStyle.Primary -> SolidColor(colors.text)
+        MillenniumIconButtonStyle.Danger -> SolidColor(colors.danger)
+        else -> SolidColor(Color.Transparent)
+    } else if (resolvedOrb) {
         Brush.verticalGradient(*millenniumIconOrbStops(orbTop, orbBottom).toTypedArray())
     } else when (style) {
         MillenniumIconButtonStyle.Primary -> gelBrush(colors.accentTop, colors.accentBottom)
@@ -505,7 +515,10 @@ private fun IconButtonContainer(
             lerp(colors.danger, if (colors.surface.luminance() > colors.danger.luminance()) Color.Black else Color.White, 0.20f),
         )
     }
-    val resolvedBorderColor = borderColor ?: properties.borderColor ?: when (state) {
+    val resolvedBorderColor = borderColor ?: properties.borderColor ?: if (colors.flat) when (state) {
+        MillenniumControlState.Focused -> colors.accent
+        else -> Color.Transparent
+    } else when (state) {
         MillenniumControlState.Focused, MillenniumControlState.Selected -> colors.accent
         MillenniumControlState.Error -> colors.danger
         else -> when (style) {
@@ -521,7 +534,7 @@ private fun IconButtonContainer(
         MillenniumControlState.Pressed -> colors.inset.copy(alpha = 0.32f)
         else -> colors.highlight.copy(alpha = 0.70f)
     }
-    val resolvedOrbColor = if (resolvedOrb) {
+    val resolvedOrbColor = if (resolvedOrb && !colors.flat) {
         orbColor ?: properties.orbColor ?: Color.White.copy(alpha = orbStrength ?: properties.orbStrength)
     } else {
         null

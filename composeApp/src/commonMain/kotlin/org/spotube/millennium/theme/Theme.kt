@@ -88,6 +88,12 @@ data class MillenniumColors(
     val success: Color,
     val danger: Color,
     val scrim: Color,
+    /**
+     * Personal build: draw this palette flat. No gel gradients, glows, rims, orbs, glossy
+     * hover/press faces or drop shadows, and corner radii capped at [MillenniumFlatRadius]
+     * (see `millenniumSurface` and `millenniumInteractionSurface`).
+     */
+    val flat: Boolean = false,
 )
 
 /**
