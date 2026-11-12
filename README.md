@@ -191,7 +191,7 @@ Run [`spotube-release-binary.yml`](.github/workflows/spotube-release-binary.yml)
 
 - **Beta:** the stable build as a draft, tagged `v<version>-beta.N`. Set `betaNumber` in
   `composeApp/build.gradle.kts` to N, and back to `null` for stable.
-- **Desktop:** each platform (Linux x86_64 and aarch64, Windows, macOS) builds its installers on its
+- **Desktop:** each platform (Linux x86_64 and aarch64, Windows, macOS Apple silicon and Intel) builds its installers on its
   own runner.
 - **Android:** a signed APK.
 

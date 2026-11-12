@@ -560,13 +560,23 @@ jobs:
         with:
           limit-access-to-actor: true
 
-  # Apple silicon only: GraalVM native-image can't cross-compile, and Intel macs aren't supported
+  # GraalVM native-image can't cross-compile, so each CPU builds its own DMG on its own runner
   build-macos:
-    name: macOS Desktop
+    name: macOS Desktop (${{ matrix.name }})
     needs: [validate-inputs, prepare-deps]
     if: ${{ inputs.platform == 'all' || inputs.platform == 'macos' }}
     timeout-minutes: 120
-    runs-on: macos-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: apple-silicon
+            os: macos-latest
+            artifact: macos-dmg
+          - name: intel
+            os: macos-15-intel
+            artifact: macos-dmg-intel
     steps:
       - uses: actions/checkout@v7
 
@@ -602,7 +612,7 @@ jobs:
         env:
           # Nucleus lists GraalVM CE releases via the GitHub API; unauthenticated calls hit the 60/hour limit
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # The free macOS runner has 3 cores / 7 GB. With the default 4g Gradle + 3g Kotlin daemons idling,
+        # The free Apple silicon runner has 3 cores / 7 GB. With the default 4g Gradle + 3g Kotlin daemons idling,
         # native-image only gets ~3 GB and spends ~40% of its time in GC (47 min build vs ~15 on Linux).
         # A single-use daemon with a smaller heap and in-process Kotlin compilation leaves the RAM to it.
         run: >
@@ -616,13 +626,13 @@ jobs:
       - name: Rename macOS artifact
         run: |
           DMG_FILE=$(find composeApp/build/compose/binaries/main/graalvm-dmg -maxdepth 1 -name "*.dmg" -type f | head -1)
-          cp "$DMG_FILE" Spotube-macos-apple-silicon.dmg
+          cp "$DMG_FILE" Spotube-macos-${{ matrix.name }}.dmg
 
       - name: Upload DMG
         uses: actions/upload-artifact@v7
         with:
-          name: macos-dmg
-          path: Spotube-macos-apple-silicon.dmg
+          name: ${{ matrix.artifact }}
+          path: Spotube-macos-${{ matrix.name }}.dmg
 
       - name: Setup tmate session on failure
         if: ${{ inputs.debug_ssh && failure() }}
@@ -795,4 +805,5 @@ jobs:
             linux-tarball-arm64/*.tar.xz
             windows-exe/*.exe
             macos-dmg/*.dmg
+            macos-dmg-intel/*.dmg
             ios-ipa/*.ipa

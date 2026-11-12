@@ -95,7 +95,7 @@ jobs:
         run: |
           gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --dir release-assets \
             --pattern 'spotube-linux-*.tar.xz' --pattern 'Spotube-windows-x86_64-setup.exe' \
-            --pattern 'Spotube-macos-apple-silicon.dmg'
+            --pattern 'Spotube-macos-apple-silicon.dmg' --pattern 'Spotube-macos-intel.dmg'
 
       - name: Render packages
         env:

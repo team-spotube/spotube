@@ -109,6 +109,7 @@ listOf("linux", "aur", "flatpak", "winget", "chocolatey", "homebrew").forEach { 
                 "linuxAarch64" to "spotube-linux-$packagingVersion-aarch64.tar.xz",
                 "windowsX64" to "Spotube-windows-x86_64-setup.exe",
                 "macosArm64" to "Spotube-macos-apple-silicon.dmg",
+                "macosX64" to "Spotube-macos-intel.dmg",
             )
         )
         artifactsDir.set(packagingArtifactsDir)

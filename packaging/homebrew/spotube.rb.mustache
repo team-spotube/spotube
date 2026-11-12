@@ -1,8 +1,11 @@
 cask "spotube" do
-  version "{{version}}"
-  sha256 "{{artifacts.macosArm64.sha256}}"
+  arch arm: "apple-silicon", intel: "intel"
 
-  url "{{repositoryUrl}}/releases/download/v#{version}/Spotube-macos-apple-silicon.dmg",
+  version "{{version}}"
+  sha256 arm:   "{{artifacts.macosArm64.sha256}}",
+         intel: "{{artifacts.macosX64.sha256}}"
+
+  url "{{repositoryUrl}}/releases/download/v#{version}/Spotube-macos-#{arch}.dmg",
       verified: "github.com/team-spotube/spotube/"
   name "Spotube"
   desc "Open source, plugin powered music streaming client"
@@ -12,9 +15,6 @@ cask "spotube" do
     url :url
     strategy :github_latest
   end
-
-  # Intel macs aren't supported: GraalVM native-image can't cross-compile the DMG
-  depends_on arch: :arm64
 
   app "Spotube.app"
 
