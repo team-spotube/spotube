@@ -152,7 +152,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                         color = AppTheme.colors.onSurface
                     )
                 } else {
-                    Text(stringResource(Res.string.home_title_browse))
+                    Text("Listen Now", style = AppTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold))
                 }
 
             },
@@ -239,14 +239,14 @@ private fun HomeContent(
 ) {
     val shellBottomInset = LocalAppShellBottomInset.current
     val contentPadding = remember(shellBottomInset) {
-        PaddingValues(top = 16.dp, bottom = 16.dp + shellBottomInset)
+        PaddingValues(top = 24.dp, bottom = 24.dp + shellBottomInset)
     }
 
     LazyColumn(
         state = listState,
         modifier = Modifier.fillMaxSize(),
         contentPadding = contentPadding,
-        verticalArrangement = Arrangement.spacedBy(24.dp)
+        verticalArrangement = Arrangement.spacedBy(28.dp)
     ) {
         when (state) {
             is HomeScreenState.Loading -> {
@@ -410,8 +410,8 @@ private fun HomeSection(
         )
         Text(
             text = title,
-            style = AppTheme.typography.titleLarge,
-            fontWeight = FontWeight.SemiBold,
+            style = AppTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(horizontal = 16.dp).offset(y = (-12).dp)
         )
 
