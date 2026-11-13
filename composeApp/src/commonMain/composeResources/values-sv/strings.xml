@@ -1,0 +1,169 @@
+<!--
+  ~ Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="settings_screen_title">Inställningar</string>
+
+    <string name="settings_section_plugins">Tillägg</string>
+    <string name="settings_section_language_region">Språk och region</string>
+    <string name="settings_section_appearance">Utseende</string>
+    <string name="settings_section_playback">Uppspelning</string>
+    <string name="settings_section_downloads">Nedladdningar</string>
+    <string name="settings_section_caching">Cachelagring</string>
+    <string name="settings_section_desktop">Dator</string>
+    <string name="settings_section_updates">Uppdateringar</string>
+
+    <string name="settings_action_close">Stäng</string>
+    <string name="settings_action_save">Spara</string>
+    <string name="settings_action_cancel">Avbryt</string>
+
+    <string name="settings_language_title">Språk</string>
+    <string name="settings_language_subtitle_current">Språk för appens gränssnitt. Nuvarande: %1$s</string>
+    <string name="settings_country_title">Land</string>
+    <string name="settings_country_subtitle_current">Land som styr innehåll och tillgänglighet. Nuvarande: %1$s</string>
+    <string name="settings_option_name_and_code">%1$s (%2$s)</string>
+
+    <string name="settings_theme_title">Tema</string>
+    <string name="settings_theme_subtitle_current">Välj hur Spotube anpassar sig till systemets utseende. Nuvarande: %1$s</string>
+    <string name="settings_theme_light">Ljust</string>
+    <string name="settings_theme_dark">Mörkt</string>
+    <string name="settings_theme_system">System</string>
+
+    <string name="settings_accent_title">Accentfärg</string>
+    <string name="settings_accent_subtitle_current">Nuvarande färgpalett: %1$s</string>
+    <string name="settings_accent_dialog_title">Accentfärg</string>
+    <string name="settings_accent_dialog_description">Välj en accentpalett och förhandsgranska den i både ljust och mörkt tema.</string>
+    <string name="settings_preview_light">Ljust</string>
+    <string name="settings_preview_dark">Mörkt</string>
+    <string name="settings_preview_label">Förhandsgranskning</string>
+    <string name="settings_preview_button">Knapp</string>
+    <string name="settings_accent_green_goblin">Gröna trollet</string>
+    <string name="settings_accent_electric_violet">Elektriskt violett</string>
+    <string name="settings_accent_oceanic_cyan">Havscyan</string>
+    <string name="settings_accent_sunset_orange">Solnedgångsorange</string>
+    <string name="settings_accent_rose_garden">Rosenträdgård</string>
+    <string name="settings_accent_midnight_blue">Midnattsblått</string>
+    <string name="settings_accent_metallic_slate">Metalliskt skiffergrått</string>
+
+    <string name="settings_download_folder_title">Egen nedladdningsmapp</string>
+    <string name="settings_download_folder_current">Nuvarande mapp: %1$s</string>
+    <string name="settings_download_folder_default">Nuvarande mapp: standardmappen för musik</string>
+    <string name="settings_download_folder_description">Lämna fältet tomt för att använda standardmappen för musik.</string>
+    <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
+    <string name="settings_local_media_folders_title">Lokala mediemappar</string>
+    <string name="settings_local_media_folders_subtitle_current">Egna mappar att skanna på datorn. Tillagda: %1$d</string>
+    <string name="settings_local_media_folders_subtitle_empty">Ingen egen mapp har lagts till ännu</string>
+    <string name="settings_local_media_folders_description">Lägg till mappar med mappväljaren. Den egna nedladdningsmappen tas med automatiskt.</string>
+    <string name="settings_local_media_folders_manage">Hantera</string>
+    <string name="settings_local_media_folders_add_action">Lägg till mapp</string>
+    <string name="settings_local_media_folders_remove_action">Ta bort mapp</string>
+    <string name="settings_local_media_folders_none_added">Inga egna mappar har lagts till.</string>
+    <string name="settings_download_format_title">Musikformat för nedladdning</string>
+    <string name="settings_download_format_subtitle_current">Önskad kodek och önskat behållarformat för nedladdningar. Nuvarande: %1$s</string>
+    <string name="settings_download_quality_title">Musikkvalitet för nedladdning</string>
+
+    <string name="settings_streaming_format_title">Musikformat för strömning</string>
+    <string name="settings_streaming_format_subtitle_current">Önskad kodek och önskat behållarformat för musikströmning. Nuvarande: %1$s</string>
+    <string name="settings_streaming_quality_title">Musikkvalitet för strömning</string>
+    <string name="settings_subtitle_current">Nuvarande: %1$s</string>
+    <string name="settings_enable_music_caching_title">Aktivera cachelagring av musik</string>
+    <string name="settings_enable_music_caching_subtitle">Lagra strömmat ljud lokalt så att det går snabbare att spela upp igen.</string>
+    <string name="settings_cache_folder_title">Cachemapp</string>
+    <string name="settings_cache_folder_current">Nuvarande: %1$s</string>
+    <string name="settings_cache_folder_default">Nuvarande: appens standardcache</string>
+    <string name="settings_cache_size_limit_title">Maximal cachestorlek</string>
+    <string name="settings_cache_size_limit_unlimited">Ingen gräns</string>
+    <string name="settings_cache_size_limit_current">Nuvarande gräns: %1$d MB</string>
+    <string name="settings_cache_size_limit_description">Ange den maximala cachestorleken i MB. Ange 0 eller lämna tomt för obegränsad storlek.</string>
+    <string name="settings_cache_size_limit_placeholder">500</string>
+    <string name="settings_error_cache_size_range">Storleken måste vara 0 eller ett positivt tal.</string>
+    <string name="settings_enable_endless_playback_title">Fortsätt spela automatiskt</string>
+    <string name="settings_enable_endless_playback_subtitle">Fortsätt spela rekommenderade låtar när kön tar slut.</string>
+    <string name="settings_enable_connect_title">Aktivera Connect</string>
+    <string name="settings_enable_connect_subtitle">Gör det möjligt att fjärrstyra uppspelningen via Spotube Connect.</string>
+    <string name="settings_playback_port_title">Port för uppspelningens proxyserver</string>
+    <string name="settings_playback_port_subtitle_current">Port som uppspelningens proxyserver använder. Nuvarande: %1$d</string>
+    <string name="settings_playback_port_description">Välj en port mellan 1 och 65535.</string>
+    <string name="settings_playback_port_placeholder">14769</string>
+    <string name="settings_error_whole_number">Ange ett giltigt heltal.</string>
+    <string name="settings_error_port_range">Porten måste vara mellan 1 och 65535.</string>
+
+    <string name="settings_blacklist_title">Spärrlista</string>
+    <string name="settings_blacklist_subtitle">Hantera spärrade låtar och artister</string>
+
+    <string name="settings_desktop_minimize_title">Minimera till meddelandefältet</string>
+    <string name="settings_desktop_minimize_subtitle">Låt Spotube fortsätta köras i meddelandefältet när fönstret minimeras.</string>
+    <string name="settings_desktop_discord_title">Discord Rich Presence</string>
+    <string name="settings_desktop_discord_subtitle">Visa din aktuella uppspelningsstatus i Discord på datorn.</string>
+
+    <string name="settings_updates_auto_check_title">Sök automatiskt efter uppdateringar</string>
+    <string name="settings_updates_auto_check_subtitle">Sök efter nya versioner av Spotube i bakgrunden.</string>
+
+    <string name="settings_plugins_manage_title">Hantera tillägg</string>
+    <string name="settings_plugins_manage_subtitle">Hantera dina tillägg</string>
+    <string name="settings_plugins_default_ability_title">Standardtillägg: %1$s</string>
+    <string name="settings_plugins_ability_metadata">Metadata</string>
+    <string name="settings_plugins_ability_audio">Ljud</string>
+    <string name="settings_plugins_ability_lyrics">Låttexter</string>
+    <string name="settings_plugins_ability_scrobble">Skrobbling</string>
+    <string name="settings_plugins_no_selection">Inget tillägg valt</string>
+    <string name="settings_plugins_action_change">Ändra</string>
+    <string name="settings_plugins_action_select">Välj</string>
+    <string name="settings_plugins_selected">Valt</string>
+    <string name="settings_plugins_clear">Rensa val</string>
+    <string name="settings_plugins_no_plugins">Inga tillägg är tillgängliga</string>
+    <string name="settings_plugins_plugin_content_description">Tillägget %1$s</string>
+    <string name="settings_plugins_clear_content_description">Rensa</string>
+
+    <string name="plugin_configure_title">Konfigurera</string>
+    <string name="plugin_screen_title">Tilläggshanterare</string>
+    <string name="plugin_error_enter_url">Ange en URL</string>
+    <string name="plugin_error_url_scheme">URL:en måste börja med http:// eller https://</string>
+    <string name="plugin_error_download_failed">Det gick inte att ladda ner tillägget</string>
+    <string name="plugin_empty_title">Inga tillägg har installerats ännu</string>
+    <string name="plugin_empty_subtitle">Klistra in en nedladdningsadress eller välj en fil ovan.</string>
+    <string name="plugin_installed_count">Installerade %2$s: %1$d</string>
+    <string name="plugin_installed_singular">tillägg</string>
+    <string name="plugin_installed_plural">tillägg</string>
+    <string name="plugin_install_section_title">Installera ett tillägg</string>
+    <string name="plugin_url_placeholder">https://example.com/plugin.smplug</string>
+    <string name="plugin_action_download">Ladda ner</string>
+    <string name="plugin_action_install_from_file">Installera från fil (.smplug)</string>
+    <string name="plugin_state_active">Aktivt</string>
+    <string name="plugin_version_label">v%1$s</string>
+    <string name="plugin_state_builtin">Inbyggt</string>
+    <string name="plugin_action_remove">Ta bort tillägg</string>
+    <string name="plugin_action_login">Logga in</string>
+    <string name="plugin_action_logout">Logga ut</string>
+    <string name="plugin_section_url_title">Ladda ner från URL</string>
+    <string name="plugin_section_file_title">Installera från fil</string>
+    <string name="plugin_section_install">Installera</string>
+
+    <string name="plugin_permissions_author_version">• %1$s</string>
+    <string name="plugin_permissions_requested_title">Begärda behörigheter</string>
+    <string name="plugin_permissions_none">Det här tillägget kräver inga särskilda behörigheter.</string>
+    <string name="plugin_permissions_compare_title">Installerat och tillhandahållet</string>
+    <string name="plugin_permissions_installed_label">Installerat</string>
+    <string name="plugin_permissions_supplied_label">Tillhandahållet</string>
+    <string name="plugin_permissions_api_diff">API %1$s → %2$s</string>
+    <string name="plugin_permissions_capability_storage_title">Beständig lagring</string>
+    <string name="plugin_permissions_capability_storage_desc">Läsa och skriva data på disken</string>
+    <string name="plugin_permissions_capability_network_title">Nätverksförfrågningar</string>
+    <string name="plugin_permissions_capability_network_desc">Skicka och ta emot data via internet</string>
+    <string name="plugin_permissions_capability_webview_title">WebView</string>
+    <string name="plugin_permissions_capability_webview_desc">Visa webbinnehåll i appen</string>
+</resources>
