@@ -1,0 +1,1150 @@
+<!--
+  ~ Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="queue_title">תור</string>
+    <string name="queue_clear_queue">ניקוי התור</string>
+    <string name="queue_filter_queue">סינון התור...</string>
+    <string name="queue_no_queue_entries">אין פריטים בתור</string>
+
+    <string name="search_placeholder">חיפוש שירים, אמנים, אלבומים...</string>
+    <string name="search_clear_history">ניקוי כל ההיסטוריה</string>
+    <string name="search_filter_placeholder">חיפוש...</string>
+
+    <!-- Library toolbar -->
+    <string name="library_screen_title">הספרייה שלך</string>
+    <string name="library_toolbar_compact_title">ספרייה</string>
+    <string name="library_tab_playlists">פלייליסטים</string>
+    <string name="library_tab_albums">אלבומים</string>
+    <string name="library_tab_artists">אמנים</string>
+    <string name="library_tab_local_tracks">שירים מקומיים</string>
+    <string name="library_tab_downloads">הורדות</string>
+    <string name="library_filter_playlists">חיפוש בפלייליסטים שמורים…</string>
+    <string name="library_filter_albums">חיפוש באלבומים שמורים…</string>
+    <string name="library_filter_artists">חיפוש באמנים שמורים…</string>
+    <string name="library_filter_local_tracks">חיפוש תיקיות או שירים…</string>
+    <string name="library_action_search">סינון הספרייה</string>
+    <string name="library_action_close_search">סגירת הסינון</string>
+    <string name="library_action_create_playlist">יצירת רשימת השמעה</string>
+    <string name="library_action_refresh_local_tracks">ריענון שירים מקומיים</string>
+    <string name="library_action_grid_view">מעבר לתצוגת רשת</string>
+    <string name="library_action_list_view">מעבר לתצוגת רשימה</string>
+    <string name="library_playlists_empty">אין פלייליסטים שמורים</string>
+    <string name="library_playlists_no_results">אין פלייליסטים התואמים ל-“%1$s”</string>
+    <string name="library_albums_empty">אין אלבומים שמורים</string>
+    <string name="library_albums_no_results">אין אלבומים התואמים ל-“%1$s”</string>
+    <string name="library_artists_empty">אין אמנים שמורים</string>
+    <string name="library_artists_no_results">אין אמנים התואמים ל-“%1$s”</string>
+
+    <!-- Local media -->
+    <string name="library_local_folders">תיקיות</string>
+    <string name="library_local_folder">תיקייה</string>
+    <string name="library_local_summary">%1$s • %2$s</string>
+    <plurals name="library_local_tracks_count">
+        <item quantity="one">שיר אחד</item>
+        <item quantity="two">%1$d שירים</item>
+        <item quantity="many">%1$d שירים</item>
+        <item quantity="other">%1$d שירים</item>
+    </plurals>
+    <plurals name="library_local_folders_count">
+        <item quantity="one">תיקייה אחת</item>
+        <item quantity="two">%1$d תיקיות</item>
+        <item quantity="many">%1$d תיקיות</item>
+        <item quantity="other">%1$d תיקיות</item>
+    </plurals>
+    <string name="library_local_back">חזרה לתיקיות</string>
+    <string name="library_local_play_folder">הפעלת התיקייה</string>
+    <string name="library_local_permission_title">נדרשת גישה לשמע</string>
+    <string name="library_local_permission_description">יש לאפשר גישה לשמע כדי לעיין במוזיקה שבמכשיר.</string>
+    <string name="library_local_grant_access">מתן גישה</string>
+    <string name="library_local_empty_folders">לא נמצאו תיקיות מקומיות</string>
+    <string name="library_local_empty_folders_description">אפשר להוסיף תיקייה עם מוזיקה כדי להפעיל אותה ממש כאן. אין צורך בפלאגין.</string>
+    <string name="library_local_add_folder">הוספת תיקייה</string>
+    <string name="library_local_empty_tracks">אין שירים בתיקייה הזו</string>
+    <string name="library_local_no_results">אין תיקיות או שירים תואמים</string>
+    <string name="library_local_refresh_failed">ריענון המדיה המקומית נכשל</string>
+
+    <!-- Downloads -->
+    <string name="downloads_summary">%1$d פעילות • %2$d הושלמו</string>
+    <string name="downloads_saved_to">נשמר ב-%1$s</string>
+    <string name="downloads_clear_completed">ניקוי ההורדות שהושלמו</string>
+    <string name="downloads_empty">אין עדיין הורדות</string>
+    <string name="downloads_status_downloading">מוריד %1$d%</string>
+    <string name="downloads_status_queued">בתור</string>
+    <string name="downloads_status_completed">הושלמה</string>
+    <string name="downloads_status_cancelled">בוטלה</string>
+    <string name="downloads_status_failed">נכשלה</string>
+    <string name="downloads_status_failed_error">נכשלה: %1$s</string>
+    <string name="downloads_action_cancel">ביטול ההורדה</string>
+    <string name="downloads_action_retry">ניסיון חוזר בהורדה</string>
+    <string name="downloads_action_remove">הסרת ההורדה</string>
+
+    <!-- Shared media items -->
+    <string name="media_artist">אמן</string>
+    <string name="media_blacklisted">ברשימה השחורה</string>
+    <string name="media_liked_tracks">שירים אהובים</string>
+    <string name="media_saved_songs">השירים השמורים שלך</string>
+    <string name="media_unknown_artist">אמן לא ידוע</string>
+    <string name="media_preview_title">שם השיר</string>
+    <string name="media_preview_subtitle">שם האמן</string>
+
+    <string name="accessibility_selected">נבחר</string>
+
+    <string name="settings_screen_title">הגדרות</string>
+
+    <string name="settings_section_plugins">פלאגינים</string>
+    <string name="settings_section_language_region">שפה ואזור</string>
+    <string name="settings_section_appearance">מראה</string>
+    <string name="settings_section_playback">הפעלה</string>
+    <string name="settings_section_downloads">הורדות</string>
+    <string name="settings_section_caching">מטמון</string>
+    <string name="settings_section_desktop">שולחן עבודה</string>
+    <string name="settings_section_updates">עדכונים</string>
+    <string name="settings_section_support">תמיכה</string>
+    <string name="settings_section_about">אודות</string>
+
+    <string name="common_close">סגירה</string>
+    <string name="common_save">שמירה</string>
+    <string name="common_cancel">ביטול</string>
+
+    <string name="settings_language_title">שפה</string>
+    <string name="settings_language_subtitle_current">שפת ממשק האפליקציה. כעת: %1$s</string>
+    <string name="settings_language_system_default">ברירת המחדל של המערכת</string>
+    <string name="settings_country_title">מדינה</string>
+    <string name="settings_country_subtitle_current">המדינה האזורית לתוכן ולזמינות. כעת: %1$s</string>
+    <string name="settings_option_name_and_code">%1$s (%2$s)</string>
+
+    <string name="settings_theme_title">ערכת נושא</string>
+    <string name="settings_theme_subtitle_current">בחירה איך Spotube תתאים את עצמה למראה המערכת. כעת: %1$s</string>
+    <string name="settings_theme_light">בהירה</string>
+    <string name="settings_theme_dark">כהה</string>
+    <string name="settings_theme_system">מערכת</string>
+
+    <string name="settings_surface_theme_title">משטח</string>
+    <string name="settings_surface_theme_subtitle_current">חומר הרקע של האפליקציה. כעת: %1$s</string>
+    <string name="settings_surface_watery">מימי</string>
+    <string name="settings_surface_icy">קפוא</string>
+    <string name="settings_surface_chrome">כרום</string>
+    <string name="settings_surface_acrylic">אקריליק</string>
+    <string name="settings_surface_glass">זכוכית</string>
+
+    <string name="settings_accent_title">צבע הדגשה</string>
+    <string name="settings_accent_subtitle_current">לוח הצבעים הנוכחי: %1$s</string>
+    <string name="settings_accent_dialog_title">צבע הדגשה</string>
+    <string name="settings_accent_dialog_description">בחירת לוח צבעי הדגשה ותצוגה מקדימה שלו בערכות נושא בהירה וכהה.</string>
+    <string name="settings_preview_light">בהירה</string>
+    <string name="settings_preview_dark">כהה</string>
+    <string name="settings_preview_label">תצוגה מקדימה</string>
+    <string name="settings_preview_button">כפתור</string>
+    <string name="settings_accent_green_goblin">גובלין ירוק</string>
+    <string name="settings_accent_electric_violet">סגול חשמלי</string>
+    <string name="settings_accent_oceanic_cyan">ציאן אוקיינוסי</string>
+    <string name="settings_accent_sunset_orange">כתום שקיעה</string>
+    <string name="settings_accent_rose_garden">גן ורדים</string>
+    <string name="settings_accent_midnight_blue">כחול חצות</string>
+    <string name="settings_accent_metallic_slate">צפחה מתכתית</string>
+
+    <string name="settings_appearance_title">מראה ותחושה</string>
+    <string name="settings_appearance_subtitle_current">חומר משטח וצבע הדגשה. כעת: %1$s · %2$s</string>
+    <string name="settings_appearance_dialog_title">מראה ותחושה</string>
+    <string name="settings_appearance_dialog_description">בחירת חומר משטח, ואז צבע הדגשה שמתאים לו. כל אפשרות היא שילוב שנבחר בקפידה.</string>
+    <string name="settings_appearance_surface_label">משטח</string>
+    <string name="settings_appearance_accent_label">הדגשה</string>
+    <string name="settings_preview_secondary">משני</string>
+
+    <string name="settings_palette_title">לוח צבעים</string>
+    <string name="settings_palette_subtitle_current">לוח צבעי ההדגשה Millennium. כעת: %1$s</string>
+    <string name="settings_palette_dialog_title">לוח צבעים</string>
+    <string name="settings_palette_dialog_description">בחירת לוח צבעי הדגשה Millennium ותצוגה מקדימה שלו בבהיר ובכהה.</string>
+    <string name="settings_palette_label">לוח צבעים</string>
+    <string name="settings_appearance_subtitle_palette">לוח הצבעים וההדגשה של Millennium. כעת: %1$s</string>
+    <string name="settings_palette_blue">כחול</string>
+    <string name="settings_palette_orange">כתום</string>
+    <string name="settings_palette_lime">ליים</string>
+
+    <string name="settings_download_folder_title">עקיפת תיקיית ההורדות</string>
+    <string name="settings_download_folder_current">התיקייה הנוכחית: %1$s</string>
+    <string name="settings_download_folder_default_path">התיקייה הנוכחית: %1$s (ברירת מחדל)</string>
+    <string name="settings_download_folder_description">יש להשאיר ריק כדי להשתמש בתיקיית המוזיקה המוגדרת כברירת מחדל.</string>
+    <string name="settings_download_folder_placeholder">C:\\Music\\Spotube</string>
+    <string name="settings_local_media_folders_title">תיקיות מדיה מקומיות</string>
+    <string name="settings_local_media_folders_subtitle_current">תיקיות מותאמות אישית לסריקה בשולחן העבודה. נוספו: %1$d</string>
+    <string name="settings_local_media_folders_subtitle_empty">עדיין לא נוספה תיקייה מותאמת אישית</string>
+    <string name="settings_local_media_folders_description">תיקיות מותאמות אישית לספריית המוזיקה המקומית שלך.</string>
+    <string name="settings_local_media_folders_manage">ניהול</string>
+    <string name="settings_local_media_folders_add_action">הוספת תיקייה</string>
+    <string name="settings_local_media_folders_remove_action">הסרת תיקייה</string>
+    <string name="settings_local_media_folders_none_added">לא נוספו תיקיות מותאמות אישית.</string>
+    <string name="settings_local_media_folders_remove_named">הסרת %1$s מרשימת הסריקה</string>
+    <string name="settings_local_media_folders_automatic_both">תיקיות ההורדות ומטמון המוזיקה נכללות אוטומטית.</string>
+    <string name="settings_local_media_folders_automatic_downloads">תיקיית ההורדות שלך נכללת אוטומטית.</string>
+    <string name="settings_local_media_folders_automatic_cache">תיקיית מטמון המוזיקה נכללת אוטומטית.</string>
+    <string name="settings_local_media_folders_saving">שומר…</string>
+    <string name="settings_local_media_folders_save_error">לא ניתן היה לשמור את התיקיות. השינויים שלך עדיין כאן; יש לנסות שוב.</string>
+    <plurals name="settings_local_media_folders_count">
+        <item quantity="one">תיקייה אחת</item>
+        <item quantity="two">%1$d תיקיות</item>
+        <item quantity="many">%1$d תיקיות</item>
+        <item quantity="other">%1$d תיקיות</item>
+    </plurals>
+    <string name="settings_download_format_title">פורמט הורדת המוזיקה</string>
+    <string name="settings_download_format_subtitle_current">הקודק והמיכל המועדפים להורדות. כעת: %1$s</string>
+    <string name="settings_download_quality_title">איכות הורדת המוזיקה</string>
+
+    <string name="settings_streaming_format_title">פורמט הזרמת המוזיקה</string>
+    <string name="settings_streaming_format_subtitle_current">הקודק והמיכל המועדפים להזרמת מוזיקה. כעת: %1$s</string>
+    <string name="settings_streaming_quality_title">איכות הזרמת המוזיקה</string>
+    <string name="settings_subtitle_current">כעת: %1$s</string>
+    <string name="settings_enable_music_caching_title">הפעלת מטמון מוזיקה</string>
+    <string name="settings_enable_music_caching_subtitle">שמירת שמע שהוזרם באופן מקומי כדי להאיץ הפעלה חוזרת.</string>
+    <string name="settings_cache_folder_title">תיקיית מטמון</string>
+    <string name="settings_cache_folder_current">כעת: %1$s</string>
+    <string name="settings_cache_folder_default">כעת: מטמון ברירת המחדל של האפליקציה</string>
+    <string name="settings_cache_size_limit_title">מגבלת גודל מטמון</string>
+    <string name="settings_cache_size_limit_unlimited">ללא הגבלה</string>
+    <string name="settings_cache_size_limit_current">המגבלה הנוכחית: %1$d MB</string>
+    <string name="settings_cache_size_limit_description">הגדרת גודל המטמון המרבי ב-MB. יש להזין 0 או להשאיר ריק כדי לא להגביל.</string>
+    <string name="settings_cache_size_limit_placeholder">500</string>
+    <string name="settings_error_cache_size_range">הגודל חייב להיות 0 או מספר חיובי.</string>
+    <string name="settings_enable_endless_playback_title">הפעלת השמעה אינסופית</string>
+    <string name="settings_enable_endless_playback_subtitle">המשך ההפעלה עם שירים מומלצים כשהתור מסתיים.</string>
+    <string name="settings_playback_port_title">יציאת שרת הפרוקסי להפעלה</string>
+    <string name="settings_allow_remote_control_title">אפשור שליטה מרחוק</string>
+    <string name="settings_allow_remote_control_subtitle">מתן אפשרות למכשירים אחרים באותה רשת לשלוט בהפעלה כשהם מתחברים.</string>
+    <string name="settings_remote_device_name_title">שם המכשיר לשליטה מרחוק</string>
+    <string name="settings_remote_device_name_subtitle">השם שמכשירים אחרים רואים כשהם מגלים את המכשיר הזה. כעת: %1$s</string>
+    <string name="settings_remote_device_name_description">בחירת שם ידידותי שיוצג למכשירים אחרים ברשת כשהם מגלים את מופע Spotube הזה.</string>
+    <string name="settings_remote_device_name_placeholder">לדוגמה: Spotube בסלון</string>
+    <string name="settings_remote_device_name_default">שם המארח של המכשיר</string>
+    <string name="settings_playback_port_subtitle_current">היציאה שבה משתמש שרת הפרוקסי להפעלה. כעת: %1$d</string>
+    <string name="settings_playback_port_description">יש לבחור יציאה בין 1 ל-65535.</string>
+    <string name="settings_playback_port_placeholder">14769</string>
+    <string name="settings_error_whole_number">יש להזין מספר שלם תקין.</string>
+    <string name="settings_error_port_range">היציאה חייבת להיות בין 1 ל-65535.</string>
+
+    <string name="settings_blacklist_title">רשימה שחורה</string>
+    <string name="settings_blacklist_subtitle">ניהול שירים ואמנים ברשימה השחורה</string>
+
+    <string name="settings_desktop_minimize_title">מזעור למגש</string>
+    <string name="settings_desktop_minimize_subtitle">המשך הפעלת Spotube במגש המערכת כשהחלון ממוזער.</string>
+    <string name="settings_desktop_discord_title">Discord Rich Presence</string>
+    <string name="settings_desktop_discord_subtitle">הצגת סטטוס ההפעלה הנוכחי שלך ב-Discord בשולחן העבודה.</string>
+
+    <string name="settings_updates_auto_check_title">בדיקה אוטומטית של עדכונים</string>
+    <string name="settings_updates_auto_check_subtitle">חיפוש גרסאות חדשות של Spotube ברקע.</string>
+
+    <string name="settings_plugins_manage_title">ניהול פלאגינים</string>
+    <string name="settings_plugins_manage_subtitle">ניהול הפלאגינים שלך</string>
+    <string name="settings_plugins_default_ability_title">פלאגין %1$s ברירת מחדל</string>
+    <string name="settings_plugins_ability_metadata">מטא-דאטה</string>
+    <string name="settings_plugins_ability_audio">שמע</string>
+    <string name="settings_plugins_ability_lyrics">מילות שיר</string>
+    <string name="settings_plugins_ability_scrobble">Scrobble</string>
+    <string name="settings_plugins_no_selection">לא נבחר פלאגין</string>
+    <string name="settings_plugins_action_change">שינוי</string>
+    <string name="settings_plugins_action_select">בחירה</string>
+    <string name="settings_plugins_selected">נבחר</string>
+    <string name="settings_plugins_clear">ניקוי הבחירה</string>
+    <string name="settings_plugins_no_plugins">אין פלאגינים זמינים</string>
+    <string name="settings_plugins_plugin_content_description">פלאגין %1$s</string>
+    <string name="settings_plugins_clear_content_description">ניקוי</string>
+
+    <string name="plugin_configure_title">הגדרה</string>
+    <string name="plugin_defaults_title">בשימוש</string>
+    <string name="plugin_selection_none">ללא</string>
+    <string name="plugin_ability_metadata_caption">שירים, אלבומים, אמנים וחיפוש</string>
+    <string name="plugin_ability_audio_caption">מפעיל את המוזיקה</string>
+    <string name="plugin_ability_lyrics_caption">מילות שיר מסונכרנות</string>
+    <string name="plugin_ability_scrobble_caption">רושם מה שמאזינים לו</string>
+    <string name="plugin_installed_title">מותקן</string>
+    <string name="plugin_action_details">פרטי הפלאגין</string>
+    <string name="plugin_action_support">תמיכה</string>
+    <string name="plugin_action_more">אפשרויות נוספות</string>
+    <string name="plugin_screen_title">מנהל הפלאגינים</string>
+    <string name="plugin_error_enter_url">יש להזין כתובת URL</string>
+    <string name="plugin_error_url_scheme">כתובת ה-URL חייבת להתחיל ב-http:// או ב-https://</string>
+    <string name="plugin_error_download_failed">הורדת הפלאגין נכשלה</string>
+    <string name="plugin_empty_title">עדיין לא הותקנו פלאגינים</string>
+    <string name="plugin_empty_subtitle">יש להדביק כתובת הורדה או לבחור קובץ למעלה.</string>
+    <string name="no_metadata_plugin_title">לא נבחר פלאגין מטא-דאטה</string>
+    <string name="no_metadata_plugin_description_install">Spotube צריכה פלאגין מטא-דאטה כדי לעיין, לחפש ולהציג את המוזיקה שלך. יש להתקין אחד כדי להתחיל.</string>
+    <string name="no_metadata_plugin_description_select">כבר מותקנים פלאגינים, אך אף אחד מהם לא מוגדר כמקור המטא-דאטה שלך. יש לבחור אחד כדי להתחיל לעיין.</string>
+    <string name="no_metadata_plugin_step_discover">גילוי פלאגין מטא-דאטה</string>
+    <string name="no_metadata_plugin_step_install">בדיקת ההרשאות שלו והתקנתו</string>
+    <string name="no_metadata_plugin_step_select">בחירתו כמקור המטא-דאטה</string>
+    <string name="no_metadata_plugin_action_install">התקנת פלאגין</string>
+    <string name="no_metadata_plugin_action_select">בחירת פלאגין</string>
+    <string name="no_metadata_plugin_action_local">הפעלת מוזיקה מקומית</string>
+    <string name="no_metadata_plugin_local_hint">השירים וההורדות המקומיים שלך פועלים בלי פלאגין.</string>
+    <plurals name="plugin_installed_plugins_count">
+        <item quantity="one">פלאגין אחד מותקן</item>
+        <item quantity="two">%1$d פלאגינים מותקנים</item>
+        <item quantity="many">%1$d פלאגינים מותקנים</item>
+        <item quantity="other">%1$d פלאגינים מותקנים</item>
+    </plurals>
+    <string name="plugin_install_sheet_subtitle">הוספת פלאגין מקישור או מקובץ במכשיר.</string>
+    <string name="plugin_install_file_hint">בחירת קובץ .smplug מהמכשיר</string>
+    <string name="plugin_install_or">או</string>
+    <string name="plugin_info_dialog_title">פרטי הפלאגין</string>
+    <string name="plugin_install_section_title">התקנת פלאגין</string>
+    <string name="plugin_url_placeholder">https://example.com/plugin.smplug</string>
+    <string name="plugin_action_download">הורדה</string>
+    <string name="plugin_action_install_from_file">התקנה מקובץ (.smplug)</string>
+    <string name="plugin_state_active">פעיל</string>
+    <string name="plugin_version_label">v%1$s</string>
+    <string name="plugin_state_builtin">מובנה</string>
+    <string name="plugin_action_remove">הסרת הפלאגין</string>
+    <string name="plugin_action_login">התחברות</string>
+    <string name="plugin_action_logout">התנתקות</string>
+    <string name="plugin_section_url_title">הורדה מכתובת URL</string>
+    <string name="plugin_section_file_title">התקנה מקובץ</string>
+    <string name="plugin_section_install">התקנה</string>
+
+    <string name="plugin_permissions_author_version">• %1$s</string>
+    <string name="plugin_permissions_requested_title">הרשאות מבוקשות</string>
+    <string name="plugin_permissions_none">הפלאגין הזה אינו דורש הרשאות מיוחדות.</string>
+    <string name="plugin_permissions_compare_title">מותקן לעומת מסופק</string>
+    <string name="plugin_permissions_installed_label">מותקן</string>
+    <string name="plugin_permissions_supplied_label">מסופק</string>
+    <string name="plugin_permissions_api_diff">API %1$s → %2$s</string>
+    <string name="plugin_permissions_capability_storage_title">אחסון קבוע</string>
+    <string name="plugin_permissions_capability_storage_desc">קריאה וכתיבה של נתונים בדיסק</string>
+    <string name="plugin_permissions_capability_network_title">בקשות רשת</string>
+    <string name="plugin_permissions_capability_network_desc">שליחה וקבלה של נתונים דרך האינטרנט</string>
+    <string name="plugin_permissions_capability_webview_title">WebView</string>
+    <string name="plugin_permissions_capability_webview_desc">הצגת תוכן אינטרנט בתוך האפליקציה</string>
+    <string name="plugin_permissions_cookie_domains_title">יכול לקרוא עוגיות מ-</string>
+    <string name="plugin_permissions_cookie_domains_none">אין גישה לעוגיות</string>
+    <string name="plugin_permissions_cookie_domain_subdomains">כל תת-דומיין של %1$s</string>
+    <string name="plugin_permissions_new_badge">חדש</string>
+    <string name="plugin_permissions_update_adds">העדכון הזה מבקש הרשאות שאין בגרסה המותקנת. יש לעיין בהן לפני העדכון.</string>
+    <string name="settings_section_jam">ג׳אם קבוצתי</string>
+    <string name="settings_jam_server_title">שרת חדרים</string>
+    <string name="settings_jam_server_url">כתובת השרת</string>
+    <string name="settings_jam_server_url_invalid">יש להזין כתובת שמתחילה ב-https://</string>
+    <string name="settings_jam_server_diagnostics_subtitle">יש לבדוק את שרת החדרים לפני פתיחת חדר.</string>
+    <string name="settings_jam_server_note">ג׳אם משתמש בשרת החדרים החינמי של Spotube. לאירוח עצמי, יש להפעיל את השרת מ-github.com/team-spotube/jam-server ולהזין את כתובתו.</string>
+    <string name="settings_jam_server_test">בדיקת חיבור</string>
+    <string name="settings_jam_server_testing">בודק…</string>
+    <string name="settings_jam_server_test_ok">מחובר תוך %1$d אלפיות שנייה</string>
+    <string name="settings_jam_server_test_fail">נכשל: %1$s</string>
+    <string name="settings_jam_section_connection">חיבור</string>
+    <string name="settings_jam_section_diagnostics">אבחון</string>
+    <string name="settings_jam_section_you">אני</string>
+
+    <!-- Group Jam -->
+    <string name="jam_screen_title">ג׳אם קבוצתי</string>
+    <string name="jam_setup_create_tab">יצירה</string>
+    <string name="jam_setup_join_tab">הצטרפות</string>
+    <string name="jam_setup_create_hint">יצירת חדר ואז שיתוף הקוד שלו עם חברים.</string>
+    <string name="jam_setup_create_button">יצירת חדר</string>
+    <string name="jam_setup_join_button">הצטרפות לחדר</string>
+    <string name="jam_setup_working">מתחבר…</string>
+    <string name="jam_setup_code_label">קוד החדר</string>
+    <string name="jam_setup_code_placeholder">ABC123</string>
+    <string name="jam_connection_host">שרת: %1$s</string>
+    <string name="jam_connection_missing">יש להגדיר שרת חדרים בהגדרות כדי לארח חדר או להצטרף אליו.</string>
+    <string name="jam_connection_settings">הגדרות השרת</string>
+    <string name="jam_session_connected">מחובר</string>
+    <string name="jam_session_connecting">מתחבר מחדש…</string>
+    <string name="jam_invite_copy">העתקת הקוד</string>
+    <string name="jam_invite_copied">הועתק!</string>
+    <string name="jam_invite_share">שיתוף</string>
+    <string name="jam_participants_heading">משתתפים (%1$d)</string>
+    <string name="jam_participants_host">מארח</string>
+    <string name="jam_participants_guest">מאזין</string>
+    <string name="jam_participants_you">%1$s (אני)</string>
+    <string name="jam_participants_waiting">ממתין למאזינים…</string>
+    <string name="jam_participants_remove">הסרה</string>
+    <string name="jam_participants_ban">חסימה</string>
+    <string name="jam_participants_manage">ניהול</string>
+    <string name="jam_session_leave">עזיבת החדר</string>
+    <string name="jam_error_title">לא ניתן היה להתחבר</string>
+    <string name="jam_error_dismiss">סגירה</string>
+    <string name="jam_error_create">יצירת סשן הג׳אם נכשלה</string>
+    <string name="jam_error_join">ההצטרפות לסשן הג׳אם נכשלה</string>
+    <string name="jam_error_invalid_code">יש להזין קוד חדר בן שישה תווים של אותיות וספרות.</string>
+    <string name="jam_share_message">הצטרפו לג׳אם שלי ב-Spotube עם הקוד: %1$s</string>
+    <string name="jam_name_title">השם שלך</string>
+    <string name="jam_name_subtitle">האחרים בג׳אם רואים אותך בשם %1$s</string>
+    <string name="jam_name_description">מוצג לכל המשתתפים בג׳אם. יש להשאיר ריק כדי להשתמש ב-%1$s. שם חדש יחול בפעם הבאה שפותחים חדר או מצטרפים אליו.</string>
+    <string name="jam_name_too_long">יש להשתמש בעד %1$d תווים.</string>
+    <!-- A generated name: adjective, then animal (e.g. "Mellow Otter"). Reorder for your language if needed. -->
+    <string name="jam_name_format">%1$s %2$s</string>
+    <!-- Word lists for generated jam names. Translations may use their own words and any number of them. -->
+    <string-array name="jam_name_adjectives">
+        <item>Brave</item>
+        <item>Bright</item>
+        <item>Calm</item>
+        <item>Cheerful</item>
+        <item>Chill</item>
+        <item>Clever</item>
+        <item>Cosmic</item>
+        <item>Cozy</item>
+        <item>Curious</item>
+        <item>Dapper</item>
+        <item>Dreamy</item>
+        <item>Eager</item>
+        <item>Electric</item>
+        <item>Fancy</item>
+        <item>Fearless</item>
+        <item>Fizzy</item>
+        <item>Fluffy</item>
+        <item>Funky</item>
+        <item>Gentle</item>
+        <item>Giddy</item>
+        <item>Glowing</item>
+        <item>Golden</item>
+        <item>Groovy</item>
+        <item>Happy</item>
+        <item>Humble</item>
+        <item>Jazzy</item>
+        <item>Jolly</item>
+        <item>Jumpy</item>
+        <item>Kind</item>
+        <item>Lively</item>
+        <item>Lucky</item>
+        <item>Lunar</item>
+        <item>Mellow</item>
+        <item>Merry</item>
+        <item>Mighty</item>
+        <item>Misty</item>
+        <item>Nimble</item>
+        <item>Peppy</item>
+        <item>Plucky</item>
+        <item>Polite</item>
+        <item>Quick</item>
+        <item>Quiet</item>
+        <item>Rapid</item>
+        <item>Rhythmic</item>
+        <item>Rosy</item>
+        <item>Silly</item>
+        <item>Sleepy</item>
+        <item>Smooth</item>
+        <item>Snappy</item>
+        <item>Soulful</item>
+        <item>Sparkly</item>
+        <item>Speedy</item>
+        <item>Spicy</item>
+        <item>Sunny</item>
+        <item>Swift</item>
+        <item>Tidy</item>
+        <item>Tiny</item>
+        <item>Vivid</item>
+        <item>Wavy</item>
+        <item>Whistling</item>
+        <item>Witty</item>
+        <item>Zany</item>
+        <item>Zesty</item>
+        <item>Zippy</item>
+    </string-array>
+    <string-array name="jam_name_animals">
+        <item>Alpaca</item>
+        <item>Badger</item>
+        <item>Beaver</item>
+        <item>Bison</item>
+        <item>Bunny</item>
+        <item>Capybara</item>
+        <item>Cheetah</item>
+        <item>Chipmunk</item>
+        <item>Cobra</item>
+        <item>Corgi</item>
+        <item>Coyote</item>
+        <item>Crane</item>
+        <item>Dingo</item>
+        <item>Dolphin</item>
+        <item>Duckling</item>
+        <item>Eagle</item>
+        <item>Falcon</item>
+        <item>Ferret</item>
+        <item>Finch</item>
+        <item>Flamingo</item>
+        <item>Fox</item>
+        <item>Gazelle</item>
+        <item>Gecko</item>
+        <item>Giraffe</item>
+        <item>Hedgehog</item>
+        <item>Heron</item>
+        <item>Hippo</item>
+        <item>Ibis</item>
+        <item>Jaguar</item>
+        <item>Koala</item>
+        <item>Lemur</item>
+        <item>Llama</item>
+        <item>Lynx</item>
+        <item>Magpie</item>
+        <item>Manatee</item>
+        <item>Marmot</item>
+        <item>Meerkat</item>
+        <item>Mongoose</item>
+        <item>Moose</item>
+        <item>Narwhal</item>
+        <item>Ocelot</item>
+        <item>Octopus</item>
+        <item>Orca</item>
+        <item>Otter</item>
+        <item>Owl</item>
+        <item>Panda</item>
+        <item>Pangolin</item>
+        <item>Parrot</item>
+        <item>Pelican</item>
+        <item>Penguin</item>
+        <item>Puffin</item>
+        <item>Quokka</item>
+        <item>Raccoon</item>
+        <item>Raven</item>
+        <item>Robin</item>
+        <item>Seal</item>
+        <item>Sloth</item>
+        <item>Sparrow</item>
+        <item>Squirrel</item>
+        <item>Tapir</item>
+        <item>Tiger</item>
+        <item>Toucan</item>
+        <item>Walrus</item>
+        <item>Wombat</item>
+    </string-array>
+
+    <string name="player_go_to_album">מעבר לאלבום</string>
+    <string name="player_sleep_timer">טיימר שינה</string>
+    <string name="player_track_details">פרטי השיר</string>
+    <string name="player_play_content_description">הפעלה</string>
+    <string name="player_pause_content_description">השהיה</string>
+    <string name="player_nothing_playing">לא מופעל דבר</string>
+    <string name="player_add_to_queue_content_description">הוספה לתור</string>
+
+    <string name="update_action_ignore">התעלמות</string>
+    <string name="update_action_update">עדכון</string>
+    <string name="app_update_dialog_title">Spotube %1$s זמינה</string>
+    <string name="app_update_dialog_no_notes">אפשר לראות מה חדש בגרסה הזו בדף ההורדות של Spotube.</string>
+    <string name="plugin_update_dialog_title">%1$s %2$s זמין</string>
+    <string name="plugin_update_dialog_current_version">מותקן כעת: %1$s</string>
+    <string name="plugin_update_dialog_no_notes">אפשר לראות מה חדש בעדכון הזה בדף הפלאגין.</string>
+
+    <string name="welcome_skip">דילוג</string>
+    <string name="welcome_next">הבא</string>
+    <string name="welcome_back">חזרה</string>
+    <string name="welcome_get_started">מתחילים</string>
+    <string name="welcome_app_name">Spotube</string>
+    <string name="welcome_brand_freedom">מוזיקה, בלי מגבלות.</string>
+    <string name="welcome_brand_quiet_description">נגן בקוד פתוח לעולם של מוזיקה.\nשלך לחקור. שלך להפוך לאישי.</string>
+    <string name="welcome_donate_quiet_title">לשמור על הפרויקט הזה בחיים.</string>
+    <string name="welcome_donate_letter">Spotube נבנית על ידי אנשים, לא על ידי עסק מנויים. אם היא הופכת לחלק מחיי היומיום שלך, מעט תמיכה עוזר לנו לתת לה את הטיפול שהיא ראויה לו.\n\nתודה על התמיכה בתוכנה עצמאית.</string>
+    <string name="welcome_plugins_setup_guide">כדי להתחיל, יש להשתמש בפלאגין קטלוג למציאת שירים ורשימות השמעה, ובפלאגין שמע להפעלתם. מילות שיר והיסטוריית האזנה הם אופציונליים. אפשר לגלות פלאגין למטה, לבדוק את ההרשאות שלו, להתקין אותו ואז לבחור בו כאן.</string>
+    <string name="welcome_plugins_discover">גילוי פלאגינים</string>
+    <string name="welcome_plugins_sources">המקורות שלך</string>
+    <string name="welcome_plugins_retry">ניסיון נוסף</string>
+    <string name="welcome_plugins_more">פלאגינים נוספים</string>
+    <string name="welcome_plugins_discovery_empty">לא נמצאו פלאגינים חדשים. אפשר גם להתקין פלאגין מקישור או מקובץ smplug. למעלה.</string>
+    <string name="welcome_plugins_discovery_error">גילוי הפלאגינים אינו זמין כרגע. יש לנסות שוב, או להתקין מקישור או מקובץ.</string>
+    <string name="welcome_step_welcome">ברוכים הבאים</string>
+    <string name="welcome_step_support">תמיכה</string>
+    <string name="welcome_step_plugins">פלאגינים</string>
+    <string name="welcome_step_guide">מדריך</string>
+
+    <string name="welcome_guide_title">איך להשתמש ב-Spotube</string>
+    <string name="welcome_guide_subtitle">ארבעה שלבים מהירים, ואפשר להאזין.</string>
+    <string name="welcome_guide_signin_title">התחברות</string>
+    <string name="welcome_guide_signin_desc">חיבור החשבון, או בחירת פלאגין קטלוג משלך.</string>
+    <string name="welcome_guide_search_title">חיפוש והפעלה</string>
+    <string name="welcome_guide_search_desc">איתור כל שיר, אלבום או אמן, ואז לחיצה על הפעלה.</string>
+    <string name="welcome_guide_offline_title">האזנה במצב לא מקוון</string>
+    <string name="welcome_guide_offline_desc">הורדת שירים כדי להמשיך להשמיע בלי חיבור.</string>
+    <string name="welcome_guide_lyrics_title">מעקב אחר מילות השיר</string>
+    <string name="welcome_guide_lyrics_desc">פתיחת מילות שיר מסונכרנות מהנגן בזמן שהשיר מתנגן.</string>
+
+    <!-- Page 1: branding -->
+    <string name="welcome_brand_tagline">המוזיקה שלך. המקורות שלך. הכללים שלך.</string>
+    <string name="welcome_brand_subtitle">נגן מוזיקה חופשי ובקוד פתוח, שנבנה על ידי קהילה שפשוט אוהבת מוזיקה.</string>
+    <string name="welcome_brand_chip_open_source">קוד פתוח</string>
+    <string name="welcome_brand_chip_no_ads">ללא פרסומות</string>
+    <string name="welcome_brand_chip_no_tracking">ללא טלמטריה</string>
+    <string name="welcome_brand_chip_plugin_powered">מונע בפלאגינים</string>
+    <string name="welcome_lets_go">יוצאים לדרך</string>
+
+    <!-- Page 2: donations -->
+    <string name="welcome_donate_eyebrow">תומכים מחזיקים אותנו</string>
+    <string name="welcome_donate_title">נבנה בתשוקה. נשמר בחיים בזכותכם.</string>
+    <string name="welcome_donate_message">Spotube היא 100% חינמית, חופשית ובקוד פתוח — בלי פרסומות, בלי מנויים, בלי מעקב. כל תכונה קיימת כי אנשים כמוך בחרו לעזור לקוד להמשיך לזרום.</string>
+    <string name="welcome_donate_patreon_title">Patreon</string>
+    <string name="welcome_donate_patreon_tag">נותן חסות חודשי</string>
+    <string name="welcome_donate_patreon_subtitle">תמיכה בפיתוח ובתשתית שוטפים</string>
+    <string name="welcome_donate_bmac_title">Buy Me a Coffee</string>
+    <string name="welcome_donate_bmac_tag">קפה חד-פעמי</string>
+    <string name="welcome_donate_bmac_subtitle">דלק לסשן קוד של הלילה המאוחר, בטיפ קטן</string>
+    <string name="welcome_donate_opencollective_title">Open Collective</string>
+    <string name="welcome_donate_opencollective_tag">קרן הקהילה</string>
+    <string name="welcome_donate_opencollective_subtitle">גיבוי כספי שקוף בניהול הקהילה</string>
+    <string name="welcome_donate_thanks">תודה מכל הלב על האמונה במוזיקה פתוחה.</string>
+    <string name="welcome_donate_optional">התמיכה היא אופציונלית לגמרי — Spotube נשארת חינמית בכל מקרה.</string>
+    <string name="welcome_donate_action">חסות</string>
+    <string name="welcome_donate_open_content_description">פתיחת %1$s</string>
+
+    <!-- Support / donations -->
+    <string name="support_button_label">תמיכה ב-Spotube</string>
+    <string name="support_dialog_title">תמיכה ב-Spotube</string>
+    <string name="support_dialog_message">Spotube היא חופשית ובקוד פתוח — בלי פרסומות, בלי מנויים, בלי מעקב. אם היא מסבה לך שמחה, כדאי לשקול לתמוך בפרויקט.</string>
+    <string name="support_dialog_reminder_hint">אפשר לכבות את התזכורות האלה בהגדרות ← תמיכה.</string>
+    <string name="support_dialog_dismiss">אולי בהמשך</string>
+    <string name="settings_support_reminders_title">תזכורות תמיכה</string>
+    <string name="settings_support_reminders_subtitle">הצגת תזכורת עדינה לתמוך בפרויקט כל 7 ימים.</string>
+
+    <!-- Page 3: plugins -->
+    <string name="welcome_plugins_eyebrow">ארכיטקטורה מודולרית</string>
+    <string name="welcome_plugins_title">בחירת המקור של המוזיקה.</string>
+    <string name="welcome_plugins_subtitle">Spotube מפרידה בין גילוי קטלוג, הזרמת שמע ומילות שיר מסונכרנות. אפשר להגדיר את המנועים למטה או להחליף אותם בכל עת.</string>
+    <string name="welcome_plugins_metadata_title">מנוע מטא-דאטה</string>
+    <string name="welcome_plugins_metadata_description">מפעיל גילוי מוזיקה, חיפוש, רשימות שירים ורשימות השמעה.</string>
+    <string name="welcome_plugins_audio_title">מנוע שמע</string>
+    <string name="welcome_plugins_audio_description">מאחזר ומפענח את זרמי השמע שמופעלים.</string>
+    <string name="welcome_plugins_lyrics_title">מנוע מילות שיר</string>
+    <string name="welcome_plugins_lyrics_description">מזרים מילות קריוקי מסונכרנות בזמן אמת.</string>
+    <string name="welcome_plugins_scrobble_title">מנוע Scrobble</string>
+    <string name="welcome_plugins_scrobble_description">רושם היסטוריית האזנה ב-Last.fm או ב-ListenBrainz.</string>
+    <string name="welcome_plugins_badge_active">פעיל</string>
+    <string name="welcome_plugins_badge_builtin">מובנה</string>
+    <string name="welcome_plugins_badge_ready">מוכן</string>
+    <string name="welcome_plugins_badge_optional">אופציונלי</string>
+    <string name="welcome_plugins_none_selected">בחירת מנוע</string>
+    <string name="welcome_plugins_installed_section">מנועים מותקנים</string>
+    <string name="welcome_plugins_set_default">הגדרה כברירת מחדל</string>
+    <string name="welcome_plugins_builtin_note">NewPipe YouTube ו-LRCLib Lyrics מובנים ומוכנים להזרמה מיד.</string>
+    <string name="welcome_plugins_tip">אפשר לנהל או להוסיף פלאגינים חדשים של הקהילה בכל עת בהגדרות ← פלאגינים.</string>
+
+    <!-- Page 4: how it works -->
+    <string name="welcome_how_eyebrow">ארכיטקטורה רטרו-מודרנית</string>
+    <string name="welcome_how_title">Hi-Fi טהור, בלי מתווכים</string>
+    <string name="welcome_how_subtitle">כך Spotube מתזמרת הפעלה מבוזרת ישירות במחשב שלך.</string>
+    <string name="welcome_how_status_badge">עמית-לעמית ישיר • 256 KBPS OPUS</string>
+    <string name="welcome_how_mockup_title">שעה כחולה</string>
+    <string name="welcome_how_mockup_artist">Spotube · הדגמת נגן</string>
+    <string name="welcome_how_mockup_lyric">קצת מוזיקה לרגעים שביניהם.</string>
+    <string name="welcome_how_step_search_title">1. גילוי מבוזר</string>
+    <string name="welcome_how_step_search_desc">השאילתות נשלחות ישירות לפלאגין הקטלוג שנבחר. Spotube לעולם אינה בונה פרופיל של הטעם המוזיקלי שלך.</string>
+    <string name="welcome_how_step_stream_title">2. פתרון זרם ישיר</string>
+    <string name="welcome_how_step_stream_desc">השמע מוזרם ישירות משרתי התוכן אל המחשב שלך. בלי קפיצות דרך פרוקסי ובלי איסוף נתונים מרוחק.</string>
+    <string name="welcome_how_step_playback_title">3. DSP והפעלה מקומיים</string>
+    <string name="welcome_how_step_playback_desc">מפוענח ונשמר במטמון מקומית, עם פקדי אקולייזר והורדה אופציונלית לשימוש לא מקוון.</string>
+    <string name="welcome_how_step_lyrics_title">4. מילות שיר מסונכרנות וג׳אם</string>
+    <string name="welcome_how_step_lyrics_desc">מילות קריוקי עוקבות אחר חותמת הזמן של ההפעלה, עם שליטה מרחוק ברשת מקומית וג׳אם קבוצתי.</string>
+    <string name="welcome_how_footer">אין שרתי מתווכים. ההפעלה מתבצעת ישירות במכשיר שלך — פרטית מעצם התכנון.</string>
+
+    <!-- Devices: play destination picker -->
+    <string name="devices_destination_title">בחירת מכשיר</string>
+    <string name="devices_destination_prompt">%1$s: \"%2$s\"</string>
+    <string name="devices_destination_action_play">הפעלה</string>
+    <string name="devices_destination_action_add_to_queue">הוספה לתור</string>
+    <string name="devices_destination_action_play_next">הפעלה כשיר הבא</string>
+    <string name="devices_destination_this_device">המכשיר הזה</string>
+    <string name="devices_destination_this_device_subtitle">במכשיר הזה</string>
+    <string name="devices_destination_remote_device">מכשיר מרוחק</string>
+    <string name="devices_destination_remote_device_host">מכשיר מרוחק (%1$s)</string>
+    <string name="devices_destination_remote_subtitle">במכשיר המחובר</string>
+
+    <!-- Devices: connection errors -->
+    <string name="devices_error_connection_failed">החיבור נכשל</string>
+    <string name="devices_error_connection_lost">החיבור אבד</string>
+    <string name="devices_error_connection_denied">המכשיר השני דחה את הבקשה, או ששליטה מרחוק כבויה בו.</string>
+    <string name="devices_error_send_failed">השליחה נכשלה</string>
+    <string name="devices_error_discovery_failed">הגילוי נכשל: %1$s</string>
+    <string name="devices_error_connect_failed">ההתחברות נכשלה: %1$s</string>
+
+    <!-- Devices: discovery screen -->
+    <string name="devices_title">מכשירים</string>
+    <string name="devices_refresh">ריענון</string>
+    <string name="devices_disconnect">ניתוק</string>
+    <string name="devices_connecting">מתחבר...</string>
+    <string name="devices_searching">מחפש מכשירים ברשת...</string>
+    <string name="devices_empty">לא נמצאו מכשירים</string>
+    <string name="devices_empty_hint">יש לוודא שבמכשיר השני מופעל \"אפשור שליטה מרחוק\" בהגדרות.</string>
+    <string name="devices_unknown_device">מכשיר לא ידוע</string>
+    <string name="devices_resolving">מפענח...</string>
+    <string name="devices_section_connected">מחובר</string>
+    <string name="devices_section_available">מכשירים זמינים</string>
+    <string name="devices_section_this_device">המכשיר הזה</string>
+    <string name="devices_status_connected">מחובר</string>
+    <string name="devices_open_remote">פתיחת השלט</string>
+    <string name="devices_search_again">חיפוש חוזר</string>
+    <string name="devices_searching_more">עדיין מחפש מכשירים נוספים...</string>
+
+    <!-- Devices: remote control screen -->
+    <string name="devices_remote_title">שליטה מרחוק</string>
+    <string name="devices_remote_disconnected">מנותק</string>
+    <string name="devices_remote_connection_error">שגיאת חיבור: %1$s</string>
+    <string name="devices_remote_unknown_track">שיר לא ידוע</string>
+    <string name="devices_remote_unknown_artist">אמן לא ידוע</string>
+    <string name="devices_remote_volume">עוצמת קול</string>
+    <string name="devices_remote_remove_from_queue">הסרה מהתור</string>
+    <string name="devices_remote_more_options">אפשרויות נוספות</string>
+    <string name="devices_remote_playing_on">מופעל ב-%1$s</string>
+    <string name="devices_remote_connecting_hint">אם מתבקש, יש לאשר קודם את המכשיר הזה ב-Spotube השני.</string>
+    <string name="devices_remote_disconnected_hint">השליטה במכשיר השני הופסקה. יש לבחור בו שוב כדי להתחבר מחדש.</string>
+    <string name="devices_remote_back_to_devices">חזרה למכשירים</string>
+    <string name="devices_remote_nothing_playing">לא מופעל דבר</string>
+    <string name="devices_remote_nothing_playing_hint">יש להתחיל משהו במכשיר השני, או לבחור שיר מהתור שלו.</string>
+
+    <!-- Group Jam: play destination picker -->
+    <string name="jam_destination_title">הפעלה איפה?</string>
+    <string name="jam_destination_message">יש סשן ג׳אם פעיל. יש לבחור היכן להפעיל את האוסף הזה.</string>
+    <string name="jam_destination_play_here">הפעלה כאן</string>
+    <string name="jam_destination_suggest">הצעה לג׳אם</string>
+
+    <!-- Group Jam: connection errors -->
+    <string name="jam_error_no_server">לא הוגדר שרת ג׳אם</string>
+    <string name="jam_error_server_unreachable">לא ניתן היה להגיע לשרת הג׳אם. יש לבדוק את הרשת או את כתובת השרת בהגדרות ← ג׳אם.</string>
+    <string name="jam_error_server_incompatible">שרת הג׳אם מריץ גרסה שאינה תואמת.</string>
+    <string name="jam_error_room_not_found">אין חדר עם הקוד הזה. יש לבדוק ולנסות שוב.</string>
+    <string name="jam_error_room_full">החדר הזה מלא.</string>
+    <string name="jam_error_banned">הוחסמת מהחדר הזה על ידי המארח.</string>
+    <string name="jam_error_kicked">הוסרת מהחדר על ידי המארח.</string>
+    <string name="jam_error_replaced">החדר הזה נפתח שוב במכשיר זה, ולכן החיבור הזה נסגר.</string>
+    <string name="jam_error_connection_failed">החיבור נכשל</string>
+    <string name="jam_error_connection_lost">החיבור אבד</string>
+
+
+    <!-- Group Jam: queue snackbar -->
+    <string name="jam_queue_added_track">נוסף לתור הג׳אם</string>
+    <plurals name="jam_queue_added_tracks">
+        <item quantity="one">נוסף אחד לתור הג׳אם</item>
+        <item quantity="two">נוספו %1$d לתור הג׳אם</item>
+        <item quantity="many">נוספו %1$d לתור הג׳אם</item>
+        <item quantity="other">נוספו %1$d לתור הג׳אם</item>
+    </plurals>
+
+    <!-- Remote control: connection request dialog -->
+    <string name="remote_request_title">בקשת שליטה מרחוק</string>
+    <string name="remote_request_message">בקשה של \"%1$s\" לשלוט בהפעלה במכשיר הזה.</string>
+    <string name="remote_request_deny">דחייה</string>
+    <string name="remote_request_allow">אישור</string>
+    <string name="remote_request_allow_always">אישור תמידי</string>
+
+    <!-- Search -->
+    <string name="search_results_title">תוצאות חיפוש</string>
+    <string name="search_tab_all">הכול</string>
+    <string name="search_section_tracks">שירים</string>
+    <string name="search_section_users">משתמשים</string>
+    <string name="search_no_search_types">אין סוגי חיפוש זמינים</string>
+    <string name="search_start_typing">יש להתחיל להקליד כדי לחפש</string>
+    <string name="search_start_typing_tracks">יש להתחיל להקליד כדי לחפש שירים</string>
+    <string name="search_no_results">לא נמצאו תוצאות</string>
+    <string name="common_no_results">אין תוצאות</string>
+    <string name="search_see_all">הצגת הכול</string>
+    <string name="search_searching">מחפש</string>
+    <string name="search_loading_tracks">טוען שירים...</string>
+    <string name="search_loading_albums">טוען אלבומים...</string>
+    <string name="search_loading_artists">טוען אמנים...</string>
+    <string name="search_loading_playlists">טוען פלייליסטים...</string>
+    <string name="search_loading_users">טוען משתמשים...</string>
+    <string name="search_no_albums">לא נמצאו אלבומים</string>
+    <string name="search_no_artists">לא נמצאו אמנים</string>
+    <string name="search_no_playlists">לא נמצאו פלייליסטים</string>
+    <string name="search_no_users">לא נמצאו משתמשים</string>
+    <string name="search_warm_crates">מחטטים בארגזים...</string>
+    <string name="search_warm_cosmos">מחפשים בקוסמוס...</string>
+    <string name="search_warm_speakers">מחממים את הרמקולים...</string>
+    <string name="search_warm_vinyl">מנקים אבק מהתקליט...</string>
+    <string name="search_warm_music_gods">מתייעצים עם אלי המוזיקה...</string>
+    <string name="search_warm_antennas">מכווננים את האנטנות...</string>
+    <string name="search_warm_records">מדפדפים בין התקליטים...</string>
+    <string name="search_error_capabilities">טעינת יכולות החיפוש נכשלה</string>
+    <string name="search_error_search">החיפוש נכשל</string>
+    <string name="search_error_tracks">חיפוש השירים נכשל</string>
+    <string name="search_error_albums">חיפוש האלבומים נכשל</string>
+    <string name="search_error_artists">חיפוש האמנים נכשל</string>
+    <string name="search_error_playlists">חיפוש הפלייליסטים נכשל</string>
+    <string name="search_error_users">חיפוש המשתמשים נכשל</string>
+
+    <!-- Home -->
+    <string name="home_title_browse">עיון</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_mode_synced">מסונכרנות</string>
+    <string name="lyrics_mode_plain">רגילות</string>
+    <string name="lyrics_no_synced">אין מילות שיר מסונכרנות זמינות</string>
+    <string name="lyrics_no_plain">אין מילות שיר רגילות זמינות</string>
+
+    <!-- Settings: audio format/quality labels -->
+    <string name="settings_audio_format_label">%1$s ב-%2$s</string>
+    <string name="settings_audio_quality_lossy">%1$d kbps</string>
+    <string name="settings_audio_quality_lossless">%1$s kHz • %2$d ערוצים</string>
+    <string name="search_error_no_metadata_plugin">לא נבחר פלאגין מטא-דאטה</string>
+
+    <!-- Common -->
+    <string name="common_back">חזרה</string>
+    <string name="common_retry">ניסיון נוסף</string>
+    <string name="common_close_dialog">סגירת החלון</string>
+    <string name="common_loading">טוען...</string>
+    <string name="common_unknown">לא ידוע</string>
+    <string name="common_unknown_error">שגיאה לא ידועה</string>
+
+    <!-- Media cards -->
+    <string name="media_user">משתמש</string>
+    <string name="media_playlist">רשימת השמעה</string>
+
+    <!-- Login required -->
+    <string name="login_required_title">יש להתחבר כדי להמשיך</string>
+    <string name="login_required_description">החלק הזה ב-Spotube דורש התחברות לספק המוזיקה שלך. מתחברים פעם אחת וכל התוכן מופיע כאן.</string>
+    <string name="login_required_description_plugin">%1$s דורש התחברות כדי להציג את זה. מתחברים פעם אחת וכל התוכן מופיע כאן.</string>
+    <string name="login_required_action">התחברות</string>
+
+    <!-- Error display -->
+    <string name="error_title">אנחנו באמת מצטערים</string>
+    <string name="error_description">משהו לא עובד כרגע. החוויה שלך חשובה לנו, ואנחנו עושים כמיטב יכולתנו לתקן זאת. יש לנסות שוב או לעיין בפרטי השגיאה שלמטה.</string>
+    <string name="error_details">פרטי השגיאה</string>
+    <string name="error_copy_to_clipboard">העתקה ללוח</string>
+    <string name="error_view_full_log">צפייה ביומן המלא</string>
+    <string name="error_full_log_title">יומן שגיאות מלא</string>
+
+    <!-- Collection details -->
+    <string name="collection_details_shuffle">ערבוב</string>
+    <string name="collection_details_shuffle_play">הפעלה בערבוב</string>
+    <string name="collection_details_follow">מעקב</string>
+    <string name="collection_details_unfollow">הפסקת מעקב</string>
+    <string name="collection_details_edit_playlist">עריכת רשימת השמעה</string>
+    <string name="collection_details_by_owner">מאת %1$s</string>
+
+    <!-- Track options -->
+    <string name="track_options_title">אפשרויות השיר</string>
+    <string name="track_options_add_to_jam">הוספה לג׳אם</string>
+    <string name="track_options_start_radio">התחלת רדיו</string>
+    <string name="track_options_play_next">הפעלה כשיר הבא</string>
+    <string name="track_options_move_to_next">העברה לשיר הבא</string>
+    <string name="track_options_remove_from_queue">הסרה מהתור</string>
+    <string name="track_options_remove_from_favorites">הסרה מהמועדפים</string>
+    <string name="track_options_save_as_favorite">שמירה כמועדף</string>
+    <string name="track_options_add_to_playlist">הוספה לרשימת השמעה</string>
+    <string name="track_options_download">הורדה</string>
+    <string name="track_options_share">שיתוף</string>
+
+    <!-- Track list -->
+    <string name="track_list_sort_original">מקורי</string>
+    <string name="track_list_sort_title">כותרת</string>
+    <string name="track_list_sort_artist">אמן</string>
+    <string name="track_list_sort_album">אלבום</string>
+    <string name="track_list_sort_duration">משך</string>
+    <string name="track_list_sort">מיון</string>
+    <string name="track_list_no_tracks">לא נמצאו שירים</string>
+    <string name="track_list_filter_placeholder">סינון</string>
+    <string name="track_list_bulk_actions">פעולות קבוצתיות</string>
+    <string name="track_list_download_all">הורדת הכול</string>
+    <string name="track_list_download_count">הורדת %1$d</string>
+    <string name="track_list_add_all_to_queue">הוספת הכול לתור</string>
+    <string name="track_list_add_count_to_queue">הוספת %1$d לתור</string>
+    <string name="track_list_play_all_next">הפעלת הכול כבאים בתור</string>
+    <string name="track_list_play_count_next">הפעלת %1$d כבאים בתור</string>
+    <string name="track_list_add_all_to_playlist">הוספת הכול לרשימת השמעה</string>
+    <string name="track_list_add_count_to_playlist">הוספת %1$d לרשימת השמעה</string>
+    <string name="track_list_add_all_to_jam">הוספת הכול לג׳אם</string>
+    <string name="track_list_add_count_to_jam">הוספת %1$d לג׳אם</string>
+    <string name="track_list_more_artists">+%1$d נוספים</string>
+
+    <!-- WebView -->
+    <string name="webview_no_url">אין כתובת לטעינה</string>
+    <string name="webview_go_back">חזרה בהיסטוריית הדפדפן</string>
+    <string name="webview_go_forward">קדימה בהיסטוריית הדפדפן</string>
+
+    <!-- Blacklist -->
+    <string name="blacklist_filter_placeholder">סינון הרשימה השחורה...</string>
+    <string name="blacklist_empty">אין פריטים ברשימה השחורה</string>
+    <string name="blacklist_no_results">אין פריטים ברשימה השחורה התואמים ל-“%1$s”</string>
+    <string name="blacklist_section_tracks">שירים</string>
+    <string name="blacklist_item_track">שיר</string>
+    <string name="blacklist_add">הוספה לרשימה השחורה</string>
+    <string name="blacklist_remove">הסרה מהרשימה השחורה</string>
+
+    <!-- Downloads -->
+    <string name="downloads_error_no_metadata">אין מטא-דאטה של השיר</string>
+    <string name="downloads_error_stream_unresolved_short">לא ניתן היה לפתור את כתובת הזרם</string>
+    <string name="downloads_error_stream_unresolved">לא ניתן היה לפתור את כתובת הזרם. כדאי להפעיל את השיר תחילה.</string>
+    <string name="downloads_error_http">השרת סירב להורדה (HTTP %1$d)</string>
+    <string name="downloads_error_range_ignored">השרת שלח הורדה לא שלמה. יש לנסות שוב.</string>
+    <string name="downloads_error_video_only">לשיר הזה זמין רק סרטון, ולכן הוא לא הורד</string>
+
+    <!-- Saved tracks -->
+    <string name="saved_tracks_title">שירים שמורים</string>
+    <string name="saved_tracks_owner_you">אני</string>
+
+    <!-- Artist -->
+    <string name="artist_following">במעקב</string>
+    <string name="artist_top_tracks">השירים המובילים</string>
+    <string name="artist_play_top_tracks">הפעלת השירים המובילים</string>
+    <string name="artist_add_top_tracks_to_queue">הוספת השירים המובילים לתור</string>
+    <string name="artist_related_artists">אמנים קשורים</string>
+    <string name="artist_featured_playlists">פלייליסטים מומלצים</string>
+    <string name="artist_error_load_failed">טעינת סקירת האמן נכשלה</string>
+    <string name="artist_followers_unavailable">המעקב אינו זמין</string>
+    <string name="artist_followers_thousands">%1$sK עוקבים</string>
+    <string name="artist_followers_millions">%1$sM עוקבים</string>
+    <string name="artist_followers_billions">%1$sB עוקבים</string>
+    <plurals name="artist_followers_count">
+        <item quantity="one">עוקב אחד</item>
+        <item quantity="two">%1$d עוקבים</item>
+        <item quantity="many">%1$d עוקבים</item>
+        <item quantity="other">%1$d עוקבים</item>
+    </plurals>
+
+    <!-- Player -->
+    <string name="player_like_content_description">סימון כאהוב</string>
+    <string name="player_unlike_content_description">ביטול סימון כאהוב</string>
+    <string name="player_fallback_title">כותרת שיר ללא פעולה</string>
+    <string name="player_fallback_artists">אמנים ללא פעולה</string>
+    <string name="player_unknown_album">אלבום לא ידוע</string>
+    <string name="player_seek_label">דילוג</string>
+    <string name="player_volume_label">עוצמת קול</string>
+    <string name="player_enable_shuffle_content_description">הפעלת ערבוב</string>
+    <string name="player_disable_shuffle_content_description">כיבוי ערבוב</string>
+    <string name="player_previous_content_description">הקודם</string>
+    <string name="player_next_content_description">הבא</string>
+    <string name="player_play_or_pause_content_description">הפעלה או השהיה</string>
+    <string name="player_loop_mode_none">מצב חזרה כבוי</string>
+    <string name="player_loop_mode_one">מצב חזרה על שיר אחד</string>
+    <string name="player_loop_mode_all">מצב חזרה על הכול</string>
+    <string name="player_mute_content_description">השתקה</string>
+    <string name="player_unmute_content_description">ביטול השתקה</string>
+    <string name="player_more_options_content_description">אפשרויות נוספות</string>
+    <string name="player_options_content_description">אפשרויות הנגן</string>
+    <string name="player_collapse_content_description">כיווץ הנגן</string>
+    <string name="player_expand_lyrics_content_description">הרחבת מילות השיר</string>
+    <string name="player_now_playing">מתנגן עכשיו</string>
+    <string name="player_lyrics">מילות שיר</string>
+    <string name="player_alternative_source">מקור חלופי</string>
+    <string name="player_alternative_source_content_description">מקור חלופי</string>
+    <string name="player_download">הורדה</string>
+    <string name="player_download_status_downloaded">הורד</string>
+    <string name="player_download_status_downloading">מוריד...</string>
+    <string name="player_download_already_downloaded">כבר הורד</string>
+    <string name="player_download_retrying">מנסה להוריד שוב...</string>
+    <string name="player_download_started">מוריד %1$s</string>
+    <string name="player_sleep_timer_remaining">ההפעלה תושהה בעוד %1$s.</string>
+    <string name="player_sleep_timer_description">השהיית ההפעלה לאחר מספר הדקות שנבחר.</string>
+    <string name="player_sleep_timer_minutes_label">דקות</string>
+    <string name="player_sleep_timer_minutes_placeholder">יש לבחור בין 1 ל-600 דקות</string>
+    <string name="player_sleep_timer_cancel">ביטול הטיימר</string>
+    <string name="player_sleep_timer_start">התחלה</string>
+    <string name="player_track_details_stream_mismatch">כתובת ההפעלה נפתרה עם הגדרות הזרמה שונות. הזרם המודגש תואם להעדפה הנוכחית שלך; הכתובת הפעילה מתרעננת בבקשת הזרם הבאה.</string>
+    <string name="player_track_details_matched_source">מקור שמע תואם</string>
+    <string name="player_track_details_loading_source">טוען מקור תואם…</string>
+    <string name="player_track_details_source_not_needed">אין צורך במקור מרוחק תואם בזמן הפעלת הקובץ השמור במטמון המקומי.</string>
+    <string name="player_track_details_no_source">אין מקור תואם זמין.</string>
+    <string name="player_track_details_no_cached_source">אין מקור שמע תואם שמור במטמון עבור השיר הזה.</string>
+    <string name="player_track_details_streams_not_cached">פרטי הזרם עדיין לא שמורים במטמון. יש להפעיל את השיר תחילה כדי לטעון אותם.</string>
+    <string name="player_track_details_load_failed">טעינת פרטי השיר נכשלה.</string>
+    <string name="player_track_details_available_streams">זרמים זמינים</string>
+    <string name="player_track_details_served_from_cache_description">השיר הזה מוגש מהמטמון המקומי. גרסאות זרם אינן בשימוש בהפעלה הזו.</string>
+    <string name="player_track_details_loading_streams">טוען זרמים…</string>
+    <string name="player_track_details_no_streams">אין זרמים זמינים למקור הזה.</string>
+    <string name="player_track_details_selected_stream_content_description">הזרם שנבחר כעת</string>
+    <string name="player_track_details_matches_preference">תואם להעדפת הפורמט והאיכות של ההזרמה שלך</string>
+    <string name="player_track_details_active_url">כתובת ההפעלה הפעילה</string>
+    <string name="player_track_details_served_from_cache">מוגש מהמטמון המקומי</string>
+    <string name="player_track_details_metadata_track">שיר מטא-דאטה</string>
+    <string name="player_track_details_title">כותרת</string>
+    <string name="player_track_details_id">ID</string>
+    <string name="player_track_details_album">אלבום</string>
+    <string name="player_track_details_confidence">רמת ביטחון</string>
+    <string name="player_track_details_external_uri">URI חיצוני</string>
+    <string name="player_track_details_album_id">מזהה אלבום</string>
+    <string name="player_track_details_album_type">סוג אלבום</string>
+    <string name="player_track_details_album_release_date">תאריך יציאת האלבום</string>
+    <string name="player_track_details_album_track_count">מספר שירים באלבום</string>
+    <string name="player_track_details_album_genres">ז׳אנרי האלבום</string>
+    <string name="player_track_details_duration">משך</string>
+    <string name="player_track_details_track_number">מספר שיר</string>
+    <string name="player_track_details_disc_number">מספר דיסק</string>
+    <string name="player_track_details_explicit">תוכן מפורש</string>
+    <string name="player_track_details_popularity">פופולריות</string>
+    <string name="player_track_details_isrc">ISRC</string>
+    <string name="player_track_details_thumbnail_urls">כתובות תמונות ממוזערות</string>
+
+    <!-- Shell -->
+    <string name="shell_sidebar_toggle_content_description">הצגה או הסתרה של סרגל הצד</string>
+
+    <!-- Alternative track -->
+    <string name="alternative_track_title">מקורות חלופיים</string>
+    <string name="alternative_track_no_track">אין שיר מתנגן כרגע</string>
+    <string name="alternative_track_searching">מחפש מקורות חלופיים...</string>
+    <string name="alternative_track_empty">לא נמצאו מקורות חלופיים</string>
+    <string name="alternative_track_confidence">רמת ביטחון: %1$d%</string>
+    <string name="alternative_track_active_source">מקור פעיל</string>
+
+    <!-- Queue -->
+    <string name="queue_participant_kick">הרחקה</string>
+    <string name="queue_participant_kick_description">הסרתו מהסשן</string>
+    <string name="queue_participant_ban_description">הרחקה ומניעת הצטרפות מחדש</string>
+    <string name="queue_participant_remove_suggestions">הסרת הצעות</string>
+    <string name="queue_participant_remove_suggestions_description">הסרת כל השירים שנוספו על ידיו לתור</string>
+    <string name="queue_reorder_content_description">שינוי סדר</string>
+    <string name="queue_remove_from_queue">הסרה מהתור</string>
+    <string name="queue_item_subtitle_added_by">%1$s • נוסף על ידי %2$s</string>
+
+    <!-- Playlist -->
+    <string name="playlist_owner_unknown">לא ידוע</string>
+    <string name="playlist_loading_title">טוען רשימת השמעה...</string>
+    <string name="playlist_add_tracks_button">הוספת שירים</string>
+    <string name="playlist_add_tracks_title">הוספת שירים לרשימת השמעה</string>
+    <string name="playlist_add_tracks_search_placeholder">חיפוש שירים...</string>
+    <string name="playlist_add_tracks_search_content_description">חיפוש</string>
+    <string name="playlist_add_tracks_no_results">לא נמצאו שירים</string>
+    <string name="playlist_add_tracks_hint">חיפוש שירים להוספה</string>
+    <string name="playlist_add_tracks_done">סיום</string>
+    <string name="playlist_add_tracks_add">הוספה</string>
+    <string name="playlist_add_tracks_added_content_description">נוסף</string>
+
+    <!-- Album -->
+    <string name="album_loading_title">טוען אלבום...</string>
+
+    <!-- Library -->
+    <string name="library_add_to_playlist_title">הוספה לרשימת ההשמעה שלך</string>
+    <string name="library_add_to_playlist_search_content_description">חיפוש</string>
+    <string name="library_add_to_playlist_search_placeholder">חיפוש ברשימות ההשמעה שלך...</string>
+    <string name="library_add_to_playlist_loading">טוען את רשימות ההשמעה שלך...</string>
+    <string name="library_add_to_playlist_empty">עדיין אין לך רשימות השמעה.\nיש ליצור אחת כדי להוסיף שירים.</string>
+    <string name="library_playlist_form_create_title">יצירת רשימת השמעה</string>
+    <string name="library_playlist_form_edit_title">עריכת רשימת השמעה</string>
+    <string name="library_playlist_form_create">יצירה</string>
+    <string name="library_playlist_form_name_label">שם</string>
+    <string name="library_playlist_form_name_placeholder">שם רשימת ההשמעה</string>
+    <string name="library_playlist_form_description_label">תיאור</string>
+    <string name="library_playlist_form_description_placeholder">תיאור (אופציונלי)</string>
+    <string name="library_playlist_form_public">ציבורית</string>
+    <string name="library_playlist_form_public_description">כל אחד יכול לראות את רשימת ההשמעה הזו</string>
+    <string name="library_playlist_form_collaborative">משותפת לעריכה</string>
+    <string name="library_playlist_form_collaborative_description">אחרים יכולים להוסיף שירים לרשימת ההשמעה הזו</string>
+    <string name="library_playlist_form_cover_image">תמונת שער</string>
+    <string name="library_playlist_form_cover_content_description">שער רשימת ההשמעה</string>
+    <string name="library_playlist_form_no_image">ללא תמונה</string>
+    <string name="library_playlist_form_change_image">החלפת תמונה</string>
+    <string name="library_playlist_form_pick_image">בחירת תמונה</string>
+
+    <!-- Plugin install / errors -->
+    <string name="plugin_action_install">התקנה</string>
+    <string name="plugin_action_replace">החלפה</string>
+    <string name="plugin_error_plugin_json_missing">plugin.json לא נמצא בקובץ ה-zip</string>
+    <string name="plugin_error_zipline_manifest_missing">manifest.zipline.json לא נמצא בקובץ ה-zip</string>
+    <string name="plugin_error_invalid_plugin_json">פורמט plugin.json לא תקין: %1$s</string>
+    <string name="plugin_error_read_failed">קריאת הפלאגין נכשלה: %1$s</string>
+    <string name="plugin_error_install_failed">התקנת הפלאגין נכשלה: %1$s</string>
+    <string name="plugin_error_update_needs_confirmation">גרסה חדשה יותר של %1$s זמינה. יש לאשר את העדכון לפני ההתקנה.</string>
+    <string name="plugin_error_replace_needs_confirmation">%1$s כבר מותקן. יש לאשר את ההחלפה לפני ההתקנה.</string>
+    <string name="plugin_error_builtin_add">פלאגינים מובנים כבר כלולים ולא ניתן להוסיף אותם שוב.</string>
+    <string name="plugin_error_builtin_remove">לא ניתן להסיר פלאגינים מובנים.</string>
+    <string name="plugin_error_api_version_invalid">%1$s מצהיר על apiVersion לא תקין (%2$s). הצפוי: גרסאות סמנטיות התואמות ל-%3$s.</string>
+    <string name="plugin_error_app_api_version_invalid">גרסת ה-API של פלאגינים ב-Spotube (%1$s) אינה תקינה.</string>
+    <string name="plugin_error_api_incompatible">%1$s מכוון ל-API פלאגינים %2$s, אך Spotube תומכת ב-API פלאגינים שוברת-תאימות %3$s. יש להתקין פלאגין שנבנה לאותה גרסת API שוברת-תאימות.</string>
+    <string name="plugin_error_api_webview_outdated">%1$s מכוון ל-API פלאגינים %2$s, מלפני שפלאגיני WebView נדרשו להצהיר מאילו אתרים הם קוראים עוגיות. יש להתקין גרסה שנבנתה ל-API פלאגינים 0.1 ומעלה.</string>
+    <string name="plugin_error_invalid_cookie_domains">%1$s מצהיר על cookieDomains לא תקינים ב-plugin.json: %2$s. יש להשתמש במארח כמו example.com, או ב-*.example.com לתתי-הדומיינים שלו. סיומות משותפות כמו *.co.uk או *.github.io אינן מותרות.</string>
+    <string name="plugin_error_suffix_list_unavailable">%1$s מבקש עוגיות מכל תת-דומיין של %2$s. Spotube בודקת זאת מול רשימת הסיומות הציבוריות מ-publicsuffix.org, שעדיין לא הורדה. יש להתחבר לאינטרנט ולנסות שוב.</string>
+    <string name="plugin_update_install_failed">לא ניתן היה להתקין את העדכון: %1$s</string>
+
+    <!-- Plugin install prompts -->
+    <string name="plugin_prompt_incompatible_title">ה-API של הפלאגין אינו תואם</string>
+    <string name="plugin_prompt_invalid_title">לא ניתן להתקין את הפלאגין</string>
+    <string name="plugin_prompt_install_title">להתקין את הפלאגין?</string>
+    <string name="plugin_prompt_install_message">%1$s יתווסף לפלאגינים המותקנים שלך.</string>
+    <string name="plugin_prompt_update_title">לעדכן את הפלאגין?</string>
+    <string name="plugin_prompt_update_message">מותקנת גרסה ישנה יותר (%1$s). לעדכן ל-%2$s?</string>
+    <string name="plugin_prompt_replace_title">להחליף את הפלאגין המותקן?</string>
+    <string name="plugin_prompt_replace_invalid_incoming">%1$s משתמש בגרסה סמנטית לא תקינה (%2$s) ולא ניתן להשוות אותו כעדכון. להחליף את הפלאגין המותקן בכל זאת?</string>
+    <string name="plugin_prompt_replace_invalid_installed">לא ניתן להשוות את הגרסה המותקנת (%1$s) באמצעות גרסאות סמנטיות. להחליף אותה ב-%2$s?</string>
+    <string name="plugin_prompt_replace_same_version">גרסה %1$s כבר מותקנת. להחליף את הפלאגין הקיים בעותק שסופק?</string>
+    <string name="plugin_prompt_replace_downgrade">הגרסה המותקנת %1$s חדשה יותר מהגרסה שסופקה %2$s. להחליף בכל זאת?</string>
+    <string name="plugin_prompt_replace_generic">להחליף את הפלאגין המותקן בעותק שסופק?</string>
+
+    <!-- Plugin info dialog -->
+    <string name="plugin_info_label_format">%1$s:</string>
+    <string name="plugin_info_version">גרסה</string>
+    <string name="plugin_info_api_version">גרסת API</string>
+    <string name="plugin_info_author">יוצר</string>
+    <string name="plugin_info_license">רישיון</string>
+    <string name="plugin_info_capabilities">יכולות</string>
+    <string name="plugin_info_cookie_domains">גישה לעוגיות</string>
+    <string name="plugin_info_abilities">יכולות</string>
+    <string name="plugin_info_repository">מאגר</string>
+    <string name="plugin_info_contact">יצירת קשר</string>
+    <string name="plugin_info_report_bugs">דיווח על באגים</string>
+    <string name="plugin_support_dialog_title">תמיכה ב-%1$s</string>
+    <string name="plugin_support_unavailable">הפלאגין הזה עדיין לא שיתף דרכים לתמוך בו.</string>
+
+    <!-- Plugin discovery -->
+    <string name="plugin_discover_badge_official">רשמי</string>
+    <string name="plugin_discover_badge_verified">מאומת</string>
+    <string name="plugin_discover_stars_content_description">כוכבי GitHub</string>
+    <string name="plugin_discover_repository_content_description">כתובת מאגר GitHub</string>
+    <string name="plugin_discover_repository_host">github.com</string>
+
+    <!-- Plugin release install dialog -->
+    <string name="plugin_install_no_releases">לא נמצאו גרסאות</string>
+    <string name="plugin_install_select_release_label">בחירת גרסה</string>
+    <string name="plugin_install_select_release_placeholder">בחירת גרסה</string>
+    <string name="plugin_install_prerelease">גרסה מקדימה</string>
+    <string name="plugin_install_release_notes">הערות גרסה</string>
+
+    <!-- App navigation -->
+    <string name="nav_home">בית</string>
+    <string name="nav_search">חיפוש</string>
+    <string name="nav_group_on_device">במכשיר</string>
+    <string name="nav_group_connect">חיבור</string>
+    <string name="nav_devices">מכשירים</string>
+    <plurals name="connect_jam_hosting">
+        <item quantity="one">אירוח · מאזין אחד</item>
+        <item quantity="two">אירוח · %1$d מאזינים</item>
+        <item quantity="many">אירוח · %1$d מאזינים</item>
+        <item quantity="other">אירוח · %1$d מאזינים</item>
+    </plurals>
+    <plurals name="connect_jam_joined">
+        <item quantity="one">בג׳אם · מאזין אחד</item>
+        <item quantity="two">בג׳אם · %1$d מאזינים</item>
+        <item quantity="many">בג׳אם · %1$d מאזינים</item>
+        <item quantity="other">בג׳אם · %1$d מאזינים</item>
+    </plurals>
+
+    <!-- System tray (desktop) -->
+    <string name="tray_hide_window">הסתרת החלון</string>
+    <string name="tray_show_window">הצגת החלון</string>
+    <string name="tray_next_track">השיר הבא</string>
+    <string name="tray_previous_track">השיר הקודם</string>
+    <string name="tray_shuffle">ערבוב</string>
+    <string name="tray_loop">חזרה</string>
+    <string name="tray_loop_off">חזרה: כבויה</string>
+    <string name="tray_loop_one">חזרה: שיר אחד</string>
+    <string name="tray_loop_all">חזרה: הכול</string>
+    <string name="tray_volume">עוצמת קול: %1$d%</string>
+    <string name="tray_volume_up">עוצמת קול +</string>
+    <string name="tray_volume_down">עוצמת קול -</string>
+    <string name="tray_mute">השתקה</string>
+    <string name="tray_unmute">ביטול השתקה</string>
+    <string name="tray_like_track">סימון השיר כאהוב</string>
+    <string name="tray_unlike_track">ביטול סימון השיר כאהוב</string>
+    <string name="tray_exit">יציאה</string>
+
+    <!-- Desktop window controls -->
+    <string name="app_window_minimize">מזעור</string>
+    <string name="app_window_maximize">הגדלה</string>
+    <string name="app_window_restore">שחזור</string>
+    <string name="app_window_close">סגירה</string>
+
+    <!-- Android playback notification -->
+    <string name="notification_playback_channel_name">הפעלה</string>
+    <string name="notification_playback_channel_description">פקדי הפעלת מדיה</string>
+
+    <!-- Android Auto / media browser -->
+    <string name="media_browser_browse">עיון</string>
+    <string name="media_browser_now_playing">מתנגן עכשיו</string>
+    <string name="media_browser_featured">מומלצים</string>
+    <string name="media_browser_saved_tracks">שירים שמורים</string>
+    <string name="media_browser_top_tracks">השירים המובילים</string>
+</resources>
