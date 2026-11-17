@@ -38,7 +38,7 @@ object BuiltInThemes {
         val icons = lucideIconReplacements.mapValues { ThemeIcon.Vector(it.value) }
         return LoadedTheme(
             doc = base.doc, assets = ThemeAssets(icons = icons), problems = base.problems,
-            usesItemContext = base.usesItemContext, fontFileCount = 0, iconCount = 0, packageBytes = base.packageBytes,
+            usesItemContext = base.usesItemContext, usesLiveContext = base.usesLiveContext, fontFileCount = 0, iconCount = 0, packageBytes = base.packageBytes,
         )
     }
 }
@@ -84,7 +84,8 @@ private const val MODERN_JSON = """
       "scrim": "#00000080"
     },
     "shape": { "small": 4, "medium": 6, "large": 8 },
-    "interaction": { "lighting": false }
+    "interaction": { "lighting": false },
+    "surface": { "shadows": false, "glow": false }
   },
 
   "defaults": { "shape": 6, "innerGlowColor": "{vars.none}", "bottomRimColor": null },
@@ -123,7 +124,7 @@ private const val MODERN_JSON = """
 
     "iconButton": {
       "base": {
-        "orb": false, "borderWidth": 0, "shadows": ["{vars.none}"], "shadowElevation": 0,
+        "orb": false, "borderWidth": 0, "shadows": ["{vars.none}"], "shadowElevation": 0, "iconSize": 16,
         "interactionOverlay": "{vars.none}", "interactionRim": "{vars.none}", "motion": { "hoverScale": 1, "pressedScale": 1 }
       },
       "states": { "focused": { "borderWidth": 2, "borderColor": "{vars.ring}" }, "disabled": { "alpha": 0.5 } },
@@ -207,6 +208,8 @@ private const val MODERN_JSON = """
       }
     },
 
+    "icon": { "base": { "size": 16 } },
+
     "separator": { "base": { "color": "{vars.border}", "highlightColor": "{vars.none}", "thickness": 1 } },
 
     "dialog": {
@@ -230,7 +233,7 @@ private const val MODERN_JSON = """
     "dropdownMenu": {
       "base": {
         "panelBackground": "{vars.bg}", "panelShape": 6, "panelBorderColor": "{vars.border}", "panelBorderWidth": 1, "panelGlowColor": "{vars.none}",
-        "panelShadowElevation": 6, "panelShadowColor": "{vars.shadow}", "itemShape": 4, "itemForeground": "{vars.fg}",
+        "panelShadowElevation": 6, "panelShadowColor": "{vars.shadow}", "iconSize": 16, "itemShape": 4, "itemForeground": "{vars.fg}",
         "itemActiveBackground": "{vars.muted}", "itemSelectedBackground": "{vars.muted}", "itemActiveForeground": "{vars.fg}", "itemActiveElevation": 0,
         "itemHoverScale": 1, "itemPressedScale": 1, "itemMutedForeground": "{vars.mutedFg}", "groupLabelForeground": "{vars.mutedFg}",
         "separatorBrush": "{vars.border}", "separatorThickness": 1,
@@ -288,7 +291,7 @@ private const val MODERN_JSON = """
         },
         "item": {
           "base": {
-            "background": "{vars.none}", "foreground": "{vars.mutedFg}", "shape": 8, "minimumHeight": 52, "borderWidth": 0, "borderColor": "{vars.none}",
+            "background": "{vars.none}", "foreground": "{vars.mutedFg}", "shape": 8, "minimumHeight": 52, "iconSize": 20, "borderWidth": 0, "borderColor": "{vars.none}",
             "shadowElevation": 0, "innerGlowColor": "{vars.none}", "bottomRimColor": null, "orbColor": null, "overlayBrush": "{vars.none}",
             "hoverScale": 1, "pressedScale": 1, "labelStyle": { "fontSize": 12, "fontWeight": 500 }
           },
@@ -312,7 +315,7 @@ private const val MODERN_JSON = """
           }
         },
         "header": { "base": { "background": "{vars.none}", "dividerColor": "{vars.none}", "dividerWidth": 0, "dividerHighlightColor": "{vars.none}" } },
-        "footer": { "base": { "background": "{vars.none}", "dividerColor": "{vars.none}", "dividerWidth": 0, "dividerHighlightColor": "{vars.none}" } },
+        "footer": { "base": { "background": "{vars.none}", "dividerColor": "{vars.border}", "dividerWidth": 1, "dividerHighlightColor": "{vars.none}" } },
         "group": {
           "base": {
             "labelForeground": "{vars.mutedFg}", "labelHoveredBackground": "{vars.muted}", "labelFocusedBackground": "{vars.muted}", "labelPressedBackground": "{vars.muted}",
@@ -322,7 +325,7 @@ private const val MODERN_JSON = """
         },
         "item": {
           "base": {
-            "background": "{vars.none}", "foreground": "{vars.fg}", "iconTint": "{vars.mutedFg}", "shape": 6, "borderWidth": 0, "borderColor": "{vars.none}",
+            "background": "{vars.none}", "foreground": "{vars.fg}", "iconTint": "{vars.mutedFg}", "iconSize": 16, "shape": 6, "borderWidth": 0, "borderColor": "{vars.none}",
             "shadowElevation": 0, "innerGlowColor": "{vars.none}", "bottomRimColor": null, "orbColor": null, "overlayBrush": "{vars.none}",
             "hoverScale": 1, "pressedScale": 1, "hoverBackground": "{vars.muted}", "focusBackground": "{vars.muted}", "pressedBackground": "{vars.muted}",
             "selectedBackground": "{vars.muted}", "selectedIndicatorColor": "{vars.none}", "selectedIndicatorBrush": "{vars.none}", "selectedIndicatorWidth": 0

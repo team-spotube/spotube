@@ -52,6 +52,7 @@ import org.spotube.millennium.composables.MillenniumTopAppBarTheme
 import org.spotube.millennium.composables.MillenniumTopAppBarThemeProperties
 import org.spotube.millennium.theme.MillenniumColors
 import org.spotube.millennium.theme.MillenniumInteractionStyle
+import org.spotube.millennium.theme.MillenniumSurfaceStyle
 import org.spotube.millennium.theme.MillenniumControlStateProperty
 import org.spotube.millennium.theme.MillenniumThemeComponents
 import org.spotube.millennium.theme.gelBrush
@@ -80,6 +81,8 @@ data class CompiledTheme(
     val icons: Map<String, ThemeIcon> = emptyMap(),
     /** The hover/press lighting for controls without a lighting property of their own. */
     val interaction: MillenniumInteractionStyle = MillenniumInteractionStyle(),
+    /** Shadows and inner glow on surfaces, including ones the host app builds itself. */
+    val surface: MillenniumSurfaceStyle = MillenniumSurfaceStyle(),
     /** Everything the theme author should fix; the rest of the theme still applies. */
     val problems: List<String>,
 )
@@ -154,6 +157,7 @@ internal class ThemeCompiler(
             typography = compileTypography(),
             icons = assets.icons,
             interaction = compileInteraction(),
+            surface = compileSurface(),
             problems = problems.toList(),
         )
     }
@@ -208,6 +212,12 @@ internal class ThemeCompiler(
             hoverBrush = r.brush("hover", null),
             pressBrush = r.brush("press", null),
         )
+    }
+
+    /** `tokens.surface`: `{ "shadows": false, "glow": false }` makes every Millennium surface flat (and cheaper to draw). */
+    fun compileSurface(): MillenniumSurfaceStyle {
+        val r = PropReader(tokenGroup("surface"), problems, "tokens.surface", fontContext)
+        return MillenniumSurfaceStyle(shadows = r.bool("shadows", true), glow = r.bool("glow", true))
     }
 
     fun compileShapes(): AppShapes {

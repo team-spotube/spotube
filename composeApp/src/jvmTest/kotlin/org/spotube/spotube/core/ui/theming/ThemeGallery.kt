@@ -49,6 +49,8 @@ import org.spotube.millennium.composables.MillenniumSlider
 import org.spotube.millennium.composables.MillenniumSwitch
 import org.spotube.millennium.composables.MillenniumTextField
 import org.spotube.millennium.theme.MillenniumTheme
+import org.spotube.millennium.theme.millenniumPanelBrush
+import org.spotube.millennium.theme.millenniumSurface
 import org.spotube.spotube.core.ui.theming.engine.LoadedTheme
 import org.spotube.spotube.core.ui.theming.engine.loadTheme
 import org.spotube.spotube.core.ui.theming.engine.readThemeArchive
@@ -122,6 +124,15 @@ internal object ThemeGallery {
                 MillenniumProgress(progress = 0.7f, modifier = Modifier.width(300.dp))
             }
             MillenniumTextField(state = field, label = "Search", modifier = Modifier.fillMaxWidth())
+            // App-style panel: built directly with millenniumSurface (like the settings cards), no component theme.
+            Column(
+                Modifier.fillMaxWidth()
+                    .millenniumSurface(
+                        background = millenniumPanelBrush(c), shape = AppTheme.shapes.medium,
+                        borderColor = c.border, borderWidth = 1.dp, shadowElevation = 6.dp,
+                    )
+                    .padding(14.dp),
+            ) { Text("App-built panel (millenniumSurface, elevation 6)", color = c.text) }
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 MillenniumCard(modifier = Modifier.weight(1f)) {
                     Text("Card title", color = c.text)

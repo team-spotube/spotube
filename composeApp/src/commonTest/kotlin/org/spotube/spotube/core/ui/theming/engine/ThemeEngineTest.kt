@@ -271,4 +271,14 @@ class ThemeEngineTest {
         assertNull(t.components.cardTheme.states.default.bottomRimColor)
         assertEquals(emptyList(), t.problems)
     }
+
+    @Test
+    fun surfaceTokensSwitchShadowsAndGlow() {
+        assertEquals(true, compile("{}").surface.shadows)
+        val flat = compile("""{"tokens":{"surface":{"shadows":false,"glow":false}}}""").surface
+        assertEquals(false, flat.shadows)
+        assertEquals(false, flat.glow)
+        val noShadow = compile("""{"tokens":{"surface":{"shadows":false}}}""").surface
+        assertEquals(true, noShadow.glow)
+    }
 }

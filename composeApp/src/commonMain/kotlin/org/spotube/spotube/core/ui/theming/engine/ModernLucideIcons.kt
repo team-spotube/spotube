@@ -101,9 +101,9 @@ internal val lucideIconReplacements: Map<String, ImageVector> by lazy {
         Iconsax.IconsaxDragHandle to Lucide.GripVertical,
         Iconsax.IconsaxSort to Lucide.ArrowUpDown,
         Iconsax.IconsaxTextalignLeft to Lucide.TextAlignStart,
-        Iconsax.IconsaxArrowDown4 to Lucide.ArrowDown,
-        Iconsax.IconsaxArrowSquareUp to Lucide.SquareArrowUp,
-        Iconsax.ArrowLeft3 to Lucide.ArrowLeft,
+        Iconsax.IconsaxArrowDown4 to Lucide.ChevronDown,
+        Iconsax.IconsaxArrowSquareUp to Lucide.ChevronUp,
+        Iconsax.ArrowLeft3 to Lucide.ChevronLeft,
         Iconsax.SwapHorizontal2 to Lucide.ArrowLeftRight,
         Iconsax.IconsaxRefreshRight to Lucide.RotateCw,
         Iconsax.IconsaxRefreshArrow2 to Lucide.RefreshCw,
@@ -152,7 +152,7 @@ internal val lucideIconReplacements: Map<String, ImageVector> by lazy {
         FeatherIcons.Lock to Lucide.Lock,
         FeatherIcons.List to Lucide.List,
         FeatherIcons.Grid to Lucide.LayoutGrid,
-        FeatherIcons.ArrowRight to Lucide.ArrowRight,
+        FeatherIcons.ArrowRight to Lucide.ChevronRight,
         FeatherIcons.AlertCircle to Lucide.CircleAlert,
     ).entries.associate { (from, to) -> from.name to to }
 }

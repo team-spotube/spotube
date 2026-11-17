@@ -158,11 +158,14 @@ fun App(
 ) {
     val settingsRepository: SettingsRepository = koinInject<SettingsRepository>()
     val userSettings by settingsRepository.userSettings.collectAsStateWithLifecycle(initialValue = UserSettings())
-    val themeContext by koinInject<org.spotube.spotube.core.ui.theming.engine.ThemeContextService>().context.collectAsStateWithLifecycle()
-    val themeRepository = koinInject<org.spotube.spotube.core.ui.theming.engine.ThemePackageRepository>()
-    val installedThemes by themeRepository.installed.collectAsStateWithLifecycle()
-    val selectedTheme = userSettings.selectedThemeId
-    val activeTheme = remember(installedThemes, selectedTheme) { themeRepository.themeFor(selectedTheme, installedThemes) }
+    // The theme is compiled once per selection by ThemeRuntime; composition only reads the result.
+    val precompiledTheme by koinInject<org.spotube.spotube.core.ui.theming.engine.ThemeRuntime>().precompiled.collectAsStateWithLifecycle()
+    // Live player facts are only observed (and the theme only re-evaluated) when the theme actually reads them.
+    val themeContext = if (precompiledTheme.needsLiveContext) {
+        koinInject<org.spotube.spotube.core.ui.theming.engine.ThemeContextService>().context.collectAsStateWithLifecycle().value
+    } else {
+        emptyMap()
+    }
     val appUpdateService: AppUpdateService = koinInject()
     val pluginUpdateService: PluginUpdateService = koinInject()
     val availableAppUpdate by appUpdateService.availableUpdate.collectAsStateWithLifecycle()
@@ -219,7 +222,7 @@ fun App(
 
     // Below the navigation state, so switching languages keeps the current screen.
     AppLocaleProvider(userSettings.language) {
-        SpotubeTheme(settings = userSettings, theme = activeTheme, liveContext = themeContext) {
+        SpotubeTheme(settings = userSettings, precompiled = precompiledTheme, liveContext = themeContext) {
             CompositionLocalProvider(LocalSupportPrompt provides {
                 supportDialogIsReminder = false
                 showSupportDialog = true

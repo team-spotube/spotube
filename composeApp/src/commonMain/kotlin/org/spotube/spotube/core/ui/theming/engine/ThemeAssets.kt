@@ -190,6 +190,8 @@ class LoadedTheme(
     val problems: Set<String>,
     /** True when the theme text mentions `ctx.item`, so per-row scopes are worth their cost. */
     val usesItemContext: Boolean,
+    /** True when the theme reads `ctx.player.*` or `ctx.env.compact`, so it must be re-evaluated when those change. */
+    val usesLiveContext: Boolean = false,
     val fontFileCount: Int,
     val iconCount: Int,
     val packageBytes: Int,
@@ -219,6 +221,7 @@ fun loadTheme(pkg: ThemePackage, cacheDir: String, problems: MutableSet<String>)
         assets = assets,
         problems = problems.toSet(),
         usesItemContext = pkg.json.contains("ctx.item"),
+        usesLiveContext = pkg.json.contains("ctx.player") || pkg.json.contains("ctx.env.compact"),
         fontFileCount = pkg.files.keys.count { it.lowercase().endsWith(".ttf") || it.lowercase().endsWith(".otf") },
         iconCount = assets.icons.size,
         packageBytes = pkg.files.values.sumOf { it.size } + pkg.json.length,

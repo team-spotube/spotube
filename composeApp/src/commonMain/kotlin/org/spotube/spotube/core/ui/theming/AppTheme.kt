@@ -50,7 +50,9 @@ import org.spotube.millennium.theme.MillenniumThemeComponents
 import org.spotube.millennium.theme.resolve
 import org.spotube.millennium.composables.LocalMillenniumIconResolver
 import org.spotube.millennium.theme.LocalMillenniumInteractionStyle
+import org.spotube.millennium.theme.LocalMillenniumSurfaceStyle
 import org.spotube.spotube.core.ui.theming.engine.CompiledTheme
+import org.spotube.spotube.core.ui.theming.engine.PrecompiledTheme
 import org.spotube.spotube.core.ui.theming.engine.ThemeIcon
 import androidx.compose.ui.graphics.vector.ImageVector
 import org.spotube.spotube.core.ui.theming.engine.LoadedTheme
@@ -208,18 +210,17 @@ object AppTheme {
 }
 
 /**
- * The app's single source of truth for colour.
+ * The app's single source of truth for colour, shape, type and icons.
  *
- * Installs [MillenniumTheme] with the user's selected [UserSettings.palette] and light/dark
- * [UserSettings.theme], then derives the app's semantic [AppColors], [AppTypography] and
- * [AppShapes] tokens from the active Millennium theme.
+ * [precompiled] is built once per theme/palette selection (see `ThemeRuntime`), so this composable only picks the
+ * light or dark half and installs it: no theme compilation happens while composing. Only themes that read live
+ * context (`ctx.player.*`, `ctx.env.compact`) are re-evaluated here when that context changes.
  */
 @Composable
 fun SpotubeTheme(
     settings: UserSettings,
-    /** The installed JSON theme, if any (see `ThemePackageRepository`). */
-    theme: LoadedTheme? = null,
-    /** Live app facts exposed to JSON themes as `ctx.*` (see `ThemeContextService`). */
+    precompiled: PrecompiledTheme,
+    /** Live app facts exposed to JSON themes as `ctx.*`; ignored by themes that don't read them. */
     liveContext: Map<String, Any?> = emptyMap(),
     content: @Composable () -> Unit
 ) {
@@ -228,41 +229,34 @@ fun SpotubeTheme(
         Theme.DARK -> true
         Theme.SYSTEM -> isSystemDarkTheme()
     }
-    val palette: MillenniumPalette = settings.palette
+    val palette = precompiled.palette
 
-    // Breakpoints are only provided inside MillenniumTheme, so read the raw window width here.
-    val windowWidthDp = with(LocalDensity.current) { LocalWindowInfo.current.containerSize.width.toDp() }
-    val compact = windowWidthDp < 600.dp
+    val needsEnv = precompiled.needsLiveContext || precompiled.usesItemContext
+    // Window width is only read when a theme actually depends on it, so resizing doesn't touch the theme otherwise.
+    val compact = if (needsEnv) {
+        val windowWidthDp = with(LocalDensity.current) { LocalWindowInfo.current.containerSize.width.toDp() }
+        windowWidthDp < 600.dp
+    } else false
 
-    val compile: (Map<String, Any?>) -> CompiledTheme = remember(
-        theme, isDarkTheme, palette, compact, liveContext
-    ) {
-        { item ->
-            val base = if (isDarkTheme) appBaseComponents(MillenniumDarkThemeComponents)
-            else appBaseComponents(MillenniumLightThemeComponents)
-            compileTheme(
-                doc = theme?.doc,
-                assets = theme?.assets ?: ThemeAssets.Empty,
-                env = ThemeEnv(
-                    dark = isDarkTheme,
-                    compact = compact,
-                    extras = if (item.isEmpty()) liveContext else liveContext + ("item" to item),
-                ),
-                baseColors = MillenniumColorSchemes().resolve(palette, isDarkTheme),
-                baseComponents = base,
-                parseProblems = theme?.problems.orEmpty(),
-            )
-        }
+    val compiled = if (precompiled.needsLiveContext) {
+        remember(precompiled, isDarkTheme, compact, liveContext) { precompiled.compileWith(isDarkTheme, compact, liveContext) }
+    } else {
+        precompiled.forAppearance(isDarkTheme)
     }
-    val compiled = remember(compile) { compile(emptyMap()) }
-    LaunchedEffect(compiled.problems) {
+    LaunchedEffect(compiled) {
         compiled.problems.forEach { println("[theme] $it") }
     }
 
     val install: @Composable (CompiledTheme, @Composable () -> Unit) -> Unit = remember(isDarkTheme, palette) {
         { theme, inner -> InstallCompiledTheme(theme, isDarkTheme, palette, inner) }
     }
-    val handle = remember(theme, compile, install) { ThemeEngineHandle(theme?.usesItemContext == true, compile, install) }
+    val handle = remember(precompiled, isDarkTheme, compact, liveContext, install) {
+        ThemeEngineHandle(
+            usesItemContext = precompiled.usesItemContext,
+            compile = { item -> precompiled.forItem(isDarkTheme, item, liveContext, compact) },
+            install = install,
+        )
+    }
 
     InstallCompiledTheme(compiled, isDarkTheme, palette) {
         MillenniumTooltipHost {
@@ -271,7 +265,19 @@ fun SpotubeTheme(
     }
 }
 
-/** Installs [compiled] as Millennium's config plus the app's own colour, type and shape tokens. */
+/** Convenience for previews and tests: compiles [theme] once (remembered) and applies it. */
+@Composable
+fun SpotubeTheme(
+    settings: UserSettings,
+    theme: LoadedTheme? = null,
+    liveContext: Map<String, Any?> = emptyMap(),
+    content: @Composable () -> Unit
+) {
+    val precompiled = remember(theme, settings.palette) { PrecompiledTheme.create(theme, settings.palette) }
+    SpotubeTheme(settings, precompiled, liveContext, content)
+}
+
+/** Installs [compiled] as Millennium's config plus the app's own colour, type, shape and icon tokens. */
 @Composable
 private fun InstallCompiledTheme(
     compiled: CompiledTheme,
@@ -279,42 +285,38 @@ private fun InstallCompiledTheme(
     palette: MillenniumPalette,
     content: @Composable () -> Unit,
 ) {
-    // The compiled appearance fills both slots: only the active one is ever read.
-    val c = compiled.colors
-    MillenniumTheme(
-        dark = dark,
-        config = MillenniumThemeConfig(
+    // The compiled appearance fills every slot: only the active one is ever read.
+    val config = remember(compiled, dark, palette) {
+        val c = compiled.colors
+        MillenniumThemeConfig(
             colorSchemes = MillenniumColorSchemes(c, c, c, c, c, c),
             light = compiled.components,
             dark = compiled.components,
             palette = palette
         )
-    ) {
+    }
+    MillenniumTheme(dark = dark, config = config) {
+        val colors = MillenniumTheme.colors
+        val appColors = remember(colors) { appColorsFrom(colors) }
+        val iconResolver = remember(compiled.icons) {
+            { vector: ImageVector -> (compiled.icons[vector.name] as? ThemeIcon.Vector)?.image ?: vector }
+        }
         CompositionLocalProvider(
-            LocalAppColors provides appColorsFrom(MillenniumTheme.colors),
+            LocalAppColors provides appColors,
             LocalAppTypography provides compiled.typography,
             LocalAppShapes provides compiled.shapes,
             LocalThemeIcons provides compiled.icons,
             LocalMillenniumInteractionStyle provides compiled.interaction,
+            LocalMillenniumSurfaceStyle provides compiled.surface,
             // Icons drawn inside Millennium components (sidebar, icon buttons, ticks) go through this.
-            LocalMillenniumIconResolver provides remember(compiled.icons) {
-                { vector: ImageVector -> (compiled.icons[vector.name] as? ThemeIcon.Vector)?.image ?: vector }
-            },
+            LocalMillenniumIconResolver provides iconResolver,
             content = content
         )
     }
 }
 
-/** The app's own tweaks on top of Millennium's stock components for one appearance. */
-private fun appBaseComponents(base: MillenniumThemeComponents): MillenniumThemeComponents = base.copy(
-    topAppBarTheme = MillenniumTopAppBarTheme(
-        properties = base.topAppBarTheme.properties.copy(separatorColor = Color.Transparent)
-    ),
-    modalBottomSheetTheme = compactModalBottomSheetTheme()
-)
-
 /** Library default is 24dp padding + 16dp spacing, which is far too roomy on phones. */
-private fun compactModalBottomSheetTheme(): MillenniumModalBottomSheetTheme {
+internal fun compactModalBottomSheetTheme(): MillenniumModalBottomSheetTheme {
     val padding = PaddingValues(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 8.dp)
     fun org.spotube.millennium.composables.MillenniumModalBottomSheetThemeProperties.compact() =
         copy(contentPadding = padding, contentSpacing = 8.dp)
