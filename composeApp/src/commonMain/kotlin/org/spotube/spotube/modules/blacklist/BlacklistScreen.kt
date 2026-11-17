@@ -18,7 +18,7 @@
 package org.spotube.spotube.modules.blacklist
 
 
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumTextField
@@ -199,7 +199,7 @@ private fun BlacklistedTrackRow(
             .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        MillenniumIcon(
+        AppIcon(
             imageVector = Iconsax.IconsaxMusicCircle,
             contentDescription = stringResource(Res.string.blacklist_item_track),
             modifier = Modifier.size(20.dp),
@@ -231,7 +231,7 @@ private fun BlacklistedTrackRow(
         MillenniumIconButton(
             onClick = onRemove,
             style = MillenniumIconButtonStyle.Quiet) {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = Iconsax.IconsaxMusicSquareRemoveFilled,
                 contentDescription = stringResource(Res.string.blacklist_remove),
                 tint = AppTheme.colors.error)
@@ -249,7 +249,7 @@ private fun BlacklistedArtistRow(
             .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        MillenniumIcon(
+        AppIcon(
             imageVector = Iconsax.User,
             contentDescription = stringResource(Res.string.media_artist),
             modifier = Modifier.size(20.dp),
@@ -271,7 +271,7 @@ private fun BlacklistedArtistRow(
                         .clip(CircleShape)
                         .shimmerApply())
             } else {
-                MillenniumIcon(
+                AppIcon(
                     imageVector = Iconsax.User,
                     contentDescription = artist.name,
                     tint = AppTheme.colors.onSurfaceVariant,
@@ -294,7 +294,7 @@ private fun BlacklistedArtistRow(
         MillenniumIconButton(
             onClick = onRemove,
             style = MillenniumIconButtonStyle.Quiet) {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = Iconsax.IconsaxUserRemove,
                 contentDescription = stringResource(Res.string.blacklist_remove),
                 tint = AppTheme.colors.error)

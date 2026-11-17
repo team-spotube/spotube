@@ -18,7 +18,7 @@
 package org.spotube.spotube.modules.shell
 
 
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumProgress
@@ -183,7 +183,7 @@ internal fun FloatingPlayerContent(
                                 .fillMaxSize(),
                             contentScale = ContentScale.Crop
                         )
-                        else MillenniumIcon(
+                        else AppIcon(
                             Iconsax.IconsaxMusic, contentDescription = null,
                             tint = AppTheme.colors.onSurfaceVariant, modifier = Modifier.size(22.dp)
                         )
@@ -214,7 +214,7 @@ internal fun FloatingPlayerContent(
                         enabled = playerUiState.queue.isNotEmpty(),
                         style = MillenniumIconButtonStyle.Secondary
                     ) {
-                        MillenniumIcon(
+                        AppIcon(
                             if (playerUiState.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                             contentDescription = stringResource(if (playerUiState.isPlaying) Res.string.player_pause_content_description else Res.string.player_play_content_description)
                         )

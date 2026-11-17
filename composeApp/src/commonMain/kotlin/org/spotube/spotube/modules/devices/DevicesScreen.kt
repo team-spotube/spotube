@@ -21,7 +21,7 @@ package org.spotube.spotube.modules.devices
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumCard
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumSpokeSpinner
@@ -128,7 +128,7 @@ fun DevicesScreen(
                     loading = state.isDiscovering,
                     style = MillenniumIconButtonStyle.Quiet
                 ) {
-                    MillenniumIcon(
+                    AppIcon(
                         imageVector = Iconsax.IconsaxRefreshRight,
                         contentDescription = stringResource(Res.string.devices_refresh)
                     )
@@ -242,7 +242,7 @@ private fun DeviceTile(
                     style = AppTheme.typography.labelMedium,
                     color = AppTheme.colors.primary
                 )
-                else -> MillenniumIcon(
+                else -> AppIcon(
                     imageVector = FeatherIcons.ChevronRight,
                     contentDescription = null,
                     tint = AppTheme.colors.onSurfaceVariant
@@ -326,7 +326,7 @@ private fun ErrorBanner(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        MillenniumIcon(
+        AppIcon(
             imageVector = Iconsax.IconsaxInformation,
             contentDescription = null,
             tint = AppTheme.colors.onErrorContainer,
@@ -342,7 +342,7 @@ private fun ErrorBanner(
             onClick = onDismiss,
             style = MillenniumIconButtonStyle.Quiet
         ) {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = Iconsax.IconsaxCloseSquare,
                 contentDescription = stringResource(Res.string.jam_error_dismiss),
                 tint = AppTheme.colors.onErrorContainer
@@ -378,7 +378,7 @@ private fun LazyItemScope.EmptyState(
                 if (isDiscovering) {
                     MillenniumSpokeSpinner(size = 32.dp)
                 } else {
-                    MillenniumIcon(
+                    AppIcon(
                         imageVector = Iconsax.IconsaxWifiSquare,
                         contentDescription = null,
                         tint = AppTheme.colors.primary,

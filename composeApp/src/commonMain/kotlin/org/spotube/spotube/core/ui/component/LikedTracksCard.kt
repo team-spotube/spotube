@@ -18,7 +18,7 @@
 package org.spotube.spotube.core.ui.component
 
 
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import androidx.compose.animation.ExperimentalSharedTransitionApi
@@ -159,7 +159,7 @@ fun LikedTracksCard(
                                 modifier = Modifier.size(30.dp),
                                 style = MillenniumIconButtonStyle.Secondary
                             ) {
-                                MillenniumIcon(
+                                AppIcon(
                                     imageVector = Iconsax.IconsaxAddSquare,
                                     contentDescription = stringResource(Res.string.player_add_to_queue_content_description),
                                     modifier = Modifier.size(16.dp)
@@ -172,7 +172,7 @@ fun LikedTracksCard(
                                 modifier = Modifier.size(30.dp),
                                 style = MillenniumIconButtonStyle.Primary
                             ) {
-                                MillenniumIcon(
+                                AppIcon(
                                     imageVector = if (isPlaying) {
                                         Iconsax.IconsaxPauseCircle
                                     } else Iconsax.Play,

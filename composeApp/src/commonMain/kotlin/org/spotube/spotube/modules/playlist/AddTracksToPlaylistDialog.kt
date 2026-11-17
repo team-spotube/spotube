@@ -21,7 +21,7 @@ package org.spotube.spotube.modules.playlist
 import org.spotube.spotube.core.ui.misc.itemsWithUniqueKeys
 import org.spotube.spotube.core.ui.component.AdaptiveDialogBottomSheet
 import org.spotube.millennium.composables.MillenniumCircularProgress
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumDialog
@@ -232,7 +232,7 @@ private fun TrackSearchResultRow(
 
         when {
             isAdded -> {
-                MillenniumIcon(
+                AppIcon(
                     imageVector = Iconsax.IconsaxCheckCircle,
                     contentDescription = stringResource(Res.string.playlist_add_tracks_added_content_description),
                     tint = AppTheme.colors.primary,

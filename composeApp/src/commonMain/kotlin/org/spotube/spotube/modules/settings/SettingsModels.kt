@@ -40,6 +40,11 @@ data class UserSettings(
     // Appearance
     val theme: Theme = Theme.SYSTEM,
     val palette: MillenniumPalette = MillenniumPalette.Blue,
+    /**
+     * Selected theme: `builtin:<palette>` for the built-in Millennium looks, or the id of an installed
+     * theme package. Null (older installs) means the built-in theme of [palette].
+     */
+    val selectedThemeId: String? = null,
 
     // Playback
     val streamingMusicFormat: AudioFormat = defaultStreamingMusicFormat(),

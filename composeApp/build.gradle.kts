@@ -691,3 +691,8 @@ tasks.matching { it.name == "prepareAppResources" || it.name == "copyGraalvmAppR
         permissions { unix("rwxr-xr-x") }
     }
 }
+
+// Sample theme packages under composeApp/themes are test inputs (ThemeGalleryTest packs and renders them).
+tasks.withType<Test>().configureEach {
+    inputs.dir("themes").withPropertyName("sampleThemes").optional()
+}

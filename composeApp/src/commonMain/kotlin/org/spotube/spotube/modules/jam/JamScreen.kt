@@ -70,7 +70,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumSegmentedButton
@@ -494,7 +494,7 @@ internal fun ServerStatus(state: JamUiState, onConfigure: () -> Unit) {
         )
         MillenniumTooltip(stringResource(Res.string.jam_connection_settings)) {
             MillenniumIconButton(onClick = onConfigure, style = MillenniumIconButtonStyle.Quiet) {
-                MillenniumIcon(
+                AppIcon(
                     Iconsax.IconsaxSetting2,
                     contentDescription = stringResource(Res.string.jam_connection_settings)
                 )

@@ -19,7 +19,7 @@ package org.spotube.spotube.modules.artist
 
 
 import org.spotube.spotube.core.ui.misc.itemsWithUniqueKeys
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumIconButton
@@ -446,7 +446,7 @@ private fun ArtistAvatar(
                 contentScale = ContentScale.Crop
             )
         } else {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = Iconsax.User,
                 contentDescription = artist.name,
                 tint = AppTheme.colors.onSurfaceVariant,
@@ -540,7 +540,7 @@ private fun ArtistHeaderActions(
                     onClick = onBlacklistClick,
                     style = MillenniumIconButtonStyle.Secondary
                 ) {
-                    MillenniumIcon(
+                    AppIcon(
                         imageVector = Iconsax.IconsaxUserRemove,
                         contentDescription = stringResource(Res.string.blacklist_remove),
                         tint = AppTheme.colors.error
@@ -551,7 +551,7 @@ private fun ArtistHeaderActions(
                     onClick = onBlacklistClick,
                     style = MillenniumIconButtonStyle.Secondary
                 ) {
-                    MillenniumIcon(
+                    AppIcon(
                         imageVector = Iconsax.IconsaxUserRemove,
                         contentDescription = stringResource(Res.string.blacklist_add)
                     )
@@ -587,7 +587,7 @@ private fun TopTracksHeader(
                 loading = isPlayLoading,
                 style = MillenniumIconButtonStyle.Primary
             ) {
-                MillenniumIcon(
+                AppIcon(
                     imageVector = Iconsax.IconsaxPlay,
                     contentDescription = stringResource(Res.string.artist_play_top_tracks),
                     tint = LocalTextStyle.current.color
@@ -598,7 +598,7 @@ private fun TopTracksHeader(
                 loading = isAddToQueueLoading,
                 style = MillenniumIconButtonStyle.Secondary
             ) {
-                MillenniumIcon(
+                AppIcon(
                     imageVector = Iconsax.IconsaxAddSquare,
                     contentDescription = stringResource(Res.string.artist_add_top_tracks_to_queue)
                 )

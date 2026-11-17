@@ -41,7 +41,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.ChevronRight
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumSpokeSpinner
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -136,14 +136,14 @@ internal fun PluginCard(
                 MillenniumIconButton(
                     onClick = onRemove,
                     style = MillenniumIconButtonStyle.Quiet) {
-                    MillenniumIcon(
+                    AppIcon(
                         Iconsax.IconsaxTrash,
                         contentDescription = stringResource(Res.string.plugin_action_remove),
                         modifier = Modifier.size(16.dp),
                         tint = AppTheme.colors.error)
                 }
             }
-            MillenniumIcon(
+            AppIcon(
                 FeatherIcons.ChevronRight,
                 contentDescription = null,
                 modifier = Modifier.size(16.dp),
@@ -163,7 +163,7 @@ private fun PluginRowMeta(item: PluginListItem) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(3.dp)) {
-                MillenniumIcon(
+                AppIcon(
                     ability.abilityIcon(),
                     contentDescription = null,
                     modifier = Modifier.size(12.dp),

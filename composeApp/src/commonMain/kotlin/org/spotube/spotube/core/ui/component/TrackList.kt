@@ -54,7 +54,7 @@ import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.ui.state.ToggleableState
 import org.spotube.millennium.composables.MillenniumCard
 import org.spotube.millennium.composables.MillenniumCheckbox
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumListTile
@@ -63,6 +63,7 @@ import org.spotube.millennium.composables.MillenniumTextField
 import org.spotube.millennium.composables.MillenniumTriStateCheckbox
 
 import org.spotube.spotube.core.ui.theming.AppTheme
+import org.spotube.spotube.core.ui.theming.engine.ThemeItemScope
 import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -259,60 +260,67 @@ fun TrackList(
     val useDropdownForOptions = isDesktop && !isCompact
 
     val trackRow: @Composable (Int, MetadataTrack) -> Unit = { displayedIndex, track ->
-        TrackListRow(
-            index = displayedIndex + 1,
-            track = track,
-            showIndex = showIndex,
-            showAlbum = showAlbum,
-            useDropdownForOptions = useDropdownForOptions,
-            isCurrentTrack = track.id == currentTrackId,
-            // Only the current row depends on it, so play/pause/buffering flips don't recompose every row.
-            isCurrentTrackPlaying = isCurrentTrackPlaying && track.id == currentTrackId,
-            isSelectionMode = isSelectionMode,
-            isSelected = selectedTrackIds.contains(track.id),
-            onTrackClick = {
-                if (isSelectionMode) {
-                    selectedTrackIds =
-                        if (selectedTrackIds.contains(track.id)) {
-                            selectedTrackIds - track.id
-                        } else {
-                            selectedTrackIds + track.id
-                        }
-                } else if (isJamGuest) {
-                    onTrackOptionsAction(track, TrackOptionsAction.AddToJam)
-                } else {
-                    onTrackClick(track)
-                }
-            },
-            onLongClick = {
-                if (!useDropdownForOptions && !isSelectionMode) {
+        val isCurrent = track.id == currentTrackId
+        // Lets JSON themes style the current row (`ctx.item.current` / `ctx.item.playing`); free when unused.
+        val itemContext = remember(isCurrent, isCurrent && isCurrentTrackPlaying) {
+            mapOf("current" to isCurrent, "playing" to (isCurrent && isCurrentTrackPlaying))
+        }
+        ThemeItemScope(itemContext) {
+            TrackListRow(
+                index = displayedIndex + 1,
+                track = track,
+                showIndex = showIndex,
+                showAlbum = showAlbum,
+                useDropdownForOptions = useDropdownForOptions,
+                isCurrentTrack = track.id == currentTrackId,
+                // Only the current row depends on it, so play/pause/buffering flips don't recompose every row.
+                isCurrentTrackPlaying = isCurrentTrackPlaying && track.id == currentTrackId,
+                isSelectionMode = isSelectionMode,
+                isSelected = selectedTrackIds.contains(track.id),
+                onTrackClick = {
+                    if (isSelectionMode) {
+                        selectedTrackIds =
+                            if (selectedTrackIds.contains(track.id)) {
+                                selectedTrackIds - track.id
+                            } else {
+                                selectedTrackIds + track.id
+                            }
+                    } else if (isJamGuest) {
+                        onTrackOptionsAction(track, TrackOptionsAction.AddToJam)
+                    } else {
+                        onTrackClick(track)
+                    }
+                },
+                onLongClick = {
+                    if (!useDropdownForOptions && !isSelectionMode) {
+                        isSelectionMode = true
+                        selectedTrackIds = setOf(track.id)
+                    } else if (!useDropdownForOptions) {
+                        selectedTrackForOptions = track
+                    }
+                },
+                onSelectionToggle = { checked ->
                     isSelectionMode = true
-                    selectedTrackIds = setOf(track.id)
-                } else if (!useDropdownForOptions) {
-                    selectedTrackForOptions = track
-                }
-            },
-            onSelectionToggle = { checked ->
-                isSelectionMode = true
-                selectedTrackIds = if (checked) {
-                    selectedTrackIds + track.id
-                } else {
-                    selectedTrackIds - track.id
-                }
-            },
-            onTrackOptionsAction = { action ->
-                onTrackOptionsAction(
-                    track,
-                    action
-                )
-            },
-            trackOptionsState = trackOptionsState(track),
-            isInJam = isInJam,
-            isJamGuest = isJamGuest,
-            onShowOptionsClick = { selectedTrackForOptions = track },
-            onArtistClick = onArtistClick,
-            onAlbumClick = onAlbumClick,
-            onArtistsOverflowClick = { onArtistsOverflowClick(track) })
+                    selectedTrackIds = if (checked) {
+                        selectedTrackIds + track.id
+                    } else {
+                        selectedTrackIds - track.id
+                    }
+                },
+                onTrackOptionsAction = { action ->
+                    onTrackOptionsAction(
+                        track,
+                        action
+                    )
+                },
+                trackOptionsState = trackOptionsState(track),
+                isInJam = isInJam,
+                isJamGuest = isJamGuest,
+                onShowOptionsClick = { selectedTrackForOptions = track },
+                onArtistClick = onArtistClick,
+                onAlbumClick = onAlbumClick,
+                onArtistsOverflowClick = { onArtistsOverflowClick(track) })
+        }
     }
 
     // Shimmer, error, empty and next-page rows at the end of the card.
@@ -436,7 +444,7 @@ fun TrackList(
                             MillenniumIconButton(
                                 onClick = onClick,
                                 style = MillenniumIconButtonStyle.Quiet) {
-                                MillenniumIcon(
+                                AppIcon(
                                     imageVector = Iconsax.IconsaxSort,
                                     contentDescription = stringResource(Res.string.track_list_sort))
                             }
@@ -490,7 +498,7 @@ fun TrackList(
                             MillenniumIconButton(
                                 onClick = onClick,
                                 style = MillenniumIconButtonStyle.Quiet) {
-                                MillenniumIcon(
+                                AppIcon(
                                     imageVector = Iconsax.Iconsax3DotsMore,
                                     contentDescription = stringResource(Res.string.track_list_bulk_actions))
                             }
@@ -721,7 +729,7 @@ private fun TrackListRow(
                                 .fillMaxSize()
                                 .background(Color.Black.copy(alpha = 0.10f)),
                             contentAlignment = Alignment.Center) {
-                            MillenniumIcon(
+                            AppIcon(
                                 imageVector = if (isCurrentTrack && isCurrentTrackPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                                 contentDescription = if (isCurrentTrack && isCurrentTrackPlaying) stringResource(Res.string.player_pause_content_description) else stringResource(Res.string.player_play_content_description),
                                 tint = Color.White,
@@ -790,7 +798,7 @@ private fun TrackListRow(
                     MillenniumIconButton(
                         onClick = onShowOptionsClick,
                         style = MillenniumIconButtonStyle.Quiet) {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = Iconsax.Iconsax3DotsMore,
                             contentDescription = stringResource(Res.string.track_options_title))
                     }

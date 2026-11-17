@@ -21,7 +21,7 @@ package org.spotube.spotube.modules.welcome
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumCard
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumSeparator
 import org.spotube.millennium.composables.MillenniumTabGroup
 import androidx.compose.foundation.layout.Arrangement
@@ -185,7 +185,7 @@ private fun WelcomeActionBar(
                 Text(
                     text = stringResource(state.primaryLabel),
                     fontWeight = FontWeight.SemiBold)
-                MillenniumIcon(
+                AppIcon(
                     imageVector = if (state.isLastPage) {
                         Iconsax.IconsaxCheckCircle
                     } else {

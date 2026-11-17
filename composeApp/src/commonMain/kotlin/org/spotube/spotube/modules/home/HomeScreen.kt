@@ -18,7 +18,7 @@
 package org.spotube.spotube.modules.home
 
 
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumButton
@@ -162,7 +162,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                         onClick = { navigationCommands.navigateTo(Routes.Devices) },
                         style = MillenniumIconButtonStyle.Quiet
                     ) {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = Iconsax.IconsaxMirrorScreenRegular,
                             contentDescription = stringResource(Res.string.devices_title)
                         )
@@ -171,7 +171,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                         onClick = { navigationCommands.navigateTo(Routes.Jam) },
                         style = MillenniumIconButtonStyle.Quiet
                     ) {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = Iconsax.IconsaxSoundTwotone,
                             contentDescription = stringResource(Res.string.jam_screen_title)
                         )
@@ -181,7 +181,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                         onClick = openSupport,
                         style = MillenniumIconButtonStyle.Quiet
                     ) {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = Iconsax.IconsaxHeart2,
                             contentDescription = supportLabel
                         )

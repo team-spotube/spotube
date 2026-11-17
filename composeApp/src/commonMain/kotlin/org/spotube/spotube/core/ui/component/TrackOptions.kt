@@ -18,7 +18,7 @@
 package org.spotube.spotube.core.ui.component
 
 
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumModalBottomSheet
@@ -118,7 +118,7 @@ fun TrackOptions(
             MillenniumIconButton(
                 onClick = onClick,
                 style = MillenniumIconButtonStyle.Quiet) {
-                MillenniumIcon(
+                AppIcon(
                     imageVector = Iconsax.Iconsax3DotsMore,
                     contentDescription = stringResource(Res.string.track_options_title),
                     modifier = Modifier.shimmerApply()
@@ -180,7 +180,7 @@ fun TrackOptionsBottomSheet(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         item.icon?.let { icon ->
-                            MillenniumIcon(
+                            AppIcon(
                                 imageVector = icon,
                                 contentDescription = null,
                                 modifier = Modifier.size(22.dp),

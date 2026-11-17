@@ -17,7 +17,7 @@
 
 package org.spotube.spotube.modules.plugin.components
 
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.hoverable
@@ -206,7 +206,7 @@ private fun DefaultAbilityPluginRow(
                                     contentDescription = plugin.name,
                                     modifier = Modifier.fillMaxSize(),
                                     fallback = {
-                                        MillenniumIcon(
+                                        AppIcon(
                                             imageVector = ability.abilityIcon(),
                                             contentDescription = null,
                                             modifier = Modifier.size(18.dp),
@@ -316,7 +316,7 @@ private fun DefaultAbilityRowContent(
             modifier = Modifier.fillMaxHeight(),
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.SpaceBetween) {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = Iconsax.IconsaxArrowDown4,
                 contentDescription = null,
                 modifier = Modifier.padding(top = 4.dp).size(16.dp),
@@ -364,7 +364,7 @@ private fun SelectedPluginChip(
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     fallback = {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = ability.abilityIcon(),
                             contentDescription = null,
                             modifier = Modifier.size(12.dp),
@@ -408,7 +408,7 @@ internal fun AbilityIconTile(ability: PluginAbility, size: Dp) {
             }
             .border(1.dp, Color.White.copy(alpha = 0.4f), shape),
         contentAlignment = Alignment.Center) {
-        MillenniumIcon(
+        AppIcon(
             imageVector = ability.abilityIcon(),
             contentDescription = null,
             modifier = Modifier.size(size * 0.5f),

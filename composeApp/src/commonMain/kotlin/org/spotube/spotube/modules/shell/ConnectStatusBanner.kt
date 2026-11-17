@@ -42,7 +42,7 @@ import compose.icons.feathericons.ChevronRight
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.theme.MillenniumTheme
 import org.spotube.spotube.core.ui.theming.AppTheme
 import spotube.composeapp.generated.resources.Res
@@ -99,7 +99,7 @@ private fun StatusRow(label: String, onClick: () -> Unit) {
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f)
         )
-        MillenniumIcon(
+        AppIcon(
             imageVector = FeatherIcons.ChevronRight,
             contentDescription = null,
             tint = AppTheme.colors.onSurfaceVariant,

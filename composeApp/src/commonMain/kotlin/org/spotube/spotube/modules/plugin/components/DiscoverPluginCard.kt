@@ -44,7 +44,7 @@ import com.composeunstyled.Text
 import org.jetbrains.compose.resources.stringResource
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.theme.MillenniumTheme
 import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
@@ -154,7 +154,7 @@ internal fun DiscoverPluginCard(
                     .padding(horizontal = 4.dp, vertical = 2.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                MillenniumIcon(
+                AppIcon(
                     Iconsax.CarbonGithubLogo,
                     contentDescription = stringResource(Res.string.plugin_discover_repository_content_description),
                     modifier = Modifier.size(12.dp),
@@ -173,7 +173,7 @@ internal fun DiscoverPluginCard(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    MillenniumIcon(Iconsax.IconsaxAdd, contentDescription = null, modifier = Modifier.size(16.dp))
+                    AppIcon(Iconsax.IconsaxAdd, contentDescription = null, modifier = Modifier.size(16.dp))
                     Text(stringResource(Res.string.plugin_section_install))
                 }
             }

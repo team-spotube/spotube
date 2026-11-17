@@ -20,7 +20,7 @@ package org.spotube.spotube.modules.library.playlist
 
 import org.spotube.spotube.core.ui.misc.itemsWithUniqueKeys
 import org.spotube.spotube.core.ui.component.AdaptiveDialogBottomSheet
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumDialog
@@ -136,7 +136,7 @@ fun AddToPlaylistPicker(
                     .padding(bottom = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                MillenniumIcon(
+                AppIcon(
                     imageVector = Iconsax.IconsaxFilterSearch,
                     contentDescription = stringResource(Res.string.library_add_to_playlist_search_content_description))
                 MillenniumTextField(

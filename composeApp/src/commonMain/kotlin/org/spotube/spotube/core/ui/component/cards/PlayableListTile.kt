@@ -34,7 +34,7 @@ import org.spotube.spotube.resources.iconsax.IconsaxMusic
 import org.spotube.spotube.resources.iconsax.IconsaxPause
 import org.spotube.spotube.resources.iconsax.IconsaxPlay
 import org.jetbrains.compose.resources.stringResource
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumListTile
@@ -121,7 +121,7 @@ fun PlayableListTile(
                             modifier = Modifier.size(if (compact) 32.dp else 40.dp),
                             style = MillenniumIconButtonStyle.Secondary
                         ) {
-                            MillenniumIcon(
+                            AppIcon(
                                 Iconsax.IconsaxAddSquare,
                                 stringResource(Res.string.player_add_to_queue_content_description)
                             )
@@ -134,7 +134,7 @@ fun PlayableListTile(
                             modifier = Modifier.size(if (compact) 32.dp else 40.dp),
                             style = MillenniumIconButtonStyle.Primary
                         ) {
-                            MillenniumIcon(
+                            AppIcon(
                                 if (isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                                 stringResource(if (isPlaying) Res.string.player_pause_content_description else Res.string.player_play_content_description),
                                 tint = LocalTextStyle.current.color
@@ -172,7 +172,7 @@ internal fun MediaArtwork(
             Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
         )
-        else MillenniumIcon(
+        else AppIcon(
             placeholderIcon,
             null,
             modifier = Modifier.size(24.dp),

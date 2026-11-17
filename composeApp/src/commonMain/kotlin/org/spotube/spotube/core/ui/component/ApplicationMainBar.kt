@@ -18,7 +18,7 @@
 package org.spotube.spotube.core.ui.component
 
 
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import androidx.compose.foundation.layout.RowScope
@@ -40,7 +40,7 @@ fun ApplicationBackButton() {
             navigationCommands.pop()
         },
         style = MillenniumIconButtonStyle.Quiet) {
-        MillenniumIcon(
+        AppIcon(
             imageVector = Iconsax.ArrowLeft3,
             contentDescription = stringResource(Res.string.common_back)
         )

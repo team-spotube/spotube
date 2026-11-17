@@ -46,7 +46,7 @@ import org.spotube.spotube.resources.iconsax.PhosphorDatabaseDuotone
 import org.spotube.spotube.resources.iconsax.User
 import okio.Path
 import org.jetbrains.compose.resources.stringResource
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumSeparator
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.common_cancel
@@ -183,7 +183,7 @@ private fun InstalledComparisonPanel(
                     VersionStat(
                         label = stringResource(Res.string.plugin_permissions_installed_label),
                         value = installedPlugin.version)
-                    MillenniumIcon(
+                    AppIcon(
                         imageVector = FeatherIcons.ArrowRight,
                         contentDescription = null,
                         modifier = Modifier.size(18.dp),

@@ -53,7 +53,7 @@ import org.spotube.spotube.core.navigation.NavigationCommands
 import org.spotube.spotube.core.navigation.Routes
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumListTile
@@ -177,7 +177,7 @@ internal fun LocalTracksContent(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
-                                    MillenniumIcon(
+                                    AppIcon(
                                         Iconsax.IconsaxFolderAdd, null,
                                         modifier = Modifier.size(18.dp)
                                     )
@@ -210,7 +210,7 @@ internal fun LocalTracksBreadcrumb(
             Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            MillenniumIcon(
+            AppIcon(
                 Iconsax.IconsaxFolderOpen,
                 null,
                 modifier = Modifier.size(14.dp),
@@ -231,7 +231,7 @@ internal fun LocalTracksBreadcrumb(
                         style = AppTheme.typography.labelSmall
                     )
                 }
-                MillenniumIcon(
+                AppIcon(
                     FeatherIcons.ChevronRight,
                     null,
                     modifier = Modifier.size(12.dp),
@@ -277,7 +277,7 @@ internal fun LocalTracksBreadcrumb(
             onClick = onManageFolders,
             modifier = Modifier.size(40.dp), style = MillenniumIconButtonStyle.Quiet
         ) {
-            MillenniumIcon(
+            AppIcon(
                 Iconsax.IconsaxFolderAdd,
                 stringResource(Res.string.library_local_add_folder),
                 modifier = Modifier.size(22.dp)
@@ -287,7 +287,7 @@ internal fun LocalTracksBreadcrumb(
             onClick = onPlayFolder, enabled = state.canPlayFolder,
             modifier = Modifier.size(40.dp), style = MillenniumIconButtonStyle.Quiet
         ) {
-            MillenniumIcon(
+            AppIcon(
                 Iconsax.IconsaxPlay,
                 stringResource(Res.string.library_local_play_folder),
                 modifier = Modifier.size(22.dp)
@@ -332,7 +332,7 @@ internal fun LocalFolderRow(folder: LocalFolderUi, onClick: () -> Unit) {
             )
         },
         trailing = {
-            MillenniumIcon(
+            AppIcon(
                 FeatherIcons.ChevronRight,
                 null,
                 modifier = Modifier.size(16.dp)

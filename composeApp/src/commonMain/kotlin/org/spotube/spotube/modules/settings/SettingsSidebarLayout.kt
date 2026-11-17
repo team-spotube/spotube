@@ -19,7 +19,7 @@ package org.spotube.spotube.modules.settings
 
 
 import org.spotube.millennium.composables.MillenniumCircularProgress
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumSeparator
@@ -210,7 +210,7 @@ private fun SettingsPane(
                         onClick = onClose,
                         modifier = Modifier.padding(end = 8.dp),
                         style = MillenniumIconButtonStyle.Quiet) {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = Iconsax.IconsaxCloseSquare,
                             contentDescription = stringResource(Res.string.common_close))
                     }

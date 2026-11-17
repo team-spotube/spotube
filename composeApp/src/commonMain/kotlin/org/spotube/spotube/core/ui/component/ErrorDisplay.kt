@@ -37,7 +37,7 @@ import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumCard
 import org.spotube.millennium.composables.MillenniumDialog
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import androidx.compose.foundation.layout.size
@@ -100,7 +100,7 @@ fun ErrorDisplay(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp)) {
-        MillenniumIcon(
+        AppIcon(
             imageVector = FeatherIcons.AlertCircle,
             contentDescription = null,
             modifier = Modifier.size(64.dp),
@@ -145,7 +145,7 @@ fun ErrorDisplay(
                             },
                             modifier = Modifier.size(32.dp),
                             style = MillenniumIconButtonStyle.Quiet) {
-                            MillenniumIcon(
+                            AppIcon(
                                 imageVector = FeatherIcons.Copy,
                                 contentDescription = stringResource(Res.string.error_copy_to_clipboard),
                                 modifier = Modifier.size(16.dp))
@@ -155,7 +155,7 @@ fun ErrorDisplay(
                             onClick = { showFullLog = true },
                             modifier = Modifier.size(32.dp),
                             style = MillenniumIconButtonStyle.Quiet) {
-                            MillenniumIcon(
+                            AppIcon(
                                 imageVector = FeatherIcons.Maximize2,
                                 contentDescription = stringResource(Res.string.error_view_full_log),
                                 modifier = Modifier.size(16.dp))
@@ -186,7 +186,7 @@ fun ErrorDisplay(
                 onClick = onRetry,
                 modifier = Modifier.height(40.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    MillenniumIcon(
+                    AppIcon(
                         imageVector = FeatherIcons.RefreshCw,
                         contentDescription = null,
                         modifier = Modifier.padding(end = 8.dp).size(18.dp))
@@ -219,7 +219,7 @@ private fun ErrorLogDialog(
                     clipboardManager.setText(AnnotatedString(errorMessage))
                 },
                 style = MillenniumIconButtonStyle.Quiet) {
-                MillenniumIcon(
+                AppIcon(
                     imageVector = FeatherIcons.Copy,
                     contentDescription = stringResource(Res.string.error_copy_to_clipboard))
             }

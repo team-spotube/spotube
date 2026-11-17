@@ -19,7 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.composeunstyled.Text
 import org.spotube.spotube.core.ui.theming.AppTheme
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.theme.MillenniumTheme
 import org.spotube.millennium.theme.millenniumBevelBrush
 import org.spotube.millennium.theme.millenniumSurface
@@ -46,7 +46,7 @@ internal fun MediaEmptyState(
                 ),
                 contentAlignment = Alignment.Center
             ) {
-                MillenniumIcon(
+                AppIcon(
                     icon,
                     null,
                     modifier = Modifier.size(30.dp),

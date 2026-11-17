@@ -28,7 +28,7 @@ import androidx.compose.foundation.layout.Box
 import com.composeunstyled.currentWindowWidthBreakpoint
 import org.spotube.millennium.adaptive.WindowBreakpoints
 import androidx.compose.ui.Alignment
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumDialog
@@ -129,7 +129,7 @@ internal fun <T> SelectionSettingCard(
                                 horizontalArrangement = Arrangement.spacedBy(6.dp)
                             ) {
                                 Text(optionLabel(selectedOption))
-                                MillenniumIcon(
+                                AppIcon(
                                     imageVector = Iconsax.IconsaxArrowDown4,
                                     contentDescription = null,
                                     modifier = Modifier.size(14.dp)

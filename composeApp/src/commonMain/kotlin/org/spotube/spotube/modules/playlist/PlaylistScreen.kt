@@ -19,7 +19,7 @@ package org.spotube.spotube.modules.playlist
 
 
 import androidx.compose.ui.Alignment
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import androidx.compose.foundation.layout.Arrangement
@@ -107,7 +107,7 @@ fun PlaylistScreen(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = Iconsax.IconsaxAddSquare,
                             contentDescription = null)
                         Text(stringResource(Res.string.playlist_add_tracks_button))

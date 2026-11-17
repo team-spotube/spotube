@@ -46,7 +46,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumDialog
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.support_dialog_dismiss
 import spotube.composeapp.generated.resources.support_dialog_message
@@ -133,7 +133,7 @@ fun SupportDialog(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = option.icon,
                             contentDescription = null,
                             modifier = Modifier.size(20.dp),

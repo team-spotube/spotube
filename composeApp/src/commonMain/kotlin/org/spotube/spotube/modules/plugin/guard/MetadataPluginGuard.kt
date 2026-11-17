@@ -58,7 +58,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumCard
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.theme.MillenniumTheme
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.no_metadata_plugin_action_install
@@ -186,7 +186,7 @@ private fun NoMetadataPluginScreen(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        MillenniumIcon(
+                        AppIcon(
                             if (hasInstalledPlugins) Iconsax.IconsaxCheckCircle else Iconsax.IconsaxAdd,
                             contentDescription = null,
                             modifier = Modifier.size(18.dp))
@@ -203,7 +203,7 @@ private fun NoMetadataPluginScreen(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        MillenniumIcon(
+                        AppIcon(
                             Iconsax.IconsaxMusicLibrary,
                             contentDescription = null,
                             modifier = Modifier.size(18.dp))
@@ -236,7 +236,7 @@ private fun HeroBadge() {
                 .clip(RoundedCornerShape(20.dp))
                 .background(primary.copy(alpha = 0.12f)),
             contentAlignment = Alignment.Center) {
-            MillenniumIcon(
+            AppIcon(
                 Iconsax.IconsaxBoxAdd,
                 contentDescription = null,
                 modifier = Modifier.size(36.dp),

@@ -3,7 +3,7 @@ package org.spotube.spotube.modules.welcome.pages
 
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -55,7 +55,7 @@ fun DonationPage(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        MillenniumIcon(
+                        AppIcon(
                             option.icon, null, Modifier.size(24.dp),
                             tint = if (option.id == "patreon") AppTheme.colors.onSurface else Color.Unspecified)
                         Text(stringResource(option.title))

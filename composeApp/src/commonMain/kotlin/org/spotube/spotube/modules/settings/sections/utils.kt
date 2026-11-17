@@ -18,7 +18,7 @@
 package org.spotube.spotube.modules.settings.sections
 
 
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumSeparator
 import org.spotube.millennium.theme.MillenniumTheme
 import org.spotube.millennium.theme.millenniumPanelBrush
@@ -131,7 +131,7 @@ internal fun SettingsItemIcon(
             .clip(RoundedCornerShape(8.dp))
             .background(tint.copy(alpha = 0.12f))) {
         Box(modifier = Modifier.padding(8.dp)) {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = imageVector,
                 contentDescription = contentDescription,
                 tint = tint)

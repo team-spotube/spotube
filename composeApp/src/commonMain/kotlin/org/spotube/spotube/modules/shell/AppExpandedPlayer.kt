@@ -18,7 +18,7 @@
 package org.spotube.spotube.modules.shell
 
 
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
@@ -389,7 +389,7 @@ fun AppExpandedPlayer(
                                         is DownloadStatus.Queued -> Iconsax.InconsaxClock
                                         null -> Iconsax.IconsaxDirectboxReceive
                                     }
-                                    MillenniumIcon(
+                                    AppIcon(
                                         imageVector = icon,
                                         contentDescription = statusLabel,
                                         modifier = Modifier.size(28.dp),
@@ -467,7 +467,7 @@ fun AppExpandedPlayer(
                     onClick = onCollapse,
                     style = MillenniumIconButtonStyle.Quiet
                 ) {
-                    MillenniumIcon(
+                    AppIcon(
                         Iconsax.IconsaxArrowDown4,
                         contentDescription = stringResource(Res.string.player_collapse_content_description)
                     )
@@ -483,7 +483,7 @@ fun AppExpandedPlayer(
                     onClick = playerOptionsViewModel::showMoreOptionsSheet,
                     style = MillenniumIconButtonStyle.Quiet
                 ) {
-                    MillenniumIcon(Iconsax.Iconsax3DotsMore, contentDescription = stringResource(Res.string.player_options_content_description))
+                    AppIcon(Iconsax.Iconsax3DotsMore, contentDescription = stringResource(Res.string.player_options_content_description))
                 }
             }
 
@@ -548,7 +548,7 @@ fun AppExpandedPlayer(
                     onClick = onQueue,
                     style = MillenniumIconButtonStyle.Secondary
                 ) {
-                    MillenniumIcon(Iconsax.IconsaxMusicFilter, contentDescription = stringResource(Res.string.queue_title))
+                    AppIcon(Iconsax.IconsaxMusicFilter, contentDescription = stringResource(Res.string.queue_title))
                 }
             }
 
@@ -597,7 +597,7 @@ fun AppExpandedPlayer(
                         enabled = !isJamGuest,
                         style = MillenniumIconButtonStyle.Quiet
                     ) {
-                        MillenniumIcon(
+                        AppIcon(
                             Iconsax.IconsaxShuffle,
                             contentDescription = stringResource(if (playerUiState.isShuffling) Res.string.player_disable_shuffle_content_description else Res.string.player_enable_shuffle_content_description),
                             tint = if (playerUiState.isShuffling) {
@@ -612,13 +612,13 @@ fun AppExpandedPlayer(
                         enabled = !isJamGuest,
                         style = MillenniumIconButtonStyle.Quiet
                     ) {
-                        MillenniumIcon(Iconsax.IconsaxPrevious, contentDescription = stringResource(Res.string.player_previous_content_description))
+                        AppIcon(Iconsax.IconsaxPrevious, contentDescription = stringResource(Res.string.player_previous_content_description))
                     }
                     MillenniumIconButton(
                         onClick = ::onPlayPause,
                         style = MillenniumIconButtonStyle.Primary
                     ) {
-                        MillenniumIcon(
+                        AppIcon(
                             if (playerUiState.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                             contentDescription = stringResource(if (playerUiState.isPlaying) Res.string.player_pause_content_description else Res.string.player_play_content_description),
                             modifier = Modifier.size(30.dp),
@@ -630,14 +630,14 @@ fun AppExpandedPlayer(
                         enabled = !isJamGuest,
                         style = MillenniumIconButtonStyle.Quiet
                     ) {
-                        MillenniumIcon(Iconsax.IconsaxNext, contentDescription = stringResource(Res.string.player_next_content_description))
+                        AppIcon(Iconsax.IconsaxNext, contentDescription = stringResource(Res.string.player_next_content_description))
                     }
                     MillenniumIconButton(
                         onClick = ::onLoopToggle,
                         enabled = !isJamGuest,
                         style = MillenniumIconButtonStyle.Quiet
                     ) {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = when (playerUiState.loopState) {
                                 LoopState.NONE -> Iconsax.IconsaxRepeateMusic
                                 LoopState.ONE -> Iconsax.IconsaxRepeateOne
@@ -716,7 +716,7 @@ private fun LyricsPreviewCard(
                 onClick = onExpand,
                 style = MillenniumIconButtonStyle.Quiet
             ) {
-                MillenniumIcon(
+                AppIcon(
                     Iconsax.IconsaxArrowSquareUp,
                     contentDescription = stringResource(Res.string.player_expand_lyrics_content_description),
                     tint = MillenniumTheme.colors.muted
@@ -753,7 +753,7 @@ private fun OptionTile(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                MillenniumIcon(
+                AppIcon(
                     imageVector = icon,
                     contentDescription = label,
                     modifier = Modifier.size(28.dp),

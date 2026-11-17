@@ -18,7 +18,7 @@
 package org.spotube.spotube.core.ui.component.cards
 
 
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import com.composeunstyled.LocalTextStyle
@@ -146,7 +146,7 @@ fun PlayableCard(
                                         modifier = Modifier.size(34.dp),
                                         style = MillenniumIconButtonStyle.Secondary
                                     ) {
-                                        MillenniumIcon(
+                                        AppIcon(
                                             imageVector = Iconsax.IconsaxAddSquare,
                                             contentDescription = stringResource(
                                                 Res.string.player_add_to_queue_content_description
@@ -163,7 +163,7 @@ fun PlayableCard(
                                         style = MillenniumIconButtonStyle.Primary
 
                                     ) {
-                                        MillenniumIcon(
+                                        AppIcon(
                                             imageVector = if (isPlaying) {
                                                 Iconsax.IconsaxPause
                                             } else Iconsax.IconsaxPlay,

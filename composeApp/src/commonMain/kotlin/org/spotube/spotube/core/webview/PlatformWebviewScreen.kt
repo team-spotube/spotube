@@ -18,7 +18,7 @@
 package org.spotube.spotube.core.webview
 
 
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import androidx.compose.foundation.BorderStroke
@@ -174,7 +174,7 @@ fun PlatformWebViewScreen(webViewController: WebViewController) {
                                 enabled = navigator.canGoBack,
                                 style = MillenniumIconButtonStyle.Quiet
                             ) {
-                                MillenniumIcon(
+                                AppIcon(
                                     FeatherIcons.ChevronLeft,
                                     contentDescription = stringResource(Res.string.webview_go_back)
                                 )
@@ -186,7 +186,7 @@ fun PlatformWebViewScreen(webViewController: WebViewController) {
                                 enabled = navigator.canGoForward,
                                 style = MillenniumIconButtonStyle.Quiet
                             ) {
-                                MillenniumIcon(
+                                AppIcon(
                                     FeatherIcons.ChevronRight,
                                     contentDescription = stringResource(Res.string.webview_go_forward)
                                 )
