@@ -47,6 +47,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import compose.icons.FeatherIcons
+import compose.icons.feathericons.ChevronRight
+import org.spotube.spotube.core.navigation.NavigationCommands
+import org.spotube.spotube.core.navigation.Routes
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.spotube.core.ui.theming.AppTheme
 import org.spotube.spotube.core.ui.theming.isLightAppearance
 import org.spotube.spotube.modules.settings.SettingsViewModel
@@ -73,7 +78,9 @@ import spotube.composeapp.generated.resources.*
 internal fun LazyListScope.appearanceSection(
     settings: UserSettings,
     settingsViewModel: SettingsViewModel,
-    includeHeader: Boolean = true) {
+    includeHeader: Boolean = true,
+    /** When set, themes are a page opened from a single row (compact screens) instead of an inline list. */
+    themesPageNavigation: NavigationCommands? = null) {
     if (includeHeader) {
         settingsSectionHeader(Res.string.settings_section_appearance)
     }
@@ -100,7 +107,26 @@ internal fun LazyListScope.appearanceSection(
                 )
             })
     )
-    item { ThemesPanel() }
+    if (themesPageNavigation != null) {
+        settingsSectionCard(
+            items = listOf {
+                SettingCardItem(
+                    title = stringResource(Res.string.settings_themes_title),
+                    subtitle = stringResource(Res.string.settings_themes_subtitle),
+                    icon = {
+                        SettingsItemIcon(Iconsax.IconsaxMagic, stringResource(Res.string.settings_themes_title))
+                    },
+                    trailingContent = {
+                        AppIcon(
+                            imageVector = FeatherIcons.ChevronRight,
+                            contentDescription = null,
+                            tint = AppTheme.colors.onSurfaceVariant)
+                    },
+                    onClick = { themesPageNavigation.navigateTo(Routes.ThemeSettings) })
+            })
+    } else {
+        item { ThemesPanel() }
+    }
 }
 
 @Composable

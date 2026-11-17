@@ -37,6 +37,7 @@ import org.spotube.spotube.modules.saved_tracks.SavedTracksScreen
 import org.spotube.spotube.modules.search.SearchScreen
 import org.spotube.spotube.modules.settings.SettingsScreen
 import org.spotube.spotube.modules.settings.JamSettingsScreen
+import org.spotube.spotube.modules.settings.ThemeSettingsScreen
 import org.spotube.spotube.modules.welcome.WelcomeScreen
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
@@ -95,6 +96,9 @@ sealed interface Routes : NavKey {
 
     @Serializable
     data object JamSettings : Routes
+
+    @Serializable
+    data object ThemeSettings : Routes
 
     @Serializable
     data object Welcome : Routes
@@ -204,6 +208,9 @@ val navigationModule = module {
     }
     navigation<Routes.JamSettings> {
         JamSettingsScreen(viewModel = koinViewModel())
+    }
+    navigation<Routes.ThemeSettings> {
+        ThemeSettingsScreen()
     }
     navigation<Routes.Welcome> {
         WelcomeScreen(viewModel = koinViewModel())

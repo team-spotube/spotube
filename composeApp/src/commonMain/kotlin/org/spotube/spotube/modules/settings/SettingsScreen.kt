@@ -135,7 +135,8 @@ private fun CompactSettingsContent(
                     settingsViewModel = settingsViewModel)
                 appearanceSection(
                     settings = settings,
-                    settingsViewModel = settingsViewModel)
+                    settingsViewModel = settingsViewModel,
+                    themesPageNavigation = navigatorCommands)
                 playbackSection(
                     settings = settings,
                     settingsViewModel = settingsViewModel,
