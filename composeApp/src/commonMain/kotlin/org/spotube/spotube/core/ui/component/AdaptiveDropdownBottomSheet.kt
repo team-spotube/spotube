@@ -168,8 +168,8 @@ private fun AdaptiveBottomSheetContent(
     }
     MillenniumModalBottomSheet(
         state = sheetState,
-        contentPadding = PaddingValues(top = 10.dp, bottom = 8.dp),
-        contentSpacing = 4.dp) {
+        contentPadding = PaddingValues(top = 12.dp, bottom = 12.dp),
+        contentSpacing = 6.dp) {
         Column(
             modifier = Modifier.fillMaxWidth()) {
             header?.invoke()
@@ -189,7 +189,7 @@ private fun AdaptiveBottomSheetContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 8.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 items(
                     count = filteredItems.size) { index ->
                     val item = filteredItems[index]
@@ -202,7 +202,7 @@ private fun AdaptiveBottomSheetContent(
                         hasSelection = hasSelection,
                         hasLeading = hasLeading,
                         textStyle = AppTheme.typography.bodyLarge,
-                        minimumHeight = 56.dp,
+                        minimumHeight = 52.dp,
                         onClick = {
                             item.onClick()
                             onDismiss()
