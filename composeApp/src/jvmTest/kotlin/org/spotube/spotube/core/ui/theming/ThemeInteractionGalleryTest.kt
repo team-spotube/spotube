@@ -35,6 +35,7 @@ class ThemeInteractionGalleryTest {
                 ThemeInteractionGallery.render(theme, dark, "dock0", file("dock"), 760, 420) { ThemeInteractionGallery.Navigation() }
                 ThemeInteractionGallery.render(theme, dark, "menu0", file("menu"), 360, 300, hoverOffset = androidx.compose.ui.geometry.Offset(0f, 72f)) { ThemeInteractionGallery.Menu() }
                 ThemeInteractionGallery.render(theme, dark, "close", file("dialog"), 560, 360) { ThemeInteractionGallery.DialogView() }
+                ThemeInteractionGallery.render(theme, dark, "row1", file("themerows"), 560, 240) { ThemeInteractionGallery.ThemeRows() }
             }
         }
     }

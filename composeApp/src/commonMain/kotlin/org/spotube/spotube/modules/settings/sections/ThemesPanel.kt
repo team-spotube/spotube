@@ -68,6 +68,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumDialog
+import org.spotube.millennium.composables.MillenniumListTile
 import org.spotube.millennium.composables.MillenniumDialogBody
 import org.spotube.millennium.composables.MillenniumDialogClose
 import org.spotube.millennium.composables.MillenniumDialogFooter
@@ -176,24 +177,23 @@ internal fun ThemesPanel() {
     }
 }
 
+/**
+ * One theme row. Built on [MillenniumListTile] so hover, press, focus and the selected look come from the active
+ * theme (a bare `clickable` draws nothing: Millennium turns Compose's default indication off).
+ */
 @Composable
-private fun ThemeRow(card: ThemeCardUi, onOpen: () -> Unit, onSelect: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onOpen)
-            .padding(horizontal = 14.dp, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(14.dp),
-    ) {
-        PluginIconWell(size = 40.dp) { ThemeLogo(card) }
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+internal fun ThemeRow(card: ThemeCardUi, onOpen: () -> Unit, onSelect: () -> Unit) {
+    MillenniumListTile(
+        modifier = Modifier.fillMaxWidth(),
+        selected = card.selected,
+        onClick = onOpen,
+        leading = { PluginIconWell(size = 40.dp) { ThemeLogo(card) } },
+        title = {
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     card.displayName(),
                     style = AppTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold,
-                    color = AppTheme.colors.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.weight(1f, fill = false),
@@ -206,6 +206,8 @@ private fun ThemeRow(card: ThemeCardUi, onOpen: () -> Unit, onSelect: () -> Unit
                     )
                 }
             }
+        },
+        subtitle = {
             Text(
                 listOfNotNull(
                     card.author?.let { stringResource(Res.string.settings_theme_by_author, it) },
@@ -216,20 +218,22 @@ private fun ThemeRow(card: ThemeCardUi, onOpen: () -> Unit, onSelect: () -> Unit
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
-        }
-        if (card.selected) {
-            Text(
-                stringResource(Res.string.settings_theme_selected),
-                style = AppTheme.typography.labelMedium,
-                fontWeight = FontWeight.SemiBold,
-                color = AppTheme.colors.primary,
-            )
-        } else {
-            MillenniumButton(onClick = onSelect, style = MillenniumButtonStyle.Secondary) {
-                Text(stringResource(Res.string.settings_theme_select))
+        },
+        trailing = {
+            if (card.selected) {
+                Text(
+                    stringResource(Res.string.settings_theme_selected),
+                    style = AppTheme.typography.labelMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = AppTheme.colors.primary,
+                )
+            } else {
+                MillenniumButton(onClick = onSelect, style = MillenniumButtonStyle.Secondary) {
+                    Text(stringResource(Res.string.settings_theme_select))
+                }
             }
-        }
-    }
+        },
+    )
 }
 
 /** The theme's own logo, a swatch of the accent for built-in looks, or a generic icon. */

@@ -162,4 +162,29 @@ internal object ThemeInteractionGallery {
             MillenniumDialogFooter { MillenniumButton(onClick = {}) { Text("Install") } }
         }
     }
+
+    private fun themeCard(id: String, palette: org.spotube.millennium.theme.MillenniumPalette, selected: Boolean) =
+        org.spotube.spotube.modules.settings.ThemeCardUi(
+            id = id, name = "", version = null, author = "Spotube Team", description = null, logo = null,
+            builtinPalette = palette, selected = selected, repository = null, bugs = null, homepage = null, contact = null,
+            license = "AGPL-3.0", licenseText = null, fontFiles = 0, icons = 0, problems = emptyList(),
+        )
+
+    /** The Themes rows: first selected, hover on the second. */
+    @Composable
+    fun ThemeRows() {
+        Column(Modifier.fillMaxWidth().padding(8.dp)) {
+            org.spotube.spotube.modules.settings.sections.ThemeRow(
+                themeCard("a", org.spotube.millennium.theme.MillenniumPalette.Blue, true), onOpen = {}, onSelect = {},
+            )
+            Box(Modifier.track("row1")) {
+                org.spotube.spotube.modules.settings.sections.ThemeRow(
+                    themeCard("b", org.spotube.millennium.theme.MillenniumPalette.Orange, false), onOpen = {}, onSelect = {},
+                )
+            }
+            org.spotube.spotube.modules.settings.sections.ThemeRow(
+                themeCard("c", org.spotube.millennium.theme.MillenniumPalette.Lime, false), onOpen = {}, onSelect = {},
+            )
+        }
+    }
 }
