@@ -194,9 +194,6 @@ private fun AdaptiveBottomSheetContent(
                     count = filteredItems.size) { index ->
                     val item = filteredItems[index]
 
-                    if (item.dividerBefore) {
-                        MillenniumSeparator(modifier = Modifier.padding(vertical = 4.dp))
-                    }
                     AdaptiveMenuTile(
                         item = item,
                         hasSelection = hasSelection,
