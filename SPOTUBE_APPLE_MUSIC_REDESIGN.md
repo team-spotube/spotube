@@ -298,3 +298,17 @@ This section is updated alongside each implementation batch. The specification a
 - Changes in these slices are limited to Compose presentation/layout values and shared UI styling. No plugin manager state, install/remove/login actions, permissions, settings state, persistence, or backend behavior was intentionally modified.
 - `./gradlew :composeApp:check` has not yet been run. Compilation and runtime appearance remain unverified.
 - Remaining work: inspect other reachable shared controls/dialogs and settings/plugin sub-surfaces, perform responsive/light-dark review, run the documented Gradle check, and review the final diff.
+
+
+### UI primitives and playback overlays
+
+- **Adaptive dialogs and bottom sheets:** refined title/content spacing, scrollable content height, and footer separation while retaining the existing responsive dialog-versus-sheet breakpoint and dismiss behavior.
+- **Adaptive dropdown menus:** standardized sheet padding, menu item rhythm, and row height without changing filtering, selection, enabled states, or item callbacks.
+- **Queue surface:** refined desktop end-drawer width/padding and mobile bottom-sheet padding/spacing; queue state and dismissal wiring remain unchanged.
+- **Playable list tiles:** adjusted artwork corner radius, row height, and icon/content spacing; track selection and playback actions remain unchanged.
+
+### Updated validation state
+
+- These changes are presentation-only Compose adjustments in shared UI primitives and queue container layout.
+- No queue ordering, playback, filtering, menu action, navigation, plugin, persistence, or ViewModel behavior was intentionally changed.
+- Build/test execution remains outstanding: `./gradlew :composeApp:check` has not been run from this GitHub-connected environment.
