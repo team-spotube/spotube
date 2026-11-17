@@ -34,6 +34,7 @@ import org.spotube.spotube.core.remote.RemoteControlClient
 import org.spotube.spotube.core.remote.RemoteControlHandler
 import org.spotube.spotube.core.remote.RemoteControlService
 import org.spotube.spotube.core.remote.RemotePlaybackController
+import org.spotube.spotube.core.shortcuts.AppShortcuts
 import org.spotube.spotube.core.scrobble.ScrobbleManager
 import org.spotube.spotube.core.playback.CollectionPlaybackHelper
 import org.spotube.spotube.core.server.AlternativeTracksRepository
@@ -288,6 +289,7 @@ val sharedModules = module {
         createdAtStart()
     }
     single { RemotePlaybackController(get(), get(), get(), get(), get()) }
+    single { AppShortcuts(get(), get(), get()) }
     singleOf(::JamRoomClient)
     single {
         JamRoomService(
