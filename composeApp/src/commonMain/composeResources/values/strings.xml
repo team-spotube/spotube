@@ -945,6 +945,7 @@
     <string name="player_track_details_album">Album</string>
     <string name="player_track_details_confidence">Confidence</string>
     <string name="player_track_details_external_uri">External URI</string>
+    <string name="player_track_details_copy_url">Copy URL</string>
     <string name="player_track_details_album_id">Album ID</string>
     <string name="player_track_details_album_type">Album type</string>
     <string name="player_track_details_album_release_date">Album release date</string>
