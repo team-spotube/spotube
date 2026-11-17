@@ -110,17 +110,17 @@ fun AdaptiveDialogBottomSheet(
                                 contentDescription = stringResource(Res.string.common_close_dialog))
                         }
                     }
-                    Spacer(Modifier.height(12.dp))
+                    Spacer(Modifier.height(16.dp))
                 }
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(max = 560.dp)
+                        .heightIn(max = 600.dp)
                         .verticalScroll(rememberScrollState())) {
                     content()
                 }
                 actions?.let {
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(12.dp))
                     MillenniumSeparator()
                     Spacer(Modifier.height(8.dp))
                     it()
