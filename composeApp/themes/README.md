@@ -109,6 +109,8 @@ Types: `enum` (buttons, or colour swatches when options carry a `color`), `numbe
 },
 "tokens": { "type": { "family": "Comfortaa" } }
 ```
+**Icon packs.** `"iconPack": { "font": "Icons", "icons": { "house": "U+E000", "skip-forward": "U+E001", ... } }` (inside `assets`, `font` names a family from `assets.fonts`) restyles *every* app icon at once, including the ones Millennium draws itself (sidebar, dock, icon buttons, checkmarks, chevrons). Keys are icon **roles**, the Lucide names (`house`, `search`, `trash-2`, `chevron-down`; the full list is in the themes repository's `tools/icon-roles.json`, derived from `ModernLucideIcons.kt`). Roles a pack does not define keep the stock icon, and an entry in `assets.icons` wins over the pack. The themes repository builds small subset fonts of Lucide, Phosphor (thin/regular/bold/fill), Bootstrap Icons, Font Awesome Free and Fluent from their official artwork.
+
 `tokens.type.family` applies the font everywhere; any `textStyle` can override with `fontFamily`. Built-in family names need no assets: `default sans-serif serif monospace cursive`. Icon keys are the app's icon vector names (see `composeApp/src/commonMain/kotlin/org/spotube/spotube/resources/iconsax`). Icons drawn by Millennium components (sidebar, icon buttons, checkbox ticks, chevrons) are covered too, but only by built-in themes: swapping them needs real `ImageVector`s, which a package (pure data) can't carry. The bundled Modern theme replaces the whole Iconsax set with Lucide this way (`ModernLucideIcons.kt`). Fonts: `.ttf`/`.otf` only. Images: `.png` only, max 512 x 512. No SVG.
 
 ## Security model

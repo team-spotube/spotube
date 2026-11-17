@@ -326,4 +326,14 @@ class ThemeEngineTest {
         assertNotNull(t.appBackground)
         assertEquals(emptyList(), t.problems)
     }
+
+    @Test
+    fun iconRolesAreLucideNames() {
+        assertEquals("skip-forward", kebabCase("SkipForward"))
+        assertEquals("trash-2", kebabCase("Trash2"))
+        assertEquals("trash-2", kebabCase("Trash-2"))
+        assertEquals("disc-3", kebabCase("Disc3"))
+        assertEquals("trash-2", iconRoleByVectorName["IconsaxTrash"])
+        assertEquals("house", iconRoleByVectorName["IconsaxHome"])
+    }
 }

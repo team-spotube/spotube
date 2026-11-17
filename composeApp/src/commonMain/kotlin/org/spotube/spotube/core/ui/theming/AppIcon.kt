@@ -19,6 +19,7 @@ package org.spotube.spotube.core.ui.theming
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicText
@@ -35,6 +36,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
+import com.composeunstyled.LocalTextStyle
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumIconTheme
 import org.spotube.millennium.theme.MillenniumControlState
@@ -75,7 +77,7 @@ fun AppIcon(
         MillenniumControlState.Pressed -> colors.accentBottom
         MillenniumControlState.Disabled -> colors.muted
         MillenniumControlState.Error -> colors.danger
-        MillenniumControlState.Default -> colors.text
+        MillenniumControlState.Default -> LocalTextStyle.current.color.takeIf { it != Color.Unspecified } ?: colors.text
     }
     val box = size ?: properties.size
     Box(
@@ -85,23 +87,29 @@ fun AppIcon(
             .semantics { if (contentDescription != null) this.contentDescription = contentDescription },
         contentAlignment = Alignment.Center,
     ) {
-        when (override) {
-            is ThemeIcon.Glyph -> {
-                val fontSize = with(LocalDensity.current) { box.toSp() } * 0.9f
-                BasicText(
-                    text = override.text,
-                    style = TextStyle(fontFamily = override.family, fontSize = fontSize, color = resolvedTint),
-                    maxLines = 1,
-                    softWrap = false,
-                )
-            }
-            is ThemeIcon.Vector -> Unit // handled above
-            is ThemeIcon.Bitmap -> Image(
-                bitmap = override.image,
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                colorFilter = if (override.tinted) ColorFilter.tint(resolvedTint) else null,
+        ThemeIconBody(override, resolvedTint, Modifier.fillMaxSize())
+    }
+}
+
+/** The inside of a non-vector theme icon (glyph or bitmap), filling [modifier]; also used for Millennium-drawn icons. */
+@Composable
+internal fun ThemeIconBody(icon: ThemeIcon, tint: Color, modifier: Modifier = Modifier) {
+    when (icon) {
+        is ThemeIcon.Glyph -> BoxWithConstraints(modifier, contentAlignment = Alignment.Center) {
+            val fontSize = with(LocalDensity.current) { minOf(maxWidth, maxHeight).toSp() } * 0.9f
+            BasicText(
+                text = icon.text,
+                style = TextStyle(fontFamily = icon.family, fontSize = fontSize, color = tint),
+                maxLines = 1,
+                softWrap = false,
             )
         }
+        is ThemeIcon.Vector -> Unit
+        is ThemeIcon.Bitmap -> Image(
+            bitmap = icon.image,
+            contentDescription = null,
+            modifier = modifier,
+            colorFilter = if (icon.tinted) ColorFilter.tint(tint) else null,
+        )
     }
 }

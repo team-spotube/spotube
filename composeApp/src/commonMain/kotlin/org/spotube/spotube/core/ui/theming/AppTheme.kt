@@ -51,6 +51,7 @@ import org.spotube.millennium.theme.MillenniumColorSchemes
 import org.spotube.millennium.theme.MillenniumColors
 import org.spotube.millennium.theme.MillenniumThemeComponents
 import org.spotube.millennium.theme.resolve
+import org.spotube.millennium.composables.LocalMillenniumIconContent
 import org.spotube.millennium.composables.LocalMillenniumIconResolver
 import org.spotube.millennium.theme.LocalMillenniumInteractionStyle
 import org.spotube.millennium.theme.LocalMillenniumSurfaceStyle
@@ -311,6 +312,13 @@ private fun InstallCompiledTheme(
     MillenniumTheme(dark = dark, config = config) {
         val colors = MillenniumTheme.colors
         val appColors = remember(colors) { appColorsFrom(colors) }
+        val iconContent = remember(compiled.icons) {
+            { vector: ImageVector ->
+                val icon = compiled.icons[vector.name]
+                if (icon == null || icon is ThemeIcon.Vector) null
+                else @Composable { m: Modifier, tint: Color -> ThemeIconBody(icon, tint, m) }
+            }
+        }
         val iconResolver = remember(compiled.icons) {
             { vector: ImageVector -> (compiled.icons[vector.name] as? ThemeIcon.Vector)?.image ?: vector }
         }
@@ -324,6 +332,7 @@ private fun InstallCompiledTheme(
             LocalAppBackground provides compiled.appBackground,
             // Icons drawn inside Millennium components (sidebar, icon buttons, ticks) go through this.
             LocalMillenniumIconResolver provides iconResolver,
+            LocalMillenniumIconContent provides iconContent,
             content = content
         )
     }
