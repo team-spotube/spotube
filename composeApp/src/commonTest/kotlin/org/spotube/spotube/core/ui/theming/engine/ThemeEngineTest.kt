@@ -336,4 +336,48 @@ class ThemeEngineTest {
         assertEquals("trash-2", iconRoleByVectorName["IconsaxTrash"])
         assertEquals("house", iconRoleByVectorName["IconsaxHome"])
     }
+
+    private fun parseProblems(json: String): Pair<ThemeDocument?, Set<String>> {
+        val problems = linkedSetOf<String>()
+        return parseThemeDocument(json, problems) to problems
+    }
+
+    @Test
+    fun schemaVersionFollowsSemver() {
+        assertEquals(SchemaVersion(1, 2, 3), SchemaVersion.parse("1.2.3"))
+        assertNull(SchemaVersion.parse("1.2"))
+        assertNull(SchemaVersion.parse("v1.2.3"))
+        assertNull(SchemaVersion.parse("01.2.3"))
+
+        val current = SchemaVersion(1, 2, 3)
+        assertEquals(SchemaCompat.Ok, checkSchemaCompat(SchemaVersion(1, 0, 0), current))
+        assertEquals(SchemaCompat.Ok, checkSchemaCompat(SchemaVersion(1, 2, 9), current)) // patch never matters
+        assertEquals(SchemaCompat.Newer(SchemaVersion(1, 3, 0)), checkSchemaCompat(SchemaVersion(1, 3, 0), current))
+        assertTrue(checkSchemaCompat(SchemaVersion(2, 0, 0), current) is SchemaCompat.Unsupported)
+        assertTrue(checkSchemaCompat(SchemaVersion(0, 9, 0), current) is SchemaCompat.Unsupported)
+    }
+
+    @Test
+    fun themeDeclaresItsSchema() {
+        val (doc, problems) = parseProblems("""{"schema":"$THEME_SCHEMA_VERSION"}""")
+        assertEquals(THEME_SCHEMA_VERSION, doc?.schema)
+        assertEquals(emptySet(), problems)
+        assertEquals("1.0.0", parseProblems("""{"schema":1}""").first?.schema) // pre-semver files
+        assertEquals(THEME_SCHEMA_VERSION, parseProblems("{}").first?.schema)
+    }
+
+    @Test
+    fun otherMajorsAreRefusedAndNewerMinorsWarn() {
+        val major = SchemaVersion.Current.major
+        val (refused, why) = parseProblems("""{"schema":"${major + 1}.0.0"}""")
+        assertNull(refused)
+        assertTrue(why.single().contains("newer Spotube"))
+
+        val (newer, warn) = parseProblems("""{"schema":"$major.${SchemaVersion.Current.minor + 1}.0"}""")
+        assertNotNull(newer)
+        assertTrue(warn.single().contains("newer parts are ignored"))
+
+        assertNull(parseProblems("""{"schema":"banana"}""").first)
+        assertNull(parseProblems("""{"schema":"1.0"}""").first)
+    }
 }

@@ -132,6 +132,10 @@ private const val MILLENNIUM_ID = BuiltInThemes.MILLENNIUM_ID
 private const val MILLENNIUM_REPO = "https://github.com/team-spotube/millennium"
 private const val SPOTUBE_REPO = "https://github.com/team-spotube/spotube"
 
+/** The GitHub topic theme authors tag their repositories with so people can find them. */
+const val THEME_DISCOVERY_TOPIC = "spotube-theme"
+const val THEME_DISCOVERY_URL = "https://github.com/topics/$THEME_DISCOVERY_TOPIC"
+
 /** The theme id to treat as selected: unknown, removed and older `builtin:blue/orange/lime` ids all mean Millennium. */
 internal fun normalizeSelectedThemeId(selected: String?, installedIds: List<String>): String =
     selected?.takeIf { it == MILLENNIUM_ID || it == BuiltInThemes.MODERN_ID || it in installedIds } ?: MILLENNIUM_ID

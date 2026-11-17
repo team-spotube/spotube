@@ -50,9 +50,9 @@ object BuiltInThemes {
  * "Modern": a neutral, flat look in the spirit of shadcn/ui's zinc palette. Solid surfaces, 1px hairline
  * borders, small radii, no gloss, no hover scaling; the primary action is the foreground colour. Icons are Lucide.
  */
-private const val MODERN_JSON = """
+internal const val MODERN_JSON = """
 {
-  "schema": 1,
+  "schema": "1.0.0",
   "id": "modern",
   "name": "Modern",
   "version": "1.0.0",

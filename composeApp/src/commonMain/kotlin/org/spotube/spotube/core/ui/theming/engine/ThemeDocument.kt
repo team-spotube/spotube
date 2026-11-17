@@ -28,8 +28,49 @@ import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.intOrNull
 
-/** Highest `schema` version this build understands. Newer files still load, with a warning. */
-const val THEME_SCHEMA_VERSION = 1
+/**
+ * The theme schema version this build implements ([semver](https://semver.org)).
+ *
+ * - **major**: breaking changes (a property removed or its meaning changed). A theme of another major is refused.
+ * - **minor**: backwards-compatible additions (new tokens, components, properties, functions). A theme written for an
+ *   older or *newer* minor of this major still loads; parts this build doesn't know are ignored, with a warning when
+ *   the theme is newer.
+ * - **patch**: clarifications and fixes, never visible to themes.
+ *
+ * Keep in sync with `composeApp/themes/schema/theme.schema.json` (`ThemeSchemaTest` checks it) and bump it with every
+ * change to the theme format.
+ */
+const val THEME_SCHEMA_VERSION = "1.0.0"
+
+/** A parsed `MAJOR.MINOR.PATCH`. */
+data class SchemaVersion(val major: Int, val minor: Int, val patch: Int) {
+    override fun toString() = "$major.$minor.$patch"
+
+    companion object {
+        private val PATTERN = Regex("(0|[1-9][0-9]{0,5})\\.(0|[1-9][0-9]{0,5})\\.(0|[1-9][0-9]{0,5})")
+
+        fun parse(text: String): SchemaVersion? = PATTERN.matchEntire(text.trim())?.destructured?.let { (a, b, c) ->
+            SchemaVersion(a.toInt(), b.toInt(), c.toInt())
+        }
+
+        val Current: SchemaVersion = parse(THEME_SCHEMA_VERSION)!!
+    }
+}
+
+/** How a theme's declared schema relates to what this build implements. */
+internal sealed interface SchemaCompat {
+    data object Ok : SchemaCompat
+    /** Same major, but the theme is written for a newer minor: it loads, unknown parts are ignored. */
+    data class Newer(val declared: SchemaVersion) : SchemaCompat
+    data class Unsupported(val reason: String) : SchemaCompat
+}
+
+internal fun checkSchemaCompat(declared: SchemaVersion, current: SchemaVersion = SchemaVersion.Current): SchemaCompat = when {
+    declared.major > current.major -> SchemaCompat.Unsupported("This theme needs a newer Spotube (it uses theme schema $declared, this app implements $current)")
+    declared.major < current.major -> SchemaCompat.Unsupported("This theme uses the outdated theme schema $declared (this app implements $current); ask its author to update it")
+    declared.minor > current.minor -> SchemaCompat.Newer(declared)
+    else -> SchemaCompat.Ok
+}
 
 enum class ThemeVarType { Color, Number, Bool, String, Enum }
 
@@ -62,7 +103,8 @@ class ThemeVarDecl(
 
 /** A parsed theme file. Everything below is still raw JSON: it is evaluated per appearance/state. */
 class ThemeDocument(
-    val schema: Int,
+    /** The theme schema version the file declares (semver). */
+    val schema: String,
     val id: String,
     val name: String,
     val tokens: JsonObject,
@@ -98,10 +140,16 @@ fun parseThemeDocument(text: String, problems: MutableSet<String>): ThemeDocumen
         problems += "Theme root must be a JSON object"
         return null
     }
-    val schema = root["schema"]?.jsonPrimitiveOrNull()?.intOrNull ?: THEME_SCHEMA_VERSION
-    if (schema > THEME_SCHEMA_VERSION) {
-        problems += "Theme uses schema $schema; this app understands $THEME_SCHEMA_VERSION, unknown parts are ignored"
+    val declared = parseDeclaredSchema(root["schema"]?.jsonPrimitiveOrNull(), problems) ?: return null
+    when (val compat = checkSchemaCompat(declared)) {
+        SchemaCompat.Ok -> Unit
+        is SchemaCompat.Newer -> problems += "This theme is written for theme schema ${compat.declared}; this app implements ${SchemaVersion.Current}, so newer parts are ignored"
+        is SchemaCompat.Unsupported -> {
+            problems += compat.reason
+            return null
+        }
     }
+    val schema = declared.toString()
     fun obj(key: String): JsonObject = (root[key] as? JsonObject) ?: JsonObject(emptyMap())
     return ThemeDocument(
         schema = schema,
@@ -116,6 +164,20 @@ fun parseThemeDocument(text: String, problems: MutableSet<String>): ThemeDocumen
         meta = parseThemeMetadata(root, problems),
         hasExplicitName = root["name"]?.jsonPrimitiveOrNull()?.contentOrNull?.isNotBlank() == true,
     )
+}
+
+/**
+ * `schema` is a semver string. The pre-semver integer `1` still means 1.0.0, and a missing value is assumed to be the
+ * current version so hand-written quick themes keep working (the themes repository's check still requires it).
+ */
+private fun parseDeclaredSchema(value: JsonPrimitive?, problems: MutableSet<String>): SchemaVersion? {
+    if (value == null || value is kotlinx.serialization.json.JsonNull) {
+        return SchemaVersion.Current
+    }
+    if (!value.isString && value.intOrNull == 1) return SchemaVersion(1, 0, 0)
+    val parsed = value.contentOrNull?.let(SchemaVersion::parse)
+    if (parsed == null) problems += "\"schema\" must be a semantic version such as \"${SchemaVersion.Current}\""
+    return parsed
 }
 
 /**

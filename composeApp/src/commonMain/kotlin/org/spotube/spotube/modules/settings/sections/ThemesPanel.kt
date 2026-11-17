@@ -87,6 +87,8 @@ import org.spotube.spotube.modules.plugin.components.PluginIconWell
 import org.spotube.spotube.modules.settings.PendingThemeUi
 import org.spotube.spotube.modules.settings.ThemeCardUi
 import org.spotube.spotube.modules.settings.ThemeImportError
+import org.spotube.spotube.modules.settings.THEME_DISCOVERY_TOPIC
+import org.spotube.spotube.modules.settings.THEME_DISCOVERY_URL
 import org.spotube.spotube.modules.settings.ThemeStoreViewModel
 import org.spotube.spotube.resources.iconsax.Iconsax
 import org.spotube.spotube.resources.iconsax.IconsaxMagic
@@ -109,12 +111,11 @@ internal fun ThemesPanel() {
         modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Row(
+        Column(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(
                     stringResource(Res.string.settings_themes_title),
                     style = AppTheme.typography.titleMedium,
@@ -126,9 +127,20 @@ internal fun ThemesPanel() {
                     color = AppTheme.colors.onSurfaceVariant,
                 )
             }
-            MillenniumButton(onClick = { picker.launch() }) {
-                Text(stringResource(Res.string.settings_themes_install))
+            val uriHandler = LocalUriHandler.current
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                MillenniumButton(onClick = { picker.launch() }) {
+                    Text(stringResource(Res.string.settings_themes_install))
+                }
+                MillenniumButton(onClick = { uriHandler.openUri(THEME_DISCOVERY_URL) }, style = MillenniumButtonStyle.Secondary) {
+                    Text(stringResource(Res.string.settings_themes_find))
+                }
             }
+            Text(
+                stringResource(Res.string.settings_themes_find_hint, THEME_DISCOVERY_TOPIC),
+                style = AppTheme.typography.labelMedium,
+                color = AppTheme.colors.onSurfaceVariant,
+            )
         }
         state.importError?.let { error ->
             Text(
