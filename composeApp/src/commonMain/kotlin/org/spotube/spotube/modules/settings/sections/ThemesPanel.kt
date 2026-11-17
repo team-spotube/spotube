@@ -84,6 +84,7 @@ import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.spotube.core.ui.theming.AppTheme
 import org.spotube.spotube.core.ui.theming.isLightAppearance
 import org.spotube.spotube.modules.plugin.components.PluginIconWell
+import org.spotube.spotube.core.ui.theming.engine.ThemeInstallKind
 import org.spotube.spotube.modules.settings.PendingThemeUi
 import org.spotube.spotube.modules.settings.ThemeCardUi
 import org.spotube.spotube.modules.settings.ThemeImportError
@@ -415,7 +416,13 @@ private fun InstallThemeDialog(pending: PendingThemeUi, onConfirm: () -> Unit, o
     val card = pending.card
     MillenniumDialog(visible = true, onDismissRequest = onCancel) {
         MillenniumDialogHeader {
-            MillenniumDialogTitle(stringResource(Res.string.settings_theme_install_title, card.name))
+            MillenniumDialogTitle(
+                when (pending.kind) {
+                    ThemeInstallKind.Install -> stringResource(Res.string.settings_theme_install_title, card.name)
+                    ThemeInstallKind.Update -> stringResource(Res.string.settings_theme_update_title, card.name)
+                    else -> stringResource(Res.string.settings_theme_replace_title, card.name)
+                },
+            )
             MillenniumDialogClose()
         }
         MillenniumDialogBody {
@@ -427,13 +434,8 @@ private fun InstallThemeDialog(pending: PendingThemeUi, onConfirm: () -> Unit, o
                 card.description?.let {
                     Text(it, style = AppTheme.typography.bodyMedium, color = AppTheme.colors.onSurfaceVariant)
                 }
-                if (pending.replaces) {
-                    Text(
-                        pending.replacesVersion?.let { stringResource(Res.string.settings_theme_install_replaces, it) }
-                            ?: stringResource(Res.string.settings_theme_install_replaces_unknown),
-                        style = AppTheme.typography.bodyMedium,
-                        color = AppTheme.colors.onSurface,
-                    )
+                installRelationMessage(pending)?.let {
+                    Text(it, style = AppTheme.typography.bodyMedium, color = AppTheme.colors.onSurface)
                 }
                 ThemeLinks(card)
                 ThemeLicense(card)
@@ -447,7 +449,15 @@ private fun InstallThemeDialog(pending: PendingThemeUi, onConfirm: () -> Unit, o
                 Text(stringResource(Res.string.common_cancel))
             }
             MillenniumButton(onClick = onConfirm) {
-                Text(stringResource(if (pending.replaces) Res.string.settings_theme_install_update else Res.string.settings_theme_install_confirm))
+                Text(
+                    stringResource(
+                        when (pending.kind) {
+                            ThemeInstallKind.Install -> Res.string.settings_theme_install_confirm
+                            ThemeInstallKind.Update -> Res.string.settings_theme_install_update
+                            else -> Res.string.settings_theme_install_replace
+                        },
+                    ),
+                )
             }
         }
     }
@@ -579,4 +589,19 @@ private fun parseSwatch(hex: String): androidx.compose.ui.graphics.Color {
     val h = hex.removePrefix("#")
     val v = h.toLongOrNull(16) ?: return androidx.compose.ui.graphics.Color.Gray
     return if (h.length == 6) androidx.compose.ui.graphics.Color(0xFF000000L or v) else androidx.compose.ui.graphics.Color.Gray
+}
+
+/** The sentence explaining how the package relates to what is installed (null for a fresh install). */
+@Composable
+private fun installRelationMessage(pending: PendingThemeUi): String? {
+    val installed = pending.installedVersion.orEmpty()
+    val incoming = pending.incomingVersion.orEmpty()
+    return when (pending.kind) {
+        ThemeInstallKind.Install -> null
+        ThemeInstallKind.Update -> stringResource(Res.string.settings_theme_update_message, installed, incoming)
+        ThemeInstallKind.SameVersion -> stringResource(Res.string.settings_theme_replace_same_version, incoming)
+        ThemeInstallKind.Downgrade -> stringResource(Res.string.settings_theme_replace_downgrade, installed, incoming)
+        ThemeInstallKind.InvalidIncomingVersion -> stringResource(Res.string.settings_theme_replace_invalid_incoming, incoming)
+        ThemeInstallKind.InvalidInstalledVersion -> stringResource(Res.string.settings_theme_replace_invalid_installed, installed, incoming)
+    }
 }

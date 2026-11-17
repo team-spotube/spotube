@@ -27,13 +27,13 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 /**
- * Validates every theme folder in `composeApp/themes` and, when `THEMES_DIR` is set, in that directory (the separate
+ * Validates every theme folder in `themes/` and, when `THEMES_DIR` is set, in that directory (the separate
  * themes repository): each must load without warnings and declare its metadata, every parameter choice (all enum
  * options, number extremes, both bools) must compile warning-free in light and dark, and light/dark gallery PNGs are
  * written to `build/theme-gallery/external` for review.
  */
 class ThemeFolderValidationTest {
-    private fun themeDirs(): List<File> = listOfNotNull(File("themes"), System.getenv("THEMES_DIR")?.let(::File))
+    private fun themeDirs(): List<File> = listOfNotNull(File("../themes"), System.getenv("THEMES_DIR")?.let(::File))
         .filter { it.isDirectory }
         .flatMap { root -> root.listFiles { f -> f.isDirectory && File(f, "theme.json").exists() }.orEmpty().toList() }
         .sortedBy { it.name }

@@ -380,4 +380,16 @@ class ThemeEngineTest {
         assertNull(parseProblems("""{"schema":"banana"}""").first)
         assertNull(parseProblems("""{"schema":"1.0"}""").first)
     }
+
+    @Test
+    fun installKindFollowsSemver() {
+        assertEquals(ThemeInstallKind.Install, classifyThemeInstall(null, "1.0.0"))
+        assertEquals(ThemeInstallKind.Update, classifyThemeInstall("1.0.0", "1.0.1"))
+        assertEquals(ThemeInstallKind.Update, classifyThemeInstall("1.9.0", "2.0.0"))
+        assertEquals(ThemeInstallKind.Update, classifyThemeInstall("1.0.0-beta", "1.0.0"))
+        assertEquals(ThemeInstallKind.SameVersion, classifyThemeInstall("1.2.3", "1.2.3"))
+        assertEquals(ThemeInstallKind.Downgrade, classifyThemeInstall("2.0.0", "1.9.9"))
+        assertEquals(ThemeInstallKind.InvalidIncomingVersion, classifyThemeInstall("1.0.0", "banana"))
+        assertEquals(ThemeInstallKind.InvalidInstalledVersion, classifyThemeInstall("banana", "1.0.0"))
+    }
 }

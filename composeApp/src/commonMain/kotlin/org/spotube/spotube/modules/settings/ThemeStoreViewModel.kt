@@ -47,6 +47,7 @@ import spotube.composeapp.generated.resources.settings_theme_accent_label
 import org.spotube.spotube.core.ui.theming.engine.BuiltInThemes
 import org.spotube.spotube.core.ui.theming.engine.LoadedTheme
 import org.spotube.spotube.core.ui.theming.engine.PreparedTheme
+import org.spotube.spotube.core.ui.theming.engine.ThemeInstallKind
 import org.spotube.spotube.core.ui.theming.engine.ThemeLimits
 import org.spotube.spotube.core.ui.theming.engine.ThemePackageError
 import org.spotube.spotube.core.ui.theming.engine.ThemePackageException
@@ -117,7 +118,14 @@ data class ThemeCardUi(
 
 /** A freshly validated theme awaiting the user's confirmation. */
 @Immutable
-data class PendingThemeUi(val card: ThemeCardUi, val replacesVersion: String?, val replaces: Boolean, val sizeKb: Int)
+data class PendingThemeUi(
+    val card: ThemeCardUi,
+    val kind: ThemeInstallKind,
+    /** Version of the installed copy this replaces, when there is one. */
+    val installedVersion: String?,
+    val incomingVersion: String?,
+    val sizeKb: Int,
+)
 
 @Immutable
 data class ThemeStoreUiState(
@@ -171,8 +179,9 @@ class ThemeStoreViewModel(
             pending = candidate?.let {
                 PendingThemeUi(
                     card = it.theme.toCard(selectedId, overrides),
-                    replacesVersion = it.replaces?.meta?.version,
-                    replaces = it.replaces != null,
+                    kind = it.kind,
+                    installedVersion = it.replaces?.meta?.version,
+                    incomingVersion = it.theme.meta.version,
                     sizeKb = it.theme.packageBytes / 1024,
                 )
             },
@@ -284,7 +293,10 @@ class ThemeStoreViewModel(
         viewModelScope.launch {
             try {
                 themes.install(candidate)
-                settings.updateSettings(settings.getCurrentSettings().copy(selectedThemeId = candidate.theme.id))
+                // A fresh install is selected right away; updating or replacing an installed theme keeps the user's choice.
+                if (candidate.kind == ThemeInstallKind.Install) {
+                    settings.updateSettings(settings.getCurrentSettings().copy(selectedThemeId = candidate.theme.id))
+                }
                 prepared.value = null
             } catch (e: CancellationException) {
                 throw e

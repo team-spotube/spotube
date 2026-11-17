@@ -1,6 +1,6 @@
 // Generates the JSON Schema of theme.json from the generated property tables.
 //
-// usage: node composeApp/tools/gen-theme-schema.mjs <GeneratedThemeProps.kt> <ThemeDocument.kt> <out.json>
+// usage: node tools/gen-theme-schema.mjs <GeneratedThemeProps.kt> <ThemeDocument.kt> <out.json>
 //
 // The component part (every component, its slots and each property with its kind) comes from GeneratedThemeProps.kt,
 // so it can never drift from what the compiler accepts; the document part (metadata, tokens, parameters, assets) is

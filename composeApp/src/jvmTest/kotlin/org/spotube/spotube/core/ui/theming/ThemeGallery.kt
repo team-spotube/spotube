@@ -74,7 +74,7 @@ import java.io.File
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
-/** A dev tool + CI check: packs every `composeApp/themes/<name>/` folder, loads it and renders a gallery PNG. */
+/** A dev tool + CI check: packs every `themes/<name>/` folder, loads it and renders a gallery PNG. */
 internal object ThemeGallery {
     fun pack(dir: File): ByteArray {
         val out = ByteArrayOutputStream()

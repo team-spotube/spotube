@@ -26,10 +26,49 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import net.swiftzer.semver.SemVer
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toPath
 import okio.SYSTEM
+
+/**
+ * How an incoming theme package relates to the installed theme with the same id, like the plugin manager's
+ * install/update/replace prompts. Only [Update] is a plain upgrade; every other relation to an installed copy needs
+ * the user to confirm an explicit replacement.
+ */
+enum class ThemeInstallKind {
+    /** Nothing with this id is installed. */
+    Install,
+    /** The package is a newer semantic version than the installed one. */
+    Update,
+    /** The same version is installed already. */
+    SameVersion,
+    /** The package is older than the installed version. */
+    Downgrade,
+    /** The incoming version isn't valid semver, so it can't be compared. */
+    InvalidIncomingVersion,
+    /** The installed version isn't valid semver, so it can't be compared. */
+    InvalidInstalledVersion,
+}
+
+/** Classifies [incoming] against the [installed] version (null = not installed). Pure, so it is unit tested. */
+fun classifyThemeInstall(installed: String?, incoming: String?, isInstalled: Boolean = installed != null): ThemeInstallKind {
+    if (!isInstalled) return ThemeInstallKind.Install
+    val newVersion = incoming?.let(::parseSemVerOrNull) ?: return ThemeInstallKind.InvalidIncomingVersion
+    val oldVersion = installed?.let(::parseSemVerOrNull) ?: return ThemeInstallKind.InvalidInstalledVersion
+    return when {
+        newVersion > oldVersion -> ThemeInstallKind.Update
+        newVersion < oldVersion -> ThemeInstallKind.Downgrade
+        else -> ThemeInstallKind.SameVersion
+    }
+}
+
+private fun parseSemVerOrNull(version: String): SemVer? = try {
+    SemVer.parse(version.trim())
+} catch (_: Exception) {
+    null
+}
 
 /** A validated, not-yet-installed theme shown to the user for confirmation. */
 class PreparedTheme internal constructor(
@@ -37,7 +76,9 @@ class PreparedTheme internal constructor(
     val theme: LoadedTheme,
     /** The installed theme this would replace (same id), if any. */
     val replaces: LoadedTheme?,
-)
+) {
+    val kind: ThemeInstallKind = classifyThemeInstall(replaces?.meta?.version, theme.meta.version, isInstalled = replaces != null)
+}
 
 /**
  * Owns every installed theme, one folder each: `<app data>/themes/<id>/theme.zip`.

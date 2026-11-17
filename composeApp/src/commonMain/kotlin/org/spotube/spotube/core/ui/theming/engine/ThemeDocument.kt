@@ -37,7 +37,7 @@ import kotlinx.serialization.json.intOrNull
  *   the theme is newer.
  * - **patch**: clarifications and fixes, never visible to themes.
  *
- * Keep in sync with `composeApp/themes/schema/theme.schema.json` (`ThemeSchemaTest` checks it) and bump it with every
+ * Keep in sync with `themes/schema/theme.schema.json` (`ThemeSchemaTest` checks it) and bump it with every
  * change to the theme format.
  */
 const val THEME_SCHEMA_VERSION = "1.0.0"

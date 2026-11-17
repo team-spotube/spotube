@@ -29,11 +29,11 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 /**
- * Keeps `composeApp/themes/schema/theme.schema.json` (what editors and the themes repository validate against) in step
- * with [THEME_SCHEMA_VERSION]. Regenerate with `node composeApp/tools/gen-theme-schema.mjs` (see the themes README).
+ * Keeps `themes/schema/theme.schema.json` (what editors and the themes repository validate against) in step
+ * with [THEME_SCHEMA_VERSION]. Regenerate with `node tools/gen-theme-schema.mjs` (see the themes README).
  */
 class ThemeSchemaTest {
-    private val schema: JsonObject = Json.parseToJsonElement(File("themes/schema/theme.schema.json").readText()).jsonObject
+    private val schema: JsonObject = Json.parseToJsonElement(File("../themes/schema/theme.schema.json").readText()).jsonObject
 
     @Test
     fun schemaFileMatchesTheVersionTheAppImplements() {

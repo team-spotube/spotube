@@ -693,9 +693,9 @@ tasks.matching { it.name == "prepareAppResources" || it.name == "copyGraalvmAppR
     }
 }
 
-// Sample theme packages under composeApp/themes are test inputs (ThemeGalleryTest packs and renders them).
+// Theme packages under <repo>/themes are test inputs (ThemeGalleryTest packs and renders them).
 tasks.withType<Test>().configureEach {
-    inputs.files(fileTree("themes") { include("*/**") }).withPropertyName("themeFolders")
+    inputs.files(fileTree(rootProject.file("themes")) { include("*/**") }).withPropertyName("themeFolders")
     // Optional: THEMES_DIR=<path to a folder of theme folders> makes ThemeFolderValidationTest check and render them
     // too (used for the separate themes repository).
     val external = providers.environmentVariable("THEMES_DIR")

@@ -23,7 +23,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 /**
- * Renders the stock look and every sample theme in `composeApp/themes/<name>/` (light and dark) to
+ * Renders the stock look and every sample theme in `themes/<name>/` (light and dark) to
  * `build/theme-gallery` (PNG files), and fails if a sample theme has warnings.
  */
 class ThemeGalleryTest {
@@ -40,7 +40,7 @@ class ThemeGalleryTest {
             parameters = mapOf("accent" to "blue", "radius" to "14", "density" to "spacious"))
         ThemeGallery.render(modern, dark = true, out = File(out, "modern-orange-sharp-compact-dark.png"),
             parameters = mapOf("accent" to "orange", "radius" to "0", "density" to "compact"))
-        File("themes").listFiles { f -> f.isDirectory && File(f, "theme.json").exists() }.orEmpty().sortedBy { it.name }.forEach { dir ->
+        File("../themes").listFiles { f -> f.isDirectory && File(f, "theme.json").exists() }.orEmpty().sortedBy { it.name }.forEach { dir ->
             val problems = LinkedHashSet<String>()
             val theme = ThemeGallery.load(dir, problems)
             assertNotNull(theme, dir.name)
