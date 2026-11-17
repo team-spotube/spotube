@@ -108,4 +108,34 @@ class ThemeRuntimeTest {
         assertEquals(true, flagged("""{"components":{"card":{"rules":[{"when":{"var":"ctx.env.compact"},"set":{"borderWidth":2}}]}}}"""))
         assertEquals(false, flagged("""{"components":{"card":{"base":{"borderWidth":2}}}}"""))
     }
+
+    @Test
+    fun parameterChangesRecompileOnlyTheSelectedTheme() = runBlocking {
+        val settings = FakeSettings(UserSettings(selectedThemeId = BuiltInThemes.MODERN_ID))
+        val rt = runtime(settings)
+        val first = withTimeout(10_000) { rt.precompiled.first { it.loaded != null } }
+        assertEquals(emptyMap(), first.parameters)
+
+        // Another theme's parameters are none of this theme's business: no recompile.
+        settings.userSettings.value = settings.userSettings.value.copy(themeParameters = mapOf("someone-else.accent" to "blue"))
+        delay(300)
+        assertSame(first, rt.precompiled.value)
+
+        // The selected theme's parameter recompiles it with the value, stripped of the theme-id prefix.
+        settings.userSettings.value = settings.userSettings.value.copy(
+            themeParameters = mapOf("someone-else.accent" to "blue", "${BuiltInThemes.MODERN_ID}.accent" to "blue"),
+        )
+        val blue = withTimeout(10_000) { rt.precompiled.first { it.parameters.isNotEmpty() } }
+        assertEquals(mapOf("accent" to "blue"), blue.parameters)
+        assertNotSame(first, blue)
+        assertTrue(blue.forAppearance(false).colors.accent != first.forAppearance(false).colors.accent)
+    }
+
+    @Test
+    fun parametersForStripsThePrefixAndIgnoresOthers() {
+        val all = mapOf("a.x" to "1", "a.y" to "2", "ab.x" to "3", "b.x" to "4")
+        assertEquals(mapOf("x" to "1", "y" to "2"), parametersFor("a", all))
+        assertEquals(emptyMap(), parametersFor(null, all))
+        assertEquals(emptyMap(), parametersFor("nope", all))
+    }
 }

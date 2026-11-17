@@ -35,6 +35,11 @@ class ThemeGalleryTest {
         val modern = org.spotube.spotube.core.ui.theming.engine.BuiltInThemes.loadModern("build/tmp/theme-gallery-cache")
         ThemeGallery.render(modern, dark = true, out = File(out, "modern-dark.png"))
         ThemeGallery.render(modern, dark = false, out = File(out, "modern-light.png"))
+        // User parameters (accent / radius / density) reshape the same theme.
+        ThemeGallery.render(modern, dark = false, out = File(out, "modern-blue-round-spacious-light.png"),
+            parameters = mapOf("accent" to "blue", "radius" to "14", "density" to "spacious"))
+        ThemeGallery.render(modern, dark = true, out = File(out, "modern-orange-sharp-compact-dark.png"),
+            parameters = mapOf("accent" to "orange", "radius" to "0", "density" to "compact"))
         File("themes").listFiles { f -> f.isDirectory && File(f, "theme.json").exists() }.orEmpty().sortedBy { it.name }.forEach { dir ->
             val problems = LinkedHashSet<String>()
             val theme = ThemeGallery.load(dir, problems)

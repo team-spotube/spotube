@@ -56,15 +56,58 @@ private const val MODERN_JSON = """
   "author": "Spotube Team",
   "description": "Neutral, flat and minimal.",
 
+  "parameters": {
+    "accent": {
+      "type": "enum", "label": "Accent color", "default": "zinc",
+      "options": [
+        { "value": "zinc",   "label": "Zinc",   "color": "#18181b" },
+        { "value": "blue",   "label": "Blue",   "color": "#2563eb" },
+        { "value": "green",  "label": "Green",  "color": "#16a34a" },
+        { "value": "orange", "label": "Orange", "color": "#ea580c" },
+        { "value": "rose",   "label": "Rose",   "color": "#e11d48" },
+        { "value": "violet", "label": "Violet", "color": "#7c3aed" }
+      ]
+    },
+    "radius": { "type": "number", "label": "Corner radius", "default": 6, "min": 0, "max": 16, "step": 1 },
+    "density": {
+      "type": "enum", "label": "Density", "default": "comfortable",
+      "options": [
+        { "value": "compact", "label": "Compact" },
+        { "value": "comfortable", "label": "Comfortable" },
+        { "value": "spacious", "label": "Spacious" }
+      ]
+    }
+  },
+
   "vars": {
     "none":      { "type": "color", "default": "#00000000" },
+    "r":     { "type": "number", "value": "{params.radius}" },
+    "rSm":   { "type": "number", "value": ["max", 0, ["sub", "{params.radius}", 2]] },
+    "rLg":   { "type": "number", "value": ["add", "{params.radius}", 2] },
+    "rXl":   { "type": "number", "value": ["add", "{params.radius}", 6] },
+    "padH":  { "type": "number", "value": ["match", "{params.density}", { "compact": 12, "comfortable": 16, "spacious": 20 }] },
+    "padV":  { "type": "number", "value": ["match", "{params.density}", { "compact": 6, "comfortable": 8, "spacious": 12 }] },
+    "ctl":   { "type": "number", "value": ["match", "{params.density}", { "compact": 34, "comfortable": 40, "spacious": 48 }] },
+    "rowH":  { "type": "number", "value": ["match", "{params.density}", { "compact": 44, "comfortable": 56, "spacious": 68 }] },
+    "rowPadH": { "type": "number", "value": ["match", "{params.density}", { "compact": 10, "comfortable": 14, "spacious": 18 }] },
+    "rowPadV": { "type": "number", "value": ["match", "{params.density}", { "compact": 6, "comfortable": 10, "spacious": 14 }] },
     "bg":        { "type": "color", "value": { "light": "#ffffff", "dark": "#09090b" } },
     "fg":        { "type": "color", "value": { "light": "#09090b", "dark": "#fafafa" } },
     "muted":     { "type": "color", "value": { "light": "#f4f4f5", "dark": "#27272a" } },
     "mutedFg":   { "type": "color", "value": { "light": "#71717a", "dark": "#a1a1aa" } },
     "border":    { "type": "color", "value": { "light": "#e4e4e7", "dark": "#27272a" } },
-    "primary":   { "type": "color", "value": { "light": "#18181b", "dark": "#fafafa" } },
-    "primaryFg": { "type": "color", "value": { "light": "#fafafa", "dark": "#18181b" } },
+    "primary":   { "type": "color", "value": ["match", "{params.accent}", {
+      "zinc":   { "light": "#18181b", "dark": "#fafafa" },
+      "blue":   { "light": "#2563eb", "dark": "#3b82f6" },
+      "green":  { "light": "#16a34a", "dark": "#22c55e" },
+      "orange": { "light": "#ea580c", "dark": "#f97316" },
+      "rose":   { "light": "#e11d48", "dark": "#f43f5e" },
+      "violet": { "light": "#7c3aed", "dark": "#8b5cf6" }
+    }] },
+    "primaryFg": { "type": "color", "value": ["match", "{params.accent}", {
+      "zinc": { "light": "#fafafa", "dark": "#18181b" },
+      "default": "#ffffff"
+    }] },
     "primaryHover": { "type": "color", "value": ["alpha", "{vars.primary}", 0.9] },
     "destructive":   { "type": "color", "value": { "light": "#ef4444", "dark": "#7f1d1d" } },
     "destructiveFg": { "type": "color", "default": "#fafafa" },
@@ -83,17 +126,17 @@ private const val MODERN_JSON = """
       "success": { "light": "#16a34a", "dark": "#22c55e" }, "danger": { "light": "#dc2626", "dark": "#ef4444" },
       "scrim": "#00000080"
     },
-    "shape": { "small": 4, "medium": 6, "large": 8 },
+    "shape": { "small": "{vars.rSm}", "medium": "{vars.r}", "large": "{vars.rLg}" },
     "interaction": { "lighting": false },
     "surface": { "shadows": false, "glow": false }
   },
 
-  "defaults": { "shape": 6, "innerGlowColor": "{vars.none}", "bottomRimColor": null },
+  "defaults": { "shape": "{vars.r}", "innerGlowColor": "{vars.none}", "bottomRimColor": null },
 
   "components": {
     "button": {
       "base": {
-        "borderWidth": 0, "shadows": ["{vars.none}"], "shadowElevation": 0, "minSize": [40, 40], "padding": [16, 8],
+        "borderWidth": 0, "shadows": ["{vars.none}"], "shadowElevation": 0, "minSize": [40, "{vars.ctl}"], "padding": ["{vars.padH}", "{vars.padV}"],
         "interactionOverlay": "{vars.none}", "interactionRim": "{vars.none}", "labelShadow": false,
         "motion": { "hoverScale": 1, "pressedScale": 1 },
         "textStyle": { "fontSize": 14, "lineHeight": 20, "fontWeight": 500 }
@@ -150,7 +193,7 @@ private const val MODERN_JSON = """
 
     "checkbox": {
       "base": {
-        "faceShape": 4, "faceSize": [16, 16], "faceBackground": "{vars.bg}", "faceBorderColor": "{vars.primary}", "faceBorderWidth": 1,
+        "faceShape": "{vars.rSm}", "faceSize": [16, 16], "faceBackground": "{vars.bg}", "faceBorderColor": "{vars.primary}", "faceBorderWidth": 1,
         "selectedFaceBackground": "{vars.primary}", "selectedFaceBorderColor": "{vars.primary}", "selectedFaceForeground": "{vars.primaryFg}",
         "faceGlowColor": "{vars.none}", "selectedFaceGlowColor": "{vars.none}", "faceElevation": 0, "faceBottomRimColor": null,
         "faceInteractionOverlay": "{vars.none}", "faceHoverScale": 1, "facePressedScale": 1
@@ -180,7 +223,7 @@ private const val MODERN_JSON = """
 
     "textField": {
       "base": {
-        "background": "{vars.bg}", "borderColor": "{vars.border}", "borderWidth": 1, "shape": 6, "minimumHeight": 40,
+        "background": "{vars.bg}", "borderColor": "{vars.border}", "borderWidth": 1, "shape": "{vars.r}", "minimumHeight": "{vars.ctl}",
         "insetShadeColor": "{vars.none}", "cursorColor": "{vars.fg}", "interactionOverlay": "{vars.none}",
         "placeholderColor": "{vars.mutedFg}", "labelColor": "{vars.fg}"
       },
@@ -189,14 +232,14 @@ private const val MODERN_JSON = """
 
     "card": {
       "base": {
-        "shape": 12, "background": "{vars.bg}", "borderColor": "{vars.border}", "borderWidth": 1,
+        "shape": "{vars.rXl}", "background": "{vars.bg}", "borderColor": "{vars.border}", "borderWidth": 1,
         "shadowElevation": 1, "shadowColor": "{vars.shadow}", "insetShadeColor": "{vars.none}", "interactionOverlay": "{vars.none}"
       }
     },
 
     "listTile": {
       "base": {
-        "shape": 6, "background": "{vars.none}", "selectedBackground": "{vars.muted}", "borderWidth": 0, "shadowElevation": 0,
+        "shape": "{vars.r}", "contentPadding": ["{vars.rowPadH}", "{vars.rowPadV}"], "minimumHeight": "{vars.rowH}", "background": "{vars.none}", "selectedBackground": "{vars.muted}", "borderWidth": 0, "shadowElevation": 0,
         "titleForeground": "{vars.fg}", "subtitleForeground": "{vars.mutedFg}",
         "selectedTitleForeground": "{vars.fg}", "selectedSubtitleForeground": "{vars.mutedFg}",
         "interactionOverlay": "{vars.none}"
@@ -214,13 +257,13 @@ private const val MODERN_JSON = """
 
     "dialog": {
       "base": {
-        "shape": 8, "panelBackground": "{vars.bg}", "panelBorderColor": "{vars.border}", "panelBorderWidth": 1,
+        "shape": "{vars.rLg}", "panelBackground": "{vars.bg}", "panelBorderColor": "{vars.border}", "panelBorderWidth": 1,
         "panelGlowColor": "{vars.none}", "panelBottomRimColor": null, "panelShadowElevation": 18, "panelShadowColor": "{vars.shadow}",
         "titleBarBackground": "{vars.bg}", "titleBarForeground": "{vars.fg}", "titleBarBorderColor": "{vars.none}", "titleBarDividerThickness": 0,
         "footerBackground": "{vars.bg}", "footerBorderColor": "{vars.none}", "footerDividerThickness": 0,
         "scrimColor": "#00000080", "descriptionForeground": "{vars.mutedFg}",
         "closeCapBackground": "{vars.none}", "closeCapForeground": "{vars.mutedFg}", "closeCapBorderColor": "{vars.none}", "closeCapBorderWidth": 0,
-        "closeCapGlowColor": "{vars.none}", "closeCapShape": 4, "closeCapElevation": 0, "closeCapRaisedElevation": 0, "closeCapPressedElevation": 0,
+        "closeCapGlowColor": "{vars.none}", "closeCapShape": "{vars.rSm}", "closeCapElevation": 0, "closeCapRaisedElevation": 0, "closeCapPressedElevation": 0,
         "closeCapTint": "{vars.none}", "closeCapFocusBorderColor": "{vars.ring}", "closeScaleHover": 1, "closeScalePressed": 1
       },
       "states": {
@@ -232,8 +275,8 @@ private const val MODERN_JSON = """
 
     "dropdownMenu": {
       "base": {
-        "panelBackground": "{vars.bg}", "panelShape": 6, "panelBorderColor": "{vars.border}", "panelBorderWidth": 1, "panelGlowColor": "{vars.none}",
-        "panelShadowElevation": 6, "panelShadowColor": "{vars.shadow}", "iconSize": 16, "itemShape": 4, "itemForeground": "{vars.fg}",
+        "panelBackground": "{vars.bg}", "panelShape": "{vars.r}", "panelBorderColor": "{vars.border}", "panelBorderWidth": 1, "panelGlowColor": "{vars.none}",
+        "panelShadowElevation": 6, "panelShadowColor": "{vars.shadow}", "iconSize": 16, "itemShape": "{vars.rSm}", "itemForeground": "{vars.fg}",
         "itemActiveBackground": "{vars.muted}", "itemSelectedBackground": "{vars.muted}", "itemActiveForeground": "{vars.fg}", "itemActiveElevation": 0,
         "itemHoverScale": 1, "itemPressedScale": 1, "itemMutedForeground": "{vars.mutedFg}", "groupLabelForeground": "{vars.mutedFg}",
         "separatorBrush": "{vars.border}", "separatorThickness": 1,
@@ -250,13 +293,13 @@ private const val MODERN_JSON = """
     },
 
     "tooltip": {
-      "base": { "background": "{vars.primary}", "foreground": "{vars.primaryFg}", "shape": 6, "borderWidth": 0, "shadowElevation": 0 }
+      "base": { "background": "{vars.primary}", "foreground": "{vars.primaryFg}", "shape": "{vars.r}", "borderWidth": 0, "shadowElevation": 0 }
     },
 
     "tabGroup": {
       "base": {
-        "listBackground": "{vars.muted}", "listShape": 6, "listBorderColor": "{vars.none}", "listBorderWidth": 0, "listShadowElevation": 0,
-        "tabShape": 4, "selectedTabBackground": "{vars.bg}", "selectedTabForeground": "{vars.fg}", "unselectedTabForeground": "{vars.mutedFg}",
+        "listBackground": "{vars.muted}", "listShape": "{vars.r}", "listBorderColor": "{vars.none}", "listBorderWidth": 0, "listShadowElevation": 0,
+        "tabShape": "{vars.rSm}", "selectedTabBackground": "{vars.bg}", "selectedTabForeground": "{vars.fg}", "unselectedTabForeground": "{vars.mutedFg}",
         "selectedTabBorderColor": "{vars.none}", "tabGlowColor": "{vars.none}", "tabElevation": 1, "tabHoverScale": 1, "tabPressedScale": 1
       }
     },
@@ -275,7 +318,7 @@ private const val MODERN_JSON = """
     },
 
     "snackbar": {
-      "base": { "background": "{vars.bg}", "foreground": "{vars.fg}", "borderColor": "{vars.border}", "borderWidth": 1, "shape": 6, "shadowElevation": 8, "shadowColor": "{vars.shadow}" }
+      "base": { "background": "{vars.bg}", "foreground": "{vars.fg}", "borderColor": "{vars.border}", "borderWidth": 1, "shape": "{vars.r}", "shadowElevation": 8, "shadowColor": "{vars.shadow}" }
     },
 
     "topAppBar": { "base": { "background": "{vars.bg}", "separatorColor": "{vars.border}" } },
@@ -291,7 +334,7 @@ private const val MODERN_JSON = """
         },
         "item": {
           "base": {
-            "background": "{vars.none}", "foreground": "{vars.mutedFg}", "shape": 8, "minimumHeight": 52, "iconSize": 20, "borderWidth": 0, "borderColor": "{vars.none}",
+            "background": "{vars.none}", "foreground": "{vars.mutedFg}", "shape": "{vars.r}", "minimumHeight": 52, "iconSize": 20, "borderWidth": 0, "borderColor": "{vars.none}",
             "shadowElevation": 0, "innerGlowColor": "{vars.none}", "bottomRimColor": null, "orbColor": null, "overlayBrush": "{vars.none}",
             "hoverScale": 1, "pressedScale": 1, "labelStyle": { "fontSize": 12, "fontWeight": 500 }
           },
@@ -319,13 +362,13 @@ private const val MODERN_JSON = """
         "group": {
           "base": {
             "labelForeground": "{vars.mutedFg}", "labelHoveredBackground": "{vars.muted}", "labelFocusedBackground": "{vars.muted}", "labelPressedBackground": "{vars.muted}",
-            "labelBorderColor": "{vars.none}", "labelBorderWidth": 0, "labelInnerGlowColor": "{vars.none}", "labelShape": 6, "labelOverlayBrush": "{vars.none}",
+            "labelBorderColor": "{vars.none}", "labelBorderWidth": 0, "labelInnerGlowColor": "{vars.none}", "labelShape": "{vars.r}", "labelOverlayBrush": "{vars.none}",
             "separatorBrush": "{vars.border}"
           }
         },
         "item": {
           "base": {
-            "background": "{vars.none}", "foreground": "{vars.fg}", "iconTint": "{vars.mutedFg}", "iconSize": 16, "shape": 6, "borderWidth": 0, "borderColor": "{vars.none}",
+            "background": "{vars.none}", "foreground": "{vars.fg}", "iconTint": "{vars.mutedFg}", "iconSize": 16, "shape": "{vars.r}", "borderWidth": 0, "borderColor": "{vars.none}",
             "shadowElevation": 0, "innerGlowColor": "{vars.none}", "bottomRimColor": null, "orbColor": null, "overlayBrush": "{vars.none}",
             "hoverScale": 1, "pressedScale": 1, "hoverBackground": "{vars.muted}", "focusBackground": "{vars.muted}", "pressedBackground": "{vars.muted}",
             "selectedBackground": "{vars.muted}", "selectedIndicatorColor": "{vars.none}", "selectedIndicatorBrush": "{vars.none}", "selectedIndicatorWidth": 0

@@ -18,6 +18,18 @@
 package org.spotube.spotube.modules.settings.sections
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import org.spotube.millennium.composables.MillenniumSlider
+import org.spotube.millennium.composables.MillenniumSwitch
+import org.spotube.millennium.composables.MillenniumTextField
+import org.spotube.spotube.core.ui.theming.engine.ThemeVarType
+import org.spotube.spotube.modules.settings.ThemeParamUi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -155,6 +167,8 @@ internal fun ThemesPanel() {
             onDismiss = { detailsId = null },
             onSelect = { viewModel.select(card.id); detailsId = null },
             onRemove = { viewModel.remove(card.id); detailsId = null },
+            onSetParameter = { name, value -> viewModel.setParameter(card.id, name, value) },
+            onResetParameters = { viewModel.resetParameters(card.id) },
         )
     }
     state.pending?.let { pending ->
@@ -338,7 +352,14 @@ private fun ThemeContents(card: ThemeCardUi) {
 }
 
 @Composable
-private fun ThemeDetailsDialog(card: ThemeCardUi, onDismiss: () -> Unit, onSelect: () -> Unit, onRemove: () -> Unit) {
+private fun ThemeDetailsDialog(
+    card: ThemeCardUi,
+    onDismiss: () -> Unit,
+    onSelect: () -> Unit,
+    onRemove: () -> Unit,
+    onSetParameter: (String, String) -> Unit,
+    onResetParameters: () -> Unit,
+) {
     MillenniumDialog(visible = true, onDismissRequest = onDismiss) {
         MillenniumDialogHeader {
             MillenniumDialogTitle(card.displayName())
@@ -359,6 +380,7 @@ private fun ThemeDetailsDialog(card: ThemeCardUi, onDismiss: () -> Unit, onSelec
                     style = AppTheme.typography.bodyMedium,
                     color = AppTheme.colors.onSurfaceVariant,
                 )
+                ThemeCustomize(card, onSetParameter, onResetParameters)
                 ThemeLinks(card)
                 ThemeLicense(card)
                 ThemeContents(card)
@@ -426,4 +448,132 @@ private fun InstallThemeDialog(pending: PendingThemeUi, onConfirm: () -> Unit, o
             }
         }
     }
+}
+
+/** The theme's own settings (accent, radius, density...), applied live to the selected theme. */
+@Composable
+internal fun ThemeCustomize(card: ThemeCardUi, onSet: (String, String) -> Unit, onReset: () -> Unit) {
+    if (card.parameters.isEmpty()) return
+    Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(stringResource(Res.string.settings_theme_customize), style = AppTheme.typography.titleSmall, color = AppTheme.colors.onSurface)
+            if (card.hasCustomParameters) {
+                Text(
+                    stringResource(Res.string.settings_theme_customize_reset),
+                    style = AppTheme.typography.labelMedium,
+                    color = AppTheme.colors.primary,
+                    modifier = Modifier.clickable(onClick = onReset),
+                )
+            }
+        }
+        if (!card.selected) {
+            Text(
+                stringResource(Res.string.settings_theme_customize_unselected),
+                style = AppTheme.typography.bodySmall,
+                color = AppTheme.colors.onSurfaceVariant,
+            )
+        }
+        card.parameters.forEach { p -> ThemeParameterControl(p) { onSet(p.name, it) } }
+    }
+}
+
+@Composable
+private fun ThemeParameterControl(p: ThemeParamUi, onChange: (String) -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        when (p.type) {
+            // The switch draws its own label.
+            ThemeVarType.Bool -> MillenniumSwitch(checked = p.value == "true", onCheckedChange = { onChange(it.toString()) }, label = p.label)
+            ThemeVarType.Number -> {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(p.label, style = AppTheme.typography.bodyMedium, color = AppTheme.colors.onSurface)
+                    Text(p.value, style = AppTheme.typography.labelMedium, color = AppTheme.colors.onSurfaceVariant)
+                }
+                val steps = (((p.max - p.min) / p.step).toInt() - 1).coerceAtLeast(0)
+                MillenniumSlider(
+                    value = (p.value.toFloatOrNull() ?: p.min).coerceIn(p.min, p.max),
+                    onValueChange = { onChange(it.toString()) },
+                    label = p.label,
+                    valueRange = p.min..p.max,
+                    steps = steps,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+            ThemeVarType.Enum -> {
+                Text(p.label, style = AppTheme.typography.bodyMedium, color = AppTheme.colors.onSurface)
+                if (p.options.any { it.color != null }) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        p.options.forEach { o -> ColorSwatch(o.color ?: "#888888", o.label, selected = o.value == p.value) { onChange(o.value) } }
+                    }
+                } else {
+                    Row(
+                        modifier = Modifier.horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        p.options.forEach { o ->
+                            MillenniumButton(
+                                onClick = { onChange(o.value) },
+                                style = if (o.value == p.value) MillenniumButtonStyle.Primary else MillenniumButtonStyle.Secondary,
+                            ) { Text(o.label) }
+                        }
+                    }
+                }
+            }
+            ThemeVarType.Color -> {
+                Text(p.label, style = AppTheme.typography.bodyMedium, color = AppTheme.colors.onSurface)
+                if (p.presets.isNotEmpty()) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        p.presets.forEach { c -> ColorSwatch(c, c, selected = c.equals(p.value, ignoreCase = true)) { onChange(c) } }
+                    }
+                }
+                val field = rememberTextFieldState(p.value)
+                LaunchedEffect(field) {
+                    snapshotFlow { field.text.toString() }.collect { if (it != p.value) onChange(it) }
+                }
+                MillenniumTextField(
+                    state = field,
+                    placeholder = stringResource(Res.string.settings_theme_color_hint),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+            ThemeVarType.String -> {
+                Text(p.label, style = AppTheme.typography.bodyMedium, color = AppTheme.colors.onSurface)
+                val field = rememberTextFieldState(p.value)
+                LaunchedEffect(field) {
+                    snapshotFlow { field.text.toString() }.collect { if (it != p.value) onChange(it) }
+                }
+                MillenniumTextField(state = field, modifier = Modifier.fillMaxWidth())
+            }
+        }
+        p.description?.let {
+            Text(it, style = AppTheme.typography.bodySmall, color = AppTheme.colors.onSurfaceVariant)
+        }
+    }
+}
+
+@Composable
+private fun ColorSwatch(hex: String, description: String, selected: Boolean, onClick: () -> Unit) {
+    val color = remember(hex) { parseSwatch(hex) }
+    Box(
+        modifier = Modifier
+            .size(30.dp)
+            .clip(CircleShape)
+            .background(color)
+            .border(
+                width = if (selected) 3.dp else 1.dp,
+                color = if (selected) AppTheme.colors.onSurface else AppTheme.colors.outlineVariant,
+                shape = CircleShape,
+            )
+            .semantics { contentDescription = description }
+            .clickable(onClick = onClick),
+    )
+}
+
+private fun parseSwatch(hex: String): androidx.compose.ui.graphics.Color {
+    val h = hex.removePrefix("#")
+    val v = h.toLongOrNull(16) ?: return androidx.compose.ui.graphics.Color.Gray
+    return if (h.length == 6) androidx.compose.ui.graphics.Color(0xFF000000L or v) else androidx.compose.ui.graphics.Color.Gray
 }

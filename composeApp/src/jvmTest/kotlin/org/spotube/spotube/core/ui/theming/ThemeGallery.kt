@@ -84,10 +84,11 @@ internal object ThemeGallery {
     fun load(dir: File, problems: MutableSet<String> = LinkedHashSet()): LoadedTheme? =
         loadTheme(readThemeArchive(pack(dir)), "build/tmp/theme-gallery-cache", problems)
 
-    fun render(theme: LoadedTheme?, dark: Boolean, out: File) {
+    fun render(theme: LoadedTheme?, dark: Boolean, out: File, parameters: Map<String, String> = emptyMap()) {
         out.parentFile.mkdirs()
         ImageComposeScene(980, 760) {
-            SpotubeTheme(UserSettings(theme = if (dark) Theme.DARK else Theme.LIGHT), theme = theme) {
+            val settings = UserSettings(theme = if (dark) Theme.DARK else Theme.LIGHT)
+            SpotubeTheme(settings, org.spotube.spotube.core.ui.theming.engine.PrecompiledTheme.create(theme, settings.palette, parameters)) {
                 Gallery()
             }
         }.use { scene ->

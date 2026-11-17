@@ -23,6 +23,7 @@ import org.spotube.millennium.theme.MillenniumPalette
 import org.spotube.millennium.theme.resolve
 import org.spotube.spotube.resources.iconsax.CarbonGithubLogo
 import org.spotube.spotube.resources.iconsax.IconsaxHome
+import androidx.compose.ui.unit.dp
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -67,5 +68,64 @@ class BuiltInThemesTest {
         )
         assertEquals(false, compiled.interaction.enabled)
         assertEquals(icons.keys, compiled.icons.keys)
+    }
+
+    private fun modern(params: Map<String, String>, dark: Boolean = false): CompiledTheme {
+        val theme = BuiltInThemes.loadModern("build/tmp/builtin-cache")
+        return compileTheme(
+            doc = theme.doc, assets = theme.assets, parameters = params, env = ThemeEnv(dark, compact = false),
+            baseColors = MillenniumColorSchemes().resolve(MillenniumPalette.Blue, dark),
+            baseComponents = MillenniumDarkThemeComponents, parseProblems = theme.problems,
+        )
+    }
+
+    @Test
+    fun modernDeclaresItsUserParameters() {
+        val doc = BuiltInThemes.loadModern("build/tmp/builtin-cache").doc
+        assertEquals(setOf("accent", "radius", "density"), doc.parameters.keys)
+        assertEquals("zinc", (doc.parameters.getValue("accent").default as kotlinx.serialization.json.JsonPrimitive).content)
+        assertEquals(6, doc.parameters.getValue("radius").default?.let { (it as kotlinx.serialization.json.JsonPrimitive).content.toInt() })
+        // Every accent choice carries a swatch for the UI.
+        assertEquals(doc.parameters.getValue("accent").options.toSet(), doc.parameters.getValue("accent").optionColors.keys)
+    }
+
+    @Test
+    fun accentParameterRecoloursThePrimaryAction() {
+        assertEquals(androidx.compose.ui.graphics.Color(0xFF18181B), modern(emptyMap()).colors.accent)
+        assertEquals(androidx.compose.ui.graphics.Color(0xFFFAFAFA), modern(emptyMap(), dark = true).colors.accent)
+        assertEquals(androidx.compose.ui.graphics.Color(0xFF2563EB), modern(mapOf("accent" to "blue")).colors.accent)
+        assertEquals(androidx.compose.ui.graphics.Color(0xFF3B82F6), modern(mapOf("accent" to "blue"), dark = true).colors.accent)
+        assertEquals(androidx.compose.ui.graphics.Color.White, modern(mapOf("accent" to "blue")).colors.onAccent)
+    }
+
+    @Test
+    fun radiusParameterDrivesEveryShape() {
+        assertEquals(androidx.compose.foundation.shape.RoundedCornerShape(6.dp), modern(emptyMap()).shapes.medium)
+        assertEquals(androidx.compose.foundation.shape.RoundedCornerShape(12.dp), modern(mapOf("radius" to "12")).shapes.medium)
+        assertEquals(androidx.compose.foundation.shape.RoundedCornerShape(18.dp), modern(mapOf("radius" to "12")).components.cardTheme.states.default.shape)
+        // Never negative: small = max(0, radius - 2).
+        assertEquals(androidx.compose.foundation.shape.RoundedCornerShape(0.dp), modern(mapOf("radius" to "0")).shapes.small)
+        assertEquals(androidx.compose.foundation.shape.RoundedCornerShape(16.dp), modern(mapOf("radius" to "99")).shapes.medium) // clamped to max
+    }
+
+    @Test
+    fun densityParameterDrivesPadding() {
+        fun hPad(density: String) = modern(mapOf("density" to density)).components.buttonTheme.primary.default.padding
+            .calculateLeftPadding(androidx.compose.ui.unit.LayoutDirection.Ltr)
+        assertEquals(12.dp, hPad("compact"))
+        assertEquals(16.dp, hPad("comfortable"))
+        assertEquals(20.dp, hPad("spacious"))
+        assertEquals(44.dp, modern(mapOf("density" to "compact")).components.listTileTheme.states.default.minimumHeight)
+        assertEquals(68.dp, modern(mapOf("density" to "spacious")).components.listTileTheme.states.default.minimumHeight)
+    }
+
+    @Test
+    fun everyParameterChoiceCompilesWithoutWarnings() {
+        val doc = BuiltInThemes.loadModern("build/tmp/builtin-cache").doc
+        for (accent in doc.parameters.getValue("accent").options) for (density in doc.parameters.getValue("density").options) {
+            for (dark in listOf(true, false)) {
+                assertEquals(emptyList(), modern(mapOf("accent" to accent, "density" to density, "radius" to "10"), dark).problems, "$accent/$density/dark=$dark")
+            }
+        }
     }
 }

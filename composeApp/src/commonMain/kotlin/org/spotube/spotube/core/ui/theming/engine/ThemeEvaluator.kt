@@ -32,7 +32,7 @@ import kotlinx.serialization.json.doubleOrNull
 internal class ThemeBudgetExceeded : RuntimeException("Theme is too complex to evaluate")
 
 /** Variable lookup chain: a component's own `vars` shadow the global ones. */
-internal class ThemeScope(val decls: Map<String, ThemeVarDecl>, val parent: ThemeScope?) {
+internal class ThemeScope(val decls: Map<String, ThemeVarDecl>, val parent: ThemeScope?, val overridable: Boolean = false) {
     fun find(name: String): Pair<ThemeVarDecl, ThemeScope>? =
         decls[name]?.let { it to this } ?: parent?.find(name)
 }
@@ -48,13 +48,17 @@ internal class ThemeScope(val decls: Map<String, ThemeVarDecl>, val parent: Them
  */
 internal class ThemeEvaluator(
     private val doc: ThemeDocument,
-    private val userVars: Map<String, String>,
+    /** The user's chosen parameter values, by parameter name (already stripped of any theme-id prefix). */
+    private val userParams: Map<String, String>,
     private val dark: Boolean,
     /** Read-only namespaces such as `ctx` and `palette`. */
     private val namespaces: Map<String, Any?>,
     private val problems: MutableSet<String>,
 ) {
     val globalScope = ThemeScope(doc.vars, null)
+
+    /** Parameters are the only declarations a user's value may replace. */
+    private val paramScope = ThemeScope(doc.parameters, null, overridable = true)
 
     /** Set by the compiler while it works on one component/variant/state. */
     var component: Map<String, Any?> = emptyMap()
@@ -125,6 +129,7 @@ internal class ThemeEvaluator(
         return when (parts[0]) {
             "tokens" -> token(parts.drop(1))
             "vars" -> variable(parts.drop(1).joinToString("."), scope)
+            "params" -> variable(parts.drop(1).joinToString("."), paramScope)
             "ctx" -> {
                 val rest = parts.drop(1)
                 if (rest.size == 1 && rest[0] in component) component[rest[0]] else walk(namespaces["ctx"], rest, path, quiet = true)
@@ -177,7 +182,7 @@ internal class ThemeEvaluator(
         }
         try {
             decl.value?.let { return coerce(decl, eval(it, declScope)) }
-            val override = if (declScope.parent == null) userVars[decl.name] else null
+            val override = if (declScope.overridable) userParams[decl.name] else null
             override?.let { raw -> fromUserString(decl, raw)?.let { return it } }
             return coerce(decl, decl.default?.let { eval(it, declScope) })
         } finally {

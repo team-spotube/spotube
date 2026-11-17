@@ -61,6 +61,8 @@ internal fun appBaseComponents(dark: Boolean): MillenniumThemeComponents =
 class PrecompiledTheme internal constructor(
     val loaded: LoadedTheme?,
     val palette: MillenniumPalette,
+    /** The user's parameter values this was compiled with (by parameter name). */
+    val parameters: Map<String, String>,
     private val light: CompiledTheme,
     private val dark: CompiledTheme,
 ) {
@@ -71,7 +73,7 @@ class PrecompiledTheme internal constructor(
 
     /** Compiles with live facts (`ctx.*`); only used by themes that [needsLiveContext] or [usesItemContext]. */
     fun compileWith(isDark: Boolean, compact: Boolean, live: Map<String, Any?>, item: Map<String, Any?> = emptyMap()): CompiledTheme =
-        compile(loaded, palette, isDark, ThemeEnv(isDark, compact, if (item.isEmpty()) live else live + ("item" to item)))
+        compile(loaded, palette, parameters, isDark, ThemeEnv(isDark, compact, if (item.isEmpty()) live else live + ("item" to item)))
 
     private val itemCache = object : LinkedHashMap<Pair<Boolean, Map<String, Any?>>, CompiledTheme>(16, 0.75f, true) {
         override fun removeEldestEntry(eldest: MutableMap.MutableEntry<Pair<Boolean, Map<String, Any?>>, CompiledTheme>) = size > 24
@@ -84,9 +86,10 @@ class PrecompiledTheme internal constructor(
         }
 
     companion object {
-        private fun compile(loaded: LoadedTheme?, palette: MillenniumPalette, isDark: Boolean, env: ThemeEnv) = compileTheme(
+        private fun compile(loaded: LoadedTheme?, palette: MillenniumPalette, parameters: Map<String, String>, isDark: Boolean, env: ThemeEnv) = compileTheme(
             doc = loaded?.doc,
             assets = loaded?.assets ?: ThemeAssets.Empty,
+            parameters = parameters,
             env = env,
             baseColors = MillenniumColorSchemes().resolve(palette, isDark),
             baseComponents = appBaseComponents(isDark),
@@ -94,12 +97,20 @@ class PrecompiledTheme internal constructor(
         )
 
         /** Compiles [loaded] (or the plain Millennium look for null) for [palette], light and dark. */
-        fun create(loaded: LoadedTheme?, palette: MillenniumPalette): PrecompiledTheme = PrecompiledTheme(
-            loaded, palette,
-            light = compile(loaded, palette, false, ThemeEnv(dark = false, compact = false)),
-            dark = compile(loaded, palette, true, ThemeEnv(dark = true, compact = false)),
-        )
+        fun create(loaded: LoadedTheme?, palette: MillenniumPalette, parameters: Map<String, String> = emptyMap()): PrecompiledTheme =
+            PrecompiledTheme(
+                loaded, palette, parameters,
+                light = compile(loaded, palette, parameters, false, ThemeEnv(dark = false, compact = false)),
+                dark = compile(loaded, palette, parameters, true, ThemeEnv(dark = true, compact = false)),
+            )
     }
+}
+
+/** The stored `"<themeId>.<name>"` values of one theme, by parameter name. */
+fun parametersFor(themeId: String?, all: Map<String, String>): Map<String, String> {
+    if (themeId == null) return emptyMap()
+    val prefix = "$themeId."
+    return all.filterKeys { it.startsWith(prefix) }.mapKeys { it.key.removePrefix(prefix) }
 }
 
 /**
@@ -110,11 +121,15 @@ class PrecompiledTheme internal constructor(
 class ThemeRuntime(settings: UserSettingsSource, themes: ThemePackageRepository) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
+    /** What decides the compiled result; anything else in settings is ignored (and never recompiles). */
+    private data class Selection(val id: String?, val palette: MillenniumPalette, val parameters: Map<String, String>)
+
     val precompiled: StateFlow<PrecompiledTheme> = combine(
-        settings.userSettings.map { it.selectedThemeId to it.palette }.distinctUntilChanged(),
+        settings.userSettings.map { Selection(it.selectedThemeId, it.palette, parametersFor(it.selectedThemeId, it.themeParameters)) }
+            .distinctUntilChanged(),
         themes.installed,
-    ) { (id, palette), installed -> themes.themeFor(id, installed) to palette }
+    ) { selection, installed -> Pair(themes.themeFor(selection.id, installed), selection) }
         .distinctUntilChanged { a, b -> a.first === b.first && a.second == b.second }
-        .mapLatest { (loaded, palette) -> PrecompiledTheme.create(loaded, palette) }
+        .mapLatest { (loaded, selection) -> PrecompiledTheme.create(loaded, selection.palette, selection.parameters) }
         .stateIn(scope, SharingStarted.Eagerly, PrecompiledTheme.create(null, settings.userSettings.value.palette))
 }

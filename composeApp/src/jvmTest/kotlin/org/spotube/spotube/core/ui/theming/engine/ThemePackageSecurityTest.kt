@@ -193,7 +193,7 @@ class ThemePackageSecurityTest {
     }
 
     private fun compile(t: LoadedTheme) = compileTheme(
-        doc = t.doc, assets = t.assets, userVars = emptyMap(), env = ThemeEnv(true, false),
+        doc = t.doc, assets = t.assets, parameters = emptyMap(), env = ThemeEnv(true, false),
         baseColors = MillenniumColorSchemes().resolve(MillenniumPalette.Blue, true),
         baseComponents = MillenniumDarkThemeComponents, parseProblems = t.problems,
     )

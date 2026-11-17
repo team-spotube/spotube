@@ -34,11 +34,13 @@ const val THEME_SCHEMA_VERSION = 1
 enum class ThemeVarType { Color, Number, Bool, String, Enum }
 
 /**
- * A declared theme variable (`vars` at the top level or inside a component): a typed, validated
- * token that theme authors use to keep colours, radii and the like in one place.
+ * A declared theme variable or parameter: a typed, validated value.
  *
- * Exactly one of [default] (a plain value) or [value] (a derived expression) is meaningful. Variables are
- * an authoring tool: they are never shown to users.
+ * `vars` (top level or per component) are the author's private token store, never shown to users: exactly one of
+ * [default] (a plain value) or [value] (a derived expression) is meaningful. `parameters` are the knobs a theme
+ * offers to *users* (accent, radius, density...): they always have a [default], the user's choice overrides it,
+ * and the remaining fields describe the control the app shows ([label], [description], [min]/[max]/[step], named
+ * [options] with optional swatch colours, colour [presets]).
  */
 class ThemeVarDecl(
     val name: String,
@@ -48,6 +50,14 @@ class ThemeVarDecl(
     val min: Double?,
     val max: Double?,
     val options: List<String>,
+    val label: String? = null,
+    val description: String? = null,
+    val step: Double? = null,
+    val optionLabels: Map<String, String> = emptyMap(),
+    /** Swatch colour (`#RRGGBB`) per enum option, for colour-themed choices such as accent presets. */
+    val optionColors: Map<String, String> = emptyMap(),
+    /** Suggested colours for a colour parameter. */
+    val presets: List<String> = emptyList(),
 )
 
 /** A parsed theme file. Everything below is still raw JSON: it is evaluated per appearance/state. */
@@ -57,6 +67,8 @@ class ThemeDocument(
     val name: String,
     val tokens: JsonObject,
     val vars: Map<String, ThemeVarDecl>,
+    /** User-adjustable settings the theme offers (`parameters`); referenced as `{params.name}`. */
+    val parameters: Map<String, ThemeVarDecl> = emptyMap(),
     /** Props applied to every component that has them (the "global" mode). */
     val defaults: JsonObject,
     val components: JsonObject,
@@ -97,6 +109,7 @@ fun parseThemeDocument(text: String, problems: MutableSet<String>): ThemeDocumen
         name = root["name"]?.jsonPrimitiveOrNull()?.contentOrNull ?: "Custom theme",
         tokens = obj("tokens"),
         vars = parseVarDecls(root["vars"] as? JsonObject, problems, "vars"),
+        parameters = parseParameterDecls(root["parameters"] as? JsonObject, problems),
         defaults = obj("defaults"),
         components = obj("components"),
         assets = obj("assets"),
@@ -212,7 +225,19 @@ internal fun parseVarDecls(
                 continue
             }
         }
-        val options = (d["options"] as? JsonArray)?.mapNotNull { it.jsonPrimitiveOrNull()?.contentOrNull }.orEmpty()
+        val optionLabels = LinkedHashMap<String, String>()
+        val optionColors = LinkedHashMap<String, String>()
+        val options = (d["options"] as? JsonArray)?.mapNotNull { el ->
+            when (el) {
+                is JsonPrimitive -> el.contentOrNull
+                is JsonObject -> (el["value"] as? JsonPrimitive)?.contentOrNull?.also { v ->
+                    (el["label"] as? JsonPrimitive)?.contentOrNull?.let { optionLabels[v] = it.take(60) }
+                    (el["color"] as? JsonPrimitive)?.contentOrNull?.takeIf { parseHexColor(it) != null }?.let { optionColors[v] = it }
+                }
+                else -> null
+            }
+        }.orEmpty()
+        val presets = (d["presets"] as? JsonArray)?.mapNotNull { (it as? JsonPrimitive)?.contentOrNull?.takeIf { c -> parseHexColor(c) != null } }.orEmpty().take(16)
         if (type == ThemeVarType.Enum && options.isEmpty()) {
             problems += "$where.$name: an enum needs options"
             continue
@@ -229,6 +254,12 @@ internal fun parseVarDecls(
             min = d["min"]?.jsonPrimitiveOrNull()?.doubleOrNull,
             max = d["max"]?.jsonPrimitiveOrNull()?.doubleOrNull,
             options = options,
+            label = (d["label"] as? JsonPrimitive)?.contentOrNull?.take(60),
+            description = (d["description"] as? JsonPrimitive)?.contentOrNull?.take(200),
+            step = (d["step"] as? JsonPrimitive)?.doubleOrNull?.takeIf { it > 0 },
+            optionLabels = optionLabels,
+            optionColors = optionColors,
+            presets = presets,
         )
     }
     return out
@@ -256,4 +287,22 @@ internal fun parseHexColor(s: String): Color? {
         )
         else -> null
     }
+}
+
+private val PARAMETER_NAME = Regex("[A-Za-z][A-Za-z0-9_]{0,31}")
+private const val MAX_PARAMETERS = 24
+
+/** Parses `parameters`: like `vars`, but every entry needs a plain default (the user's value replaces it). */
+internal fun parseParameterDecls(obj: JsonObject?, problems: MutableSet<String>): Map<String, ThemeVarDecl> {
+    if (obj == null) return emptyMap()
+    val out = LinkedHashMap<String, ThemeVarDecl>()
+    for ((name, decl) in parseVarDecls(obj, problems, "parameters")) {
+        when {
+            out.size >= MAX_PARAMETERS -> problems += "parameters: at most $MAX_PARAMETERS parameters are allowed"
+            !PARAMETER_NAME.matches(name) -> problems += "parameters.$name: invalid name (letters, digits and _, starting with a letter)"
+            decl.value != null || decl.default == null -> problems += "parameters.$name: a parameter needs a \"default\" (derived \"value\" is only for vars)"
+            else -> out[name] = decl
+        }
+    }
+    return out
 }

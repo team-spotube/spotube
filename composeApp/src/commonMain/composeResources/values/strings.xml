@@ -162,6 +162,10 @@
     <string name="settings_theme_builtin_description">The built-in Millennium look: glossy gel buttons and pearl surfaces.</string>
     <string name="settings_theme_modern_name">Modern</string>
     <string name="settings_theme_modern_description">A neutral, flat and minimal look inspired by shadcn/ui: solid surfaces, hairline borders and no gloss.</string>
+    <string name="settings_theme_customize">Customize</string>
+    <string name="settings_theme_customize_reset">Reset to defaults</string>
+    <string name="settings_theme_customize_unselected">Select this theme to see your changes. They are saved for it either way.</string>
+    <string name="settings_theme_color_hint">Hex color, for example #3B82F6</string>
     <string name="settings_theme_selected">Selected</string>
     <string name="settings_theme_select">Select</string>
     <string name="settings_theme_by_author">by %1$s</string>

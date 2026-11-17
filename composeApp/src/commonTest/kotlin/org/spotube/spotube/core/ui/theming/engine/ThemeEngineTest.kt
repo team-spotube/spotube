@@ -40,7 +40,7 @@ class ThemeEngineTest {
         val problems = LinkedHashSet<String>()
         val doc = parseThemeDocument(json, problems)
         return compileTheme(
-            doc = doc, userVars = user, env = ThemeEnv(dark, compact),
+            doc = doc, parameters = user, env = ThemeEnv(dark, compact),
             baseColors = MillenniumColorSchemes().resolve(MillenniumPalette.Blue, dark),
             baseComponents = MillenniumDarkThemeComponents, parseProblems = problems,
         )
@@ -68,11 +68,48 @@ class ThemeEngineTest {
     }
 
     @Test
-    fun userOverridesAreClampedAndScopedToTheThemeId() {
-        val json = """{"id":"t","vars":{"r":{"type":"number","default":10,"min":0,"max":30}},
-            "components":{"card":{"base":{"shape":"{vars.r}"}}}}"""
-        assertEquals(RoundedCornerShape(30.dp), compile(json, user = mapOf("t.r" to "99")).components.cardTheme.states.default.shape)
-        assertEquals(RoundedCornerShape(10.dp), compile(json, user = mapOf("other.r" to "99")).components.cardTheme.states.default.shape)
+    fun parameterValuesAreClampedValidatedAndOnlyParametersCanBeOverridden() {
+        val json = """{"id":"t",
+            "parameters":{"r":{"type":"number","default":10,"min":0,"max":30},
+                          "mode":{"type":"enum","default":"a","options":["a","b"]}},
+            "vars":{"fixed":{"type":"number","default":5}},
+            "components":{"card":{"base":{"shape":"{params.r}","borderWidth":"{vars.fixed}"}}}}"""
+        fun shape(user: Map<String, String>) = compile(json, user = user).components.cardTheme.states.default.shape
+        assertEquals(RoundedCornerShape(10.dp), shape(emptyMap()))
+        assertEquals(RoundedCornerShape(30.dp), shape(mapOf("r" to "99")))   // clamped to max
+        assertEquals(RoundedCornerShape(10.dp), shape(mapOf("r" to "oops")))  // invalid -> default
+        // A user value can never replace a private var, even by name.
+        assertEquals(5.dp, compile(json, user = mapOf("fixed" to "20")).components.cardTheme.states.default.borderWidth)
+    }
+
+    @Test
+    fun enumParametersAndDerivedVarsFollowTheChoice() {
+        val json = """{"id":"t","parameters":{"d":{"type":"enum","default":"cozy","options":["tight","cozy"]}},
+            "vars":{"pad":{"type":"number","value":["match","{params.d}",{"tight":4,"cozy":12}]}},
+            "components":{"card":{"base":{"contentSpacing":"{vars.pad}"}}}}"""
+        assertEquals(12.dp, compile(json).components.cardTheme.states.default.contentSpacing)
+        assertEquals(4.dp, compile(json, user = mapOf("d" to "tight")).components.cardTheme.states.default.contentSpacing)
+        assertEquals(12.dp, compile(json, user = mapOf("d" to "nonsense")).components.cardTheme.states.default.contentSpacing)
+    }
+
+    @Test
+    fun parameterDeclarationsAreValidated() {
+        val problems = LinkedHashSet<String>()
+        val doc = parseThemeDocument(
+            """{"parameters":{"ok":{"type":"number","default":1,"label":"Size","description":"d","step":0.5},
+                "bad name":{"type":"number","default":1},"derived":{"type":"number","value":2},"nodefault":{"type":"bool"},
+                "choice":{"type":"enum","default":"x","options":[{"value":"x","label":"X","color":"#112233"},"y"],"presets":["#fff","nope"]}}}""",
+            problems,
+        )!!
+        assertEquals(setOf("ok", "choice"), doc.parameters.keys)
+        assertEquals("Size", doc.parameters.getValue("ok").label)
+        assertEquals(0.5, doc.parameters.getValue("ok").step)
+        val choice = doc.parameters.getValue("choice")
+        assertEquals(listOf("x", "y"), choice.options)
+        assertEquals("X", choice.optionLabels["x"])
+        assertEquals("#112233", choice.optionColors["x"])
+        assertEquals(listOf("#fff"), choice.presets)
+        assertTrue(problems.any { "bad name" in it } && problems.any { "derived" in it })
     }
 
     @Test
@@ -126,7 +163,7 @@ class ThemeEngineTest {
               {"when":{"var":"vars.glass","eq":false},"set":{"minimumHeight":10}}]}}}"""
         assertEquals(44.dp, compile(json, compact = true).components.topAppBarTheme.properties.minimumHeight)
         assertEquals(base.topAppBarTheme.properties.minimumHeight, compile(json, compact = false).components.topAppBarTheme.properties.minimumHeight)
-        assertEquals(10.dp, compile(json, user = mapOf("t.glass" to "false")).components.topAppBarTheme.properties.minimumHeight)
+        assertEquals(10.dp, compile(json.replace("\"vars\":{\"glass\"","\"parameters\":{\"glass\"").replace("vars.glass","params.glass"), user = mapOf("glass" to "false")).components.topAppBarTheme.properties.minimumHeight)
     }
 
     @Test

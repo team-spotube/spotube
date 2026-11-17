@@ -96,7 +96,8 @@ data class CompiledTheme(
 fun compileTheme(
     doc: ThemeDocument?,
     assets: ThemeAssets = ThemeAssets.Empty,
-    userVars: Map<String, String> = emptyMap(),
+    /** The user's parameter values by name (see `parameters` in the theme). */
+    parameters: Map<String, String> = emptyMap(),
     env: ThemeEnv,
     baseColors: MillenniumColors,
     baseComponents: MillenniumThemeComponents,
@@ -105,7 +106,7 @@ fun compileTheme(
     if (doc == null) {
         return CompiledTheme(baseColors, baseComponents, AppDefaultShapes, AppDefaultTypography, problems = parseProblems.toList())
     }
-    val compiler = ThemeCompiler(doc, assets, userVars, env, baseColors, baseComponents, parseProblems)
+    val compiler = ThemeCompiler(doc, assets, parameters, env, baseColors, baseComponents, parseProblems)
     return try {
         compiler.compile()
     } catch (e: ThemeBudgetExceeded) {
@@ -120,7 +121,7 @@ private val STATES = listOf("default", "hovered", "focused", "pressed", "disable
 internal class ThemeCompiler(
     val doc: ThemeDocument,
     val assets: ThemeAssets,
-    userVars: Map<String, String>,
+    parameters: Map<String, String>,
     val env: ThemeEnv,
     val baseColors: MillenniumColors,
     val baseComponents: MillenniumThemeComponents,
@@ -129,7 +130,7 @@ internal class ThemeCompiler(
     val problems = LinkedHashSet<String>(parseProblems)
     val ev = ThemeEvaluator(
         doc = doc,
-        userVars = userVars.filterKeys { it.startsWith("${doc.id}.") }.mapKeys { it.key.removePrefix("${doc.id}.") },
+        userParams = parameters,
         dark = env.dark,
         namespaces = mapOf(
             "ctx" to (mapOf("env" to mapOf("dark" to env.dark, "compact" to env.compact)) + env.extras),

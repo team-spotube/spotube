@@ -28,7 +28,10 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.spotube.millennium.theme.MillenniumPalette
@@ -38,10 +41,36 @@ import org.spotube.spotube.core.ui.theming.engine.PreparedTheme
 import org.spotube.spotube.core.ui.theming.engine.ThemeLimits
 import org.spotube.spotube.core.ui.theming.engine.ThemePackageError
 import org.spotube.spotube.core.ui.theming.engine.ThemePackageException
+import org.spotube.spotube.core.ui.theming.engine.ThemeDocument
 import org.spotube.spotube.core.ui.theming.engine.ThemePackageRepository
+import org.spotube.spotube.core.ui.theming.engine.ThemeVarDecl
+import org.spotube.spotube.core.ui.theming.engine.ThemeVarType
+import org.spotube.spotube.core.ui.theming.engine.parseHexColor
+import kotlinx.serialization.json.JsonPrimitive
 
 /** Why an import was refused; the UI maps each to a message. */
 enum class ThemeImportError { Unreadable, TooLarge, Corrupt, Unsafe, Disallowed, InvalidTheme, InvalidFont, InvalidImage, MissingMetadata }
+
+/** One choice of an enum parameter; [color] is a swatch for colour-themed choices (accent presets). */
+@Immutable
+data class ThemeParamOptionUi(val value: String, val label: String, val color: String?)
+
+/** A user-adjustable setting a theme offers, ready to render as a control. */
+@Immutable
+data class ThemeParamUi(
+    val name: String,
+    val label: String,
+    val description: String?,
+    val type: ThemeVarType,
+    /** Current value as text: `#RRGGBB`, a number, `true`/`false` or an option value. */
+    val value: String,
+    val default: String,
+    val min: Float,
+    val max: Float,
+    val step: Float,
+    val options: List<ThemeParamOptionUi>,
+    val presets: List<String>,
+)
 
 /** One theme card: a built-in Millennium look or an installed theme package. */
 @Immutable
@@ -67,6 +96,10 @@ data class ThemeCardUi(
     val fontFiles: Int,
     val icons: Int,
     val problems: List<String>,
+    /** The settings this theme offers to the user (empty for most themes). */
+    val parameters: List<ThemeParamUi> = emptyList(),
+    /** True when the user has changed any parameter from its default. */
+    val hasCustomParameters: Boolean = false,
 ) {
     val isBuiltin: Boolean get() = builtinPalette != null || isModern
 }
@@ -96,22 +129,26 @@ class ThemeStoreViewModel(
     private val themes: ThemePackageRepository,
 ) : ViewModel() {
     private val prepared = MutableStateFlow<PreparedTheme?>(null)
+
+    /** Parameter edits not yet written to settings (sliders fire on every tick); null when persisted. */
+    private val pendingParameters = MutableStateFlow<Map<String, String>?>(null)
     private val importError = MutableStateFlow<Pair<ThemeImportError, String?>?>(null)
 
     val uiState: StateFlow<ThemeStoreUiState> = combine(
-        settings.userSettings, themes.installed, prepared, importError,
-    ) { userSettings, installed, candidate, error ->
+        settings.userSettings, themes.installed, prepared, importError, pendingParameters,
+    ) { userSettings, installed, candidate, error, pendingParams ->
+        val overrides = pendingParams ?: userSettings.themeParameters
         val selectedId = userSettings.selectedThemeId
             ?.takeIf { id -> id.startsWith(BUILTIN_PREFIX) || installed.any { it.id == id } }
             ?: builtinId(userSettings.palette)
         val cards = MillenniumPalette.entries.map { it.toBuiltinCard(selectedId) } +
-            modernCard(selectedId) +
-            installed.map { it.toCard(selectedId) }
+            modernCard(selectedId, overrides) +
+            installed.map { it.toCard(selectedId, overrides) }
         ThemeStoreUiState(
             themes = cards,
             pending = candidate?.let {
                 PendingThemeUi(
-                    card = it.theme.toCard(selectedId),
+                    card = it.theme.toCard(selectedId, overrides),
                     replacesVersion = it.replaces?.meta?.version,
                     replaces = it.replaces != null,
                     sizeKb = it.theme.packageBytes / 1024,
@@ -121,6 +158,40 @@ class ThemeStoreViewModel(
             importErrorDetail = error?.second,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ThemeStoreUiState())
+
+    init {
+        // Persist once edits settle: the theme recompiles on the saved value, so one drag costs one compile.
+        @OptIn(FlowPreview::class)
+        viewModelScope.launch {
+            pendingParameters.filterNotNull().debounce(300).collect { values ->
+                settings.updateSettings(settings.getCurrentSettings().copy(themeParameters = values))
+                pendingParameters.compareAndSet(values, null)
+            }
+        }
+    }
+
+    /** Sets one parameter of [themeId], after checking [value] against the declared type, range and options. */
+    fun setParameter(themeId: String, name: String, value: String) {
+        val decl = themeDocFor(themeId)?.parameters?.get(name) ?: return
+        val clean = normalizeParameterValue(decl, value) ?: return
+        viewModelScope.launch {
+            val base = pendingParameters.value ?: settings.getCurrentSettings().themeParameters
+            pendingParameters.value = base + ("$themeId.$name" to clean)
+        }
+    }
+
+    /** Puts every parameter of [themeId] back to the theme's defaults. */
+    fun resetParameters(themeId: String) {
+        viewModelScope.launch {
+            val current = settings.getCurrentSettings()
+            val remaining = (pendingParameters.value ?: current.themeParameters).filterKeys { !it.startsWith("$themeId.") }
+            pendingParameters.value = null
+            settings.updateSettings(current.copy(themeParameters = remaining))
+        }
+    }
+
+    private fun themeDocFor(id: String) =
+        (if (BuiltInThemes.isBuiltIn(id)) themes.modern else themes.installed.value.firstOrNull { it.id == id })?.doc
 
     fun select(id: String) {
         viewModelScope.launch {
@@ -209,20 +280,42 @@ class ThemeStoreViewModel(
         license = "AGPL-3.0", licenseText = null, fontFiles = 0, icons = 0, problems = emptyList(),
     )
 
-    private fun modernCard(selectedId: String) = ThemeCardUi(
+    private fun modernCard(selectedId: String, overrides: Map<String, String>) = ThemeCardUi(
         id = BuiltInThemes.MODERN_ID, name = "", version = null, author = "Spotube Team", description = null, logo = null,
         builtinPalette = null, isModern = true, selected = BuiltInThemes.MODERN_ID == selectedId,
         repository = SPOTUBE_REPO, bugs = "$SPOTUBE_REPO/issues", homepage = null, contact = null,
         license = "AGPL-3.0", licenseText = null, fontFiles = 0, icons = 0, problems = emptyList(),
+        parameters = parameterUis(BuiltInThemes.MODERN_ID, themes.modern.doc, overrides),
+        hasCustomParameters = overrides.keys.any { it.startsWith("${BuiltInThemes.MODERN_ID}.") },
     )
 
-    private fun LoadedTheme.toCard(selectedId: String) = ThemeCardUi(
+    private fun LoadedTheme.toCard(selectedId: String, overrides: Map<String, String>) = ThemeCardUi(
         id = id, name = name, version = meta.version, author = meta.author, description = meta.description, logo = logo,
         builtinPalette = null, selected = id == selectedId,
         repository = meta.repository, bugs = meta.bugs, homepage = meta.homepage, contact = meta.contact,
         license = meta.license, licenseText = licenseText, fontFiles = fontFileCount, icons = iconCount,
         problems = problems.toList(),
+        parameters = parameterUis(id, doc, overrides),
+        hasCustomParameters = overrides.keys.any { it.startsWith("$id.") },
     )
+
+    private fun parameterUis(themeId: String, doc: ThemeDocument, overrides: Map<String, String>): List<ThemeParamUi> =
+        doc.parameters.values.map { d ->
+            val default = (d.default as? JsonPrimitive)?.content.orEmpty()
+            ThemeParamUi(
+                name = d.name,
+                label = d.label ?: d.name,
+                description = d.description,
+                type = d.type,
+                value = overrides["$themeId.${d.name}"] ?: default,
+                default = default,
+                min = (d.min ?: 0.0).toFloat(),
+                max = (d.max ?: 100.0).toFloat(),
+                step = (d.step ?: 1.0).toFloat(),
+                options = d.options.map { ThemeParamOptionUi(it, d.optionLabels[it] ?: it, d.optionColors[it]) },
+                presets = d.presets,
+            )
+        }
 
     private fun ThemePackageError.toUi() = when (this) {
         ThemePackageError.TooLarge, ThemePackageError.EntryTooLarge, ThemePackageError.TooManyEntries -> ThemeImportError.TooLarge
@@ -234,4 +327,14 @@ class ThemeStoreViewModel(
         ThemePackageError.InvalidImage -> ThemeImportError.InvalidImage
         ThemePackageError.MissingMetadata -> ThemeImportError.MissingMetadata
     }
+}
+
+/** Validates [raw] for [decl] and returns the cleaned text to store, or null if it is not acceptable. */
+internal fun normalizeParameterValue(decl: ThemeVarDecl, raw: String): String? = when (decl.type) {
+    ThemeVarType.Color -> raw.trim().takeIf { parseHexColor(it) != null }
+    ThemeVarType.Number -> raw.trim().toDoubleOrNull()?.coerceIn(decl.min ?: Double.NEGATIVE_INFINITY, decl.max ?: Double.POSITIVE_INFINITY)
+        ?.let { if (it % 1.0 == 0.0) it.toLong().toString() else it.toString() }
+    ThemeVarType.Bool -> raw.trim().toBooleanStrictOrNull()?.toString()
+    ThemeVarType.Enum -> raw.takeIf { it in decl.options }
+    ThemeVarType.String -> raw.take(80)
 }

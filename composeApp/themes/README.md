@@ -75,8 +75,27 @@ Coordinates are fractions of the painted box, so one theme fits a 40dp icon butt
 * Conditions (a rule's `when`, or an `if` test): `all`, `any`, `not`, `state`, `variant`, and `{ "var": "ctx.x", "eq"|"ne"|"in"|"gt"|"gte"|"lt"|"lte": ... }`; several keys in one object are ANDed.
 * Live context: `ctx.env.dark`, `ctx.env.compact`, `ctx.player.{isPlaying,isPaused,isBuffering,hasTrack,shuffle,loop}`, and `ctx.item.{current,playing}` on track rows.
 
+### Parameters (user settings)
+`parameters` are the knobs a theme offers **to users**: they appear under *Customize* in the theme's details, apply live, are saved per theme (surviving theme updates) and can be reset to the defaults. A theme uses them as `{params.name}` anywhere a value is allowed. Keep them to the basics (accent, corner radius, density).
+
+```jsonc
+"parameters": {
+  "accent": { "type": "enum", "label": "Accent color", "default": "blue",
+              "options": [ { "value": "blue", "label": "Blue", "color": "#2563eb" },
+                           { "value": "rose", "label": "Rose", "color": "#e11d48" } ] },   // "color" draws a swatch
+  "radius": { "type": "number", "label": "Corner radius", "default": 8, "min": 0, "max": 16, "step": 1 },
+  "compact": { "type": "bool", "label": "Compact rows", "default": false },
+  "tint":   { "type": "color", "label": "Tint", "default": "#3B82F6", "presets": ["#3B82F6", "#EF4444"] }
+},
+"vars": {
+  "primary": { "type": "color", "value": ["match", "{params.accent}", { "blue": "#2563eb", "rose": "#e11d48" }] },
+  "r": { "type": "number", "value": "{params.radius}" }
+}
+```
+Types: `enum` (buttons, or colour swatches when options carry a `color`), `number` (slider with `min`/`max`/`step`), `bool` (switch), `color` (hex field plus optional `presets` swatches), `string`. Every parameter needs a plain `default`, a `label` (and optionally a `description`), and up to 24 are allowed; names are letters, digits and `_`. Values are validated by type, clamped to the range and checked against the options, so an invalid value falls back to the default. A parameter cannot be derived (use a `var` for that) and users can never override `vars`. Compute everything else from parameters with `vars` (see `match`, `add`, `sub`, `max` above); the bundled Modern theme (`BuiltInThemes.kt`) is a complete example.
+
 ### Variables
-`vars` is the theme author's own token store: `{ "type": "color|number|bool|string|enum", "default": ..., "min", "max", "options" }`, or `"value": <expression>` for a derived one. Declare colors, radii and the like once, reference them as `{vars.name}` everywhere, change them in one place. Types are validated; cycles are rejected. A component can declare its own `vars`, which shadow global ones. Variables are never shown to users.
+`vars` are the theme author's **private** token store: `{ "type": "color|number|bool|string|enum", "default": ..., "min", "max", "options" }`, or `"value": <expression>` for a derived one. Declare colors, radii and the like once, reference them as `{vars.name}` everywhere, change them in one place. Types are validated; cycles are rejected. A component can declare its own `vars`, which shadow global ones. Variables are never shown to users: to let users change something, make it a parameter and derive vars from it.
 
 ## Fonts and icons
 ```jsonc

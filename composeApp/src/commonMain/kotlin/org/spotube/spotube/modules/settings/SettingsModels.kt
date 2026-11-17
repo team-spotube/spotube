@@ -45,6 +45,8 @@ data class UserSettings(
      * theme package. Null (older installs) means the built-in theme of [palette].
      */
     val selectedThemeId: String? = null,
+    /** The user's values for each theme's parameters, keyed `"<themeId>.<parameter>"`; absent means the theme's default. */
+    val themeParameters: Map<String, String> = emptyMap(),
 
     // Playback
     val streamingMusicFormat: AudioFormat = defaultStreamingMusicFormat(),
