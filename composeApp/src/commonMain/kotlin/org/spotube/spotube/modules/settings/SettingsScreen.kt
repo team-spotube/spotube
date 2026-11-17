@@ -88,7 +88,7 @@ private fun CompactSettingsScreen(settingsViewModel: SettingsViewModel) {
     val shellBottomInset = LocalAppShellBottomInset.current
     val requestLocalNetworkPermission = rememberLocalNetworkPermissionRequester()
     val contentPadding = remember(shellBottomInset) {
-        PaddingValues(top = 16.dp, bottom = 16.dp + shellBottomInset)
+        PaddingValues(top = 20.dp, bottom = 24.dp + shellBottomInset)
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
