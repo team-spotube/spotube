@@ -76,7 +76,6 @@ import org.spotube.millennium.composables.MillenniumDialogHeader
 import org.spotube.millennium.composables.MillenniumDialogTitle
 import org.spotube.millennium.composables.MillenniumSeparator
 import org.spotube.millennium.theme.MillenniumColorSchemes
-import org.spotube.millennium.theme.MillenniumPalette
 import org.spotube.millennium.theme.MillenniumTheme
 import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
@@ -240,15 +239,10 @@ internal fun ThemeRow(card: ThemeCardUi, onOpen: () -> Unit, onSelect: () -> Uni
 @Composable
 private fun ThemeLogo(card: ThemeCardUi, modifier: Modifier = Modifier.fillMaxSize()) {
     val logo = card.logo
-    val palette = card.builtinPalette
     when {
         logo != null -> Image(logo, contentDescription = card.displayName(), contentScale = ContentScale.Crop, modifier = modifier)
         card.isModern -> Box(modifier.padding(10.dp).clip(RoundedCornerShape(5.dp)).background(AppTheme.colors.onSurface))
-        palette != null -> {
-            val dark = !isLightAppearance()
-            val accent = remember(palette, dark) { MillenniumColorSchemes().resolve(palette, dark).accent }
-            Box(modifier.padding(8.dp).clip(CircleShape).background(accent))
-        }
+        card.swatchColor != null -> Box(modifier.padding(8.dp).clip(CircleShape).background(parseSwatch(card.swatchColor)))
         else -> AppIcon(Iconsax.IconsaxMagic, contentDescription = null, tint = AppTheme.colors.primary)
     }
 }
@@ -256,15 +250,8 @@ private fun ThemeLogo(card: ThemeCardUi, modifier: Modifier = Modifier.fillMaxSi
 @Composable
 private fun ThemeCardUi.displayName(): String = when {
     isModern -> stringResource(Res.string.settings_theme_modern_name)
-    builtinPalette != null -> stringResource(Res.string.settings_theme_builtin_name, builtinPalette.label())
+    isMillennium -> stringResource(Res.string.settings_theme_millennium_name)
     else -> name
-}
-
-@Composable
-private fun MillenniumPalette.label(): String = when (this) {
-    MillenniumPalette.Blue -> stringResource(Res.string.settings_palette_blue)
-    MillenniumPalette.Orange -> stringResource(Res.string.settings_palette_orange)
-    MillenniumPalette.Lime -> stringResource(Res.string.settings_palette_lime)
 }
 
 @Composable

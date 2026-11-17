@@ -34,7 +34,16 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import androidx.compose.ui.graphics.toArgb
+import org.spotube.millennium.theme.MillenniumColorSchemes
 import org.spotube.millennium.theme.MillenniumPalette
+import org.spotube.millennium.theme.resolve
+import org.spotube.spotube.core.i18n.getString
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.settings_palette_blue
+import spotube.composeapp.generated.resources.settings_palette_lime
+import spotube.composeapp.generated.resources.settings_palette_orange
+import spotube.composeapp.generated.resources.settings_theme_accent_label
 import org.spotube.spotube.core.ui.theming.engine.BuiltInThemes
 import org.spotube.spotube.core.ui.theming.engine.LoadedTheme
 import org.spotube.spotube.core.ui.theming.engine.PreparedTheme
@@ -82,8 +91,10 @@ data class ThemeCardUi(
     val author: String?,
     val description: String?,
     val logo: ImageBitmap?,
-    /** Set for the built-in themes (one per palette). */
-    val builtinPalette: MillenniumPalette?,
+    /** True for the plain Millennium look, whose only setting is its accent (Blue/Orange/Lime). */
+    val isMillennium: Boolean = false,
+    /** `#RRGGBB` of the current accent, drawn as the logo of the built-in Millennium card. */
+    val swatchColor: String? = null,
     /** True for the bundled Modern theme, whose name and description come from string resources. */
     val isModern: Boolean = false,
     val selected: Boolean,
@@ -101,7 +112,7 @@ data class ThemeCardUi(
     /** True when the user has changed any parameter from its default. */
     val hasCustomParameters: Boolean = false,
 ) {
-    val isBuiltin: Boolean get() = builtinPalette != null || isModern
+    val isBuiltin: Boolean get() = isMillennium || isModern
 }
 
 /** A freshly validated theme awaiting the user's confirmation. */
@@ -117,11 +128,19 @@ data class ThemeStoreUiState(
     val importErrorDetail: String? = null,
 )
 
-private const val BUILTIN_PREFIX = "builtin:"
+private const val MILLENNIUM_ID = BuiltInThemes.MILLENNIUM_ID
 private const val MILLENNIUM_REPO = "https://github.com/team-spotube/millennium"
 private const val SPOTUBE_REPO = "https://github.com/team-spotube/spotube"
 
-private fun builtinId(palette: MillenniumPalette) = BUILTIN_PREFIX + palette.name.lowercase()
+/** The theme id to treat as selected: unknown, removed and older `builtin:blue/orange/lime` ids all mean Millennium. */
+internal fun normalizeSelectedThemeId(selected: String?, installedIds: List<String>): String =
+    selected?.takeIf { it == MILLENNIUM_ID || it == BuiltInThemes.MODERN_ID || it in installedIds } ?: MILLENNIUM_ID
+
+/** The accent swatch of [palette] (its light-mode accent), as `#RRGGBB`. */
+internal fun MillenniumPalette.accentHex(): String {
+    val c = MillenniumColorSchemes().resolve(this, dark = false).accent
+    return "#%06X".format(c.toArgb() and 0xFFFFFF)
+}
 
 /** Lists, selects, installs and removes themes (built-in Millennium looks plus installed packages). */
 class ThemeStoreViewModel(
@@ -138,10 +157,9 @@ class ThemeStoreViewModel(
         settings.userSettings, themes.installed, prepared, importError, pendingParameters,
     ) { userSettings, installed, candidate, error, pendingParams ->
         val overrides = pendingParams ?: userSettings.themeParameters
-        val selectedId = userSettings.selectedThemeId
-            ?.takeIf { id -> id.startsWith(BUILTIN_PREFIX) || installed.any { it.id == id } }
-            ?: builtinId(userSettings.palette)
-        val cards = MillenniumPalette.entries.map { it.toBuiltinCard(selectedId) } +
+        // Unknown ids and the older builtin:blue/orange/lime values all mean the Millennium look.
+        val selectedId = normalizeSelectedThemeId(userSettings.selectedThemeId, installed.map { it.id })
+        val cards = listOf(millenniumCard(selectedId, userSettings.palette)) +
             modernCard(selectedId, overrides) +
             installed.map { it.toCard(selectedId, overrides) }
         ThemeStoreUiState(
@@ -172,6 +190,12 @@ class ThemeStoreViewModel(
 
     /** Sets one parameter of [themeId], after checking [value] against the declared type, range and options. */
     fun setParameter(themeId: String, name: String, value: String) {
+        if (themeId == MILLENNIUM_ID) {
+            // The Millennium accent is the app-wide palette; it has no JSON document behind it.
+            val palette = MillenniumPalette.entries.firstOrNull { it.name.lowercase() == value && name == "accent" } ?: return
+            viewModelScope.launch { settings.updateSettings(settings.getCurrentSettings().copy(palette = palette)) }
+            return
+        }
         val decl = themeDocFor(themeId)?.parameters?.get(name) ?: return
         val clean = normalizeParameterValue(decl, value) ?: return
         viewModelScope.launch {
@@ -182,6 +206,10 @@ class ThemeStoreViewModel(
 
     /** Puts every parameter of [themeId] back to the theme's defaults. */
     fun resetParameters(themeId: String) {
+        if (themeId == MILLENNIUM_ID) {
+            viewModelScope.launch { settings.updateSettings(settings.getCurrentSettings().copy(palette = MillenniumPalette.Blue)) }
+            return
+        }
         viewModelScope.launch {
             val current = settings.getCurrentSettings()
             val remaining = (pendingParameters.value ?: current.themeParameters).filterKeys { !it.startsWith("$themeId.") }
@@ -196,11 +224,8 @@ class ThemeStoreViewModel(
     fun select(id: String) {
         viewModelScope.launch {
             val current = settings.getCurrentSettings()
-            val palette = MillenniumPalette.entries.firstOrNull { builtinId(it) == id }
-            when {
-                palette != null -> settings.updateSettings(current.copy(selectedThemeId = id, palette = palette))
-                BuiltInThemes.isBuiltIn(id) -> settings.updateSettings(current.copy(selectedThemeId = id))
-                themes.installed.value.any { it.id == id } -> settings.updateSettings(current.copy(selectedThemeId = id))
+            if (id == MILLENNIUM_ID || BuiltInThemes.isBuiltIn(id) || themes.installed.value.any { it.id == id }) {
+                settings.updateSettings(current.copy(selectedThemeId = id))
             }
         }
     }
@@ -210,7 +235,7 @@ class ThemeStoreViewModel(
             val current = settings.getCurrentSettings()
             themes.remove(id)
             if (current.selectedThemeId == id) {
-                settings.updateSettings(current.copy(selectedThemeId = builtinId(current.palette)))
+                settings.updateSettings(current.copy(selectedThemeId = MILLENNIUM_ID))
             }
         }
     }
@@ -273,16 +298,38 @@ class ThemeStoreViewModel(
         importError.value = null
     }
 
-    private fun MillenniumPalette.toBuiltinCard(selectedId: String) = ThemeCardUi(
-        id = builtinId(this), name = "", version = null, author = "Spotube Team", description = null, logo = null,
-        builtinPalette = this, selected = builtinId(this) == selectedId,
+    private suspend fun millenniumCard(selectedId: String, palette: MillenniumPalette) = ThemeCardUi(
+        id = MILLENNIUM_ID, name = "", version = null, author = "Spotube Team", description = null, logo = null,
+        isMillennium = true, swatchColor = palette.accentHex(), selected = MILLENNIUM_ID == selectedId,
         repository = MILLENNIUM_REPO, bugs = "$MILLENNIUM_REPO/issues", homepage = null, contact = null,
         license = "AGPL-3.0", licenseText = null, fontFiles = 0, icons = 0, problems = emptyList(),
+        parameters = listOf(
+            ThemeParamUi(
+                name = "accent", label = getString(Res.string.settings_theme_accent_label), description = null,
+                type = ThemeVarType.Enum, value = palette.name.lowercase(), default = MillenniumPalette.Blue.name.lowercase(),
+                min = 0f, max = 100f, step = 1f,
+                options = MillenniumPalette.entries.map {
+                    ThemeParamOptionUi(
+                        value = it.name.lowercase(),
+                        label = getString(
+                            when (it) {
+                                MillenniumPalette.Blue -> Res.string.settings_palette_blue
+                                MillenniumPalette.Orange -> Res.string.settings_palette_orange
+                                MillenniumPalette.Lime -> Res.string.settings_palette_lime
+                            }
+                        ),
+                        color = it.accentHex(),
+                    )
+                },
+                presets = emptyList(),
+            ),
+        ),
+        hasCustomParameters = palette != MillenniumPalette.Blue,
     )
 
     private fun modernCard(selectedId: String, overrides: Map<String, String>) = ThemeCardUi(
         id = BuiltInThemes.MODERN_ID, name = "", version = null, author = "Spotube Team", description = null, logo = null,
-        builtinPalette = null, isModern = true, selected = BuiltInThemes.MODERN_ID == selectedId,
+        isModern = true, selected = BuiltInThemes.MODERN_ID == selectedId,
         repository = SPOTUBE_REPO, bugs = "$SPOTUBE_REPO/issues", homepage = null, contact = null,
         license = "AGPL-3.0", licenseText = null, fontFiles = 0, icons = 0, problems = emptyList(),
         parameters = parameterUis(BuiltInThemes.MODERN_ID, themes.modern.doc, overrides),
@@ -291,7 +338,7 @@ class ThemeStoreViewModel(
 
     private fun LoadedTheme.toCard(selectedId: String, overrides: Map<String, String>) = ThemeCardUi(
         id = id, name = name, version = meta.version, author = meta.author, description = meta.description, logo = logo,
-        builtinPalette = null, selected = id == selectedId,
+        selected = id == selectedId,
         repository = meta.repository, bugs = meta.bugs, homepage = meta.homepage, contact = meta.contact,
         license = meta.license, licenseText = licenseText, fontFiles = fontFileCount, icons = iconCount,
         problems = problems.toList(),

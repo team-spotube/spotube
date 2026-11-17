@@ -41,8 +41,8 @@ data class UserSettings(
     val theme: Theme = Theme.SYSTEM,
     val palette: MillenniumPalette = MillenniumPalette.Blue,
     /**
-     * Selected theme: `builtin:<palette>` for the built-in Millennium looks, or the id of an installed
-     * theme package. Null (older installs) means the built-in theme of [palette].
+     * Selected theme: `builtin:millennium` (the plain Millennium look, whose accent is [palette]), `builtin:modern`, or the
+     * id of an installed theme package. Null and the older `builtin:blue/orange/lime` values mean Millennium.
      */
     val selectedThemeId: String? = null,
     /** The user's values for each theme's parameters, keyed `"<themeId>.<parameter>"`; absent means the theme's default. */

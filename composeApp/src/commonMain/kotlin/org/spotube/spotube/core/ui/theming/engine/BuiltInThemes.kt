@@ -22,6 +22,9 @@ package org.spotube.spotube.core.ui.theming.engine
  * theme author uses) with no assets, so they need no package and can't be removed.
  */
 object BuiltInThemes {
+    /** The plain Millennium look; its accent (Blue/Orange/Lime) is `UserSettings.palette`. Older `builtin:<palette>` ids mean this too. */
+    const val MILLENNIUM_ID = "builtin:millennium"
+
     /** Settings value of `UserSettings.selectedThemeId` for the Modern theme. */
     const val MODERN_ID = "builtin:modern"
 

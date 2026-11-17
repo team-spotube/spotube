@@ -1,6 +1,6 @@
 # Spotube themes
 
-A theme is a **package** (a `.zip`), like a plugin: it has metadata (author, repository, license, logo), it is installed from **Settings → Look & feel → Themes**, shows up as a card next to the built-in looks (the Millennium palettes and the bundled Modern theme, which is itself written in this format), and can be selected, updated or removed. Build one by zipping a folder that has `theme.json` at its root (for example `cd my-theme && zip -r ../my-theme.zip .`). Any `composeApp/themes/<name>/` folder you add here is packed, loaded and rendered (light and dark) by `ThemeGalleryTest`, which fails on warnings or missing metadata.
+A theme is a **package** (a `.zip`), like a plugin: it has metadata (author, repository, license, logo), it is installed from **Settings → Look & feel → Themes**, shows up as a card next to the built-in themes (Millennium, whose accent is Blue, Orange or Lime, and the bundled Modern theme, which is itself written in this format), and can be selected, updated or removed. Build one by zipping a folder that has `theme.json` at its root (for example `cd my-theme && zip -r ../my-theme.zip .`). Any `composeApp/themes/<name>/` folder you add here is packed, loaded and rendered (light and dark) by `ThemeGalleryTest`, which fails on warnings or missing metadata.
 
 ## Package layout
 ```

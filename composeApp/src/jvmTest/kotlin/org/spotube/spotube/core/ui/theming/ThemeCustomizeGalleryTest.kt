@@ -42,7 +42,7 @@ import kotlin.test.Test
 class ThemeCustomizeGalleryTest {
     private fun card(accent: String) = ThemeCardUi(
         id = "builtin:modern", name = "", version = null, author = "Spotube Team", description = null, logo = null,
-        builtinPalette = null, isModern = true, selected = true, repository = null, bugs = null, homepage = null, contact = null,
+        isModern = true, selected = true, repository = null, bugs = null, homepage = null, contact = null,
         license = null, licenseText = null, fontFiles = 0, icons = 0, problems = emptyList(), hasCustomParameters = true,
         parameters = listOf(
             ThemeParamUi(

@@ -166,7 +166,7 @@ internal object ThemeInteractionGallery {
     private fun themeCard(id: String, palette: org.spotube.millennium.theme.MillenniumPalette, selected: Boolean) =
         org.spotube.spotube.modules.settings.ThemeCardUi(
             id = id, name = "", version = null, author = "Spotube Team", description = null, logo = null,
-            builtinPalette = palette, selected = selected, repository = null, bugs = null, homepage = null, contact = null,
+            isMillennium = true, swatchColor = if (palette == org.spotube.millennium.theme.MillenniumPalette.Orange) "#9A3412" else if (palette == org.spotube.millennium.theme.MillenniumPalette.Lime) "#3F6212" else "#005CB9", selected = selected, repository = null, bugs = null, homepage = null, contact = null,
             license = "AGPL-3.0", licenseText = null, fontFiles = 0, icons = 0, problems = emptyList(),
         )
 

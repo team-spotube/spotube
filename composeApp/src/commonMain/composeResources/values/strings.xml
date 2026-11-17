@@ -158,7 +158,8 @@
     <string name="settings_themes_title">Themes</string>
     <string name="settings_themes_subtitle">Pick a look, or install a theme package (.zip) made by someone else.</string>
     <string name="settings_themes_install">Install theme</string>
-    <string name="settings_theme_builtin_name">Millennium %1$s</string>
+    <string name="settings_theme_millennium_name">Millennium</string>
+    <string name="settings_theme_accent_label">Accent color</string>
     <string name="settings_theme_builtin_description">The built-in Millennium look: glossy gel buttons and pearl surfaces.</string>
     <string name="settings_theme_modern_name">Modern</string>
     <string name="settings_theme_modern_description">A neutral, flat and minimal look inspired by shadcn/ui: solid surfaces, hairline borders and no gloss.</string>
