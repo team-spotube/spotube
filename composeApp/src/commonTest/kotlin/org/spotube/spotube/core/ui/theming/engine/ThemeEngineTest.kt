@@ -240,4 +240,15 @@ class ThemeEngineTest {
             assertNull(safeWebUrl(bad), bad)
         }
     }
+
+    @Test
+    fun unknownPropertiesAreReportedButDefaultsMayNameAnyProp() {
+        val t = compile(
+            """{"defaults":{"shape":4,"notAThingOnTopBar":1},
+                "components":{"card":{"base":{"borderWidht":2,"borderWidth":3}},
+                              "button":{"variants":{"primary":{"states":{"hovered":{"backgrund":"#fff"}}}}}}}""",
+        )
+        assertEquals(setOf("components.card: unknown property \"borderWidht\"", "components.button.primary: unknown property \"backgrund\""), t.problems.toSet())
+        assertEquals(androidx.compose.ui.unit.Dp(3f), t.components.cardTheme.states.default.borderWidth)
+    }
 }

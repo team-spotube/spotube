@@ -694,5 +694,5 @@ tasks.matching { it.name == "prepareAppResources" || it.name == "copyGraalvmAppR
 
 // Sample theme packages under composeApp/themes are test inputs (ThemeGalleryTest packs and renders them).
 tasks.withType<Test>().configureEach {
-    inputs.dir("themes").withPropertyName("sampleThemes").optional()
+    inputs.files(fileTree("themes") { include("*/**") }).withPropertyName("themeFolders")
 }

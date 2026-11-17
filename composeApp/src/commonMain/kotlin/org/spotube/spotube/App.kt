@@ -159,9 +159,10 @@ fun App(
     val settingsRepository: SettingsRepository = koinInject<SettingsRepository>()
     val userSettings by settingsRepository.userSettings.collectAsStateWithLifecycle(initialValue = UserSettings())
     val themeContext by koinInject<org.spotube.spotube.core.ui.theming.engine.ThemeContextService>().context.collectAsStateWithLifecycle()
-    val installedThemes by koinInject<org.spotube.spotube.core.ui.theming.engine.ThemePackageRepository>().installed.collectAsStateWithLifecycle()
+    val themeRepository = koinInject<org.spotube.spotube.core.ui.theming.engine.ThemePackageRepository>()
+    val installedThemes by themeRepository.installed.collectAsStateWithLifecycle()
     val selectedTheme = userSettings.selectedThemeId
-    val activeTheme = remember(installedThemes, selectedTheme) { installedThemes.firstOrNull { it.id == selectedTheme } }
+    val activeTheme = remember(installedThemes, selectedTheme) { themeRepository.themeFor(selectedTheme, installedThemes) }
     val appUpdateService: AppUpdateService = koinInject()
     val pluginUpdateService: PluginUpdateService = koinInject()
     val availableAppUpdate by appUpdateService.availableUpdate.collectAsStateWithLifecycle()

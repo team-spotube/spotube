@@ -32,6 +32,9 @@ class ThemeGalleryTest {
         val out = File("build/theme-gallery")
         ThemeGallery.render(null, dark = true, out = File(out, "stock-dark.png"))
         ThemeGallery.render(null, dark = false, out = File(out, "stock-light.png"))
+        val modern = org.spotube.spotube.core.ui.theming.engine.BuiltInThemes.loadModern("build/tmp/theme-gallery-cache")
+        ThemeGallery.render(modern, dark = true, out = File(out, "modern-dark.png"))
+        ThemeGallery.render(modern, dark = false, out = File(out, "modern-light.png"))
         File("themes").listFiles { f -> f.isDirectory && File(f, "theme.json").exists() }.orEmpty().sortedBy { it.name }.forEach { dir ->
             val problems = LinkedHashSet<String>()
             val theme = ThemeGallery.load(dir, problems)

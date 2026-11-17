@@ -32,6 +32,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -224,6 +225,7 @@ private fun ThemeLogo(card: ThemeCardUi, modifier: Modifier = Modifier.fillMaxSi
     val palette = card.builtinPalette
     when {
         logo != null -> Image(logo, contentDescription = card.displayName(), contentScale = ContentScale.Crop, modifier = modifier)
+        card.isModern -> Box(modifier.padding(10.dp).clip(RoundedCornerShape(5.dp)).background(AppTheme.colors.onSurface))
         palette != null -> {
             val dark = !isLightAppearance()
             val accent = remember(palette, dark) { MillenniumColorSchemes().resolve(palette, dark).accent }
@@ -234,9 +236,11 @@ private fun ThemeLogo(card: ThemeCardUi, modifier: Modifier = Modifier.fillMaxSi
 }
 
 @Composable
-private fun ThemeCardUi.displayName(): String = builtinPalette?.let {
-    stringResource(Res.string.settings_theme_builtin_name, it.label())
-} ?: name
+private fun ThemeCardUi.displayName(): String = when {
+    isModern -> stringResource(Res.string.settings_theme_modern_name)
+    builtinPalette != null -> stringResource(Res.string.settings_theme_builtin_name, builtinPalette.label())
+    else -> name
+}
 
 @Composable
 private fun MillenniumPalette.label(): String = when (this) {
@@ -347,7 +351,11 @@ private fun ThemeDetailsDialog(card: ThemeCardUi, onDismiss: () -> Unit, onSelec
             ) {
                 ThemeHeader(card)
                 Text(
-                    card.description ?: if (card.isBuiltin) stringResource(Res.string.settings_theme_builtin_description) else "",
+                    card.description ?: when {
+                        card.isModern -> stringResource(Res.string.settings_theme_modern_description)
+                        card.isBuiltin -> stringResource(Res.string.settings_theme_builtin_description)
+                        else -> ""
+                    },
                     style = AppTheme.typography.bodyMedium,
                     color = AppTheme.colors.onSurfaceVariant,
                 )

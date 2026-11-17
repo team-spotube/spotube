@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.spotube.millennium.theme.MillenniumPalette
+import org.spotube.spotube.core.ui.theming.engine.BuiltInThemes
 import org.spotube.spotube.core.ui.theming.engine.LoadedTheme
 import org.spotube.spotube.core.ui.theming.engine.PreparedTheme
 import org.spotube.spotube.core.ui.theming.engine.ThemeLimits
@@ -54,6 +55,8 @@ data class ThemeCardUi(
     val logo: ImageBitmap?,
     /** Set for the built-in themes (one per palette). */
     val builtinPalette: MillenniumPalette?,
+    /** True for the bundled Modern theme, whose name and description come from string resources. */
+    val isModern: Boolean = false,
     val selected: Boolean,
     val repository: String?,
     val bugs: String?,
@@ -65,7 +68,7 @@ data class ThemeCardUi(
     val icons: Int,
     val problems: List<String>,
 ) {
-    val isBuiltin: Boolean get() = builtinPalette != null
+    val isBuiltin: Boolean get() = builtinPalette != null || isModern
 }
 
 /** A freshly validated theme awaiting the user's confirmation. */
@@ -83,6 +86,7 @@ data class ThemeStoreUiState(
 
 private const val BUILTIN_PREFIX = "builtin:"
 private const val MILLENNIUM_REPO = "https://github.com/team-spotube/millennium"
+private const val SPOTUBE_REPO = "https://github.com/team-spotube/spotube"
 
 private fun builtinId(palette: MillenniumPalette) = BUILTIN_PREFIX + palette.name.lowercase()
 
@@ -101,6 +105,7 @@ class ThemeStoreViewModel(
             ?.takeIf { id -> id.startsWith(BUILTIN_PREFIX) || installed.any { it.id == id } }
             ?: builtinId(userSettings.palette)
         val cards = MillenniumPalette.entries.map { it.toBuiltinCard(selectedId) } +
+            modernCard(selectedId) +
             installed.map { it.toCard(selectedId) }
         ThemeStoreUiState(
             themes = cards,
@@ -123,6 +128,7 @@ class ThemeStoreViewModel(
             val palette = MillenniumPalette.entries.firstOrNull { builtinId(it) == id }
             when {
                 palette != null -> settings.updateSettings(current.copy(selectedThemeId = id, palette = palette))
+                BuiltInThemes.isBuiltIn(id) -> settings.updateSettings(current.copy(selectedThemeId = id))
                 themes.installed.value.any { it.id == id } -> settings.updateSettings(current.copy(selectedThemeId = id))
             }
         }
@@ -200,6 +206,13 @@ class ThemeStoreViewModel(
         id = builtinId(this), name = "", version = null, author = "Spotube Team", description = null, logo = null,
         builtinPalette = this, selected = builtinId(this) == selectedId,
         repository = MILLENNIUM_REPO, bugs = "$MILLENNIUM_REPO/issues", homepage = null, contact = null,
+        license = "AGPL-3.0", licenseText = null, fontFiles = 0, icons = 0, problems = emptyList(),
+    )
+
+    private fun modernCard(selectedId: String) = ThemeCardUi(
+        id = BuiltInThemes.MODERN_ID, name = "", version = null, author = "Spotube Team", description = null, logo = null,
+        builtinPalette = null, isModern = true, selected = BuiltInThemes.MODERN_ID == selectedId,
+        repository = SPOTUBE_REPO, bugs = "$SPOTUBE_REPO/issues", homepage = null, contact = null,
         license = "AGPL-3.0", licenseText = null, fontFiles = 0, icons = 0, problems = emptyList(),
     )
 

@@ -56,6 +56,15 @@ class ThemePackageRepository(private val dataDir: String, private val cacheDir: 
     private val _installed = MutableStateFlow<List<LoadedTheme>>(emptyList())
     val installed: StateFlow<List<LoadedTheme>> = _installed.asStateFlow()
 
+    /** The bundled Modern theme (`builtin:modern`); no package, nothing to install or remove. */
+    val modern: LoadedTheme = BuiltInThemes.loadModern(cacheDir)
+
+    /** The theme to apply for the selected id: a built-in one, an installed one, or null for the plain Millennium look. */
+    fun themeFor(selectedId: String?, installed: List<LoadedTheme>): LoadedTheme? = when {
+        BuiltInThemes.isBuiltIn(selectedId) -> modern
+        else -> installed.firstOrNull { it.id == selectedId }
+    }
+
     /** False until the first scan of the themes folder finished, so the UI doesn't flash defaults. */
     private val _ready = MutableStateFlow(false)
     val ready: StateFlow<Boolean> = _ready.asStateFlow()

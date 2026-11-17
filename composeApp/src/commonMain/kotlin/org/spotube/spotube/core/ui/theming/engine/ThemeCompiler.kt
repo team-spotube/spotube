@@ -246,7 +246,7 @@ internal class ThemeCompiler(
      * Cascade for one component/variant/state, later wins:
      * `defaults` < `base` < `states.<state>` < `variants.<v>.base` < `variants.<v>.states.<state>` < matching `rules`.
      */
-    fun mergedProps(name: String, variant: String?, state: String): Map<String, Any?> {
+    fun mergedProps(name: String, variant: String?, state: String): MergedProps {
         val comp = componentJson(name)
         val scope = scopeFor(comp)
         ev.component = mapOf("state" to state, "variant" to variant)
@@ -263,12 +263,19 @@ internal class ThemeCompiler(
             if (whenEl == null || ev.truthy(whenEl, scope)) layers += r["set"]
         }
         var out: Map<String, Any?> = emptyMap()
-        for (layer in layers) {
+        val explicit = HashSet<String>()
+        for ((index, layer) in layers.withIndex()) {
             val obj = layer as? JsonObject ?: continue
             val m = ev.eval(obj, scope) as? Map<String, Any?> ?: continue
             out = deepMerge(out, m)
+            if (index > 0) explicit += m.keys // `defaults` may name props a component lacks; everything else must exist
         }
-        return out
+        return MergedProps(out, explicit)
+    }
+
+    /** Warns about properties a theme sets that the component does not have (almost always a typo). */
+    private fun reportUnknown(where: String, reader: PropReader, merged: MergedProps) {
+        for (key in reader.unreadKeys(merged.explicit)) problems += "$where: unknown property \"$key\""
     }
 
     fun <T> stateProp(
@@ -278,15 +285,22 @@ internal class ThemeCompiler(
         variant: String? = null,
     ): MillenniumControlStateProperty<T> = MillenniumControlStateProperty.resolveWith { st ->
         val state = st.name.lowercase()
-        apply(
-            current.resolve(st),
-            PropReader(mergedProps(name, variant, state), problems, "components.$name${variant?.let { ".$it" } ?: ""}.$state", fontContext),
-        )
+        val merged = mergedProps(name, variant, state)
+        val where = "components.$name${variant?.let { ".$it" } ?: ""}"
+        val reader = PropReader(merged.values, problems, "$where.$state", fontContext)
+        apply(current.resolve(st), reader).also { reportUnknown(where, reader, merged) }
     }
 
-    fun <T> singleProp(name: String, current: T, apply: (T, PropReader) -> T, variant: String? = null): T =
-        apply(current, PropReader(mergedProps(name, variant, "default"), problems, "components.$name${variant?.let { ".$it" } ?: ""}", fontContext))
+    fun <T> singleProp(name: String, current: T, apply: (T, PropReader) -> T, variant: String? = null): T {
+        val merged = mergedProps(name, variant, "default")
+        val where = "components.$name${variant?.let { ".$it" } ?: ""}"
+        val reader = PropReader(merged.values, problems, where, fontContext)
+        return apply(current, reader).also { reportUnknown(where, reader, merged) }
+    }
 }
+
+/** The merged property map of one component/variant/state, and which keys the theme set itself (not via `defaults`). */
+internal class MergedProps(val values: Map<String, Any?>, val explicit: Set<String>)
 
 private fun paletteMap(c: MillenniumColors): Map<String, Any?> = mapOf(
     "background" to c.background, "surface" to c.surface, "raised" to c.raised, "inset" to c.inset,
@@ -310,11 +324,21 @@ private fun deepMerge(a: Map<String, Any?>, b: Map<String, Any?>): Map<String, A
  * keeps it too and records a problem. An explicit JSON `null` clears nullable properties.
  */
 internal class PropReader(
-    private val m: Map<String, Any?>,
+    source: Map<String, Any?>,
     private val problems: MutableSet<String>,
     private val where: String,
     private val fonts: FontContext? = null,
 ) {
+    private val touched = HashSet<String>()
+
+    /** Every read goes through here, so afterwards we know which keys the component actually has. */
+    private val m: Map<String, Any?> = object : Map<String, Any?> by source {
+        override fun containsKey(key: String): Boolean { touched += key; return source.containsKey(key) }
+        override fun get(key: String): Any? { touched += key; return source[key] }
+    }
+
+    fun unreadKeys(candidates: Set<String>): List<String> = candidates.filter { it !in touched }.sorted()
+
     private fun bad(key: String, want: String) {
         problems += "$where.$key: expected $want"
     }
