@@ -57,7 +57,11 @@ import org.spotube.spotube.core.ui.theming.engine.readThemeArchive
 import org.spotube.spotube.modules.settings.Theme
 import org.spotube.spotube.modules.settings.UserSettings
 import org.spotube.spotube.resources.iconsax.Iconsax
+import org.spotube.spotube.resources.iconsax.IconsaxHeart
 import org.spotube.spotube.resources.iconsax.IconsaxHome
+import org.spotube.spotube.resources.iconsax.IconsaxPlay
+import org.spotube.spotube.resources.iconsax.IconsaxShuffle
+import org.spotube.spotube.resources.iconsax.IconsaxTrash
 import org.spotube.spotube.resources.iconsax.IconsaxMagic
 import org.spotube.spotube.resources.iconsax.IconsaxSearch
 import java.io.ByteArrayOutputStream
@@ -109,7 +113,17 @@ internal object ThemeGallery {
                 MillenniumButton(onClick = {}, style = MillenniumButtonStyle.Danger) { Text("Danger") }
                 MillenniumButton(onClick = {}, enabled = false) { Text("Disabled") }
             }
+            // Icons placed inside buttons must follow each variant's foreground (readable on the fill).
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                MillenniumButton(onClick = {}) { AppIcon(Iconsax.IconsaxPlay); Text("Play") }
+                MillenniumButton(onClick = {}, style = MillenniumButtonStyle.Secondary) { AppIcon(Iconsax.IconsaxShuffle); Text("Shuffle") }
+                MillenniumButton(onClick = {}, style = MillenniumButtonStyle.Quiet) { AppIcon(Iconsax.IconsaxHeart); Text("Like") }
+                MillenniumButton(onClick = {}, style = MillenniumButtonStyle.Danger) { AppIcon(Iconsax.IconsaxTrash); Text("Delete") }
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                // The content-lambda form used by the app's player controls: the icon must follow the fill's foreground.
+                MillenniumIconButton(onClick = {}, style = MillenniumIconButtonStyle.Primary) { AppIcon(Iconsax.IconsaxPlay) }
+                MillenniumIconButton(onClick = {}, style = MillenniumIconButtonStyle.Danger) { AppIcon(Iconsax.IconsaxTrash) }
                 MillenniumIconButton(Iconsax.IconsaxHome, "home", {}, style = MillenniumIconButtonStyle.Primary)
                 MillenniumIconButton(Iconsax.IconsaxSearch, "search", {}, style = MillenniumIconButtonStyle.Secondary)
                 MillenniumIconButton(Iconsax.IconsaxMagic, "magic", {}, style = MillenniumIconButtonStyle.Quiet)
