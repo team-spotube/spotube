@@ -142,24 +142,42 @@ internal fun buildThemeAssets(
         }
     }
 
-    // An icon pack: one font plus a glyph per role. It fills every app icon tied to a role that the theme did not
-    // override one by one.
+    // An icon pack fills every app icon tied to a role that the theme did not override one by one. Two forms:
+    //  - `font` + `icons`: an icon font and a glyph per role (schema 1.0);
+    //  - `images`: a PNG per role, tinted like the stock icon unless `tint` is false (schema 1.1), which works for any
+    //    icon library, including stroke-based ones that cannot be turned into a font.
     (assetsJson["iconPack"] as? JsonObject)?.let { pack ->
-        val family = (pack["font"] as? JsonPrimitive)?.contentOrNull?.let { families[it] }
+        val byRole = HashMap<String, ThemeIcon>()
+
         val glyphs = (pack["icons"] as? JsonObject).orEmpty()
-        if (family == null) {
-            problems += "assets.iconPack: \"font\" must name a family declared in assets.fonts"
-        } else {
-            if (glyphs.size > 512) problems += "assets.iconPack: at most 512 icons"
-            val byRole = HashMap<String, String>()
-            glyphs.entries.take(512).forEach { (role, g) ->
-                val text = (g as? JsonPrimitive)?.contentOrNull?.let(::parseGlyph)
-                if (text == null) problems += "assets.iconPack.icons.$role: glyph must be a single character or U+XXXX" else byRole[role] = text
+        if (glyphs.isNotEmpty() || pack["font"] != null) {
+            val family = (pack["font"] as? JsonPrimitive)?.contentOrNull?.let { families[it] }
+            if (family == null) {
+                problems += "assets.iconPack: \"font\" must name a family declared in assets.fonts"
+            } else {
+                if (glyphs.size > 512) problems += "assets.iconPack: at most 512 icons"
+                glyphs.entries.take(512).forEach { (role, g) ->
+                    val text = (g as? JsonPrimitive)?.contentOrNull?.let(::parseGlyph)
+                    if (text == null) problems += "assets.iconPack.icons.$role: glyph must be a single character or U+XXXX" else byRole[role] = ThemeIcon.Glyph(text, family)
+                }
             }
-            iconRoleByVectorName.forEach { (vectorName, role) ->
-                val text = byRole[role]
-                if (text != null && vectorName !in icons) icons[vectorName] = ThemeIcon.Glyph(text, family)
+        }
+
+        val images = (pack["images"] as? JsonObject).orEmpty()
+        if (images.isNotEmpty()) {
+            val tinted = (pack["tint"] as? JsonPrimitive)?.booleanOrNull ?: true
+            if (images.size > ThemeLimits.MAX_ICON_IMAGES) problems += "assets.iconPack.images: at most ${ThemeLimits.MAX_ICON_IMAGES} images"
+            val decoded = HashMap<String, ImageBitmap?>()
+            images.entries.take(ThemeLimits.MAX_ICON_IMAGES).forEach { (role, p) ->
+                val path = (p as? JsonPrimitive)?.contentOrNull
+                val bitmap = path?.let { decoded.getOrPut(it) { lookupAsset(it, pkg, ".png")?.let { bytes -> runCatching { bytes.decodeToImageBitmap() }.getOrNull() } } }
+                if (bitmap == null) problems += "assets.iconPack.images.$role: \"$path\" is not a PNG in the theme package" else byRole[role] = ThemeIcon.Bitmap(bitmap, tinted)
             }
+        }
+
+        iconRoleByVectorName.forEach { (vectorName, role) ->
+            val icon = byRole[role]
+            if (icon != null && vectorName !in icons) icons[vectorName] = icon
         }
     }
     return ThemeAssets(families, icons)

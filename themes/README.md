@@ -25,7 +25,7 @@ my-theme.zip
 | `contact` | no | an email address or an `http(s)` URL |
 | `license` | no | SPDX id or a short name; ship the text as `LICENSE` |
 | `logo` | no | path of a `.png` inside the zip |
-| `schema` | yes | the theme format version this theme is written for, semver (`"1.0.0"`). See [Schema and versioning](https://docs.spotube.cc/themes/schema-versioning); the JSON Schema is `schema/theme.schema.json` (also `https://docs.spotube.cc/schemas/theme/1.json`) |
+| `schema` | yes | the theme format version this theme is written for, semver (`"1.1.0"`; declare the lowest version that has every feature you use). See [Schema and versioning](https://docs.spotube.cc/themes/schema-versioning); the JSON Schema is `schema/theme.schema.json` (also `https://docs.spotube.cc/schemas/theme/1.json`) |
 | `$schema` | no | editor hint: `"https://docs.spotube.cc/schemas/theme/1.json"` |
 
 ## How a theme styles the app
@@ -114,15 +114,21 @@ Types: `enum` (buttons, or colour swatches when options carry a `color`), `numbe
 "tokens": { "type": { "family": "Comfortaa" } }
 ```
 ### Icon packs
-`assets.iconPack` restyles *every* app icon at once, including the ones Millennium draws itself (sidebar, dock, icon buttons, checkmarks, chevrons):
+`assets.iconPack` restyles *every* app icon at once, including the ones Millennium draws itself (sidebar, dock, icon buttons, checkmarks, chevrons). Keys are icon **roles**, the Lucide names (`house`, `search`, `trash-2`, `chevron-down`; the full list is `packages/theme-tool/assets/icon-roles.json` in the themes repository). Two forms:
 
 ```jsonc
+// 1.0: an icon font and a glyph per role
 "assets": {
   "fonts": { "Icons": [ { "src": "fonts/phosphor.ttf", "weight": 400 } ] },
   "iconPack": { "font": "Icons", "icons": { "house": "U+E000", "search": "U+E001", "skip-forward": "U+E002" } }
 }
+
+// 1.1: a PNG per role, from any icon library (stroke-based ones too). Tinted like the stock icons unless "tint": false
+"assets": {
+  "iconPack": { "images": { "house": "icons/house.png", "search": "icons/search.png" }, "tint": true }
+}
 ```
-`font` names a family from `assets.fonts`; keys are icon **roles**, the Lucide names (`house`, `search`, `trash-2`, `chevron-down`; the full list is `tools/icon-roles.json` in the themes repository). Roles a pack does not define keep the stock icon, and an entry in `assets.icons` wins over the pack. The themes repository builds small subset fonts of Lucide, Phosphor (thin, regular, bold, fill), Bootstrap Icons, Font Awesome Free and Fluent from their official artwork (`pnpm icons`), so a theme just names one.
+Roles a pack does not define keep the stock icon, and an entry in `assets.icons` wins over the pack. `images` is limited to 128 PNGs of at most 256 KB and 512 px. `@team-spotube/theme-tool` produces either form from bundled packs, any Iconify set or any folder of SVG files, so authors never write this by hand.
 
 **Single icons.** `assets.icons` replaces individual icons by the app's icon (vector) name, with a glyph of an icon font or a PNG: `{ "IconsaxHome": { "glyph": "U+E900", "font": "MyIcons" }, "IconsaxPlay": { "image": "icons/play.png", "tint": true } }`.
 

@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://docs.spotube.cc/schemas/theme/1.0.0.json",
+  "$id": "https://docs.spotube.cc/schemas/theme/1.1.0.json",
   "title": "Spotube theme (theme.json)",
-  "description": "Theme format 1.0.0. Semver: a theme of the same major always loads; a newer minor loads with its newer parts ignored. Latest 1.x: https://docs.spotube.cc/schemas/theme/1.json",
-  "x-schemaVersion": "1.0.0",
+  "description": "Theme format 1.1.0. Semver: a theme of the same major always loads; a newer minor loads with its newer parts ignored. Latest 1.x: https://docs.spotube.cc/schemas/theme/1.json",
+  "x-schemaVersion": "1.1.0",
   "type": "object",
   "required": [
     "schema",
@@ -20,7 +20,7 @@
     "schema": {
       "type": "string",
       "pattern": "^(0|[1-9][0-9]{0,5})\\.(0|[1-9][0-9]{0,5})\\.(0|[1-9][0-9]{0,5})$",
-      "description": "The theme schema version this theme is written for (semver), for example \"1.0.0\"."
+      "description": "The theme schema version this theme is written for (semver), for example \"1.1.0\"."
     },
     "id": {
       "type": "string",
@@ -145,22 +145,46 @@
         },
         "iconPack": {
           "type": "object",
-          "description": "An icon font plus a glyph per icon role (Lucide names), restyling every icon.",
-          "required": [
-            "font",
-            "icons"
-          ],
+          "description": "Restyles every app icon through icon roles (Lucide names). Either an icon font (`font` + `icons`, 1.0) or a PNG per role (`images`, 1.1).",
           "properties": {
             "font": {
-              "type": "string"
+              "type": "string",
+              "description": "A family from assets.fonts."
             },
             "icons": {
               "type": "object",
+              "description": "Role -> glyph of `font`.",
               "additionalProperties": {
                 "$ref": "#/$defs/glyph"
               }
+            },
+            "images": {
+              "type": "object",
+              "description": "Role -> PNG path (since 1.1.0). Works for any icon library.",
+              "maxProperties": 128,
+              "additionalProperties": {
+                "type": "string",
+                "pattern": "\\.png$"
+              }
+            },
+            "tint": {
+              "type": "boolean",
+              "description": "Recolour the PNGs with the icon colour (default true; best for monochrome art)."
             }
           },
+          "anyOf": [
+            {
+              "required": [
+                "font",
+                "icons"
+              ]
+            },
+            {
+              "required": [
+                "images"
+              ]
+            }
+          ],
           "additionalProperties": false
         }
       },

@@ -37,10 +37,12 @@ import kotlinx.serialization.json.intOrNull
  *   the theme is newer.
  * - **patch**: clarifications and fixes, never visible to themes.
  *
+ * History: 1.0.0 first release; 1.1.0 `assets.iconPack.images` (PNG icon packs from any icon library).
+ *
  * Keep in sync with `themes/schema/theme.schema.json` (`ThemeSchemaTest` checks it) and bump it with every
  * change to the theme format.
  */
-const val THEME_SCHEMA_VERSION = "1.0.0"
+const val THEME_SCHEMA_VERSION = "1.1.0"
 
 /** A parsed `MAJOR.MINOR.PATCH`. */
 data class SchemaVersion(val major: Int, val minor: Int, val patch: Int) {

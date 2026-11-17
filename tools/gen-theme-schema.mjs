@@ -204,7 +204,18 @@ const schema = {
       properties: {
         fonts: { type: 'object', description: 'Font families: `{ "Family": [ { "src": "fonts/x.ttf", "weight": 400, "style": "italic" } ] }`.', additionalProperties: { type: 'array', items: { type: 'object', required: ['src'], properties: { src: { type: 'string', pattern: '\\.(ttf|otf)$' }, weight: { type: 'integer', minimum: 1, maximum: 1000 }, style: { enum: ['normal', 'italic'] } }, additionalProperties: false } } },
         icons: { type: 'object', description: 'Per-icon replacements keyed by the app icon vector name.', additionalProperties: { type: 'object', properties: { glyph: { $ref: '#/$defs/glyph' }, font: { type: 'string' }, image: { type: 'string', pattern: '\\.png$' }, tint: { type: 'boolean' } }, additionalProperties: false } },
-        iconPack: { type: 'object', description: 'An icon font plus a glyph per icon role (Lucide names), restyling every icon.', required: ['font', 'icons'], properties: { font: { type: 'string' }, icons: { type: 'object', additionalProperties: { $ref: '#/$defs/glyph' } } }, additionalProperties: false },
+        iconPack: {
+          type: 'object',
+          description: 'Restyles every app icon through icon roles (Lucide names). Either an icon font (`font` + `icons`, 1.0) or a PNG per role (`images`, 1.1).',
+          properties: {
+            font: { type: 'string', description: 'A family from assets.fonts.' },
+            icons: { type: 'object', description: 'Role -> glyph of `font`.', additionalProperties: { $ref: '#/$defs/glyph' } },
+            images: { type: 'object', description: 'Role -> PNG path (since 1.1.0). Works for any icon library.', maxProperties: 128, additionalProperties: { type: 'string', pattern: '\\.png$' } },
+            tint: { type: 'boolean', description: 'Recolour the PNGs with the icon colour (default true; best for monochrome art).' },
+          },
+          anyOf: [{ required: ['font', 'icons'] }, { required: ['images'] }],
+          additionalProperties: false,
+        },
       },
       additionalProperties: false,
     },
