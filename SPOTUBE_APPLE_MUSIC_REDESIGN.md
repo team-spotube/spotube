@@ -278,3 +278,23 @@ At completion, report:
 - **Known gaps or blockers**
 
 If a screen cannot be completed without changing forbidden behavior, stop and explain the blocker rather than silently changing the behavior.
+
+## 16. Implementation progress log
+
+This section is updated alongside each implementation batch. The specification above remains the governing scope and behavior-preservation contract.
+
+### Completed implementation slices
+
+- **Foundation and shell:** shared theme typography/shape refinements; sidebar hierarchy and spacing.
+- **Primary discovery:** Home and Search layout/spacing refinements.
+- **Playback surfaces:** compact and desktop player presentation; playback callbacks/state wiring retained.
+- **Reusable media cards:** artwork corner treatment, card sizing, and metadata rhythm.
+- **Library and collections:** Library tab/content spacing, reusable grid/list rhythm, and shared album/artist/playlist collection hero sizing and spacing.
+- **Settings and plugins:** compact Settings content gutters; large-screen Settings sidebar spacing; Plugin manager responsive page gutters and vertical rhythm; installed/discovered plugin card spacing and shared plugin section/list panel rhythm.
+
+### Current validation state
+
+- Repository changes are committed to `feature/apple-music-inspired-ui` and tracked by the open draft PR.
+- Changes in these slices are limited to Compose presentation/layout values and shared UI styling. No plugin manager state, install/remove/login actions, permissions, settings state, persistence, or backend behavior was intentionally modified.
+- `./gradlew :composeApp:check` has not yet been run. Compilation and runtime appearance remain unverified.
+- Remaining work: inspect other reachable shared controls/dialogs and settings/plugin sub-surfaces, perform responsive/light-dark review, run the documented Gradle check, and review the final diff.
