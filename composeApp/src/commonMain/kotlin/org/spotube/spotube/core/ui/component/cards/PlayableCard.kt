@@ -101,7 +101,7 @@ fun PlayableCard(
     val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
 
     MediaCardSurface(
-        modifier = modifier.width(160.dp),
+        modifier = modifier.width(172.dp),
         onClick = onClick ?: onPlay,
         interactive = onClick != null || onPlay != null || onAddToQueue != null
     ) { highlighted ->
@@ -113,13 +113,13 @@ fun PlayableCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(1f)
-                        .clip(RoundedCornerShape(8.dp))
+                        .clip(RoundedCornerShape(12.dp))
                         .sharedElementOrNone(
                             key = sharedElementKey,
                             sharedTransitionScope = sharedTransitionScope,
                             animatedVisibilityScope = animatedVisibilityScope
                         ),
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(12.dp)
                 )
 
                 if (onPlay != null || onAddToQueue != null)
@@ -183,7 +183,7 @@ fun PlayableCard(
                     }
             }
             Column(
-                modifier = Modifier.fillMaxWidth().padding(12.dp)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 14.dp)
             ) {
                 TextWithShimmer(
                     text = title,
@@ -191,7 +191,7 @@ fun PlayableCard(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(6.dp))
                 subtitle?.let {
                     TextWithShimmer(
                         text = subtitle,

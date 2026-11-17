@@ -88,8 +88,8 @@ internal fun DiscoverPluginCard(
                 borderWidth = 1.dp,
                 shadowElevation = 6.dp,
                 innerGlowColor = MillenniumTheme.colors.highlight.copy(alpha = 0.55f))
-            .padding(14.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)) {

@@ -239,14 +239,14 @@ private fun HomeContent(
 ) {
     val shellBottomInset = LocalAppShellBottomInset.current
     val contentPadding = remember(shellBottomInset) {
-        PaddingValues(top = 16.dp, bottom = 16.dp + shellBottomInset)
+        PaddingValues(top = 24.dp, bottom = 24.dp + shellBottomInset)
     }
 
     LazyColumn(
         state = listState,
         modifier = Modifier.fillMaxSize(),
         contentPadding = contentPadding,
-        verticalArrangement = Arrangement.spacedBy(24.dp)
+        verticalArrangement = Arrangement.spacedBy(32.dp)
     ) {
         when (state) {
             is HomeScreenState.Loading -> {
@@ -398,28 +398,28 @@ private fun HomeSection(
 
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         if (!subtitle.isNullOrEmpty()) Text(
             text = subtitle,
-            style = AppTheme.typography.labelMedium.copy(
-                color = AppTheme.colors.secondary,
+            style = AppTheme.typography.bodySmall.copy(
+                color = AppTheme.colors.onSurfaceVariant,
                 fontWeight = FontWeight.Medium
             ),
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 20.dp)
         )
         Text(
             text = title,
-            style = AppTheme.typography.titleLarge,
+            style = AppTheme.typography.headlineSmall,
             fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(horizontal = 16.dp).offset(y = (-12).dp)
+            modifier = Modifier.padding(horizontal = 20.dp)
         )
 
         LazyRow(
             state = rowState,
             modifier = Modifier.dragScrollable(rowState),
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(horizontal = 20.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.Top
         ) {
             items(items) { browseItem ->
@@ -446,8 +446,8 @@ private fun GenreTabs(
     LazyRow(
         state = rowState,
         modifier = Modifier.dragScrollable(rowState),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
+        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 6.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(genres) { genre ->
             MillenniumButton(

@@ -247,7 +247,7 @@ fun AppLargePlayer(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 10.dp),
+                    .padding(horizontal = 20.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -257,8 +257,8 @@ fun AppLargePlayer(
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(52.dp)
-                            .clip(RoundedCornerShape(12.dp))
+                            .size(56.dp)
+                            .clip(RoundedCornerShape(14.dp))
                             .background(AppTheme.colors.surfaceContainerHighest)
                     ) {
                         AsyncImage(
@@ -271,7 +271,7 @@ fun AppLargePlayer(
                     Column(
                         modifier = Modifier
                             .weight(1f, fill = false)
-                            .padding(start = 12.dp)
+                            .padding(start = 14.dp)
                     ) {
                         Text(
                             text = playerUiState.title,
@@ -288,7 +288,7 @@ fun AppLargePlayer(
                             color = AppTheme.colors.onSurfaceVariant
                         )
                     }
-                    Spacer(modifier = Modifier.width(10.dp))
+                    Spacer(modifier = Modifier.width(12.dp))
                     PlayerHeartButton(
                         audioPlayerQueue = audioPlayerQueue,
                         savedTracksViewModel = savedTracksViewModel

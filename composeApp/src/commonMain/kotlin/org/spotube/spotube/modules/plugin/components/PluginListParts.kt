@@ -69,7 +69,7 @@ internal fun PluginSectionHeader(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 4.dp, end = 4.dp, top = 20.dp, bottom = 2.dp),
+            .padding(start = 4.dp, end = 4.dp, top = 24.dp, bottom = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(
@@ -120,7 +120,7 @@ internal fun PluginListPanel(
                 shape = AppTheme.shapes.medium,
                 borderColor = MillenniumTheme.colors.border,
                 borderWidth = 1.dp,
-                shadowElevation = 6.dp,
+                shadowElevation = 4.dp,
                 innerGlowColor = MillenniumTheme.colors.highlight.copy(alpha = 0.55f)),
         content = content)
 }

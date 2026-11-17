@@ -106,7 +106,7 @@ internal fun PluginCard(
                 role = Role.Button,
                 onClickLabel = stringResource(Res.string.plugin_action_details),
                 onClick = onInfo)
-            .padding(horizontal = 14.dp, vertical = 10.dp),
+            .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(14.dp)) {
         PluginIconWell(size = 40.dp) {

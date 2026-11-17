@@ -273,7 +273,7 @@ internal fun PluginScreenContent(
 
             is PluginUiState.Data -> {
                 BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-                    val horizontalPadding = if (maxWidth < 600.dp) 12.dp else 20.dp
+                    val horizontalPadding = if (maxWidth < 600.dp) 16.dp else 24.dp
                     // Community plugins sit two to a row once each card gets ~340dp.
                     val discoverColumns = if (maxWidth.coerceAtMost(1280.dp) - horizontalPadding * 2 >= 700.dp) 2 else 1
                     val discoverListState = rememberLazyListState()
@@ -283,10 +283,10 @@ internal fun PluginScreenContent(
                         contentPadding = PaddingValues(
                             start = horizontalPadding,
                             end = horizontalPadding,
-                            top = 8.dp,
-                            bottom = 24.dp + shellBottomInset
+                            top = 16.dp,
+                            bottom = 28.dp + shellBottomInset
                         ),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         if (onboarding) {
                             item {

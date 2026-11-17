@@ -74,8 +74,8 @@ internal fun EndDrawerSheet(
         state = drawerState,
         placement = DrawerPlacement.End,
         shape = RectangleShape,
-        maximumWidth = 400.dp,
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp)
+        maximumWidth = 420.dp,
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp)
     ) {
         content()
     }
@@ -101,8 +101,8 @@ internal fun BottomSheetContent(
     }
     MillenniumModalBottomSheet(
         state = sheetState,
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-        contentSpacing = 8.dp
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+        contentSpacing = 10.dp
     ) {
         Box(Modifier.fillMaxWidth().fillMaxHeight(0.85f)) {
             content()

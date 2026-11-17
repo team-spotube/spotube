@@ -59,7 +59,7 @@ fun PlayableListTile(
     playLoading: Boolean = false,
     addToQueueLoading: Boolean = false,
     imageModel: Any? = imageURL,
-    imageShape: Shape = RoundedCornerShape(6.dp),
+    imageShape: Shape = RoundedCornerShape(8.dp),
     placeholderIcon: ImageVector = Iconsax.IconsaxMusic,
     artwork: (@Composable () -> Unit)? = null,
     trailingContent: (@Composable () -> Unit)? = null,
@@ -72,12 +72,12 @@ fun PlayableListTile(
         onClick = onClick ?: onPlay,
         selected = isPlaying,
         background = if (isPlaying) null else millenniumPanelBrush(colors),
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(10.dp),
         borderColor = if (isBlacklisted) colors.danger.copy(alpha = 0.5f) else if (isPlaying) null else colors.border,
         titleForeground = if (isBlacklisted) colors.danger else null,
         borderWidth = 1.dp,
         contentPadding = PaddingValues(if (compact) 8.dp else 12.dp),
-        minimumHeight = if (compact) 52.dp else 76.dp,
+        minimumHeight = if (compact) 54.dp else 78.dp,
         leading = {
             MediaArtwork(
                 imageModel, title,
@@ -110,7 +110,7 @@ fun PlayableListTile(
         trailing = if (onPlay != null || onAddToQueue != null || trailingContent != null) {
             {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     trailingContent?.invoke()
