@@ -242,13 +242,13 @@ private fun SettingsSidebar(
         modifier = Modifier
             .width(SettingsSidebarWidth)
             .fillMaxHeight()
-            .padding(horizontal = 8.dp, vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            .padding(horizontal = 10.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp)) {
         item {
             Text(
                 stringResource(Res.string.settings_screen_title),
                 style = AppTheme.typography.titleLarge,
-                modifier = Modifier.padding(horizontal = 16.dp).padding(top = 8.dp, bottom = 16.dp)
+                modifier = Modifier.padding(horizontal = 16.dp).padding(top = 8.dp, bottom = 20.dp)
             )
         }
         items(tabs, key = { it.name }) { tab ->
