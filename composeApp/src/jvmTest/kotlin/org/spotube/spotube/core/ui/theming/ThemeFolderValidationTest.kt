@@ -74,4 +74,21 @@ class ThemeFolderValidationTest {
             ThemeGallery.render(theme, dark = true, out = File(out, "${dir.name}-dark.png"))
         }
     }
+
+    /** Zips in the `dist` folder next to THEMES_DIR (from the themes repo's `pnpm zip`) must pass the app's strict reader. */
+    @Test
+    fun builtArchivesAreAcceptedByTheStrictReader() {
+        val dist = System.getenv("THEMES_DIR")?.let { File(it).parentFile?.resolve("dist") }?.takeIf { it.isDirectory } ?: return
+        val zips = dist.listFiles { f -> f.extension == "zip" }.orEmpty().sortedBy { it.name }
+        assertEquals(true, zips.isNotEmpty(), "no zips in $dist")
+        for (zip in zips) {
+            val problems = LinkedHashSet<String>()
+            val pkg = org.spotube.spotube.core.ui.theming.engine.readThemeArchive(zip.readBytes())
+            val theme = org.spotube.spotube.core.ui.theming.engine.loadTheme(pkg, "build/tmp/theme-dist-cache", problems)
+            assertNotNull(theme, zip.name)
+            assertEquals(emptySet(), problems, "${zip.name}: load problems")
+            assertEquals(zip.nameWithoutExtension, theme.id, zip.name)
+            assertNotNull(theme.logo, "${zip.name}: logo")
+        }
+    }
 }
