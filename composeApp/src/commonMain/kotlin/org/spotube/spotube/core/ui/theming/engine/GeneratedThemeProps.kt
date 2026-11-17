@@ -101,6 +101,8 @@ internal fun applyBottomNavigationBarThemeProperties(p: MillenniumBottomNavigati
     overlayBrush = r.brush("overlayBrush", p.overlayBrush),
     shadowColor = r.color("shadowColor", p.shadowColor),
     textStyle = r.textStyle("textStyle", p.textStyle),
+    margin = r.padding("margin", p.margin),
+    insetsInsideSurface = r.bool("insetsInsideSurface", p.insetsInsideSurface),
 )
 
 internal fun applyBottomNavigationItemThemeProperties(p: MillenniumBottomNavigationItemThemeProperties, r: PropReader): MillenniumBottomNavigationItemThemeProperties = p.copy(

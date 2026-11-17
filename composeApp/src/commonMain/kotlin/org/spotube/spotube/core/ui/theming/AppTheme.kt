@@ -48,7 +48,11 @@ import org.spotube.millennium.theme.MillenniumColorSchemes
 import org.spotube.millennium.theme.MillenniumColors
 import org.spotube.millennium.theme.MillenniumThemeComponents
 import org.spotube.millennium.theme.resolve
+import org.spotube.millennium.composables.LocalMillenniumIconResolver
+import org.spotube.millennium.theme.LocalMillenniumInteractionStyle
 import org.spotube.spotube.core.ui.theming.engine.CompiledTheme
+import org.spotube.spotube.core.ui.theming.engine.ThemeIcon
+import androidx.compose.ui.graphics.vector.ImageVector
 import org.spotube.spotube.core.ui.theming.engine.LoadedTheme
 import org.spotube.spotube.core.ui.theming.engine.LocalThemeEngine
 import org.spotube.spotube.core.ui.theming.engine.ThemeAssets
@@ -291,6 +295,11 @@ private fun InstallCompiledTheme(
             LocalAppTypography provides compiled.typography,
             LocalAppShapes provides compiled.shapes,
             LocalThemeIcons provides compiled.icons,
+            LocalMillenniumInteractionStyle provides compiled.interaction,
+            // Icons drawn inside Millennium components (sidebar, icon buttons, ticks) go through this.
+            LocalMillenniumIconResolver provides remember(compiled.icons) {
+                { vector: ImageVector -> (compiled.icons[vector.name] as? ThemeIcon.Vector)?.image ?: vector }
+            },
             content = content
         )
     }

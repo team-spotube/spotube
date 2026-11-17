@@ -27,12 +27,17 @@ my-theme.zip
 ## How a theme styles the app
 Two modes in one file, both optional:
 
-* **Global**: `tokens.color` (replaces any of the 15 palette roles: `background surface raised inset text muted border highlight accent accentTop accentBottom onAccent success danger scrim`), `tokens.shape` (`small medium large`), `tokens.type` (`family`, `scale`, `styles.<name>`), and `defaults` (props applied to every component that has them, e.g. `{ "shape": 12 }`).
+* **Global**: `tokens.interaction` (see below), `tokens.color` (replaces any of the 15 palette roles: `background surface raised inset text muted border highlight accent accentTop accentBottom onAccent success danger scrim`), `tokens.shape` (`small medium large`), `tokens.type` (`family`, `scale`, `styles.<name>`), and `defaults` (props applied to every component that has them, e.g. `{ "shape": 12 }`).
 * **Per component**: `components.<name>` with `base`, `states`, `variants`, `rules`. Component names are Millennium's component themes without the `Theme` suffix: `button iconButton segmentedButton toggleSwitch checkbox triStateCheckbox radioGroup slider progress loading textField autocomplete card listTile avatar tooltip scrollbar separator tabGroup disclosure dialog drawer bottomSheet modalBottomSheet dropdownMenu sidebar bottomNavigationBar topAppBar scaffold snackbar pullToRefresh icon text`.
 
-Cascade, later wins: `defaults` → `base` → `states.<state>` → `variants.<v>.base` → `variants.<v>.states.<state>` → matching `rules`. States: `default hovered focused pressed disabled selected error`. Components with several slots use `variants` for them: `button`/`iconButton` → `primary secondary quiet danger`; `sidebar` → `root header content footer group item badge trigger`; `bottomNavigationBar` → `main item`.
+Cascade, later wins: `defaults` → `base` → `states.<state>` → `variants.<v>.base` → `variants.<v>.states.<state>` → matching `rules`. States: `default hovered focused pressed disabled selected error`. Components with several slots use `variants` for them: `button`/`iconButton` → `primary secondary quiet danger`; `sidebar` → `root header content footer group item badge trigger`; `bottomNavigationBar` → `main item`. **A `base` applies to every slot of a component**, so for these always put slot properties under `variants` (a border set in `bottomNavigationBar.base` would also box every dock item).
+
+The dock (`bottomNavigationBar`) is fully themeable: `main` takes the bar's `background`, `shape`, `borderColor/Width`, `shadowElevation`, `overlayBrush`, `contentPadding`, `itemSpacing`, `minimumHeight` and, for a floating inset dock, `margin` plus `insetsInsideSurface: false`; `item` takes per-state `background`, `foreground`, `shape`, `labelStyle`, borders, scales and effects (`states.selected` is the active tab).
 
 **Property names are Millennium's own** (`background`, `shape`, `borderWidth`, `shadowElevation`, `innerGlowColor`, `trackBackground`, `thumbBackground`, ...). Every property a Millennium component theme declares is available; the exhaustive list with docs is the KDoc of the `Millennium*ThemeProperties` classes, and the generated mapping is `core/ui/theming/engine/GeneratedThemeProps.kt`. Properties a component doesn't have are reported as `unknown property` warnings on the theme's card, so typos don't fail silently. The bundled Modern theme (`BuiltInThemes.kt`) is a complete worked example.
+
+### Hover and press lighting
+Controls that have no lighting property of their own (sidebar, dropdown and bottom-navigation rows, tabs, the dialog buttons) draw Millennium's glossy Aqua hover/press lighting. `tokens.interaction` changes it for all of them at once: `{ "lighting": false }` removes it (a flat design lets the per-state `background`s carry hover/selection), or give your own washes: `{ "hover": <brush>, "press": <brush> }`. Where a component has its own `interactionOverlay` property, that wins for that component.
 
 Millennium draws hover/press lighting itself; a theme replaces it with the component's `interactionOverlay` / `interactionRim` / `interactionTint` properties, and a transparent value switches it off. Put such an overlay only in the states that should show it (a value in `base` is painted in every state).
 
@@ -82,7 +87,7 @@ Coordinates are fractions of the painted box, so one theme fits a 40dp icon butt
 },
 "tokens": { "type": { "family": "Comfortaa" } }
 ```
-`tokens.type.family` applies the font everywhere; any `textStyle` can override with `fontFamily`. Built-in family names need no assets: `default sans-serif serif monospace cursive`. Icon keys are the app's icon vector names (see `composeApp/src/commonMain/kotlin/org/spotube/spotube/resources/iconsax`). Icons drawn inside Millennium's own components (checkbox ticks, chevrons) are not replaceable. Fonts: `.ttf`/`.otf` only. Images: `.png` only, max 512 x 512. No SVG.
+`tokens.type.family` applies the font everywhere; any `textStyle` can override with `fontFamily`. Built-in family names need no assets: `default sans-serif serif monospace cursive`. Icon keys are the app's icon vector names (see `composeApp/src/commonMain/kotlin/org/spotube/spotube/resources/iconsax`). Icons drawn by Millennium components (sidebar, icon buttons, checkbox ticks, chevrons) are covered too, but only by built-in themes: swapping them needs real `ImageVector`s, which a package (pure data) can't carry. The bundled Modern theme replaces the whole Iconsax set with Lucide this way (`ModernLucideIcons.kt`). Fonts: `.ttf`/`.otf` only. Images: `.png` only, max 512 x 512. No SVG.
 
 ## Security model
 A theme is untrusted input and is sandboxed by construction:

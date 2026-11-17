@@ -63,7 +63,8 @@ fun AppIcon(
     theme: MillenniumIconTheme = MillenniumTheme.iconTheme,
 ) {
     val override = LocalThemeIcons.current[imageVector.name]
-    if (override == null) {
+    // Vector overrides are applied by MillenniumIcon itself (LocalMillenniumIconResolver, set in SpotubeTheme).
+    if (override == null || override is ThemeIcon.Vector) {
         MillenniumIcon(imageVector, contentDescription, modifier, tint, state, size, alpha, tintAnimationMillis, theme)
         return
     }
@@ -94,6 +95,7 @@ fun AppIcon(
                     softWrap = false,
                 )
             }
+            is ThemeIcon.Vector -> Unit // handled above
             is ThemeIcon.Bitmap -> Image(
                 bitmap = override.image,
                 contentDescription = null,

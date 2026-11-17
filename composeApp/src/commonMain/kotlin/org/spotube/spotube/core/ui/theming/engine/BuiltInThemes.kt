@@ -31,13 +31,21 @@ object BuiltInThemes {
     private val modern: ThemePackage by lazy { ThemePackage(MODERN_JSON, emptyMap()) }
 
     /** Parses the Modern theme; the id inside its JSON is internal, the selectable id is [MODERN_ID]. */
-    fun loadModern(cacheDir: String): LoadedTheme =
-        requireNotNull(loadTheme(modern, cacheDir, LinkedHashSet())) { "built-in Modern theme is invalid" }
+    fun loadModern(cacheDir: String): LoadedTheme {
+        val base = requireNotNull(loadTheme(modern, cacheDir, LinkedHashSet())) { "built-in Modern theme is invalid" }
+        // Modern swaps the Iconsax set for Lucide. Vectors can't be expressed in JSON (a package can't ship
+        // code), so only built-in themes carry them; MillenniumIcon applies them to every icon it draws.
+        val icons = lucideIconReplacements.mapValues { ThemeIcon.Vector(it.value) }
+        return LoadedTheme(
+            doc = base.doc, assets = ThemeAssets(icons = icons), problems = base.problems,
+            usesItemContext = base.usesItemContext, fontFileCount = 0, iconCount = 0, packageBytes = base.packageBytes,
+        )
+    }
 }
 
 /**
  * "Modern": a neutral, flat look in the spirit of shadcn/ui's zinc palette. Solid surfaces, 1px hairline
- * borders, small radii, no gloss, no hover scaling; the primary action is the foreground colour.
+ * borders, small radii, no gloss, no hover scaling; the primary action is the foreground colour. Icons are Lucide.
  */
 private const val MODERN_JSON = """
 {
@@ -75,10 +83,11 @@ private const val MODERN_JSON = """
       "success": { "light": "#16a34a", "dark": "#22c55e" }, "danger": { "light": "#dc2626", "dark": "#ef4444" },
       "scrim": "#00000080"
     },
-    "shape": { "small": 4, "medium": 6, "large": 8 }
+    "shape": { "small": 4, "medium": 6, "large": 8 },
+    "interaction": { "lighting": false }
   },
 
-  "defaults": { "shape": 6, "innerGlowColor": "{vars.none}", "bottomRimColor": "{vars.none}" },
+  "defaults": { "shape": 6, "innerGlowColor": "{vars.none}", "bottomRimColor": null },
 
   "components": {
     "button": {
@@ -130,8 +139,8 @@ private const val MODERN_JSON = """
       "base": {
         "trackSize": [44, 24], "trackShape": "pill", "thumbShape": "pill",
         "trackBackground": "{vars.border}", "selectedTrackBackground": "{vars.primary}",
-        "trackBorderColor": "{vars.none}", "trackGlowColor": "{vars.none}", "trackBottomRimColor": "{vars.none}",
-        "thumbBackground": "{vars.bg}", "thumbBorderColor": "{vars.none}", "thumbGlowColor": "{vars.none}", "thumbBottomRimColor": "{vars.none}",
+        "trackBorderColor": "{vars.none}", "trackGlowColor": "{vars.none}", "trackBottomRimColor": null,
+        "thumbBackground": "{vars.bg}", "thumbBorderColor": "{vars.none}", "thumbGlowColor": "{vars.none}", "thumbBottomRimColor": null,
         "thumbElevation": 0, "trackInteractionOverlay": "{vars.none}", "thumbInteractionOverlay": "{vars.none}",
         "thumbHoverScaleX": 1, "thumbHoverScaleY": 1, "thumbPressedScaleX": 1, "thumbPressedScaleY": 1
       },
@@ -142,7 +151,7 @@ private const val MODERN_JSON = """
       "base": {
         "faceShape": 4, "faceSize": [16, 16], "faceBackground": "{vars.bg}", "faceBorderColor": "{vars.primary}", "faceBorderWidth": 1,
         "selectedFaceBackground": "{vars.primary}", "selectedFaceBorderColor": "{vars.primary}", "selectedFaceForeground": "{vars.primaryFg}",
-        "faceGlowColor": "{vars.none}", "selectedFaceGlowColor": "{vars.none}", "faceElevation": 0, "faceBottomRimColor": "{vars.none}",
+        "faceGlowColor": "{vars.none}", "selectedFaceGlowColor": "{vars.none}", "faceElevation": 0, "faceBottomRimColor": null,
         "faceInteractionOverlay": "{vars.none}", "faceHoverScale": 1, "facePressedScale": 1
       },
       "states": { "disabled": { "faceAlpha": 0.5 }, "focused": { "faceBorderColor": "{vars.ring}", "faceBorderWidth": 2 } }
@@ -151,10 +160,10 @@ private const val MODERN_JSON = """
     "slider": {
       "base": {
         "trackBackground": "{vars.muted}", "trackBorderColor": "{vars.none}", "trackInsetShadeColor": "{vars.none}", "trackShape": "pill",
-        "trackInnerGlowColor": "{vars.none}", "trackBottomRimColor": "{vars.none}",
+        "trackInnerGlowColor": "{vars.none}", "trackBottomRimColor": null,
         "activeTrackBackground": "{vars.primary}", "activeTrackShape": "pill", "activeTrackGlowColor": "{vars.none}",
         "thumbBackground": "{vars.bg}", "thumbBorderColor": "{vars.primary}", "thumbBorderWidth": 2, "thumbShape": "pill",
-        "thumbGlowColor": "{vars.none}", "thumbBottomRimColor": "{vars.none}", "thumbElevation": 0,
+        "thumbGlowColor": "{vars.none}", "thumbBottomRimColor": null, "thumbElevation": 0,
         "trackInteractionOverlay": "{vars.none}", "thumbInteractionOverlay": "{vars.none}"
       },
       "states": { "disabled": { "alpha": 0.5 } }
@@ -163,8 +172,8 @@ private const val MODERN_JSON = """
     "progress": {
       "base": {
         "shape": "pill", "height": 8, "trackBackground": "{vars.muted}", "borderColor": "{vars.none}", "borderWidth": 0,
-        "progressBackground": "{vars.primary}", "progressShape": "pill", "progressInnerGlowColor": "{vars.none}", "progressBottomRimColor": "{vars.none}",
-        "trackBottomRimColor": "{vars.none}"
+        "progressBackground": "{vars.primary}", "progressShape": "pill", "progressInnerGlowColor": "{vars.none}", "progressBottomRimColor": null,
+        "trackBottomRimColor": null
       }
     },
 
@@ -203,12 +212,18 @@ private const val MODERN_JSON = """
     "dialog": {
       "base": {
         "shape": 8, "panelBackground": "{vars.bg}", "panelBorderColor": "{vars.border}", "panelBorderWidth": 1,
-        "panelGlowColor": "{vars.none}", "panelBottomRimColor": "{vars.none}", "panelShadowElevation": 18, "panelShadowColor": "{vars.shadow}",
+        "panelGlowColor": "{vars.none}", "panelBottomRimColor": null, "panelShadowElevation": 18, "panelShadowColor": "{vars.shadow}",
         "titleBarBackground": "{vars.bg}", "titleBarForeground": "{vars.fg}", "titleBarBorderColor": "{vars.none}", "titleBarDividerThickness": 0,
         "footerBackground": "{vars.bg}", "footerBorderColor": "{vars.none}", "footerDividerThickness": 0,
         "scrimColor": "#00000080", "descriptionForeground": "{vars.mutedFg}",
         "closeCapBackground": "{vars.none}", "closeCapForeground": "{vars.mutedFg}", "closeCapBorderColor": "{vars.none}", "closeCapBorderWidth": 0,
-        "closeCapGlowColor": "{vars.none}", "closeCapShape": 4, "closeCapElevation": 0, "closeCapRaisedElevation": 0
+        "closeCapGlowColor": "{vars.none}", "closeCapShape": 4, "closeCapElevation": 0, "closeCapRaisedElevation": 0, "closeCapPressedElevation": 0,
+        "closeCapTint": "{vars.none}", "closeCapFocusBorderColor": "{vars.ring}", "closeScaleHover": 1, "closeScalePressed": 1
+      },
+      "states": {
+        "hovered": { "closeCapBackground": "{vars.muted}", "closeCapForeground": "{vars.fg}" },
+        "pressed": { "closeCapBackground": "{vars.muted}", "closeCapForeground": "{vars.fg}" },
+        "focused": { "closeCapForeground": "{vars.fg}" }
       }
     },
 
@@ -218,7 +233,16 @@ private const val MODERN_JSON = """
         "panelShadowElevation": 6, "panelShadowColor": "{vars.shadow}", "itemShape": 4, "itemForeground": "{vars.fg}",
         "itemActiveBackground": "{vars.muted}", "itemSelectedBackground": "{vars.muted}", "itemActiveForeground": "{vars.fg}", "itemActiveElevation": 0,
         "itemHoverScale": 1, "itemPressedScale": 1, "itemMutedForeground": "{vars.mutedFg}", "groupLabelForeground": "{vars.mutedFg}",
-        "separatorBrush": "{vars.border}", "separatorThickness": 1
+        "separatorBrush": "{vars.border}", "separatorThickness": 1,
+        "itemBorderColor": "{vars.none}", "itemBorderWidth": 0, "itemGlowColor": "{vars.none}", "itemActiveBorderColor": "{vars.none}",
+        "itemOrbColor": null, "itemBottomRimColor": null, "itemShadowColor": "{vars.none}", "itemOverlayBrush": "{vars.none}",
+        "itemIconTint": "{vars.mutedFg}", "itemDestructiveBackground": "{vars.muted}", "itemDestructiveForeground": "{vars.destructive}"
+      },
+      "states": {
+        "hovered":  { "itemIconTint": "{vars.fg}", "itemBackground": "{vars.muted}" },
+        "focused":  { "itemIconTint": "{vars.fg}", "itemBackground": "{vars.muted}" },
+        "pressed":  { "itemIconTint": "{vars.fg}", "itemBackground": "{vars.muted}" },
+        "selected": { "itemIconTint": "{vars.fg}", "itemBackground": "{vars.muted}" }
       }
     },
 
@@ -243,7 +267,7 @@ private const val MODERN_JSON = """
     },
 
     "scrollbar": {
-      "base": { "trackBackground": "{vars.none}", "thumbBackground": "{vars.border}", "thumbBorderColor": "{vars.none}", "thumbInnerGlowColor": "{vars.none}", "thumbBottomRimColor": "{vars.none}", "trackInnerGlowColor": "{vars.none}", "trackBottomRimColor": "{vars.none}", "thumbInteractionOverlay": "{vars.none}" },
+      "base": { "trackBackground": "{vars.none}", "thumbBackground": "{vars.border}", "thumbBorderColor": "{vars.none}", "thumbInnerGlowColor": "{vars.none}", "thumbBottomRimColor": null, "trackInnerGlowColor": "{vars.none}", "trackBottomRimColor": null, "thumbInteractionOverlay": "{vars.none}" },
       "states": { "hovered": { "thumbBackground": "{vars.mutedFg}" }, "pressed": { "thumbBackground": "{vars.mutedFg}" } }
     },
 
@@ -253,7 +277,65 @@ private const val MODERN_JSON = """
 
     "topAppBar": { "base": { "background": "{vars.bg}", "separatorColor": "{vars.border}" } },
 
-    "bottomNavigationBar": { "base": { "background": "{vars.bg}", "borderColor": "{vars.border}", "borderWidth": 1, "shadowElevation": 0 } }
+    "bottomNavigationBar": {
+      "variants": {
+        "main": {
+          "base": {
+            "background": "{vars.bg}", "foreground": "{vars.fg}", "shape": "rect", "borderWidth": 0, "shadowElevation": 0,
+            "minimumHeight": 64, "contentPadding": [8, 6], "itemSpacing": 4,
+            "overlayBrush": ["linear", 180, ["{vars.border}", 0], ["{vars.border}", 0.02], ["#00000000", 0.02], ["#00000000", 1]]
+          }
+        },
+        "item": {
+          "base": {
+            "background": "{vars.none}", "foreground": "{vars.mutedFg}", "shape": 8, "minimumHeight": 52, "borderWidth": 0, "borderColor": "{vars.none}",
+            "shadowElevation": 0, "innerGlowColor": "{vars.none}", "bottomRimColor": null, "orbColor": null, "overlayBrush": "{vars.none}",
+            "hoverScale": 1, "pressedScale": 1, "labelStyle": { "fontSize": 12, "fontWeight": 500 }
+          },
+          "states": {
+            "hovered":  { "background": "{vars.muted}", "foreground": "{vars.fg}" },
+            "pressed":  { "background": "{vars.muted}", "foreground": "{vars.fg}" },
+            "focused":  { "background": "{vars.muted}", "foreground": "{vars.fg}", "borderWidth": 2, "borderColor": "{vars.ring}" },
+            "selected": { "background": "{vars.muted}", "foreground": "{vars.fg}", "labelStyle": { "fontWeight": 700 } },
+            "disabled": { "alpha": 0.5 }
+          }
+        }
+      }
+    },
+
+    "sidebar": {
+      "variants": {
+        "root": {
+          "base": {
+            "background": "{vars.bg}", "foreground": "{vars.fg}", "shape": "rect", "borderWidth": 0, "shadowElevation": 0,
+            "overlayBrush": ["linear", 90, ["#00000000", 0], ["#00000000", 0.995], ["{vars.border}", 0.995], ["{vars.border}", 1]]
+          }
+        },
+        "header": { "base": { "background": "{vars.none}", "dividerColor": "{vars.none}", "dividerWidth": 0, "dividerHighlightColor": "{vars.none}" } },
+        "footer": { "base": { "background": "{vars.none}", "dividerColor": "{vars.none}", "dividerWidth": 0, "dividerHighlightColor": "{vars.none}" } },
+        "group": {
+          "base": {
+            "labelForeground": "{vars.mutedFg}", "labelHoveredBackground": "{vars.muted}", "labelFocusedBackground": "{vars.muted}", "labelPressedBackground": "{vars.muted}",
+            "labelBorderColor": "{vars.none}", "labelBorderWidth": 0, "labelInnerGlowColor": "{vars.none}", "labelShape": 6, "labelOverlayBrush": "{vars.none}",
+            "separatorBrush": "{vars.border}"
+          }
+        },
+        "item": {
+          "base": {
+            "background": "{vars.none}", "foreground": "{vars.fg}", "iconTint": "{vars.mutedFg}", "shape": 6, "borderWidth": 0, "borderColor": "{vars.none}",
+            "shadowElevation": 0, "innerGlowColor": "{vars.none}", "bottomRimColor": null, "orbColor": null, "overlayBrush": "{vars.none}",
+            "hoverScale": 1, "pressedScale": 1, "hoverBackground": "{vars.muted}", "focusBackground": "{vars.muted}", "pressedBackground": "{vars.muted}",
+            "selectedBackground": "{vars.muted}", "selectedIndicatorColor": "{vars.none}", "selectedIndicatorBrush": "{vars.none}", "selectedIndicatorWidth": 0
+          },
+          "states": {
+            "hovered":  { "background": "{vars.muted}", "iconTint": "{vars.fg}" },
+            "focused":  { "background": "{vars.muted}", "iconTint": "{vars.fg}", "borderWidth": 2, "borderColor": "{vars.ring}" },
+            "pressed":  { "background": "{vars.muted}", "iconTint": "{vars.fg}" },
+            "selected": { "background": "{vars.muted}", "iconTint": "{vars.fg}", "labelStyle": { "fontWeight": 600 } }
+          }
+        }
+      }
+    }
   }
 }
 """

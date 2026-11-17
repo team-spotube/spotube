@@ -51,6 +51,7 @@ import org.spotube.millennium.composables.MillenniumListTileThemeProperties
 import org.spotube.millennium.composables.MillenniumTopAppBarTheme
 import org.spotube.millennium.composables.MillenniumTopAppBarThemeProperties
 import org.spotube.millennium.theme.MillenniumColors
+import org.spotube.millennium.theme.MillenniumInteractionStyle
 import org.spotube.millennium.theme.MillenniumControlStateProperty
 import org.spotube.millennium.theme.MillenniumThemeComponents
 import org.spotube.millennium.theme.gelBrush
@@ -77,6 +78,8 @@ data class CompiledTheme(
     val typography: AppTypography,
     /** App icons the theme replaces, by icon name. */
     val icons: Map<String, ThemeIcon> = emptyMap(),
+    /** The hover/press lighting for controls without a lighting property of their own. */
+    val interaction: MillenniumInteractionStyle = MillenniumInteractionStyle(),
     /** Everything the theme author should fix; the rest of the theme still applies. */
     val problems: List<String>,
 )
@@ -150,6 +153,7 @@ internal class ThemeCompiler(
             shapes = compileShapes(),
             typography = compileTypography(),
             icons = assets.icons,
+            interaction = compileInteraction(),
             problems = problems.toList(),
         )
     }
@@ -191,6 +195,19 @@ internal class ThemeCompiler(
         return ev.eval(el) as? Map<String, Any?> ?: emptyMap<String, Any?>().also {
             problems += "tokens.$name must be an object"
         }
+    }
+
+    /**
+     * `tokens.interaction`: `{ "lighting": false }` removes Millennium's glossy hover/press lighting everywhere it is
+     * drawn by default; `"hover"` / `"press"` brushes replace it with a flat or custom wash.
+     */
+    fun compileInteraction(): MillenniumInteractionStyle {
+        val r = PropReader(tokenGroup("interaction"), problems, "tokens.interaction", fontContext)
+        return MillenniumInteractionStyle(
+            enabled = r.bool("lighting", true),
+            hoverBrush = r.brush("hover", null),
+            pressBrush = r.brush("press", null),
+        )
     }
 
     fun compileShapes(): AppShapes {

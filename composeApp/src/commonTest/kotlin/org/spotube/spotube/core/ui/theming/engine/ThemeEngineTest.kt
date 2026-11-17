@@ -251,4 +251,24 @@ class ThemeEngineTest {
         assertEquals(setOf("components.card: unknown property \"borderWidht\"", "components.button.primary: unknown property \"backgrund\""), t.problems.toSet())
         assertEquals(androidx.compose.ui.unit.Dp(3f), t.components.cardTheme.states.default.borderWidth)
     }
+
+    @Test
+    fun interactionTokensConfigureTheGlobalLighting() {
+        assertEquals(true, compile("{}").interaction.enabled)
+        val off = compile("""{"tokens":{"interaction":{"lighting":false}}}""").interaction
+        assertEquals(false, off.enabled)
+        val custom = compile("""{"tokens":{"interaction":{"hover":"#11223344","press":["gradient","#000","#fff"]}}}""").interaction
+        assertEquals(true, custom.enabled)
+        assertNotNull(custom.hoverBrush)
+        assertNotNull(custom.pressBrush)
+        assertNull(off.hoverBrush)
+    }
+
+    @Test
+    fun nullClearsRimAndOrbSoNothingIsDrawn() {
+        val t = compile("""{"components":{"topAppBar":{"base":{"separatorColor":null}},"card":{"base":{"bottomRimColor":null,"borderColor":null}}}}""")
+        assertNull(t.components.topAppBarTheme.properties.separatorColor)
+        assertNull(t.components.cardTheme.states.default.bottomRimColor)
+        assertEquals(emptyList(), t.problems)
+    }
 }

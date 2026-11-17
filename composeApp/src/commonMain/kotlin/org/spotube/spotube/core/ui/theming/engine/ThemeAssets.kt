@@ -19,6 +19,7 @@ package org.spotube.spotube.core.ui.theming.engine
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -35,6 +36,9 @@ import org.jetbrains.compose.resources.decodeToImageBitmap
 sealed interface ThemeIcon {
     /** One glyph of a bundled icon font, tinted like the stock icon. */
     data class Glyph(val text: String, val family: FontFamily) : ThemeIcon
+
+    /** A replacement vector (built-in themes only: a package can't ship code, so this has no JSON form). */
+    class Vector(val image: ImageVector) : ThemeIcon
 
     /** A bundled PNG. [tinted] recolours it with the icon tint (best for monochrome art). */
     class Bitmap(val image: ImageBitmap, val tinted: Boolean) : ThemeIcon

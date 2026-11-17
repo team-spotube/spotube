@@ -255,6 +255,7 @@ kotlin {
 
                 // icons
                 implementation(libs.feather.icons)
+                implementation(libs.lucide.icons)
 
                 // androidx-datastore
                 implementation(libs.androidx.datastore)

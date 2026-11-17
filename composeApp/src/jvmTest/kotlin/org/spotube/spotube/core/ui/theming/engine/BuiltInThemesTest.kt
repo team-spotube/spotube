@@ -21,6 +21,8 @@ import org.spotube.millennium.theme.MillenniumColorSchemes
 import org.spotube.millennium.theme.MillenniumDarkThemeComponents
 import org.spotube.millennium.theme.MillenniumPalette
 import org.spotube.millennium.theme.resolve
+import org.spotube.spotube.resources.iconsax.CarbonGithubLogo
+import org.spotube.spotube.resources.iconsax.IconsaxHome
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -47,5 +49,23 @@ class BuiltInThemesTest {
         assertEquals(true, BuiltInThemes.isBuiltIn(BuiltInThemes.MODERN_ID))
         assertEquals(false, BuiltInThemes.isBuiltIn("builtin:blue"))
         assertEquals(false, BuiltInThemes.isBuiltIn(null))
+    }
+
+    @Test
+    fun modernSwapsIconsaxForLucideAndTurnsOffTheGloss() {
+        val theme = BuiltInThemes.loadModern("build/tmp/builtin-cache")
+        val icons = theme.assets.icons
+        assertEquals(true, icons.isNotEmpty())
+        assertEquals(true, icons.values.all { it is ThemeIcon.Vector })
+        assertEquals(true, org.spotube.spotube.resources.iconsax.Iconsax.IconsaxHome.name in icons)
+        // Brand artwork has no Lucide counterpart and must keep its own icon.
+        assertEquals(false, org.spotube.spotube.resources.iconsax.Iconsax.CarbonGithubLogo.name in icons)
+        val compiled = compileTheme(
+            doc = theme.doc, assets = theme.assets, env = ThemeEnv(dark = true, compact = false),
+            baseColors = MillenniumColorSchemes().resolve(MillenniumPalette.Blue, true),
+            baseComponents = MillenniumDarkThemeComponents, parseProblems = theme.problems,
+        )
+        assertEquals(false, compiled.interaction.enabled)
+        assertEquals(icons.keys, compiled.icons.keys)
     }
 }
