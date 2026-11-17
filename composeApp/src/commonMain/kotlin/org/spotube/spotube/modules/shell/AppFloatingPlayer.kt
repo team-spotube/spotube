@@ -139,7 +139,7 @@ internal fun FloatingPlayerContent(
             .height(FloatingPlayerContentHeight + FloatingPlayerBottomBleed)
             .millenniumSurface(
                 background = millenniumPanelBrush(MillenniumTheme.colors),
-                shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
+                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
                 borderColor = MillenniumTheme.colors.border,
                 borderWidth = 1.dp,
             )
@@ -154,13 +154,13 @@ internal fun FloatingPlayerContent(
                 progress = playerUiState.progress,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(2.dp)
+                    .height(3.dp)
             )
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 12.dp),
+                    .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -170,9 +170,9 @@ internal fun FloatingPlayerContent(
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(42.dp)
+                            .size(44.dp)
                             .then(albumArtModifier)
-                            .clip(RoundedCornerShape(6.dp))
+                            .clip(RoundedCornerShape(8.dp))
                             .background(AppTheme.colors.onSurface.copy(alpha = 0.12f)),
                         contentAlignment = Alignment.Center
                     ) {
@@ -188,7 +188,7 @@ internal fun FloatingPlayerContent(
                             tint = AppTheme.colors.onSurfaceVariant, modifier = Modifier.size(22.dp)
                         )
                     }
-                    Column(modifier = Modifier.padding(start = 10.dp)) {
+                    Column(modifier = Modifier.padding(start = 12.dp)) {
                         Text(
                             text = if (playerUiState.queue.isEmpty()) stringResource(Res.string.player_nothing_playing) else playerUiState.title,
                             style = AppTheme.typography.bodyMedium,
@@ -208,7 +208,7 @@ internal fun FloatingPlayerContent(
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     heartButton()
-                    Spacer(modifier = Modifier.size(8.dp))
+                    Spacer(modifier = Modifier.size(10.dp))
                     MillenniumIconButton(
                         onClick = onPlayPause,
                         enabled = playerUiState.queue.isNotEmpty(),
