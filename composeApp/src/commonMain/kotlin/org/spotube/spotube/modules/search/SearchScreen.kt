@@ -551,8 +551,8 @@ private fun SearchBar(
         placeholder = stringResource(Res.string.search_placeholder),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .padding(bottom = 8.dp),
+            .padding(horizontal = 20.dp)
+            .padding(bottom = 12.dp),
         menuHeader = if (hasRecentSearchSuggestions) {
             {
                 MillenniumListTile(
@@ -594,8 +594,8 @@ private fun SearchTabs(
     LazyRow(
         state = listState,
         modifier = Modifier.fillMaxWidth().dragScrollable(listState),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
+        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 6.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(types) { type ->
             val isSelected = selectedType == type
@@ -701,9 +701,9 @@ private fun SearchAllTab(
             if (showTracks) {
                 Text(
                     text = stringResource(Res.string.search_section_tracks),
-                    style = AppTheme.typography.titleLarge,
+                    style = AppTheme.typography.headlineSmall,
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 12.dp)
+                    modifier = Modifier.padding(horizontal = 20.dp).padding(bottom = 14.dp)
                 )
             }
             if (MetadataSupportedSearchType.TRACK in supportedSearchTypes) {
@@ -718,7 +718,7 @@ private fun SearchAllTab(
         footerContent = {
             Column(
                 modifier = Modifier.padding(top = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp)
+                verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 if (MetadataSupportedSearchType.PLAYLIST in supportedSearchTypes && playlists.items.isNotEmpty()) {
                     SearchHorizontalSection(
@@ -967,10 +967,10 @@ private fun <T> SearchGridTab(
             LazyVerticalGrid(
                 state = gridState,
                 columns = GridCells.Adaptive(minSize = GridMinCellSize),
-                modifier = modifier.padding(horizontal = 12.dp),
-                contentPadding = PaddingValues(top = 12.dp, bottom = 16.dp + bottomInset),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                modifier = modifier.padding(horizontal = 20.dp),
+                contentPadding = PaddingValues(top = 16.dp, bottom = 24.dp + bottomInset),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(items) { item ->
                     itemContent(item)
@@ -1005,7 +1005,7 @@ private fun SearchHorizontalSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 20.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -1024,8 +1024,8 @@ private fun SearchHorizontalSection(
         }
 
         LazyRow(
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(horizontal = 20.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
             content = content
         )
     }

@@ -22,7 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -38,9 +37,7 @@ import org.spotube.spotube.modules.settings.UserSettings
 import org.spotube.millennium.composables.MillenniumModalBottomSheetTheme
 import org.spotube.millennium.composables.MillenniumTooltipHost
 import org.spotube.millennium.composables.MillenniumTopAppBarTheme
-import org.spotube.millennium.composables.MillenniumTopAppBarThemeProperties
 import org.spotube.millennium.composables.defaultMillenniumModalBottomSheetTheme
-import org.spotube.millennium.composables.defaultMillenniumTopAppBarTheme
 import org.spotube.millennium.theme.MillenniumColors
 import org.spotube.millennium.theme.MillenniumDarkThemeComponents
 import org.spotube.millennium.theme.MillenniumLightThemeComponents
@@ -147,12 +144,16 @@ private fun style(
     fontWeight = weight
 )
 
+/**
+ * Editorial type scale: strong page and section headings, with restrained
+ * weights for metadata and controls. Kept centralized so every screen shares it.
+ */
 val AppDefaultTypography = AppTypography(
-    displaySmall = style(36, 44),
-    headlineLarge = style(32, 40),
-    headlineMedium = style(28, 36),
-    headlineSmall = style(24, 32),
-    titleLarge = style(22, 28, FontWeight.Medium),
+    displaySmall = style(40, 48, FontWeight.SemiBold),
+    headlineLarge = style(32, 40, FontWeight.SemiBold),
+    headlineMedium = style(28, 36, FontWeight.SemiBold),
+    headlineSmall = style(24, 32, FontWeight.SemiBold),
+    titleLarge = style(20, 28, FontWeight.SemiBold),
     titleMedium = style(16, 24, FontWeight.Medium),
     titleSmall = style(14, 20, FontWeight.Medium),
     bodyLarge = style(16, 24),
@@ -171,10 +172,11 @@ data class AppShapes(
     val large: Shape
 )
 
+/** Restrained rounding for controls, cards, and larger content surfaces. */
 val AppDefaultShapes = AppShapes(
     small = RoundedCornerShape(8.dp),
     medium = RoundedCornerShape(12.dp),
-    large = RoundedCornerShape(16.dp)
+    large = RoundedCornerShape(18.dp)
 )
 
 val LocalAppColors =

@@ -115,7 +115,7 @@ fun LibraryScreen(libraryState: LibraryState = koinInject()) {
         if (!expandedDesktop) {
             LibraryTabs(state, libraryState::onTabSelected)
         }
-        Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
+        Column(Modifier.weight(1f).padding(horizontal = 16.dp)) {
             when (state.currentTab) {
                 LibraryTab.Playlists -> MetadataPluginGuard(showTopBar = false, requireLogin = true) {
                     LibraryPlaylistsScreen(
@@ -140,8 +140,8 @@ fun LibraryScreen(libraryState: LibraryState = koinInject()) {
 @Composable
 private fun LibraryTabs(state: LibraryToolbarUiState, onTabSelected: (LibraryTab) -> Unit) {
     LazyRow(
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(LibraryTab.entries) { tab ->
             MillenniumButton(

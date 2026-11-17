@@ -20,25 +20,17 @@ package org.spotube.spotube.modules.shell
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.composeunstyled.LocalTextStyle
-import org.koin.compose.viewmodel.koinViewModel
-import org.spotube.millennium.composables.LocalMillenniumSidebar
-import org.spotube.millennium.composables.MillenniumIcon
-import org.spotube.millennium.theme.MillenniumControlState
-import org.spotube.millennium.theme.MillenniumTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -50,10 +42,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.composeunstyled.LocalTextStyle
 import com.composeunstyled.Text
+import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
+import org.spotube.millennium.composables.LocalMillenniumSidebar
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.millennium.composables.MillenniumSidebar
+import org.spotube.millennium.composables.MillenniumSidebarContent
+import org.spotube.millennium.composables.MillenniumSidebarFooter
+import org.spotube.millennium.composables.MillenniumSidebarGroup
+import org.spotube.millennium.composables.MillenniumSidebarGroupContent
+import org.spotube.millennium.composables.MillenniumSidebarGroupLabel
+import org.spotube.millennium.composables.MillenniumSidebarHeader
+import org.spotube.millennium.composables.MillenniumSidebarItem
+import org.spotube.millennium.composables.MillenniumSidebarMenu
+import org.spotube.millennium.composables.MillenniumSidebarTrigger
+import org.spotube.millennium.theme.MillenniumControlState
+import org.spotube.millennium.theme.MillenniumTheme
 import org.spotube.spotube.NavigationItem
 import org.spotube.spotube.core.navigation.NavigationState
 import org.spotube.spotube.core.navigation.Navigator
@@ -68,26 +81,10 @@ import org.spotube.spotube.resources.iconsax.IconsaxSetting2
 import org.spotube.spotube.resources.iconsax.IconsaxSidebarLeftBroken
 import org.spotube.spotube.resources.iconsax.IconsaxSidebarRightBroken
 import org.spotube.spotube.sidebarTabs
-import org.jetbrains.compose.resources.Font
-import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
-import org.spotube.millennium.composables.MillenniumIconButton
-import org.spotube.millennium.composables.MillenniumIconButtonStyle
-import org.spotube.millennium.composables.MillenniumSidebar
-import org.spotube.millennium.composables.MillenniumSidebarContent
-import org.spotube.millennium.composables.MillenniumSidebarFooter
-import org.spotube.millennium.composables.MillenniumSidebarGroup
-import org.spotube.millennium.composables.MillenniumSidebarGroupContent
-import org.spotube.millennium.composables.MillenniumSidebarGroupLabel
-import org.spotube.millennium.composables.MillenniumSidebarHeader
-import org.spotube.millennium.composables.MillenniumSidebarItem
-import org.spotube.millennium.composables.MillenniumSidebarMenu
-import org.spotube.millennium.composables.MillenniumSidebarTrigger
 import spotube.composeapp.generated.resources.Res
-import spotube.composeapp.generated.resources.cookie_regular
 import spotube.composeapp.generated.resources.settings_screen_title
-import spotube.composeapp.generated.resources.support_button_label
 import spotube.composeapp.generated.resources.shell_sidebar_toggle_content_description
+import spotube.composeapp.generated.resources.support_button_label
 
 @Composable
 fun AppSidebar(
@@ -120,11 +117,7 @@ fun AppSidebar(
                 AnimatedVisibility(visible = expanded, enter = fadeIn(), exit = fadeOut()) {
                     Text(
                         text = "Spotube",
-                        style = AppTheme.typography.headlineLarge.copy(
-                            fontFamily = FontFamily(
-                                listOf(Font(Res.font.cookie_regular, weight = FontWeight.Normal))
-                            )
-                        ),
+                        style = AppTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                         color = AppTheme.colors.onSurface
                     )
                 }
@@ -139,7 +132,7 @@ fun AppSidebar(
             }
         }
         MillenniumSidebarContent(
-            contentSpacing = 0.dp
+            contentSpacing = 6.dp
         ) {
             sidebarTabs.forEach { entry ->
                 when (entry) {
@@ -148,17 +141,17 @@ fun AppSidebar(
                         MillenniumSidebarGroup(
                             expanded = isGroupExpanded,
                             collapsible = true,
-                            groupSpacing = 0.dp,
+                            groupSpacing = 4.dp,
                             onExpandedChange = { groupExpansion[entry.title.key] = it }) {
                             MillenniumSidebarGroupLabel(stringResource(entry.title))
                             MillenniumSidebarGroupContent(
-                                contentSpacing = 0.dp
+                                contentSpacing = 3.dp
                             ) {
-                                MillenniumSidebarMenu(contentSpacing = 0.dp) {
+                                MillenniumSidebarMenu(contentSpacing = 3.dp) {
                                     entry.items.forEach { item ->
                                         val selected =
                                             navigationState.topLevelRoute == item.route &&
-                                                    (item.route != Routes.Library || currentLibraryTab == item.data)
+                                                (item.route != Routes.Library || currentLibraryTab == item.data)
                                         SidebarNavItem(
                                             item = item,
                                             selected = selected,
@@ -190,10 +183,9 @@ fun AppSidebar(
                 }
             }
         }
-        // Compact the footer chrome only (padding + gap between items); items keep their size.
         MillenniumSidebarFooter(
-            contentPadding = PaddingValues(horizontal = 6.dp, vertical = 4.dp),
-            contentSpacing = 2.dp
+            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
+            contentSpacing = 4.dp
         ) {
             val supportLabel = stringResource(Res.string.support_button_label)
             MillenniumSidebarItem(

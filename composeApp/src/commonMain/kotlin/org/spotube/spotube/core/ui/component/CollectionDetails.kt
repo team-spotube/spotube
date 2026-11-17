@@ -233,8 +233,8 @@ fun CollectionDetails(
         val artwork = @Composable {
             Box(
                 modifier = Modifier
-                    .size(if (isCompact) 100.dp else 200.dp)
-                    .clip(RoundedCornerShape(12.dp))
+                    .size(if (isCompact) 112.dp else 216.dp)
+                    .clip(RoundedCornerShape(14.dp))
                     .sharedElementOrNone(
                         key = sharedElementKey,
                         sharedTransitionScope = sharedTransitionScope,
@@ -284,22 +284,22 @@ fun CollectionDetails(
         MillenniumCard(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                .padding(vertical = 12.dp),
             contentPadding = PaddingValues(0.dp)) {
             if (isCompact) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(14.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(14.dp)) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(14.dp),
                         verticalAlignment = Alignment.CenterVertically) {
                         artwork()
                         Column(
                             modifier = Modifier.weight(1f),
-                            verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             metadata()
                             ownerInfo()
                             actions()
@@ -311,14 +311,14 @@ fun CollectionDetails(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        .padding(20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(20.dp),
                     verticalAlignment = Alignment.Top) {
                     artwork()
 
                     Column(
                         modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         metadata()
                         ownerInfo()
                         actions()
