@@ -17,6 +17,7 @@
 
 package org.spotube.spotube.core.ui.theming
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -25,6 +26,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.luminance
@@ -200,6 +203,16 @@ val AppDefaultShapes = AppShapes(
 val LocalAppColors =
     staticCompositionLocalOf { appColorsFrom(org.spotube.millennium.theme.MillenniumLightColors) }
 val LocalAppTypography = staticCompositionLocalOf { AppDefaultTypography }
+
+/** The theme's app-wide background brush (`tokens.app.background`), or null for the flat palette background. */
+val LocalAppBackground = staticCompositionLocalOf<Brush?> { null }
+
+/** Paints the app background: the theme's brush if it has one, else the palette background. Use it for screen-sized backdrops. */
+@Composable
+fun Modifier.appBackground(): Modifier {
+    val brush = LocalAppBackground.current
+    return if (brush != null) background(brush) else background(MillenniumTheme.colors.background)
+}
 val LocalAppShapes = staticCompositionLocalOf { AppDefaultShapes }
 
 /** Reads the active app theme tokens, all backed by Millennium. */
@@ -308,6 +321,7 @@ private fun InstallCompiledTheme(
             LocalThemeIcons provides compiled.icons,
             LocalMillenniumInteractionStyle provides compiled.interaction,
             LocalMillenniumSurfaceStyle provides compiled.surface,
+            LocalAppBackground provides compiled.appBackground,
             // Icons drawn inside Millennium components (sidebar, icon buttons, ticks) go through this.
             LocalMillenniumIconResolver provides iconResolver,
             content = content

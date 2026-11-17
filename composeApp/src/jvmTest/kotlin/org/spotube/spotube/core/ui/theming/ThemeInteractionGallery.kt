@@ -90,7 +90,7 @@ internal object ThemeInteractionGallery {
         bounds.clear()
         ImageComposeScene(width, height) {
             SpotubeTheme(UserSettings(theme = if (dark) Theme.DARK else Theme.LIGHT), theme = theme) {
-                Box(Modifier.fillMaxSize().background(MillenniumTheme.colors.background)) { content() }
+                Box(Modifier.fillMaxSize().appBackground()) { content() }
             }
         }.use { scene ->
             repeat(3) { scene.render(it * 16_000_000L) }

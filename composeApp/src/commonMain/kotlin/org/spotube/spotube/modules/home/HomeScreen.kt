@@ -18,6 +18,7 @@
 package org.spotube.spotube.modules.home
 
 
+import org.spotube.spotube.core.ui.theming.appBackground
 import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
@@ -136,7 +137,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MillenniumTheme.colors.background)
+            .appBackground()
     ) {
         ApplicationMainBar(
             backButton = false,

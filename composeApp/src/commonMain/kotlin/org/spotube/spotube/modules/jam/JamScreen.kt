@@ -17,6 +17,7 @@
 
 package org.spotube.spotube.modules.jam
 
+import org.spotube.spotube.core.ui.theming.appBackground
 import org.spotube.millennium.composables.MillenniumDropdownMenuItem
 import org.spotube.spotube.resources.iconsax.IconsaxUserRemove
 import org.spotube.spotube.resources.iconsax.IconsaxForbidden
@@ -92,7 +93,7 @@ fun JamScreen(navigationCommands: NavigationCommands) {
     val clipboard = LocalClipboardManager.current
     val shellBottomInset = LocalAppShellBottomInset.current
 
-    Column(Modifier.fillMaxSize().background(MillenniumTheme.colors.background)) {
+    Column(Modifier.fillMaxSize().appBackground()) {
         ApplicationMainBar(title = { Text(stringResource(Res.string.jam_screen_title)) })
         Column(
             Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState())

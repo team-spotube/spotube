@@ -17,6 +17,7 @@
 
 package org.spotube.spotube.modules.plugin.guard
 
+import org.spotube.spotube.core.ui.theming.appBackground
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -97,7 +98,7 @@ fun MetadataPluginGuard(
     when (val s = state) {
         is MetadataPluginGuardState.Available ->
             if (requireLogin && authState.loginRequired) {
-                Column(Modifier.fillMaxSize().background(MillenniumTheme.colors.background)) {
+                Column(Modifier.fillMaxSize().appBackground()) {
                     if (showTopBar) ApplicationMainBar(backButton = backButton)
                     Box(
                         Modifier
@@ -116,7 +117,7 @@ fun MetadataPluginGuard(
                 content()
             }
         is MetadataPluginGuardState.Loading -> Box(
-            Modifier.fillMaxSize().background(MillenniumTheme.colors.background))
+            Modifier.fillMaxSize().appBackground())
         is MetadataPluginGuardState.Missing -> NoMetadataPluginScreen(
             hasInstalledPlugins = s.hasInstalledPlugins,
             backButton = backButton,
@@ -137,7 +138,7 @@ private fun NoMetadataPluginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MillenniumTheme.colors.background)) {
+            .appBackground()) {
         if (showTopBar) ApplicationMainBar(backButton = backButton)
 
         Box(

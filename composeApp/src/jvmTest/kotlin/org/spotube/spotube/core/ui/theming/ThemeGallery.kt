@@ -44,6 +44,11 @@ import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumListTile
 import org.spotube.millennium.composables.MillenniumProgress
+import org.spotube.millennium.composables.MillenniumBottomNavigationBar
+import org.spotube.millennium.composables.MillenniumBottomNavigationItem
+import org.spotube.millennium.composables.MillenniumSidebar
+import org.spotube.millennium.composables.MillenniumSidebarContent
+import org.spotube.millennium.composables.MillenniumSidebarItem
 import org.spotube.millennium.composables.MillenniumSeparator
 import org.spotube.millennium.composables.MillenniumSlider
 import org.spotube.millennium.composables.MillenniumSwitch
@@ -62,7 +67,7 @@ import org.spotube.spotube.resources.iconsax.IconsaxHome
 import org.spotube.spotube.resources.iconsax.IconsaxPlay
 import org.spotube.spotube.resources.iconsax.IconsaxShuffle
 import org.spotube.spotube.resources.iconsax.IconsaxTrash
-import org.spotube.spotube.resources.iconsax.IconsaxMagic
+import org.spotube.spotube.resources.iconsax.IconsaxSetting2
 import org.spotube.spotube.resources.iconsax.IconsaxSearch
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -86,7 +91,7 @@ internal object ThemeGallery {
 
     fun render(theme: LoadedTheme?, dark: Boolean, out: File, parameters: Map<String, String> = emptyMap()) {
         out.parentFile.mkdirs()
-        ImageComposeScene(980, 760) {
+        ImageComposeScene(1360, 820) {
             val settings = UserSettings(theme = if (dark) Theme.DARK else Theme.LIGHT)
             SpotubeTheme(settings, org.spotube.spotube.core.ui.theming.engine.PrecompiledTheme.create(theme, settings.palette, parameters)) {
                 Gallery()
@@ -100,11 +105,44 @@ internal object ThemeGallery {
 
     @Composable
     private fun Gallery() {
+        androidx.compose.foundation.layout.Row(Modifier.fillMaxSize().appBackground()) {
+            androidx.compose.foundation.layout.Box(Modifier.weight(1f)) { Controls() }
+            NavSample(Modifier.width(340.dp).fillMaxSize())
+        }
+    }
+
+    /** A sidebar over a bottom dock, the way the app lays them out, with the second item selected. */
+    @Composable
+    private fun NavSample(modifier: Modifier) {
+        Column(modifier) {
+            MillenniumSidebar(
+                modifier = Modifier.weight(1f).fillMaxWidth(), collapsed = false, onCollapsedChange = {},
+            ) {
+                MillenniumSidebarContent {
+                    MillenniumSidebarItem(label = "Home", onClick = {}, icon = Iconsax.IconsaxHome)
+                    MillenniumSidebarItem(label = "Search", onClick = {}, selected = true, icon = Iconsax.IconsaxSearch)
+                    MillenniumSidebarItem(label = "Playlists", onClick = {}, icon = Iconsax.IconsaxHeart)
+                    MillenniumSidebarItem(label = "Settings", onClick = {}, icon = Iconsax.IconsaxSetting2)
+                }
+            }
+            MillenniumBottomNavigationBar(windowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0)) {
+                listOf("Home" to Iconsax.IconsaxHome, "Search" to Iconsax.IconsaxSearch, "Library" to Iconsax.IconsaxHeart).forEachIndexed { i, (label, icon) ->
+                    MillenniumBottomNavigationItem(
+                        selected = i == 1, onClick = {}, contentDescription = label,
+                        icon = { AppIcon(icon) }, label = { Text(label) },
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun Controls() {
         val c = MillenniumTheme.colors
         val field = rememberTextFieldState("Search the library")
         val checked = remember { mutableStateOf(true) }
         Column(
-            Modifier.fillMaxSize().background(c.background).padding(20.dp),
+            Modifier.fillMaxSize().padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -127,7 +165,7 @@ internal object ThemeGallery {
                 MillenniumIconButton(onClick = {}, style = MillenniumIconButtonStyle.Danger) { AppIcon(Iconsax.IconsaxTrash) }
                 MillenniumIconButton(Iconsax.IconsaxHome, "home", {}, style = MillenniumIconButtonStyle.Primary)
                 MillenniumIconButton(Iconsax.IconsaxSearch, "search", {}, style = MillenniumIconButtonStyle.Secondary)
-                MillenniumIconButton(Iconsax.IconsaxMagic, "magic", {}, style = MillenniumIconButtonStyle.Quiet)
+                MillenniumIconButton(Iconsax.IconsaxSetting2, "magic", {}, style = MillenniumIconButtonStyle.Quiet)
                 MillenniumIconButton(Iconsax.IconsaxHome, "danger", {}, style = MillenniumIconButtonStyle.Danger)
                 MillenniumSwitch(checked = true, onCheckedChange = {}, label = "On")
                 MillenniumSwitch(checked = false, onCheckedChange = {}, label = "Off")

@@ -18,6 +18,7 @@
 package org.spotube.spotube.modules.search
 
 
+import org.spotube.spotube.core.ui.theming.appBackground
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -320,7 +321,7 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MillenniumTheme.colors.background)
+            .appBackground()
             .windowInsetsPadding(WindowInsets.statusBars)
     ) {
         if (!isExpanded) {

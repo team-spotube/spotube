@@ -103,6 +103,7 @@ import org.spotube.millennium.composables.MillenniumSeparator
 import org.spotube.millennium.composables.MillenniumSnackbarHost
 import org.spotube.millennium.composables.MillenniumSnackbarHostState
 import org.spotube.millennium.theme.MillenniumTheme
+import org.spotube.spotube.core.ui.theming.appBackground
 
 val LocalAppShellBottomInset = staticCompositionLocalOf { 0.dp }
 
@@ -225,7 +226,7 @@ fun AppShell(
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(MillenniumTheme.colors.background)
+                            .appBackground()
                             .hazeSource(state = bgHazeState) // <-- Put it here!
                     )
                     Column(modifier = Modifier.fillMaxSize()) {
@@ -297,7 +298,7 @@ fun AppShell(
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(MillenniumTheme.colors.background)
+                            .appBackground()
                     )
                     CompactPlayerOverlay(
                         navigator = navigator,
@@ -342,7 +343,7 @@ fun AppShell(
                         ) {
                             Box(
                                 modifier = Modifier.fillMaxSize()
-                                    .background(MillenniumTheme.colors.background)
+                                    .appBackground()
                             ) {
                                 LyricsScreen(
                                     modifier = Modifier.fillMaxSize(),

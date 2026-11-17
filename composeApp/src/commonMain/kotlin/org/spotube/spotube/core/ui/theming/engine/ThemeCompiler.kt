@@ -83,6 +83,8 @@ data class CompiledTheme(
     val interaction: MillenniumInteractionStyle = MillenniumInteractionStyle(),
     /** Shadows and inner glow on surfaces, including ones the host app builds itself. */
     val surface: MillenniumSurfaceStyle = MillenniumSurfaceStyle(),
+    /** The brush behind the whole app (`tokens.app.background`); null paints the palette background colour. */
+    val appBackground: Brush? = null,
     /** Everything the theme author should fix; the rest of the theme still applies. */
     val problems: List<String>,
 )
@@ -159,6 +161,7 @@ internal class ThemeCompiler(
             icons = assets.icons,
             interaction = compileInteraction(),
             surface = compileSurface(),
+            appBackground = compileAppBackground(),
             problems = problems.toList(),
         )
     }
@@ -220,6 +223,10 @@ internal class ThemeCompiler(
         val r = PropReader(tokenGroup("surface"), problems, "tokens.surface", fontContext)
         return MillenniumSurfaceStyle(shadows = r.bool("shadows", true), glow = r.bool("glow", true))
     }
+
+    /** `tokens.app.background`: any brush (gradient, solid) painted behind every screen instead of the flat background. */
+    fun compileAppBackground(): Brush? =
+        PropReader(tokenGroup("app"), problems, "tokens.app", fontContext).brush("background", null)
 
     fun compileShapes(): AppShapes {
         val r = PropReader(tokenGroup("shape"), problems, "tokens.shape", fontContext)

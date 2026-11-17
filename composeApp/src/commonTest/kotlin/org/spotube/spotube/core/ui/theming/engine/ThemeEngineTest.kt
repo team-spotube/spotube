@@ -318,4 +318,12 @@ class ThemeEngineTest {
         val noShadow = compile("""{"tokens":{"surface":{"shadows":false}}}""").surface
         assertEquals(true, noShadow.glow)
     }
+
+    @Test
+    fun appBackgroundTokenIsABrush() {
+        assertNull(compile("{}").appBackground)
+        val t = compile("""{"tokens":{"app":{"background":["linear",180,"#112233","#445566"]}}}""")
+        assertNotNull(t.appBackground)
+        assertEquals(emptyList(), t.problems)
+    }
 }

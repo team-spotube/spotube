@@ -18,6 +18,7 @@
 package org.spotube.spotube.modules.shell
 
 
+import org.spotube.spotube.core.ui.theming.appBackground
 import org.spotube.spotube.core.ui.theming.AppIcon
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
@@ -281,7 +282,7 @@ fun AppExpandedPlayer(
         }
     }
 
-    Box(modifier = modifier.fillMaxSize().background(AppTheme.colors.background)) {
+    Box(modifier = modifier.fillMaxSize().appBackground()) {
         if (playerOptionsUiState.isMoreOptionsSheetOpen) {
             MillenniumModalBottomSheet(
                 state = moreOptionsSheetState,

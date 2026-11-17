@@ -18,6 +18,7 @@
 package org.spotube.spotube.core.ui.component
 
 
+import org.spotube.spotube.core.ui.theming.appBackground
 import org.spotube.millennium.composables.MillenniumDialogHeader
 import org.spotube.millennium.composables.MillenniumDialogTitle
 import org.spotube.millennium.composables.MillenniumDialogClose
@@ -258,7 +259,7 @@ private fun ErrorLogDialog(
 @Preview
 @Composable
 private fun ErrorLogDialogPreview() {
-    Box(modifier = Modifier.fillMaxSize().background(AppTheme.colors.background)) {
+    Box(modifier = Modifier.fillMaxSize().appBackground()) {
         ErrorLogDialog(
             errorMessage = "This is an error message",
             onDismiss = {})
