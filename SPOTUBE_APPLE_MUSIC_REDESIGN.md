@@ -312,3 +312,10 @@ This section is updated alongside each implementation batch. The specification a
 - These changes are presentation-only Compose adjustments in shared UI primitives and queue container layout.
 - No queue ordering, playback, filtering, menu action, navigation, plugin, persistence, or ViewModel behavior was intentionally changed.
 - Build/test execution remains outstanding: `./gradlew :composeApp:check` has not been run from this GitHub-connected environment.
+
+### Follow-up shared UI polish
+
+- **Adaptive dialogs:** bounded large-screen dialog content height and enabled vertical scrolling, matching the existing mobile sheet behavior so long forms and permission/release content remain reachable without overflowing the dialog.
+- **Adaptive dropdown sheets:** removed a duplicated separator render in mobile menu rows; each `dividerBefore` item now renders one separator, consistent with desktop dropdowns.
+- **Behavior preservation:** menu callbacks, selection, filtering, dismiss handling, and dialog actions remain unchanged.
+- **Validation:** source-level diff reviewed. `./gradlew :composeApp:check` remains unrun because this GitHub-connected session has no local Gradle execution environment.
