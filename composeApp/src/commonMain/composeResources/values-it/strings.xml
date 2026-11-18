@@ -66,8 +66,8 @@
     </plurals>
     <string name="library_local_back">Torna alle cartelle</string>
     <string name="library_local_play_folder">Riproduci cartella</string>
-    <string name="library_local_permission_title">Accesso all\'audio necessario</string>
-    <string name="library_local_permission_description">Consenti l\'accesso all\'audio per sfogliare la musica sul tuo dispositivo.</string>
+    <string name="library_local_permission_title">Accesso all'audio necessario</string>
+    <string name="library_local_permission_description">Consenti l'accesso all'audio per sfogliare la musica sul tuo dispositivo.</string>
     <string name="library_local_grant_access">Consenti accesso</string>
     <string name="library_local_empty_folders">Nessuna cartella locale trovata</string>
     <string name="library_local_empty_tracks">Nessun brano in questa cartella</string>
@@ -95,7 +95,7 @@
     <string name="media_saved_songs">I tuoi brani salvati</string>
     <string name="media_unknown_artist">Artista sconosciuto</string>
     <string name="media_preview_title">Titolo del brano</string>
-    <string name="media_preview_subtitle">Nome dell\'artista</string>
+    <string name="media_preview_subtitle">Nome dell'artista</string>
 
     <string name="accessibility_selected">Selezionato</string>
 
@@ -117,20 +117,20 @@
     <string name="common_cancel">Annulla</string>
 
     <string name="settings_language_title">Lingua</string>
-    <string name="settings_language_subtitle_current">Lingua dell\'interfaccia dell\'app. Attuale: %1$s</string>
+    <string name="settings_language_subtitle_current">Lingua dell'interfaccia dell'app. Attuale: %1$s</string>
     <string name="settings_language_system_default">Predefinita di sistema</string>
     <string name="settings_country_title">Paese</string>
     <string name="settings_country_subtitle_current">Paese per contenuti e disponibilità. Attuale: %1$s</string>
     <string name="settings_option_name_and_code">%1$s (%2$s)</string>
 
     <string name="settings_theme_title">Tema</string>
-    <string name="settings_theme_subtitle_current">Scegli come Spotube si adatta all\'aspetto del sistema. Attuale: %1$s</string>
+    <string name="settings_theme_subtitle_current">Scegli come Spotube si adatta all'aspetto del sistema. Attuale: %1$s</string>
     <string name="settings_theme_light">Chiaro</string>
     <string name="settings_theme_dark">Scuro</string>
     <string name="settings_theme_system">Sistema</string>
 
     <string name="settings_surface_theme_title">Superficie</string>
-    <string name="settings_surface_theme_subtitle_current">Materiale di sfondo dell\'app. Attuale: %1$s</string>
+    <string name="settings_surface_theme_subtitle_current">Materiale di sfondo dell'app. Attuale: %1$s</string>
     <string name="settings_surface_watery">Acqua</string>
     <string name="settings_surface_icy">Ghiaccio</string>
     <string name="settings_surface_chrome">Cromo</string>
@@ -140,7 +140,7 @@
     <string name="settings_accent_title">Colore di accento</string>
     <string name="settings_accent_subtitle_current">Palette attuale: %1$s</string>
     <string name="settings_accent_dialog_title">Colore di accento</string>
-    <string name="settings_accent_dialog_description">Scegli una palette di accento e visualizzane l\'anteprima nei temi chiaro e scuro.</string>
+    <string name="settings_accent_dialog_description">Scegli una palette di accento e visualizzane l'anteprima nei temi chiaro e scuro.</string>
     <string name="settings_preview_light">Chiaro</string>
     <string name="settings_preview_dark">Scuro</string>
     <string name="settings_preview_label">Anteprima</string>
@@ -164,7 +164,7 @@
     <string name="settings_palette_title">Palette</string>
     <string name="settings_palette_subtitle_current">Palette di accento Millennium. Attuale: %1$s</string>
     <string name="settings_palette_dialog_title">Palette</string>
-    <string name="settings_palette_dialog_description">Scegli una palette di accento Millennium e visualizzane l\'anteprima in chiaro e scuro.</string>
+    <string name="settings_palette_dialog_description">Scegli una palette di accento Millennium e visualizzane l'anteprima in chiaro e scuro.</string>
     <string name="settings_palette_label">Palette</string>
     <string name="settings_appearance_subtitle_palette">Palette e accento Millennium. Attuale: %1$s</string>
     <string name="settings_palette_blue">Blu</string>
@@ -183,7 +183,7 @@
     <string name="settings_local_media_folders_add_action">Aggiungi cartella</string>
     <string name="settings_local_media_folders_remove_action">Rimuovi cartella</string>
     <string name="settings_local_media_folders_none_added">Nessuna cartella personalizzata aggiunta.</string>
-    <string name="settings_local_media_folders_remove_named">Rimuovi %1$s dall\'elenco di analisi</string>
+    <string name="settings_local_media_folders_remove_named">Rimuovi %1$s dall'elenco di analisi</string>
     <string name="settings_local_media_folders_automatic_both">Le cartelle di download e della cache musicale sono incluse automaticamente.</string>
     <string name="settings_local_media_folders_automatic_downloads">La tua cartella di download è inclusa automaticamente.</string>
     <string name="settings_local_media_folders_automatic_cache">La cartella della cache musicale è inclusa automaticamente.</string>
@@ -203,10 +203,10 @@
     <string name="settings_streaming_quality_title">Qualità musica in streaming</string>
     <string name="settings_subtitle_current">Attuale: %1$s</string>
     <string name="settings_enable_music_caching_title">Attiva cache musicale</string>
-    <string name="settings_enable_music_caching_subtitle">Salva l\'audio in streaming in locale per velocizzare gli ascolti successivi.</string>
+    <string name="settings_enable_music_caching_subtitle">Salva l'audio in streaming in locale per velocizzare gli ascolti successivi.</string>
     <string name="settings_cache_folder_title">Cartella cache</string>
     <string name="settings_cache_folder_current">Attuale: %1$s</string>
-    <string name="settings_cache_folder_default">Attuale: cache predefinita dell\'app</string>
+    <string name="settings_cache_folder_default">Attuale: cache predefinita dell'app</string>
     <string name="settings_cache_size_limit_title">Limite dimensione cache</string>
     <string name="settings_cache_size_limit_unlimited">Nessun limite</string>
     <string name="settings_cache_size_limit_current">Limite attuale: %1$d MB</string>
@@ -232,8 +232,8 @@
     <string name="settings_blacklist_title">Blacklist</string>
     <string name="settings_blacklist_subtitle">Gestisci brani e artisti in blacklist</string>
 
-    <string name="settings_desktop_minimize_title">Riduci nell\'area di notifica</string>
-    <string name="settings_desktop_minimize_subtitle">Mantieni Spotube in esecuzione nell\'area di notifica quando la finestra è ridotta a icona.</string>
+    <string name="settings_desktop_minimize_title">Riduci nell'area di notifica</string>
+    <string name="settings_desktop_minimize_subtitle">Mantieni Spotube in esecuzione nell'area di notifica quando la finestra è ridotta a icona.</string>
     <string name="settings_desktop_discord_title">Rich Presence di Discord</string>
     <string name="settings_desktop_discord_subtitle">Mostra lo stato di riproduzione attuale su Discord dal desktop.</string>
 
@@ -259,7 +259,7 @@
     <string name="plugin_configure_title">Configura</string>
     <string name="plugin_screen_title">Gestione plugin</string>
     <string name="plugin_error_enter_url">Inserisci un URL</string>
-    <string name="plugin_error_url_scheme">L\'URL deve iniziare con http:// o https://</string>
+    <string name="plugin_error_url_scheme">L'URL deve iniziare con http:// o https://</string>
     <string name="plugin_error_download_failed">Impossibile scaricare il plugin</string>
     <string name="plugin_empty_title">Nessun plugin installato</string>
     <string name="plugin_empty_subtitle">Incolla un URL di download o scegli un file qui sopra.</string>
@@ -294,7 +294,7 @@
     <string name="plugin_permissions_capability_network_title">Richieste di rete</string>
     <string name="plugin_permissions_capability_network_desc">Inviare e ricevere dati tramite Internet</string>
     <string name="plugin_permissions_capability_webview_title">WebView</string>
-    <string name="plugin_permissions_capability_webview_desc">Mostrare contenuti web all\'interno dell\'app</string>
+    <string name="plugin_permissions_capability_webview_desc">Mostrare contenuti web all'interno dell'app</string>
     <string name="settings_section_jam">Jam di gruppo</string>
     <string name="settings_jam_server_test">Verifica connessione</string>
     <string name="settings_jam_server_testing">Verifica in corso…</string>
@@ -355,7 +355,7 @@
     <string name="jam_error_kicked">L’host ti ha rimosso dalla stanza.</string>
     <string name="jam_error_replaced">Questa stanza è stata riaperta su questo dispositivo, quindi questa connessione è stata chiusa.</string>
 
-    <string name="player_go_to_album">Vai all\'album</string>
+    <string name="player_go_to_album">Vai all'album</string>
     <string name="player_sleep_timer">Timer di spegnimento</string>
     <string name="player_track_details">Dettagli brano</string>
     <string name="player_play_content_description">Riproduci</string>
@@ -379,7 +379,7 @@
     <string name="welcome_brand_freedom">Musica, senza vincoli.</string>
     <string name="welcome_brand_quiet_description">Un player open source per un mondo di musica.\nTutto da esplorare. Tutto da rendere tuo.</string>
     <string name="welcome_donate_quiet_title">Aiutaci a mantenere vivo questo progetto.</string>
-    <string name="welcome_donate_letter">Spotube è creato da persone, non da un\'azienda in abbonamento. Se diventa parte della tua quotidianità, un piccolo contributo ci aiuta a dargli la cura che merita.\n\nGrazie per fare spazio al software indipendente.</string>
+    <string name="welcome_donate_letter">Spotube è creato da persone, non da un'azienda in abbonamento. Se diventa parte della tua quotidianità, un piccolo contributo ci aiuta a dargli la cura che merita.\n\nGrazie per fare spazio al software indipendente.</string>
     <string name="welcome_plugins_setup_guide">Inizia con un plugin di catalogo per trovare brani e playlist. Scegli un plugin audio per riprodurli. Testi e cronologia di ascolto sono facoltativi. Scopri un plugin qui sotto, controlla le sue autorizzazioni, installalo e poi selezionalo qui.</string>
     <string name="welcome_plugins_discover">Scopri plugin</string>
     <string name="welcome_plugins_sources">Le tue fonti</string>
@@ -418,7 +418,7 @@
     <string name="welcome_donate_message">Spotube è gratuito al 100%, libero e open source: niente pubblicità, niente abbonamenti, nessun tracciamento. Ogni funzione esiste perché persone come te hanno scelto di contribuire allo sviluppo.</string>
     <string name="welcome_donate_patreon_title">Patreon</string>
     <string name="welcome_donate_patreon_tag">Sostenitore mensile</string>
-    <string name="welcome_donate_patreon_subtitle">Sostieni lo sviluppo continuo e l\'infrastruttura</string>
+    <string name="welcome_donate_patreon_subtitle">Sostieni lo sviluppo continuo e l'infrastruttura</string>
     <string name="welcome_donate_bmac_title">Buy Me a Coffee</string>
     <string name="welcome_donate_bmac_tag">Un caffè una tantum</string>
     <string name="welcome_donate_bmac_subtitle">Alimenta una sessione di programmazione notturna con una piccola mancia</string>
@@ -468,11 +468,11 @@
     <string name="welcome_how_status_badge">PEER-TO-PEER DIRETTO • OPUS 256 KBPS</string>
     <string name="welcome_how_mockup_title">Ora blu</string>
     <string name="welcome_how_mockup_artist">Spotube · dimostrazione del player</string>
-    <string name="welcome_how_mockup_lyric">Un po\' di musica per i momenti di mezzo.</string>
+    <string name="welcome_how_mockup_lyric">Un po' di musica per i momenti di mezzo.</string>
     <string name="welcome_how_step_search_title">1. Ricerca decentralizzata</string>
     <string name="welcome_how_step_search_desc">Le ricerche vanno direttamente al plugin di catalogo scelto. Spotube non profila mai i tuoi gusti.</string>
     <string name="welcome_how_step_stream_title">2. Risoluzione diretta degli stream</string>
-    <string name="welcome_how_step_stream_desc">L\'audio arriva direttamente dai server dei contenuti al tuo dispositivo. Nessun proxy intermedio né raccolta remota di dati.</string>
+    <string name="welcome_how_step_stream_desc">L'audio arriva direttamente dai server dei contenuti al tuo dispositivo. Nessun proxy intermedio né raccolta remota di dati.</string>
     <string name="welcome_how_step_playback_title">3. DSP e riproduzione in locale</string>
     <string name="welcome_how_step_playback_desc">Decodificato e salvato in cache in locale, con equalizzatore e download offline facoltativo.</string>
     <string name="welcome_how_step_lyrics_title">4. Testi sincronizzati e Jam</string>
@@ -505,7 +505,7 @@
     <string name="devices_connecting">Connessione...</string>
     <string name="devices_searching">Ricerca di dispositivi sulla rete...</string>
     <string name="devices_empty">Nessun dispositivo trovato</string>
-    <string name="devices_empty_hint">Assicurati che sull\'altro dispositivo sia attivo \"Consenti controllo remoto\" nelle impostazioni.</string>
+    <string name="devices_empty_hint">Assicurati che sull'altro dispositivo sia attivo "Consenti controllo remoto" nelle impostazioni.</string>
     <string name="devices_unknown_device">Dispositivo sconosciuto</string>
     <string name="devices_resolving">Risoluzione...</string>
 
@@ -540,7 +540,7 @@
 
     <!-- Remote control: connection request dialog -->
     <string name="remote_request_title">Richiesta di controllo remoto</string>
-    <string name="remote_request_message">\"%1$s\" vuole controllare la riproduzione su questo dispositivo.</string>
+    <string name="remote_request_message">"%1$s" vuole controllare la riproduzione su questo dispositivo.</string>
     <string name="remote_request_deny">Rifiuta</string>
     <string name="remote_request_allow">Consenti</string>
     <string name="remote_request_allow_always">Consenti sempre</string>
@@ -609,11 +609,11 @@
 
     <!-- Error display -->
     <string name="error_title">Ci dispiace davvero</string>
-    <string name="error_description">Qualcosa non sta funzionando in questo momento. La tua esperienza è importante per noi e stiamo facendo del nostro meglio per risolvere il problema. Riprova o controlla i dettagli dell\'errore qui sotto.</string>
-    <string name="error_details">Dettagli dell\'errore</string>
+    <string name="error_description">Qualcosa non sta funzionando in questo momento. La tua esperienza è importante per noi e stiamo facendo del nostro meglio per risolvere il problema. Riprova o controlla i dettagli dell'errore qui sotto.</string>
+    <string name="error_details">Dettagli dell'errore</string>
     <string name="error_copy_to_clipboard">Copia negli appunti</string>
     <string name="error_view_full_log">Visualizza log completo</string>
-    <string name="error_full_log_title">Log completo dell\'errore</string>
+    <string name="error_full_log_title">Log completo dell'errore</string>
 
     <!-- Collection details -->
     <string name="collection_details_shuffle">Riproduzione casuale</string>
@@ -666,7 +666,7 @@
     <!-- Blacklist -->
     <string name="blacklist_filter_placeholder">Filtra blacklist...</string>
     <string name="blacklist_empty">Nessun elemento in blacklist</string>
-    <string name="blacklist_no_results">Nessun elemento in blacklist corrisponde a \'%1$s\'</string>
+    <string name="blacklist_no_results">Nessun elemento in blacklist corrisponde a '%1$s'</string>
     <string name="blacklist_section_tracks">Brani</string>
     <string name="blacklist_item_track">Brano</string>
     <string name="blacklist_add">Aggiungi alla blacklist</string>
@@ -674,8 +674,8 @@
 
     <!-- Downloads -->
     <string name="downloads_error_no_metadata">Nessun metadato del brano</string>
-    <string name="downloads_error_stream_unresolved_short">Impossibile risolvere l\'URL dello stream</string>
-    <string name="downloads_error_stream_unresolved">Impossibile risolvere l\'URL dello stream. Prova prima a riprodurre il brano.</string>
+    <string name="downloads_error_stream_unresolved_short">Impossibile risolvere l'URL dello stream</string>
+    <string name="downloads_error_stream_unresolved">Impossibile risolvere l'URL dello stream. Prova prima a riprodurre il brano.</string>
 
     <!-- Saved tracks -->
     <string name="saved_tracks_title">Brani salvati</string>
@@ -688,7 +688,7 @@
     <string name="artist_add_top_tracks_to_queue">Aggiungi i brani più popolari alla coda</string>
     <string name="artist_related_artists">Artisti simili</string>
     <string name="artist_featured_playlists">Playlist in evidenza</string>
-    <string name="artist_error_load_failed">Impossibile caricare la panoramica dell\'artista</string>
+    <string name="artist_error_load_failed">Impossibile caricare la panoramica dell'artista</string>
     <string name="artist_followers_unavailable">Follower non disponibili</string>
     <string name="artist_followers_thousands">%1$s K follower</string>
     <string name="artist_followers_millions">%1$s Mln follower</string>
@@ -737,7 +737,7 @@
     <string name="player_sleep_timer_minutes_placeholder">Scegli tra 1 e 600 minuti</string>
     <string name="player_sleep_timer_cancel">Annulla timer</string>
     <string name="player_sleep_timer_start">Avvia</string>
-    <string name="player_track_details_stream_mismatch">L\'URL di riproduzione è stato risolto con impostazioni di streaming diverse. Lo stream evidenziato corrisponde alle tue preferenze attuali; l\'URL attivo verrà aggiornato alla prossima richiesta di stream.</string>
+    <string name="player_track_details_stream_mismatch">L'URL di riproduzione è stato risolto con impostazioni di streaming diverse. Lo stream evidenziato corrisponde alle tue preferenze attuali; l'URL attivo verrà aggiornato alla prossima richiesta di stream.</string>
     <string name="player_track_details_matched_source">Fonte audio abbinata</string>
     <string name="player_track_details_loading_source">Caricamento della fonte abbinata…</string>
     <string name="player_track_details_source_not_needed">Una fonte remota abbinata non è necessaria durante la riproduzione del file locale in cache.</string>
@@ -761,9 +761,9 @@
     <string name="player_track_details_external_uri">URI esterno</string>
     <string name="player_track_details_album_id">ID album</string>
     <string name="player_track_details_album_type">Tipo di album</string>
-    <string name="player_track_details_album_release_date">Data di uscita dell\'album</string>
-    <string name="player_track_details_album_track_count">Numero di brani dell\'album</string>
-    <string name="player_track_details_album_genres">Generi dell\'album</string>
+    <string name="player_track_details_album_release_date">Data di uscita dell'album</string>
+    <string name="player_track_details_album_track_count">Numero di brani dell'album</string>
+    <string name="player_track_details_album_genres">Generi dell'album</string>
     <string name="player_track_details_duration">Durata</string>
     <string name="player_track_details_track_number">Numero del brano</string>
     <string name="player_track_details_disc_number">Numero del disco</string>
@@ -840,13 +840,13 @@
     <string name="plugin_error_invalid_plugin_json">Formato di plugin.json non valido: %1$s</string>
     <string name="plugin_error_read_failed">Impossibile leggere il plugin: %1$s</string>
     <string name="plugin_error_install_failed">Impossibile installare il plugin: %1$s</string>
-    <string name="plugin_error_update_needs_confirmation">È disponibile una versione più recente di %1$s. Conferma l\'aggiornamento prima di installarla.</string>
+    <string name="plugin_error_update_needs_confirmation">È disponibile una versione più recente di %1$s. Conferma l'aggiornamento prima di installarla.</string>
     <string name="plugin_error_replace_needs_confirmation">%1$s è già installato. Conferma la sostituzione prima di installarlo.</string>
     <string name="plugin_error_builtin_add">I plugin integrati sono già inclusi e non possono essere aggiunti di nuovo.</string>
     <string name="plugin_error_builtin_remove">I plugin integrati non possono essere rimossi.</string>
     <string name="plugin_error_api_version_invalid">%1$s dichiara un apiVersion non valido (%2$s). È previsto un versionamento semantico compatibile con %3$s.</string>
     <string name="plugin_error_app_api_version_invalid">La versione API dei plugin di Spotube %1$s non è valida.</string>
-    <string name="plugin_error_api_incompatible">%1$s è destinato all\'API plugin %2$s, ma Spotube supporta l\'API plugin %3$s con modifiche incompatibili. Installa un plugin creato per la stessa versione principale dell\'API.</string>
+    <string name="plugin_error_api_incompatible">%1$s è destinato all'API plugin %2$s, ma Spotube supporta l'API plugin %3$s con modifiche incompatibili. Installa un plugin creato per la stessa versione principale dell'API.</string>
 
     <!-- Plugin install prompts -->
     <string name="plugin_prompt_incompatible_title">API del plugin non compatibile</string>

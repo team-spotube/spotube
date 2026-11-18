@@ -28,7 +28,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import org.spotube.spotube.core.ui.theming.AppTheme
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumModalBottomSheet
@@ -105,7 +105,7 @@ fun AdaptiveDialogBottomSheet(
                         MillenniumIconButton(
                             onClick = onDismiss,
                             style = MillenniumIconButtonStyle.Quiet) {
-                            MillenniumIcon(
+                            AppIcon(
                                 Iconsax.FluentDismiss,
                                 contentDescription = stringResource(Res.string.common_close_dialog))
                         }

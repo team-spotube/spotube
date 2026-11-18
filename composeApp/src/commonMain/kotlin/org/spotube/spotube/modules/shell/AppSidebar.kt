@@ -31,7 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composeunstyled.LocalTextStyle
 import org.koin.compose.viewmodel.koinViewModel
 import org.spotube.millennium.composables.LocalMillenniumSidebar
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.theme.MillenniumControlState
 import org.spotube.millennium.theme.MillenniumTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -252,7 +252,7 @@ private fun LiveSidebarNavItem(
         val metrics = MillenniumTheme.sidebarTheme.item.resolve(MillenniumControlState.Default)
         val contentColor = LocalTextStyle.current.color
         Box {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = item.icon,
                 contentDescription = null,
                 tint = contentColor,

@@ -40,7 +40,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.theme.MillenniumTheme
@@ -85,7 +85,7 @@ internal fun DownloadsToolbarTitle() {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        MillenniumIcon(
+        AppIcon(
             Iconsax.IconsaxDirectboxReceive,
             null,
             tint = AppTheme.colors.primary,
@@ -244,7 +244,7 @@ internal fun DownloadListRow(
             },
             modifier = Modifier.size(40.dp), style = MillenniumIconButtonStyle.Secondary
         ) {
-            MillenniumIcon(
+            AppIcon(
                 when (item.action) {
                     DownloadRowAction.Cancel -> Iconsax.IconsaxCloseSquare; DownloadRowAction.Retry -> Iconsax.IconsaxRefreshRight; DownloadRowAction.Remove -> Iconsax.IconsaxTrash
                 },

@@ -255,6 +255,7 @@ kotlin {
 
                 // icons
                 implementation(libs.feather.icons)
+                implementation(libs.lucide.icons)
 
                 // androidx-datastore
                 implementation(libs.androidx.datastore)
@@ -690,4 +691,14 @@ tasks.matching { it.name == "prepareAppResources" || it.name == "copyGraalvmAppR
     (this as? org.gradle.api.tasks.AbstractCopyTask)?.filesMatching("**/webkit2gtk-4.1/WebKit*Process") {
         permissions { unix("rwxr-xr-x") }
     }
+}
+
+// Theme packages under <repo>/themes are test inputs (ThemeGalleryTest packs and renders them).
+tasks.withType<Test>().configureEach {
+    inputs.files(fileTree(rootProject.file("themes")) { include("*/**") }).withPropertyName("themeFolders")
+    // Optional: THEMES_DIR=<path to a folder of theme folders> makes ThemeFolderValidationTest check and render them
+    // too (used for the separate themes repository).
+    val external = providers.environmentVariable("THEMES_DIR")
+    inputs.property("externalThemesDir", external.orElse(""))
+    external.orNull?.let { inputs.files(fileTree(it)).withPropertyName("externalThemeFiles") }
 }

@@ -35,7 +35,7 @@ kmpZip = "1.0.0"
 kotlin = "2.4.21"
 kotlinx-coroutines = "1.11.0"
 kotlinx-serialization-json = "1.11.0"
-millennium = "0.1.1"
+millennium = "0.2.0"
 multiplatformMarkdownRenderer = "0.45.0"
 murmurhash = "0.4.2"
 newpipeextractor = "v0.26.5"
@@ -54,6 +54,7 @@ koin = "4.2.2"
 multiplatform-nav3-ui = "1.1.1"
 compose-multiplatform-lifecycle = "2.10.0"
 feather-icons = "1.1.1"
+lucide = "2.2.1"
 kotlinx-datetime = "0.8.0"
 media3 = "1.10.1"
 androidx-datastore = "1.2.1"
@@ -142,6 +143,7 @@ koin-compose-navigation3 = { module = "io.insert-koin:koin-compose-navigation3",
 jetbrains-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "multiplatform-nav3-ui" }
 jetbrains-lifecycle-viewmodelNavigation3 = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "compose-multiplatform-lifecycle" }
 feather-icons = { module = "br.com.devsrsouza.compose.icons:feather", version.ref = "feather-icons" }
+lucide-icons = { module = "com.composables:icons-lucide-cmp", version.ref = "lucide" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "androidx-datastore" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore" }

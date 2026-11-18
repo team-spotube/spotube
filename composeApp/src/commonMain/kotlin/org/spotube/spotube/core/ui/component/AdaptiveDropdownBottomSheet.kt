@@ -78,7 +78,7 @@ import org.spotube.millennium.composables.MillenniumDropdownMenuItem
 import org.spotube.millennium.composables.MillenniumDropdownMenuItemIcon
 import org.spotube.millennium.composables.MillenniumDropdownMenuSeparator
 import com.composeunstyled.Text
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumListTile
@@ -242,7 +242,7 @@ private fun AdaptiveMenuTile(
             item.leadingContent != null -> item.leadingContent
             item.icon != null -> {
                 {
-                    MillenniumIcon(
+                    AppIcon(
                         imageVector = item.icon,
                         contentDescription = null,
                         modifier = Modifier.size(22.dp),
@@ -251,7 +251,7 @@ private fun AdaptiveMenuTile(
             }
             item.selected -> {
                 {
-                    MillenniumIcon(
+                    AppIcon(
                         imageVector = FeatherIcons.Check,
                         contentDescription = stringResource(Res.string.accessibility_selected),
                         modifier = Modifier.size(22.dp))
@@ -262,7 +262,7 @@ private fun AdaptiveMenuTile(
         },
         trailing = if (item.selected && (item.icon != null || item.leadingContent != null)) {
             {
-                MillenniumIcon(
+                AppIcon(
                     imageVector = FeatherIcons.Check,
                     contentDescription = stringResource(Res.string.accessibility_selected),
                     modifier = Modifier.size(22.dp))
@@ -360,7 +360,7 @@ private fun AdaptiveDropdownBottomSheetPreview() {
                             shape = CircleShape)
                         .clip(CircleShape),
                     style = MillenniumIconButtonStyle.Quiet) {
-                    MillenniumIcon(
+                    AppIcon(
                         imageVector = Iconsax.Iconsax3DotsMore,
                         contentDescription = null,
                         tint = AppTheme.colors.primary)

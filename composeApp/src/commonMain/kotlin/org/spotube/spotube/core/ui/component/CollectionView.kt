@@ -49,7 +49,7 @@ import org.spotube.spotube.resources.iconsax.IconsaxPauseCircle
 import org.spotube.spotube.resources.iconsax.IconsaxPlayCircle2
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.jetbrains.compose.resources.stringResource
@@ -129,7 +129,7 @@ fun CollectionView(
                         onClick = onPlay,
                         loading = isPlayLoading,
                         style = MillenniumIconButtonStyle.Quiet) {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = if (isPlaying) Iconsax.IconsaxPauseCircle else Iconsax.IconsaxPlayCircle2,
                             contentDescription = if (isPlaying) stringResource(Res.string.player_pause_content_description) else stringResource(Res.string.player_play_content_description))
                     }

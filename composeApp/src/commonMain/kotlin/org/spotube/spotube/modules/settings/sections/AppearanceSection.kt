@@ -47,6 +47,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import compose.icons.FeatherIcons
+import compose.icons.feathericons.ChevronRight
+import org.spotube.spotube.core.navigation.NavigationCommands
+import org.spotube.spotube.core.navigation.Routes
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.spotube.core.ui.theming.AppTheme
 import org.spotube.spotube.core.ui.theming.isLightAppearance
 import org.spotube.spotube.modules.settings.SettingsViewModel
@@ -61,7 +66,11 @@ import org.jetbrains.compose.resources.stringResource
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumDialog
+import org.spotube.millennium.composables.MillenniumSegmentedButton
+import org.spotube.millennium.composables.MillenniumSegmentedButtonDefaults
+import org.spotube.millennium.composables.MillenniumSegmentedButtonRow
 import org.spotube.millennium.composables.MillenniumSeparator
+import com.composeunstyled.Text
 import org.spotube.millennium.composables.MillenniumText
 import org.spotube.millennium.theme.MillenniumColorSchemes
 import org.spotube.millennium.theme.MillenniumPalette
@@ -73,197 +82,57 @@ import spotube.composeapp.generated.resources.*
 internal fun LazyListScope.appearanceSection(
     settings: UserSettings,
     settingsViewModel: SettingsViewModel,
-    includeHeader: Boolean = true) {
-    if (includeHeader) {
-        settingsSectionHeader(Res.string.settings_section_appearance)
-    }
-    settingsSectionCard(
-        items = listOf(
-            {
-                SelectionSettingCard(
-                    title = stringResource(Res.string.settings_theme_title),
+    includeHeader: Boolean = true,
+    /** When set (compact screens), Appearance is its own page opened from a single row instead of an inline section. */
+    themesPageNavigation: NavigationCommands? = null) {
+    if (themesPageNavigation != null) {
+        settingsSectionCard(
+            items = listOf {
+                SettingCardItem(
+                    title = stringResource(Res.string.settings_section_appearance),
                     subtitle = stringResource(
                         Res.string.settings_theme_subtitle_current,
                         settings.theme.displayLabel()
                     ),
                     icon = {
-                        SettingsItemIcon(Iconsax.IconsaxColorSwatch, stringResource(Res.string.settings_theme_title))
+                        SettingsItemIcon(Iconsax.IconsaxColorSwatch, stringResource(Res.string.settings_section_appearance))
                     },
-                    selectedOption = settings.theme,
-                    options = Theme.entries,
-                    optionLabel = { it.displayLabel() },
-                    onOptionSelected = { theme ->
-                        settingsViewModel.updateSettings {
-                            copy(theme = theme)
-                        }
-                    }
-                )
-            },
-            {
-                AppearanceSettingCard(
-                    selectedPalette = settings.palette,
-                    icon = {
-                        SettingsItemIcon(
-                            Iconsax.IconsaxMagic,
-                            stringResource(Res.string.settings_appearance_title)
-                        )
+                    trailingContent = {
+                        AppIcon(
+                            imageVector = FeatherIcons.ChevronRight,
+                            contentDescription = null,
+                            tint = AppTheme.colors.onSurfaceVariant)
                     },
-                    onSaved = { palette ->
-                        settingsViewModel.updateSettings {
-                            copy(palette = palette)
-                        }
-                    })
+                    onClick = { themesPageNavigation.navigateTo(Routes.ThemeSettings) })
             })
-    )
+        return
+    }
+    if (includeHeader) {
+        settingsSectionHeader(Res.string.settings_section_appearance)
+    }
+    settingsSectionCard(items = listOf { ThemeModeCard(settings, settingsViewModel) })
+    item { ThemesPanel() }
+}
+
+/** The Light / Dark / System choice as one segmented control. Inline on large screens, on top of the Appearance page on compact ones. */
+@Composable
+internal fun ThemeModeCard(settings: UserSettings, settingsViewModel: SettingsViewModel) {
+    MillenniumSegmentedButtonRow(modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp)) {
+        Theme.entries.forEachIndexed { index, theme ->
+            MillenniumSegmentedButton(
+                selected = settings.theme == theme,
+                onClick = { settingsViewModel.updateSettings { copy(theme = theme) } },
+                shape = MillenniumSegmentedButtonDefaults.itemShape(index, Theme.entries.size),
+            ) { Text(theme.displayLabel()) }
+        }
+    }
 }
 
 @Composable
-private fun Theme.displayLabel(): String {
+internal fun Theme.displayLabel(): String {
     return when (this) {
         Theme.LIGHT -> stringResource(Res.string.settings_theme_light)
         Theme.DARK -> stringResource(Res.string.settings_theme_dark)
         Theme.SYSTEM -> stringResource(Res.string.settings_theme_system)
-    }
-}
-
-@Composable
-private fun MillenniumPalette.displayLabel(): String = when (this) {
-    MillenniumPalette.Blue -> stringResource(Res.string.settings_palette_blue)
-    MillenniumPalette.Orange -> stringResource(Res.string.settings_palette_orange)
-    MillenniumPalette.Lime -> stringResource(Res.string.settings_palette_lime)
-}
-
-@Composable
-private fun AppearanceSettingCard(
-    selectedPalette: MillenniumPalette,
-    icon: (@Composable () -> Unit)? = null,
-    onSaved: (MillenniumPalette) -> Unit) {
-    var isDialogOpen by remember { mutableStateOf(false) }
-
-    SettingCardItem(
-        title = stringResource(Res.string.settings_appearance_title),
-        subtitle = stringResource(
-            Res.string.settings_appearance_subtitle_palette,
-            selectedPalette.displayLabel()),
-        icon = icon,
-        trailingContent = {
-            PaletteTrailingSwatch(selectedPalette)
-        },
-        onClick = { isDialogOpen = true })
-
-    if (isDialogOpen) {
-        var draftPalette by remember(selectedPalette, isDialogOpen) {
-            mutableStateOf(selectedPalette)
-        }
-
-        MillenniumDialog(visible = true, onDismissRequest = { isDialogOpen = false }) {
-            MillenniumDialogHeader {
-                MillenniumDialogTitle(stringResource(Res.string.settings_palette_dialog_title))
-                MillenniumDialogClose()
-            }
-            MillenniumDialogBody {
-            MillenniumText(
-                stringResource(Res.string.settings_palette_dialog_description),
-                color = AppTheme.colors.onSurfaceVariant)
-            MillenniumText(
-                stringResource(Res.string.settings_palette_label),
-                color = AppTheme.colors.onSurface)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                MillenniumPalette.entries.forEach { palette ->
-                    PaletteSwatch(
-                        palette = palette,
-                        label = palette.displayLabel(),
-                        selected = palette == draftPalette,
-                        onClick = { draftPalette = palette })
-                }
-            }
-
-            PalettePreview(draftPalette)
-            }
-            MillenniumDialogFooter {
-                MillenniumButton(
-                    onClick = { isDialogOpen = false },
-                    style = MillenniumButtonStyle.Secondary) {
-                    MillenniumText(stringResource(Res.string.common_cancel))
-                }
-                MillenniumButton(
-                    onClick = {
-                        onSaved(draftPalette)
-                        isDialogOpen = false
-                    }) {
-                    MillenniumText(stringResource(Res.string.common_save))
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun PaletteSwatch(
-    palette: MillenniumPalette,
-    label: String,
-    selected: Boolean,
-    onClick: () -> Unit) {
-    val dark = !isLightAppearance()
-    val scheme = remember(palette, dark) { MillenniumColorSchemes().resolve(palette, dark = dark) }
-    Box(
-        modifier = Modifier
-            .size(40.dp)
-            .clip(CircleShape)
-            .background(scheme.accent)
-            .border(
-                width = if (selected) 3.dp else 1.dp,
-                color = if (selected) AppTheme.colors.onSurface else AppTheme.colors.outlineVariant,
-                shape = CircleShape)
-            .clickable(onClick = onClick)
-            .semantics { contentDescription = label })
-}
-
-@Composable
-private fun PaletteTrailingSwatch(palette: MillenniumPalette) {
-    val dark = !isLightAppearance()
-    val scheme = remember(palette, dark) { MillenniumColorSchemes().resolve(palette, dark = dark) }
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
-        verticalAlignment = Alignment.CenterVertically) {
-        Box(
-            Modifier
-                .size(width = 46.dp, height = 28.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(scheme.accent.copy(alpha = 0.35f)))
-        Box(
-            Modifier
-                .size(18.dp)
-                .clip(CircleShape)
-                .background(scheme.accent))
-    }
-}
-
-@Composable
-private fun PalettePreview(palette: MillenniumPalette) {
-    val dark = !isLightAppearance()
-    MillenniumTheme(dark = dark, config = MillenniumThemeConfig(palette = palette)) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(14.dp))
-                .background(MillenniumTheme.colors.surface)
-                .border(1.dp, MillenniumTheme.colors.border, RoundedCornerShape(14.dp))
-                .padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            MillenniumText(
-                stringResource(Res.string.settings_preview_label),
-                color = MillenniumTheme.colors.muted)
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                MillenniumButton(onClick = {}) {
-                    MillenniumText(stringResource(Res.string.settings_preview_button))
-                }
-                MillenniumButton(onClick = {}, style = MillenniumButtonStyle.Secondary) {
-                    MillenniumText(stringResource(Res.string.settings_preview_secondary))
-                }
-            }
-        }
     }
 }

@@ -68,7 +68,7 @@ import org.spotube.spotube.resources.iconsax.IconsaxUserRemove
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.spotube.millennium.composables.MillenniumDropdownMenu
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumListTile
@@ -146,7 +146,7 @@ fun PlayerQueueContent(
                             onClick = viewModel::clearQueue,
                             style = MillenniumIconButtonStyle.Quiet
                         ) {
-                            MillenniumIcon(
+                            AppIcon(
                                 Iconsax.IconsaxTrash,
                                 contentDescription = stringResource(Res.string.queue_clear_queue)
                             )
@@ -243,7 +243,7 @@ private fun ParticipantDialog(
                         onDismiss()
                     },
                     leading = {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = Iconsax.IconsaxCloseSquare,
                             contentDescription = null,
                             tint = AppTheme.colors.error
@@ -257,7 +257,7 @@ private fun ParticipantDialog(
                         onDismiss()
                     },
                     leading = {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = Iconsax.IconsaxUserRemove,
                             contentDescription = null,
                             tint = AppTheme.colors.error
@@ -271,7 +271,7 @@ private fun ParticipantDialog(
                         onDismiss()
                     },
                     leading = {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = Iconsax.IconsaxMusicSquareRemove,
                             contentDescription = null
                         )
@@ -325,7 +325,7 @@ private fun QueueItemRow(
                     .height(56.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                MillenniumIcon(
+                AppIcon(
                     Iconsax.IconsaxDragHandle,
                     contentDescription = if (reorderScope != null) stringResource(Res.string.queue_reorder_content_description) else null,
                     modifier = Modifier
@@ -425,7 +425,7 @@ private fun QueueItemRow(
                             onClick = { showMenu = true },
                             style = MillenniumIconButtonStyle.Quiet
                         ) {
-                            MillenniumIcon(
+                            AppIcon(
                                 Iconsax.Iconsax3DotsMore,
                                 contentDescription = stringResource(Res.string.player_more_options_content_description)
                             )

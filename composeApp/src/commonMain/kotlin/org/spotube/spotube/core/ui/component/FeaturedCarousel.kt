@@ -18,7 +18,7 @@
 package org.spotube.spotube.core.ui.component
 
 
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import androidx.compose.animation.core.animateFloatAsState
@@ -326,7 +326,7 @@ private fun FeaturedPlayButton(
                     ) in busyCollections,
                     foreground = Color.White
                 ) {
-                    MillenniumIcon(
+                    AppIcon(
                         imageVector = if (isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                         contentDescription = null,
                         tint = Color.White
@@ -362,7 +362,7 @@ private fun FeaturedPlayButton(
                     ) in busyCollections,
                     foreground = Color.White
                 ) {
-                    MillenniumIcon(
+                    AppIcon(
                         imageVector = if (isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                         contentDescription = null,
                         tint = Color.White
@@ -395,7 +395,7 @@ private fun FeaturedPlayButton(
                     },
                     enabled = enabled
                 ) {
-                    MillenniumIcon(
+                    AppIcon(
                         imageVector = if (isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                         contentDescription = null,
                         tint = Color.White

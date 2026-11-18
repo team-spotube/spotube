@@ -154,6 +154,75 @@
     <string name="settings_accent_midnight_blue">Midnight Blue</string>
     <string name="settings_accent_metallic_slate">Metallic Slate</string>
 
+
+    <string name="settings_themes_title">Themes</string>
+    <string name="settings_themes_install">Install theme</string>
+    <string name="settings_theme_details">Details</string>
+    <string name="settings_themes_check_updates">Check for updates</string>
+    <string name="settings_themes_checking_updates">Checking…</string>
+    <string name="settings_themes_up_to_date">Up to date</string>
+    <string name="settings_themes_update_check_failed">Check failed</string>
+    <string name="settings_theme_update_available">Update to %1$s</string>
+    <string name="settings_themes_discover_title">Discover on GitHub</string>
+    <string name="settings_themes_discover_loading">Loading…</string>
+    <string name="settings_themes_discover_failed">Couldn't load themes</string>
+    <string name="settings_themes_discover_retry">Retry</string>
+    <string name="settings_themes_discover_empty">No themes found</string>
+    <string name="settings_themes_discover_load_more">Load more</string>
+    <string name="settings_theme_stars">%1$d ★</string>
+    <string name="settings_theme_releases_loading">Loading releases…</string>
+    <string name="settings_theme_releases_failed">Couldn't load the releases.</string>
+    <string name="settings_theme_releases_none">None of the releases has a .zip theme package.</string>
+    <string name="settings_theme_release_prerelease">Pre-release</string>
+    <string name="settings_theme_downloading">Downloading…</string>
+    <string name="settings_theme_download_failed">Couldn't download that file.</string>
+    <string name="settings_theme_millennium_name">Millennium</string>
+    <string name="settings_theme_accent_label">Accent color</string>
+    <string name="settings_theme_builtin_description">The built-in Millennium look: glossy gel buttons and pearl surfaces.</string>
+    <string name="settings_theme_modern_name">Modern</string>
+    <string name="settings_theme_modern_description">A neutral, flat and minimal look inspired by shadcn/ui: solid surfaces, hairline borders and no gloss.</string>
+    <string name="settings_theme_customize">Customize</string>
+    <string name="settings_theme_customize_reset">Reset to defaults</string>
+    <string name="settings_theme_customize_unselected">Select this theme to see your changes. They are saved for it either way.</string>
+    <string name="settings_theme_color_hint">Hex color, for example #3B82F6</string>
+    <string name="settings_theme_selected">Selected</string>
+    <string name="settings_theme_select">Select</string>
+    <string name="settings_theme_by_author">by %1$s</string>
+    <string name="settings_theme_version">v%1$s</string>
+    <string name="settings_theme_remove">Remove theme</string>
+    <string name="settings_theme_close">Close</string>
+    <string name="settings_theme_link_repository">Repository</string>
+    <string name="settings_theme_link_report">Report an issue</string>
+    <string name="settings_theme_link_homepage">Homepage</string>
+    <string name="settings_theme_link_contact">Contact the author</string>
+    <string name="settings_theme_license">License</string>
+    <string name="settings_theme_license_show">Show license text</string>
+    <string name="settings_theme_license_hide">Hide license text</string>
+    <string name="settings_theme_contents">Package</string>
+    <string name="settings_theme_contents_value">%1$d fonts · %2$d icons</string>
+    <string name="settings_theme_warnings">Theme warnings</string>
+    <string name="settings_theme_install_title">Install “%1$s”?</string>
+    <string name="settings_theme_update_title">Update “%1$s”?</string>
+    <string name="settings_theme_replace_title">Replace “%1$s”?</string>
+    <string name="settings_theme_update_message">An older version is installed (%1$s). Update to %2$s?</string>
+    <string name="settings_theme_replace_same_version">Version %1$s is already installed. Replace the installed theme with this copy?</string>
+    <string name="settings_theme_replace_downgrade">Installed version %1$s is newer than this one (%2$s). Replace it anyway?</string>
+    <string name="settings_theme_replace_invalid_incoming">This theme uses an invalid semantic version (%1$s) and can't be compared with the installed one. Replace it anyway?</string>
+    <string name="settings_theme_replace_invalid_installed">The installed version (%1$s) can't be compared using semantic versioning. Replace it with %2$s?</string>
+    <string name="settings_theme_install_size">%1$d KB</string>
+    <string name="settings_theme_install_warning">Fonts and images are decoded by system libraries, so only install themes from people you trust.</string>
+    <string name="settings_theme_install_confirm">Install</string>
+    <string name="settings_theme_install_update">Update</string>
+    <string name="settings_theme_install_replace">Replace</string>
+    <string name="settings_custom_theme_import_failed">That file isn't a valid Spotube theme.</string>
+    <string name="settings_custom_theme_error_unreadable">That file could not be read.</string>
+    <string name="settings_custom_theme_error_too_large">That theme is larger than the allowed size.</string>
+    <string name="settings_custom_theme_error_corrupt">That archive is damaged or uses an unsupported format.</string>
+    <string name="settings_custom_theme_error_unsafe">That archive contains unsafe file paths and was rejected.</string>
+    <string name="settings_custom_theme_error_disallowed">That archive contains files a theme may not include. Only theme.json, a logo, .ttf/.otf fonts and .png images (plus a LICENSE) are allowed.</string>
+    <string name="settings_custom_theme_error_font">One of the fonts is not a valid TrueType/OpenType file.</string>
+    <string name="settings_custom_theme_error_image">One of the images is not a valid PNG (max 512 x 512).</string>
+    <string name="settings_custom_theme_error_metadata">The theme must declare its name, version and author in theme.json (missing: %1$s).</string>
     <string name="settings_appearance_title">Look &amp; feel</string>
     <string name="settings_appearance_subtitle_current">Surface material and accent. Current: %1$s · %2$s</string>
     <string name="settings_appearance_dialog_title">Look &amp; feel</string>
@@ -323,7 +392,7 @@
     <string name="plugin_permissions_cookie_domains_none">No cookie access</string>
     <string name="plugin_permissions_cookie_domain_subdomains">Any subdomain of %1$s</string>
     <string name="plugin_permissions_new_badge">New</string>
-    <string name="plugin_permissions_update_adds">This update asks for permissions the installed version doesn\'t have. Review them before updating.</string>
+    <string name="plugin_permissions_update_adds">This update asks for permissions the installed version doesn't have. Review them before updating.</string>
     <string name="settings_section_jam">Group Jam</string>
     <string name="settings_jam_server_title">Room server</string>
     <string name="settings_jam_server_url">Server URL</string>
@@ -523,6 +592,9 @@
     <string name="update_action_update">Update</string>
     <string name="app_update_dialog_title">Spotube %1$s is available</string>
     <string name="app_update_dialog_no_notes">See what’s new in this release on the Spotube downloads page.</string>
+    <string name="theme_update_dialog_title">%1$s %2$s is available</string>
+    <string name="theme_update_dialog_current_version">Currently installed: %1$s</string>
+    <string name="theme_update_dialog_no_notes">See what’s new on the theme’s GitHub page.</string>
     <string name="plugin_update_dialog_title">%1$s %2$s is available</string>
     <string name="plugin_update_dialog_current_version">Currently installed: %1$s</string>
     <string name="plugin_update_dialog_no_notes">See what’s new in this update from the plugin’s page.</string>
@@ -637,7 +709,7 @@
 
     <!-- Devices: play destination picker -->
     <string name="devices_destination_title">Choose a device</string>
-    <string name="devices_destination_prompt">%1$s: \"%2$s\"</string>
+    <string name="devices_destination_prompt">%1$s: "%2$s"</string>
     <string name="devices_destination_action_play">Play</string>
     <string name="devices_destination_action_add_to_queue">Add to queue</string>
     <string name="devices_destination_action_play_next">Play next</string>
@@ -662,7 +734,7 @@
     <string name="devices_connecting">Connecting...</string>
     <string name="devices_searching">Searching for devices on the network...</string>
     <string name="devices_empty">No devices found</string>
-    <string name="devices_empty_hint">Make sure the other device has \"Allow remote control\" enabled in settings.</string>
+    <string name="devices_empty_hint">Make sure the other device has "Allow remote control" enabled in settings.</string>
     <string name="devices_unknown_device">Unknown Device</string>
     <string name="devices_resolving">Resolving...</string>
     <string name="devices_section_connected">Connected</string>
@@ -684,7 +756,7 @@
     <string name="devices_remote_more_options">More options</string>
     <string name="devices_remote_playing_on">Playing on %1$s</string>
     <string name="devices_remote_connecting_hint">If asked, allow this device on the other Spotube first.</string>
-    <string name="devices_remote_disconnected_hint">You\'re no longer controlling the other device. Pick it again to reconnect.</string>
+    <string name="devices_remote_disconnected_hint">You're no longer controlling the other device. Pick it again to reconnect.</string>
     <string name="devices_remote_back_to_devices">Back to devices</string>
     <string name="devices_remote_nothing_playing">Nothing playing</string>
     <string name="devices_remote_nothing_playing_hint">Start something on the other device, or pick a track from its queue.</string>
@@ -717,7 +789,7 @@
 
     <!-- Remote control: connection request dialog -->
     <string name="remote_request_title">Remote Control Request</string>
-    <string name="remote_request_message">\"%1$s\" wants to control playback on this device.</string>
+    <string name="remote_request_message">"%1$s" wants to control playback on this device.</string>
     <string name="remote_request_deny">Deny</string>
     <string name="remote_request_allow">Allow</string>
     <string name="remote_request_allow_always">Allow Always</string>
@@ -792,8 +864,8 @@
     <string name="login_required_action">Sign in</string>
 
     <!-- Error display -->
-    <string name="error_title">We\'re Truly Sorry</string>
-    <string name="error_description">Something isn\'t working right now. Your experience matters to us, and we\'re doing our best to fix this. Please try again or check the error details below.</string>
+    <string name="error_title">We're Truly Sorry</string>
+    <string name="error_description">Something isn't working right now. Your experience matters to us, and we're doing our best to fix this. Please try again or check the error details below.</string>
     <string name="error_details">Error Details</string>
     <string name="error_copy_to_clipboard">Copy to clipboard</string>
     <string name="error_view_full_log">View full log</string>
@@ -850,7 +922,7 @@
     <!-- Blacklist -->
     <string name="blacklist_filter_placeholder">Filter blacklist...</string>
     <string name="blacklist_empty">No blacklisted items</string>
-    <string name="blacklist_no_results">No blacklisted items match \'%1$s\'</string>
+    <string name="blacklist_no_results">No blacklisted items match '%1$s'</string>
     <string name="blacklist_section_tracks">Tracks</string>
     <string name="blacklist_item_track">Track</string>
     <string name="blacklist_add">Add to blacklist</string>
@@ -862,7 +934,7 @@
     <string name="downloads_error_stream_unresolved">Could not resolve stream URL. Try playing the track first.</string>
     <string name="downloads_error_http">The server refused the download (HTTP %1$d)</string>
     <string name="downloads_error_range_ignored">The server sent an incomplete download. Try again.</string>
-    <string name="downloads_error_video_only">Only a video is available for this track, so it wasn\'t downloaded</string>
+    <string name="downloads_error_video_only">Only a video is available for this track, so it wasn't downloaded</string>
 
     <!-- Saved tracks -->
     <string name="saved_tracks_title">Saved Tracks</string>
@@ -1001,7 +1073,7 @@
     <string name="library_add_to_playlist_search_content_description">Search</string>
     <string name="library_add_to_playlist_search_placeholder">Search your playlists...</string>
     <string name="library_add_to_playlist_loading">Loading your playlists...</string>
-    <string name="library_add_to_playlist_empty">You don\'t own any playlists yet.\nCreate one to add tracks.</string>
+    <string name="library_add_to_playlist_empty">You don't own any playlists yet.\nCreate one to add tracks.</string>
     <string name="library_playlist_form_create_title">Create Playlist</string>
     <string name="library_playlist_form_edit_title">Edit Playlist</string>
     <string name="library_playlist_form_create">Create</string>
@@ -1022,6 +1094,7 @@
     <!-- Plugin install / errors -->
     <string name="plugin_action_install">Install</string>
     <string name="plugin_action_replace">Replace</string>
+    <string name="plugin_error_unsafe_archive">The plugin archive is unsafe or too large and was rejected (%1$s).</string>
     <string name="plugin_error_plugin_json_missing">plugin.json not found in the zip file</string>
     <string name="plugin_error_zipline_manifest_missing">manifest.zipline.json not found in the zip file</string>
     <string name="plugin_error_invalid_plugin_json">Invalid plugin.json format: %1$s</string>
@@ -1029,26 +1102,26 @@
     <string name="plugin_error_install_failed">Failed to install plugin: %1$s</string>
     <string name="plugin_error_update_needs_confirmation">A newer version of %1$s is available. Confirm the update before installing.</string>
     <string name="plugin_error_replace_needs_confirmation">%1$s is already installed. Confirm replacing it before installing.</string>
-    <string name="plugin_error_builtin_add">Built-in plugins are already included and can\'t be added again.</string>
-    <string name="plugin_error_builtin_remove">Built-in plugins can\'t be removed.</string>
+    <string name="plugin_error_builtin_add">Built-in plugins are already included and can't be added again.</string>
+    <string name="plugin_error_builtin_remove">Built-in plugins can't be removed.</string>
     <string name="plugin_error_api_version_invalid">%1$s declares an invalid apiVersion (%2$s). Expected semantic versioning compatible with %3$s.</string>
     <string name="plugin_error_app_api_version_invalid">Spotube plugin API version %1$s is invalid.</string>
     <string name="plugin_error_api_incompatible">%1$s targets plugin API %2$s, but Spotube supports breaking plugin API %3$s. Install a plugin built for the same breaking API version.</string>
     <string name="plugin_error_api_webview_outdated">%1$s targets plugin API %2$s, from before WebView plugins had to declare which sites they read cookies from. Install a version built for plugin API 0.1 or newer.</string>
-    <string name="plugin_error_invalid_cookie_domains">%1$s declares invalid cookieDomains in plugin.json: %2$s. Use a host like example.com, or *.example.com for its subdomains. Shared suffixes such as *.co.uk or *.github.io aren\'t allowed.</string>
-    <string name="plugin_error_suffix_list_unavailable">%1$s asks for cookies from every subdomain of %2$s. Spotube checks these against the public suffix list from publicsuffix.org, which hasn\'t been downloaded yet. Connect to the internet and try again.</string>
-    <string name="plugin_update_install_failed">Couldn\'t install the update: %1$s</string>
+    <string name="plugin_error_invalid_cookie_domains">%1$s declares invalid cookieDomains in plugin.json: %2$s. Use a host like example.com, or *.example.com for its subdomains. Shared suffixes such as *.co.uk or *.github.io aren't allowed.</string>
+    <string name="plugin_error_suffix_list_unavailable">%1$s asks for cookies from every subdomain of %2$s. Spotube checks these against the public suffix list from publicsuffix.org, which hasn't been downloaded yet. Connect to the internet and try again.</string>
+    <string name="plugin_update_install_failed">Couldn't install the update: %1$s</string>
 
     <!-- Plugin install prompts -->
     <string name="plugin_prompt_incompatible_title">Plugin API not compatible</string>
-    <string name="plugin_prompt_invalid_title">Plugin can\'t be installed</string>
+    <string name="plugin_prompt_invalid_title">Plugin can't be installed</string>
     <string name="plugin_prompt_install_title">Install plugin?</string>
     <string name="plugin_prompt_install_message">%1$s will be added to your installed plugins.</string>
     <string name="plugin_prompt_update_title">Update plugin?</string>
     <string name="plugin_prompt_update_message">An older version is installed (%1$s). Update to %2$s?</string>
     <string name="plugin_prompt_replace_title">Replace installed plugin?</string>
-    <string name="plugin_prompt_replace_invalid_incoming">%1$s uses an invalid semantic version (%2$s) and can\'t be compared as an update. Replace the installed plugin anyway?</string>
-    <string name="plugin_prompt_replace_invalid_installed">The installed version (%1$s) can\'t be compared using semantic versioning. Replace it with %2$s?</string>
+    <string name="plugin_prompt_replace_invalid_incoming">%1$s uses an invalid semantic version (%2$s) and can't be compared as an update. Replace the installed plugin anyway?</string>
+    <string name="plugin_prompt_replace_invalid_installed">The installed version (%1$s) can't be compared using semantic versioning. Replace it with %2$s?</string>
     <string name="plugin_prompt_replace_same_version">Version %1$s is already installed. Replace the existing plugin with the supplied copy?</string>
     <string name="plugin_prompt_replace_downgrade">Installed version %1$s is newer than the supplied version %2$s. Replace it anyway?</string>
     <string name="plugin_prompt_replace_generic">Replace the installed plugin with the supplied copy?</string>
@@ -1066,7 +1139,7 @@
     <string name="plugin_info_contact">Contact</string>
     <string name="plugin_info_report_bugs">Report Bugs</string>
     <string name="plugin_support_dialog_title">Support %1$s</string>
-    <string name="plugin_support_unavailable">This plugin hasn\'t shared any ways to support it yet.</string>
+    <string name="plugin_support_unavailable">This plugin hasn't shared any ways to support it yet.</string>
 
     <!-- Plugin discovery -->
     <string name="plugin_discover_badge_official">Official</string>

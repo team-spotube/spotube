@@ -22,7 +22,7 @@ import org.spotube.millennium.composables.MillenniumDotsLoader
 import org.spotube.millennium.composables.MillenniumSpokeSpinner
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumSeparator
 import org.spotube.millennium.composables.MillenniumSegmentedButton
 import org.spotube.millennium.composables.MillenniumSegmentedButtonDefaults
@@ -344,7 +344,7 @@ internal fun PluginScreenContent(
                                                 verticalAlignment = Alignment.CenterVertically,
                                                 horizontalArrangement = Arrangement.spacedBy(6.dp)
                                             ) {
-                                                MillenniumIcon(
+                                                AppIcon(
                                                     Iconsax.IconsaxAdd,
                                                     contentDescription = null,
                                                     modifier = Modifier.size(16.dp))
@@ -578,7 +578,7 @@ private fun InstallSheet(
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            MillenniumIcon(
+                            AppIcon(
                                 Iconsax.IconsaxImportArrow2Bulk,
                                 contentDescription = null,
                                 modifier = Modifier.size(18.dp))
@@ -621,7 +621,7 @@ private fun InstallSheet(
                     if (isPreparingFile) {
                         MillenniumSpokeSpinner(size = 18.dp)
                     } else {
-                        MillenniumIcon(
+                        AppIcon(
                             FeatherIcons.ChevronRight,
                             contentDescription = null,
                             modifier = Modifier.size(18.dp),
@@ -891,7 +891,7 @@ fun DefaultAbilityPluginSelector(
                     .clip(RoundedCornerShape(8.dp))
                     .background(selection.ability.accentColor().copy(alpha = 0.1f))
             ) {
-                MillenniumIcon(
+                AppIcon(
                     imageVector = selection.ability.abilityIcon(),
                     contentDescription = stringResource(
                         Res.string.settings_plugins_plugin_content_description,
@@ -944,7 +944,7 @@ fun DefaultAbilityPluginSelector(
                             .clip(RoundedCornerShape(8.dp))
                             .background(selection.ability.accentColor().copy(alpha = 0.1f))
                     ) {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = selection.ability.abilityIcon(),
                             contentDescription = null,
                             modifier = Modifier.padding(8.dp),
@@ -981,7 +981,7 @@ fun DefaultAbilityPluginSelector(
                             } else {
                                 stringResource(Res.string.settings_plugins_action_select)
                             })
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = if (selectedPlugin != null) Iconsax.IconsaxEdit else Iconsax.IconsaxArrowDown4,
                             contentDescription = null,
                             modifier = Modifier.size(14.dp))

@@ -24,7 +24,7 @@ import org.spotube.millennium.composables.MillenniumDialogClose
 import org.spotube.millennium.composables.MillenniumDialogBody
 import org.spotube.millennium.composables.MillenniumDialogFooter
 import org.spotube.millennium.composables.MillenniumMarqueeProgress
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import compose.icons.FeatherIcons
@@ -299,7 +299,7 @@ private fun TrackDetailsDialog(
                                     },
                                     modifier = Modifier.weight(1f))
                                 if (isSelected) {
-                                    MillenniumIcon(
+                                    AppIcon(
                                         imageVector = Iconsax.IconsaxCheckCircle,
                                         contentDescription = stringResource(Res.string.player_track_details_selected_stream_content_description),
                                         tint = AppTheme.colors.primary)
@@ -349,7 +349,7 @@ private fun LocalCacheBanner(entry: CacheEntry) {
             modifier = Modifier.padding(12.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically) {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = Iconsax.IconsaxDirectboxReceive,
                 contentDescription = null,
                 tint = AppTheme.colors.onSecondaryContainer)
@@ -415,7 +415,7 @@ private fun DetailRow(label: String, value: String?, copyable: Boolean = false) 
                 onClick = { clipboard.setText(AnnotatedString(value)) },
                 modifier = Modifier.size(32.dp),
                 style = MillenniumIconButtonStyle.Quiet) {
-                MillenniumIcon(
+                AppIcon(
                     imageVector = FeatherIcons.Copy,
                     contentDescription = stringResource(Res.string.player_track_details_copy_url),
                     modifier = Modifier.size(16.dp))

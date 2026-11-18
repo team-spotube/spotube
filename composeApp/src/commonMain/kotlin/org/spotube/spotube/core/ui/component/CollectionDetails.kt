@@ -23,7 +23,7 @@ import androidx.compose.foundation.layout.height
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumCard
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumSeparator
@@ -111,7 +111,7 @@ fun CollectionDetails(
                         MillenniumButton(
                             modifier = if (isCompact) Modifier.weight(1f) else Modifier,
                             onClick = onAddToJam!!) {
-                            MillenniumIcon(
+                            AppIcon(
                                 imageVector = Iconsax.IconsaxAddSquare,
                                 contentDescription = stringResource(Res.string.track_options_add_to_jam))
                             TextWithShimmer(text = stringResource(Res.string.track_options_add_to_jam))
@@ -132,7 +132,7 @@ fun CollectionDetails(
                         modifier = modifier,
                         onClick = onPlay,
                         loading = isPlayLoading) {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = if (isPlaying) Iconsax.IconsaxPauseCircle else Iconsax.IconsaxPlayCircle2,
                             contentDescription = if (isPlaying) stringResource(Res.string.player_pause_content_description) else stringResource(Res.string.player_play_content_description))
                         TextWithShimmer(text = if (isPlaying) stringResource(Res.string.player_pause_content_description) else stringResource(Res.string.player_play_content_description))
@@ -143,7 +143,7 @@ fun CollectionDetails(
                         loading = isShuffleLoading,
                         style = MillenniumButtonStyle.Secondary
                     ) {
-                        MillenniumIcon(imageVector = Iconsax.IconsaxShuffle, contentDescription = stringResource(Res.string.collection_details_shuffle_play))
+                        AppIcon(imageVector = Iconsax.IconsaxShuffle, contentDescription = stringResource(Res.string.collection_details_shuffle_play))
                         TextWithShimmer(text = stringResource(Res.string.collection_details_shuffle))
                     }
                 }
@@ -156,7 +156,7 @@ fun CollectionDetails(
                     onClick = onAddToQueue,
                     loading = isAddToQueueLoading,
                     style = MillenniumIconButtonStyle.Quiet) {
-                    MillenniumIcon(
+                    AppIcon(
                         imageVector = Iconsax.IconsaxAddSquare,
                         contentDescription = stringResource(Res.string.player_add_to_queue_content_description)
                     )
@@ -168,7 +168,7 @@ fun CollectionDetails(
                             onClick = onFollowClick,
                             loading = isFollowLoading,
                             style = MillenniumIconButtonStyle.Quiet) {
-                            MillenniumIcon(
+                            AppIcon(
                                 imageVector = Iconsax.IconsaxHeart2,
                                 contentDescription = stringResource(Res.string.collection_details_unfollow))
                         }
@@ -177,7 +177,7 @@ fun CollectionDetails(
                             onClick = onFollowClick,
                             loading = isFollowLoading,
                             style = MillenniumIconButtonStyle.Quiet) {
-                            MillenniumIcon(
+                            AppIcon(
                                 imageVector = Iconsax.IconsaxHeart,
                                 contentDescription = stringResource(Res.string.collection_details_follow),
                                 tint = AppTheme.colors.onSurfaceVariant)
@@ -189,7 +189,7 @@ fun CollectionDetails(
                     MillenniumIconButton(
                         onClick = onEdit,
                         style = MillenniumIconButtonStyle.Quiet) {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = Iconsax.IconsaxEdit,
                             contentDescription = stringResource(Res.string.collection_details_edit_playlist))
                     }
@@ -211,7 +211,7 @@ fun CollectionDetails(
                             .shimmerApply(),
                         contentScale = ContentScale.Crop)
                 } else {
-                    MillenniumIcon(
+                    AppIcon(
                         imageVector = Iconsax.User,
                         contentDescription = ownerName,
                         modifier = Modifier

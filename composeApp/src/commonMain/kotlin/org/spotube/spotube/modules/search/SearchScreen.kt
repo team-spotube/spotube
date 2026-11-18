@@ -18,6 +18,7 @@
 package org.spotube.spotube.modules.search
 
 
+import org.spotube.spotube.core.ui.theming.appBackground
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -80,7 +81,7 @@ import org.spotube.millennium.adaptive.WindowBreakpoints
 import org.spotube.millennium.composables.MillenniumAutocomplete
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumListTile
 import org.spotube.millennium.composables.MillenniumMarqueeProgress
 import org.spotube.millennium.composables.MillenniumText
@@ -320,7 +321,7 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MillenniumTheme.colors.background)
+            .appBackground()
             .windowInsetsPadding(WindowInsets.statusBars)
     ) {
         if (!isExpanded) {
@@ -541,7 +542,7 @@ private fun SearchBar(
         onSuggestionSelected = onRecentSearchClick,
         suggestionLabel = { it },
         leadingContent = {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = Iconsax.InconsaxClock,
                 contentDescription = null,
                 modifier = Modifier.size(16.dp),
@@ -564,7 +565,7 @@ private fun SearchBar(
                         )
                     },
                     leading = {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = Iconsax.IconsaxTrash,
                             contentDescription = null,
                             modifier = Modifier.size(16.dp),
@@ -1136,7 +1137,7 @@ private fun SearchLoadingIndicator(
             modifier = Modifier.size(64.dp),
             contentAlignment = Alignment.Center
         ) {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = Iconsax.IconsaxSearchBroken,
                 contentDescription = stringResource(Res.string.search_searching),
                 tint = AppTheme.colors.primary,

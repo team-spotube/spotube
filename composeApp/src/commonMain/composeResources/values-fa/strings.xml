@@ -501,7 +501,7 @@
     <string name="devices_connecting">در حال اتصال...</string>
     <string name="devices_searching">در حال جستجوی دستگاه‌ها در شبکه...</string>
     <string name="devices_empty">هیچ دستگاهی پیدا نشد</string>
-    <string name="devices_empty_hint">مطمئن شوید گزینهٔ \"اجازهٔ کنترل از راه دور\" در تنظیمات دستگاه دیگر فعال است.</string>
+    <string name="devices_empty_hint">مطمئن شوید گزینهٔ "اجازهٔ کنترل از راه دور" در تنظیمات دستگاه دیگر فعال است.</string>
     <string name="devices_unknown_device">دستگاه ناشناس</string>
     <string name="devices_resolving">در حال شناسایی...</string>
 
@@ -535,7 +535,7 @@
 
     <!-- Remote control: connection request dialog -->
     <string name="remote_request_title">درخواست کنترل از راه دور</string>
-    <string name="remote_request_message">\"%1$s\" می‌خواهد پخش را روی این دستگاه کنترل کند.</string>
+    <string name="remote_request_message">"%1$s" می‌خواهد پخش را روی این دستگاه کنترل کند.</string>
     <string name="remote_request_deny">رد کردن</string>
     <string name="remote_request_allow">اجازه دادن</string>
     <string name="remote_request_allow_always">همیشه اجازه بده</string>

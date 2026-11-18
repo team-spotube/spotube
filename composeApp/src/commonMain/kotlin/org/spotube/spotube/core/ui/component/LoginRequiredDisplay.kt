@@ -41,7 +41,7 @@ import compose.icons.feathericons.LogIn
 import org.spotube.spotube.core.ui.theming.AppTheme
 import org.jetbrains.compose.resources.stringResource
 import org.spotube.millennium.composables.MillenniumButton
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import spotube.composeapp.generated.resources.*
 
 /** Friendly "sign in first" state for screens whose metadata plugin needs an account. */
@@ -63,7 +63,7 @@ fun LoginRequiredDisplay(
                 .clip(CircleShape)
                 .background(AppTheme.colors.primary.copy(alpha = 0.14f)),
             contentAlignment = Alignment.Center) {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = FeatherIcons.Lock,
                 contentDescription = null,
                 modifier = Modifier.size(40.dp),
@@ -92,7 +92,7 @@ fun LoginRequiredDisplay(
             loading = isLoggingIn,
             modifier = Modifier.height(44.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                MillenniumIcon(
+                AppIcon(
                     imageVector = FeatherIcons.LogIn,
                     contentDescription = null,
                     modifier = Modifier.padding(end = 8.dp).size(18.dp))

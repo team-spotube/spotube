@@ -20,7 +20,7 @@ package org.spotube.spotube.modules.shell.alternative_track
 
 import org.spotube.spotube.core.ui.misc.itemsWithUniqueKeys
 import org.spotube.millennium.composables.MillenniumSpokeSpinner
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumListTile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -201,7 +201,7 @@ private fun AlternativeSourceRow(
         },
         trailing = {
             if (isActive) {
-                MillenniumIcon(
+                AppIcon(
                     Iconsax.IconsaxCheckCircle,
                     contentDescription = stringResource(Res.string.alternative_track_active_source),
                     tint = AppTheme.colors.primary,

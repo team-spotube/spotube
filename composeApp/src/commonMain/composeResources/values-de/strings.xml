@@ -370,7 +370,7 @@
     <string name="welcome_skip">Überspringen</string>
     <string name="welcome_next">Weiter</string>
     <string name="welcome_back">Zurück</string>
-    <string name="welcome_get_started">Los geht\'s</string>
+    <string name="welcome_get_started">Los geht's</string>
     <string name="welcome_app_name">Spotube</string>
     <string name="welcome_brand_freedom">Musik ohne Fesseln.</string>
     <string name="welcome_brand_quiet_description">Ein Open-Source-Player für eine ganze Welt voller Musik.\nZum Entdecken. Zum Selbstgestalten.</string>
@@ -406,7 +406,7 @@
     <string name="welcome_brand_chip_no_ads">Keine Werbung</string>
     <string name="welcome_brand_chip_no_tracking">Keine Telemetrie</string>
     <string name="welcome_brand_chip_plugin_powered">Mit Plugins</string>
-    <string name="welcome_lets_go">Los geht\'s</string>
+    <string name="welcome_lets_go">Los geht's</string>
 
     <!-- Page 2: donations -->
     <string name="welcome_donate_eyebrow">Unterstützer halten uns am Laufen</string>

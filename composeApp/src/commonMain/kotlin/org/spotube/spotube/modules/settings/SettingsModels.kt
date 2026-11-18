@@ -40,6 +40,13 @@ data class UserSettings(
     // Appearance
     val theme: Theme = Theme.SYSTEM,
     val palette: MillenniumPalette = MillenniumPalette.Blue,
+    /**
+     * Selected theme: `builtin:millennium` (the plain Millennium look, whose accent is [palette]), `builtin:modern`, or the
+     * id of an installed theme package. Null and the older `builtin:blue/orange/lime` values mean Millennium.
+     */
+    val selectedThemeId: String? = null,
+    /** The user's values for each theme's parameters, keyed `"<themeId>.<parameter>"`; absent means the theme's default. */
+    val themeParameters: Map<String, String> = emptyMap(),
 
     // Playback
     val streamingMusicFormat: AudioFormat = defaultStreamingMusicFormat(),
@@ -86,6 +93,8 @@ data class UserSettings(
     val autoCheckForUpdates: Boolean = true,
     val ignoredAppUpdateVersion: String? = null,
     val ignoredPluginUpdateVersions: Map<String, String> = emptyMap(),
+    /** Theme id -> the update version the user chose to ignore. */
+    val ignoredThemeUpdateVersions: Map<String, String> = emptyMap(),
 
     // Support
     val supportRemindersEnabled: Boolean = true,

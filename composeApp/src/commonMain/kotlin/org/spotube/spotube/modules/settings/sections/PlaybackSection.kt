@@ -18,7 +18,7 @@
 package org.spotube.spotube.modules.settings.sections
 
 
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import androidx.compose.foundation.lazy.LazyListScope
 
 import org.spotube.spotube.core.ui.theming.AppTheme
@@ -164,7 +164,7 @@ internal fun LazyListScope.playbackSection(
                             stringResource(Res.string.settings_blacklist_title))
                     },
                     trailingContent = {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = FeatherIcons.ChevronRight,
                             contentDescription = stringResource(Res.string.settings_blacklist_title),
                             tint = AppTheme.colors.onSurfaceVariant)

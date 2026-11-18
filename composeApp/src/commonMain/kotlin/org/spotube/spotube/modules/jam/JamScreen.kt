@@ -17,6 +17,7 @@
 
 package org.spotube.spotube.modules.jam
 
+import org.spotube.spotube.core.ui.theming.appBackground
 import org.spotube.millennium.composables.MillenniumDropdownMenuItem
 import org.spotube.spotube.resources.iconsax.IconsaxUserRemove
 import org.spotube.spotube.resources.iconsax.IconsaxForbidden
@@ -70,7 +71,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumSegmentedButton
@@ -92,7 +93,7 @@ fun JamScreen(navigationCommands: NavigationCommands) {
     val clipboard = LocalClipboardManager.current
     val shellBottomInset = LocalAppShellBottomInset.current
 
-    Column(Modifier.fillMaxSize().background(MillenniumTheme.colors.background)) {
+    Column(Modifier.fillMaxSize().appBackground()) {
         ApplicationMainBar(title = { Text(stringResource(Res.string.jam_screen_title)) })
         Column(
             Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState())
@@ -494,7 +495,7 @@ internal fun ServerStatus(state: JamUiState, onConfigure: () -> Unit) {
         )
         MillenniumTooltip(stringResource(Res.string.jam_connection_settings)) {
             MillenniumIconButton(onClick = onConfigure, style = MillenniumIconButtonStyle.Quiet) {
-                MillenniumIcon(
+                AppIcon(
                     Iconsax.IconsaxSetting2,
                     contentDescription = stringResource(Res.string.jam_connection_settings)
                 )

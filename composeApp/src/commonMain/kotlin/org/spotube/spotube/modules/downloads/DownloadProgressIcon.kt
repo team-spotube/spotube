@@ -18,7 +18,7 @@
 package org.spotube.spotube.modules.downloads
 
 
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -84,14 +84,14 @@ fun DownloadProgressIcon(
                     topLeft = Offset(stroke / 2f, stroke / 2f),
                     size = Size(diameter - stroke, diameter - stroke))
             }
-            MillenniumIcon(
+            AppIcon(
                 imageVector = icon,
                 contentDescription = contentDescription,
                 tint = tint,
                 modifier = Modifier.size(size * 0.6f))
         }
     } else {
-        MillenniumIcon(
+        AppIcon(
             imageVector = icon,
             contentDescription = contentDescription,
             tint = tint,

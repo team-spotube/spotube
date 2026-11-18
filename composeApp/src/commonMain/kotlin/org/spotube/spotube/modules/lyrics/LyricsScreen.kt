@@ -19,7 +19,7 @@ package org.spotube.spotube.modules.lyrics
 
 
 import org.spotube.millennium.composables.MillenniumBarsLoader
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumSegmentedButton
@@ -111,7 +111,7 @@ fun LyricsScreen(
                             onClick = onClose,
                             style = MillenniumIconButtonStyle.Quiet
                         ) {
-                            MillenniumIcon(
+                            AppIcon(
                                 imageVector = Iconsax.IconsaxArrowDown4,
                                 contentDescription = stringResource(Res.string.common_close)
                             )

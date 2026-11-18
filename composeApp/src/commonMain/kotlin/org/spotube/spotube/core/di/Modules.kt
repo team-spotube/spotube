@@ -90,6 +90,7 @@ import org.spotube.spotube.modules.settings.SettingsRepository
 import org.spotube.spotube.modules.settings.UserSettingsStore
 import org.spotube.spotube.modules.settings.UserSettingsSource
 import org.spotube.spotube.modules.settings.SettingsViewModel
+import org.spotube.spotube.modules.settings.ThemeStoreViewModel
 import org.spotube.spotube.modules.settings.JamSettingsViewModel
 import org.spotube.spotube.modules.settings.LocalMediaFoldersViewModel
 import org.spotube.spotube.modules.shell.AppShellViewModel
@@ -161,6 +162,7 @@ val sharedModules = module {
     }
     viewModelOf(::SettingsViewModel) { bind<SettingsProvider>() }
     viewModelOf(::JamSettingsViewModel)
+    viewModelOf(::ThemeStoreViewModel)
     viewModel {
         val repository = get<SettingsRepository>()
         LocalMediaFoldersViewModel(repository.userSettings) { folders ->
@@ -176,6 +178,7 @@ val sharedModules = module {
     // Updates
     single { AppUpdateService(get(), get()) } withOptions { createdAtStart() }
     single { PluginUpdateService(get(), get()) } withOptions { createdAtStart() }
+    single { org.spotube.spotube.modules.update.ThemeUpdateService(get(), get(), get()) } withOptions { createdAtStart() }
 
     // Downloads
     singleOf(::DownloadManager)
@@ -302,6 +305,16 @@ val sharedModules = module {
     }
 
     single { DiscordRpcService(get(), get()) } withOptions { createdAtStart() }
+
+    // JSON theme engine: live player facts for `ctx.player.*`
+    single { org.spotube.spotube.core.ui.theming.engine.ThemeContextService(get()) }
+    single { org.spotube.spotube.core.ui.theming.engine.ThemeRuntime(get<SettingsRepository>(), get()) }
+    single {
+        val paths = get<org.spotube.spotube.core.paths.Paths>()
+        org.spotube.spotube.core.ui.theming.engine.ThemePackageRepository(
+            dataDir = paths.getApplicationDataDirPath(),
+            cacheDir = paths.getApplicationCacheDirPath())
+    }
 
     // Scrobbling
     single { ScrobbleManager(get(), get(), get()) } withOptions { createdAtStart() }

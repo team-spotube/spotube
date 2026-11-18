@@ -18,7 +18,7 @@
 package org.spotube.spotube.modules.shell
 
 
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import androidx.compose.foundation.shape.CircleShape
@@ -63,7 +63,7 @@ fun PlayerHeartButton(
         enabled = isSavedTrackState is SavedState.Success,
         loading = currentTrackId != null && currentTrackId in pendingSavedTrackIds,
         style = MillenniumIconButtonStyle.Secondary) {
-        MillenniumIcon(
+        AppIcon(
             imageVector = if (isLiked) Iconsax.IconsaxHeart2 else Iconsax.IconsaxHeart,
             contentDescription = stringResource(if (isLiked) Res.string.player_unlike_content_description else Res.string.player_like_content_description),
             tint = if (isLiked) AppTheme.colors.primary else AppTheme.colors.onSurfaceVariant)

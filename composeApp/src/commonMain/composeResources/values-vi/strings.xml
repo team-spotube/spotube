@@ -497,7 +497,7 @@
     <string name="devices_connecting">Đang kết nối...</string>
     <string name="devices_searching">Đang tìm thiết bị trong mạng...</string>
     <string name="devices_empty">Không tìm thấy thiết bị nào</string>
-    <string name="devices_empty_hint">Hãy đảm bảo thiết bị kia đã bật \"Cho phép điều khiển từ xa\" trong cài đặt.</string>
+    <string name="devices_empty_hint">Hãy đảm bảo thiết bị kia đã bật "Cho phép điều khiển từ xa" trong cài đặt.</string>
     <string name="devices_unknown_device">Thiết bị không xác định</string>
     <string name="devices_resolving">Đang phân giải...</string>
 
@@ -530,7 +530,7 @@
 
     <!-- Remote control: connection request dialog -->
     <string name="remote_request_title">Yêu cầu điều khiển từ xa</string>
-    <string name="remote_request_message">\"%1$s\" muốn điều khiển việc phát trên thiết bị này.</string>
+    <string name="remote_request_message">"%1$s" muốn điều khiển việc phát trên thiết bị này.</string>
     <string name="remote_request_deny">Từ chối</string>
     <string name="remote_request_allow">Cho phép</string>
     <string name="remote_request_allow_always">Luôn cho phép</string>
@@ -656,7 +656,7 @@
     <!-- Blacklist -->
     <string name="blacklist_filter_placeholder">Lọc danh sách chặn...</string>
     <string name="blacklist_empty">Không có mục nào bị chặn</string>
-    <string name="blacklist_no_results">Không có mục bị chặn nào khớp với \'%1$s\'</string>
+    <string name="blacklist_no_results">Không có mục bị chặn nào khớp với '%1$s'</string>
     <string name="blacklist_section_tracks">Bài hát</string>
     <string name="blacklist_item_track">Bài hát</string>
     <string name="blacklist_add">Thêm vào danh sách chặn</string>

@@ -517,7 +517,7 @@
     <string name="devices_connecting">جارٍ الاتصال...</string>
     <string name="devices_searching">جارٍ البحث عن أجهزة على الشبكة...</string>
     <string name="devices_empty">لم يتم العثور على أجهزة</string>
-    <string name="devices_empty_hint">تأكد من تفعيل \"السماح بالتحكم عن بُعد\" في إعدادات الجهاز الآخر.</string>
+    <string name="devices_empty_hint">تأكد من تفعيل "السماح بالتحكم عن بُعد" في إعدادات الجهاز الآخر.</string>
     <string name="devices_unknown_device">جهاز غير معروف</string>
     <string name="devices_resolving">جارٍ التحديد...</string>
 
@@ -555,7 +555,7 @@
 
     <!-- Remote control: connection request dialog -->
     <string name="remote_request_title">طلب تحكم عن بُعد</string>
-    <string name="remote_request_message">يريد \"%1$s\" التحكم في التشغيل على هذا الجهاز.</string>
+    <string name="remote_request_message">يريد "%1$s" التحكم في التشغيل على هذا الجهاز.</string>
     <string name="remote_request_deny">رفض</string>
     <string name="remote_request_allow">سماح</string>
     <string name="remote_request_allow_always">السماح دائمًا</string>
@@ -681,7 +681,7 @@
     <!-- Blacklist -->
     <string name="blacklist_filter_placeholder">تصفية قائمة الحظر...</string>
     <string name="blacklist_empty">لا توجد عناصر محظورة</string>
-    <string name="blacklist_no_results">لا توجد عناصر محظورة تطابق \'%1$s\'</string>
+    <string name="blacklist_no_results">لا توجد عناصر محظورة تطابق '%1$s'</string>
     <string name="blacklist_section_tracks">المقاطع</string>
     <string name="blacklist_item_track">مقطع</string>
     <string name="blacklist_add">إضافة إلى قائمة الحظر</string>

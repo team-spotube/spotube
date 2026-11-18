@@ -40,7 +40,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.composeunstyled.Text
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumSeparator
@@ -99,7 +99,7 @@ internal fun GelIconTile(icon: ImageVector, size: Dp = 34.dp) {
                 shadowElevation = 2.dp,
                 innerGlowColor = Color.White.copy(alpha = 0.55f)),
         contentAlignment = Alignment.Center) {
-        MillenniumIcon(
+        AppIcon(
             imageVector = icon,
             contentDescription = null,
             modifier = Modifier.size(size * 0.52f),
@@ -169,7 +169,7 @@ internal fun GelBadge(text: String, icon: ImageVector? = null) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(3.dp)) {
         if (icon != null) {
-            MillenniumIcon(icon, contentDescription = null, modifier = Modifier.size(11.dp), tint = colors.onAccent)
+            AppIcon(icon, contentDescription = null, modifier = Modifier.size(11.dp), tint = colors.onAccent)
         }
         Text(
             text,
@@ -192,7 +192,7 @@ internal fun OutlineTag(text: String, icon: ImageVector? = null) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(3.dp)) {
         if (icon != null) {
-            MillenniumIcon(icon, contentDescription = null, modifier = Modifier.size(11.dp), tint = AppTheme.colors.onSurfaceVariant)
+            AppIcon(icon, contentDescription = null, modifier = Modifier.size(11.dp), tint = AppTheme.colors.onSurfaceVariant)
         }
         Text(
             text,
@@ -215,7 +215,7 @@ internal fun AbilityTag(ability: PluginAbility) {
             .padding(horizontal = 8.dp, vertical = 2.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-        MillenniumIcon(ability.abilityIcon(), contentDescription = null, modifier = Modifier.size(11.dp), tint = accent)
+        AppIcon(ability.abilityIcon(), contentDescription = null, modifier = Modifier.size(11.dp), tint = accent)
         Text(
             ability.displayLabel(),
             style = AppTheme.typography.labelSmall,
@@ -232,7 +232,7 @@ internal fun MetaLabel(text: String, icon: ImageVector? = null, iconDescription:
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)) {
         if (icon != null) {
-            MillenniumIcon(
+            AppIcon(
                 icon,
                 contentDescription = iconDescription,
                 modifier = Modifier.size(12.dp),
@@ -270,6 +270,6 @@ internal fun PluginLogoFallback(icon: ImageVector, tint: Color = AppTheme.colors
     Box(
         modifier = Modifier.fillMaxSize().background(tint.copy(alpha = 0.12f)),
         contentAlignment = Alignment.Center) {
-        MillenniumIcon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(22.dp))
+        AppIcon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(22.dp))
     }
 }

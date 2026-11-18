@@ -21,7 +21,7 @@ import com.composeunstyled.LocalTextStyle
 import com.composeunstyled.Text
 import org.spotube.millennium.composables.MillenniumBottomNavigationBar
 import org.spotube.millennium.composables.MillenniumBottomNavigationItem
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import org.spotube.spotube.NavigationItem
@@ -49,7 +49,7 @@ fun AppBottombar(
                     onClick = { navigator.navigate(tab.route) },
                     contentDescription = title,
                     icon = {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = tab.icon,
                             contentDescription = null,
                             tint = LocalTextStyle.current.color
