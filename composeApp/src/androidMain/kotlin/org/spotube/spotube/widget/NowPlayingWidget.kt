@@ -28,14 +28,14 @@ import android.graphics.BitmapShader
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.LinearGradient
-import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.RadialGradient
-import android.graphics.RectF
 import android.graphics.Shader
+import android.graphics.SweepGradient
+import android.os.SystemClock
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
@@ -90,10 +90,15 @@ import spotube.composeapp.generated.resources.widget_remote_caption
 object NowPlayingWidget : KoinComponent {
     private const val TAG = "NowPlayingWidget"
     private const val ARTWORK_SIZE_PX = 256
-    private const val ARTWORK_CORNER_RATIO = 0.18f // 18dp on the 100dp cover
+    private const val HOLE_FRACTION = 0.14f // of the disc radius, a CD's 15mm hole in its 120mm
+    private const val HUB_FRACTION = 0.32f // the clear plastic ring round the hole
+    private const val DISC_DEGREES_PER_SECOND = 36f // one turn in 10 seconds, as res/anim/widget_disc_spin
     private const val DEFAULT_ACCENT = 0xFF1976B9.toInt()
     private const val DEFAULT_ORB_TOP = 0xFF1976B9.toInt() // dark Blue palette accentTop
     private const val DEFAULT_ORB_BOTTOM = 0xFF002D74.toInt() // dark Blue palette accentBottom
+    private const val GLASS_ALPHA = 184 // 72%, matches android:alpha on widget_glass
+    private const val GLASS_TEXT = 0xFFF2F6FC.toInt() // the artist line, the dimmest text on the card
+    private const val MIN_TEXT_CONTRAST = 4.5
     private const val ORB_STRENGTH = 0.48f // MillenniumIconButton's default orbStrength
     private const val ORB_BORDER_FRACTION = 1f / 46f // its 1dp border on the 46dp button
     private const val MIN_ACCENT_SATURATION = 0.18f
@@ -111,6 +116,15 @@ object NowPlayingWidget : KoinComponent {
 
     // Skips re-fetching the cover when only play/pause changed.
     private var cachedArtwork: Pair<Any, Artwork>? = null
+
+    // The launcher turns the disc, so the app only knows where it is by the clock: [discAngle] is where it
+    // was when the current spin began ([spinStartedAt], 0 while it isn't turning).
+    private var discAngle = 0f
+    private var spinStartedAt = 0L
+
+    // The parts of the disc that don't turn: rim, grooves, hub, glints and the see-through hole.
+    private val discOverlay: Bitmap by lazy { drawDiscOverlay() }
+    private var appLogo: Bitmap? = null
 
     /** Starts observing the player when the user has at least one widget placed. */
     fun startIfPlaced(context: Context) {
@@ -162,6 +176,7 @@ object NowPlayingWidget : KoinComponent {
         job?.cancel()
         job = null
         cachedArtwork = null
+        spinStartedAt = 0L
     }
 
     /** Runs Pause / Next / Previous on this device's player directly. See [mediaButton] for Play. */
@@ -178,6 +193,21 @@ object NowPlayingWidget : KoinComponent {
     suspend fun sendRemote(command: RemoteControlCommand) {
         val client = get<RemoteControlClient>()
         if (client.connectionState.value is ConnectionState.Connected) client.sendCommand(command)
+    }
+
+    /**
+     * Where the disc is now, and starts counting again from there. Widgets can't animate, so the
+     * launcher turns the disc with a looping animation (res/anim/widget_disc_spin) that restarts from
+     * zero every time the flipper is told to show it. Giving the view this angle as its own rotation
+     * first makes the restart seamless, and it is also where a paused disc stands still.
+     */
+    private fun rebaseDisc(playing: Boolean): Float {
+        val now = SystemClock.elapsedRealtime()
+        if (spinStartedAt != 0L) {
+            discAngle = (discAngle + (now - spinStartedAt) * DISC_DEGREES_PER_SECOND / 1000f) % 360f
+        }
+        spinStartedAt = if (playing) now else 0L
+        return discAngle
     }
 
     private fun widgetIds(context: Context): IntArray =
@@ -220,30 +250,115 @@ object NowPlayingWidget : KoinComponent {
                 .build()
             SingletonImageLoader.get(context).execute(request).image?.toBitmap()?.let { raw ->
                 Artwork(
-                    cover = raw.toRoundedSquare(),
+                    disc = discFrame(raw.toSquare(ARTWORK_SIZE_PX)),
                     accent = WallpaperColors.fromBitmap(raw).primaryColor.toArgb())
             }
         }.onFailure { Log.w(TAG, "Failed to load artwork", it) }.getOrNull()
     }
 
-    /**
-     * RemoteViews can't clip an image to rounded corners, so the cover is cropped to a square and
-     * rounded here, with the same corner ratio as the placeholder and the frame drawable.
-     */
-    private fun Bitmap.toRoundedSquare(): Bitmap {
+    /** Centre-crops to a square and scales to [sidePx], so the disc's shader maps one to one. */
+    private fun Bitmap.toSquare(sidePx: Int): Bitmap {
         val side = minOf(width, height)
-        val dx = (width - side) / 2f
-        val dy = (height - side) / 2f
-        val shader = BitmapShader(this, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP).apply {
-            setLocalMatrix(Matrix().apply { postTranslate(-dx, -dy) })
+        val cropped = Bitmap.createBitmap(this, (width - side) / 2, (height - side) / 2, side, side)
+        return Bitmap.createScaledBitmap(cropped, sidePx, sidePx, true)
+    }
+
+    /** The cover cut to a disc with the centre hole punched through. It is drawn once; turning is the view's rotation. */
+    private fun discFrame(source: Bitmap): Bitmap {
+        val s = source.width
+        val c = s / 2f
+        val out = Bitmap.createBitmap(s, s, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(out)
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            shader = BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
         }
-        val out = Bitmap.createBitmap(side, side, Bitmap.Config.ARGB_8888)
-        val radius = side * ARTWORK_CORNER_RATIO
-        Canvas(out).drawRoundRect(
-            RectF(0f, 0f, side.toFloat(), side.toFloat()),
-            radius,
-            radius,
-            Paint(Paint.ANTI_ALIAS_FLAG).apply { this.shader = shader })
+        canvas.drawCircle(c, c, c, paint)
+        punchHole(canvas, c)
+        return out
+    }
+
+    /** Clears the spindle hole; the card behind the widget shows through it. */
+    private fun punchHole(canvas: Canvas, c: Float) {
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
+        canvas.drawCircle(c, c, c * HOLE_FRACTION, paint)
+    }
+
+    /**
+     * The app's logo as a round badge, shown when there is no cover. It is the launcher icon's own
+     * foreground (so the nightly flavor shows its own), whose 108 unit adaptive layer has a 72 unit
+     * window in the middle; the layer is drawn large enough for that window to fill the badge.
+     */
+    private fun appLogo(context: Context): Bitmap = appLogo ?: drawAppLogo(context).also { appLogo = it }
+
+    private fun drawAppLogo(context: Context): Bitmap {
+        val s = ARTWORK_SIZE_PX
+        val c = s / 2f
+        val out = Bitmap.createBitmap(s, s, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(out)
+        canvas.drawColor(context.getColor(R.color.ic_launcher_background))
+        val layer = (s * 108f / 72f).roundToInt()
+        val offset = (s - layer) / 2
+        context.getDrawable(R.mipmap.ic_launcher_foreground)?.apply {
+            setBounds(offset, offset, offset + layer, offset + layer)
+            draw(canvas)
+        }
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+        canvas.drawPath(
+            Path().apply {
+                addCircle(c, c, c, Path.Direction.CW)
+                fillType = Path.FillType.INVERSE_WINDING
+            },
+            paint)
+        paint.xfermode = null
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = 4f
+        paint.color = 0x73FFFFFF
+        canvas.drawCircle(c, c, c - 2f, paint)
+        return out
+    }
+
+    /**
+     * What sits over the turning cover and doesn't turn with it, as light doesn't on a real disc:
+     * two glints, faint grooves, the clear hub ring, the silver rim and the hole's own ring.
+     */
+    private fun drawDiscOverlay(): Bitmap {
+        val s = ARTWORK_SIZE_PX
+        val c = s / 2f
+        val out = Bitmap.createBitmap(s, s, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(out)
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+        paint.shader = SweepGradient(
+            c, c,
+            intArrayOf(0x00FFFFFF, 0x4DD2E9FF, 0x00FFFFFF, 0x00FFFFFF, 0x45FFD9F2, 0x00FFFFFF, 0x00FFFFFF),
+            floatArrayOf(0f, 0.06f, 0.13f, 0.50f, 0.56f, 0.63f, 1f))
+        canvas.drawCircle(c, c, c, paint)
+
+        paint.shader = null
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = 1f
+        paint.color = 0x1AFFFFFF
+        for (fraction in floatArrayOf(0.52f, 0.62f, 0.72f, 0.82f, 0.92f)) canvas.drawCircle(c, c, c * fraction, paint)
+
+        paint.style = Paint.Style.FILL
+        paint.color = 0x14FFFFFF
+        canvas.drawCircle(c, c, c * HUB_FRACTION, paint)
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = 2f
+        paint.color = 0x4DFFFFFF
+        canvas.drawCircle(c, c, c * HUB_FRACTION, paint)
+
+        val silver = LinearGradient(
+            0f, 0f, s.toFloat(), s.toFloat(), 0xE6FFFFFF.toInt(), 0x80A9B6C6.toInt(), Shader.TileMode.CLAMP)
+        paint.shader = silver
+        paint.strokeWidth = 5f
+        canvas.drawCircle(c, c, c - 2.5f, paint)
+
+        punchHole(canvas, c)
+        paint.shader = silver
+        paint.strokeWidth = 3f
+        canvas.drawCircle(c, c, c * HOLE_FRACTION, paint)
         return out
     }
 
@@ -258,10 +373,34 @@ object NowPlayingWidget : KoinComponent {
         setViewVisibility(R.id.widget_caption, if (remote) View.VISIBLE else View.GONE)
         if (texts.caption != null) setTextViewText(R.id.widget_caption, texts.caption)
         setImageViewBitmap(R.id.widget_play_bg, accentButton(artwork?.accent ?: DEFAULT_ACCENT))
+        setInt(R.id.widget_glass, "setColorFilter", glassTint(artwork?.accent ?: DEFAULT_ACCENT))
         setTextViewText(R.id.widget_title, texts.title)
         setTextViewText(R.id.widget_artist, texts.subtitle)
-        if (artwork != null) setImageViewBitmap(R.id.widget_art, artwork.cover)
-        else setImageViewResource(R.id.widget_art, R.drawable.widget_art_placeholder)
+        val disc = artwork?.disc ?: appLogo(context) // no cover: the logo, which turns like a cover
+        var angle = rebaseDisc(playing)
+        if (!playing && artwork == null) {
+            // A paused disc stays where it stopped; the logo goes back upright.
+            discAngle = 0f
+            angle = 0f
+        }
+        if (playing) {
+            setImageViewBitmap(R.id.widget_art_spin, disc)
+            setFloat(R.id.widget_art_spin, "setRotation", angle)
+            setViewVisibility(R.id.widget_art, View.GONE)
+            setDisplayedChild(R.id.widget_disc, 1)
+        } else {
+            setImageViewBitmap(R.id.widget_art, disc)
+            setFloat(R.id.widget_art, "setRotation", angle)
+            setViewVisibility(R.id.widget_art, View.VISIBLE)
+            setDisplayedChild(R.id.widget_disc, 0)
+        }
+        if (artwork != null) {
+            setImageViewBitmap(R.id.widget_art_overlay, discOverlay)
+            setViewVisibility(R.id.widget_art_overlay, View.VISIBLE)
+        } else {
+            // The logo isn't a disc: no hole or grooves over it.
+            setViewVisibility(R.id.widget_art_overlay, View.GONE)
+        }
 
         setImageViewResource(
             R.id.widget_play_pause,
@@ -319,8 +458,8 @@ object NowPlayingWidget : KoinComponent {
             Intent(context, NowPlayingWidgetActionReceiver::class.java).setAction(action),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
-    /** The cover as drawn in the widget, and the colour that dominates it. */
-    private class Artwork(val cover: Bitmap, val accent: Int)
+    /** The cover cut to a disc, and the colour that dominates it. */
+    private class Artwork(val disc: Bitmap, val accent: Int)
 
     /**
      * The Play/Pause orb: a port of the app's own Primary icon button (Millennium's
@@ -426,6 +565,26 @@ object NowPlayingWidget : KoinComponent {
         if (hsv[1] < MIN_ACCENT_SATURATION) return DEFAULT_ORB_TOP to DEFAULT_ORB_BOTTOM
         val hue = hsv[0]
         return Color.HSVToColor(floatArrayOf(hue, 0.86f, 0.73f)) to Color.HSVToColor(floatArrayOf(hue, 1f, 0.45f))
+    }
+
+    /**
+     * The colour of the glass card for a cover: the cover's deep jewel tone, the same hue as the
+     * Play/Pause orb. Darkened until the text keeps 4.5:1 on the lightest case, a white wallpaper
+     * behind the card at its 72% opacity with the finish's light top edge, so a pale or yellow cover
+     * can't wash the text out.
+     */
+    private fun glassTint(accent: Int): Int {
+        val hsv = FloatArray(3)
+        Color.colorToHSV(orbPair(accent).first, hsv)
+        fun tint(value: Float) = Color.HSVToColor(floatArrayOf(hsv[0], hsv[1], value))
+        fun textContrast(tint: Int): Double {
+            val onWhite = ColorUtils.compositeColors(ColorUtils.setAlphaComponent(tint, GLASS_ALPHA), Color.WHITE)
+            val lightestEdge = ColorUtils.blendARGB(onWhite, Color.WHITE, 0.12f)
+            return ColorUtils.calculateContrast(GLASS_TEXT, lightestEdge)
+        }
+        var value = hsv[2] * 0.45f
+        while (value > 0.08f && textContrast(tint(value)) < MIN_TEXT_CONTRAST) value *= 0.9f
+        return tint(value)
     }
 
     private data class WidgetState(

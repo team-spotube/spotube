@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Flat, white rounded card. NowPlayingWidget colours it per cover with setColorFilter; the layout's
+     android:tint is the stand-in for the initial layout and the picker preview. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#FFFFFFFF" />
+    <corners android:radius="28dp" />
+</shape>
