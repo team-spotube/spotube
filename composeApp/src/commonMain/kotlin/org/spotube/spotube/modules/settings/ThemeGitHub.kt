@@ -26,8 +26,6 @@ import io.ktor.client.statement.bodyAsChannel
 import io.ktor.http.append
 import io.ktor.http.contentLength
 import io.ktor.utils.io.readRemaining
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlinx.io.readByteArray
 import net.swiftzer.semver.SemVer
 import org.spotube.spotube.core.ui.theming.engine.ThemeLimits
@@ -64,14 +62,14 @@ class ThemeGitHubRepository(private val httpClient: HttpClient) {
         }.body()
 
     /** Downloads a release asset, refusing anything that is not a GitHub URL or is larger than a theme package may be. */
-    suspend fun download(url: String): ByteArray = withContext(Dispatchers.IO) {
+    suspend fun download(url: String): ByteArray {
         require(isGitHubAssetUrl(url)) { "not a GitHub release asset" }
         val response = httpClient.get(url)
         val limit = ThemeLimits.MAX_ARCHIVE_BYTES.toLong()
         if ((response.contentLength() ?: 0L) > limit) error("theme package is too large")
         val bytes = response.bodyAsChannel().readRemaining(limit + 1).readByteArray()
         if (bytes.size > limit) error("theme package is too large")
-        bytes
+        return bytes
     }
 
     private fun io.ktor.client.request.HttpRequestBuilder.githubHeaders() = headers {

@@ -24,6 +24,7 @@ import okio.FileSystem
 import okio.HashingSink
 import okio.Path
 import okio.Path.Companion.toPath
+import okio.SYSTEM
 import okio.buffer
 
 /** Caps for untrusted archives. Sizes are counted while reading, never taken from zip headers. */
@@ -126,7 +127,8 @@ fun extractZipSafely(
             target.parent?.let { fileSystem.createDirectories(it) }
             val hashing = HashingSink.sha256(fileSystem.sink(target))
             var size = 0L
-            hashing.buffer().use { out ->
+            val out = hashing.buffer()
+            try {
                 val chunk = ByteArray(8192)
                 while (true) {
                     val n = zip.read(chunk, 0, chunk.size)
@@ -137,6 +139,8 @@ fun extractZipSafely(
                     if (total > limits.maxTotalBytes) throw UnsafeZipException(UnsafeZipReason.TotalTooLarge)
                     out.write(chunk, 0, n)
                 }
+            } finally {
+                out.close()
             }
             val result = ExtractedZipEntry(rel, size, hashing.hash.hex())
             written += result

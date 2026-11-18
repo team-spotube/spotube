@@ -75,15 +75,21 @@ class PrecompiledTheme internal constructor(
     fun compileWith(isDark: Boolean, compact: Boolean, live: Map<String, Any?>, item: Map<String, Any?> = emptyMap()): CompiledTheme =
         compile(loaded, palette, parameters, isDark, ThemeEnv(isDark, compact, if (item.isEmpty()) live else live + ("item" to item)))
 
-    private val itemCache = object : LinkedHashMap<Pair<Boolean, Map<String, Any?>>, CompiledTheme>(16, 0.75f, true) {
-        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<Pair<Boolean, Map<String, Any?>>, CompiledTheme>) = size > 24
-    }
+    private val itemCache = LinkedHashMap<Pair<Boolean, Map<String, Any?>>, CompiledTheme>()
 
     /** Per-row variant for `ctx.item.*`, memoized: rows with the same facts share one compiled theme. */
-    fun forItem(isDark: Boolean, item: Map<String, Any?>, live: Map<String, Any?>, compact: Boolean): CompiledTheme =
-        synchronized(itemCache) {
-            itemCache.getOrPut(isDark to (item + live + ("compact" to compact))) { compileWith(isDark, compact, live, item) }
+    fun forItem(isDark: Boolean, item: Map<String, Any?>, live: Map<String, Any?>, compact: Boolean): CompiledTheme {
+        val key = isDark to (item + live + ("compact" to compact))
+        itemCache.remove(key)?.let { cached ->
+            // Re-insertion moves the entry to the newest position, keeping this map LRU-ordered.
+            itemCache[key] = cached
+            return cached
         }
+        val compiled = compileWith(isDark, compact, live, item)
+        itemCache[key] = compiled
+        if (itemCache.size > 24) itemCache.remove(itemCache.keys.first())
+        return compiled
+    }
 
     companion object {
         private fun compile(loaded: LoadedTheme?, palette: MillenniumPalette, parameters: Map<String, String>, isDark: Boolean, env: ThemeEnv) = compileTheme(

@@ -199,7 +199,7 @@ internal fun normalizeSelectedThemeId(selected: String?, installedIds: List<Stri
 /** The accent swatch of [palette] (its light-mode accent), as `#RRGGBB`. */
 internal fun MillenniumPalette.accentHex(): String {
     val c = MillenniumColorSchemes().resolve(this, dark = false).accent
-    return "#%06X".format(c.toArgb() and 0xFFFFFF)
+    return "#${(c.toArgb() and 0xFFFFFF).toString(16).uppercase().padStart(6, '0')}"
 }
 
 /** Lists, selects, installs and removes themes (built-in Millennium looks plus installed packages). */

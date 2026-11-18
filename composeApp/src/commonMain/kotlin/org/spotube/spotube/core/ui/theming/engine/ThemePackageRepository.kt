@@ -116,7 +116,7 @@ class ThemePackageRepository(private val dataDir: String, private val cacheDir: 
         scope.launch { loadInstalled() }
     }
 
-    private suspend fun loadInstalled() = withContext(Dispatchers.IO) {
+    private suspend fun loadInstalled() = withContext(Dispatchers.Default) {
         val loaded = ArrayList<LoadedTheme>()
         if (fs.exists(root)) {
             for (dir in fs.list(root)) {
@@ -149,7 +149,7 @@ class ThemePackageRepository(private val dataDir: String, private val cacheDir: 
         PreparedTheme(bytes, theme, _installed.value.firstOrNull { it.id == theme.id })
     }
 
-    suspend fun install(prepared: PreparedTheme) = withContext(Dispatchers.IO) {
+    suspend fun install(prepared: PreparedTheme) = withContext(Dispatchers.Default) {
         val id = prepared.theme.id
         require(THEME_DIR.matches(id)) { "unsafe theme id" }
         val dir = root / id
@@ -160,7 +160,7 @@ class ThemePackageRepository(private val dataDir: String, private val cacheDir: 
         _installed.update { list -> (list.filter { it.id != id } + prepared.theme).sortedBy { it.name.lowercase() } }
     }
 
-    suspend fun remove(id: String) = withContext(Dispatchers.IO) {
+    suspend fun remove(id: String) = withContext(Dispatchers.Default) {
         if (THEME_DIR.matches(id)) fs.deleteRecursively(root / id, mustExist = false)
         _installed.update { list -> list.filter { it.id != id } }
     }
