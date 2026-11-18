@@ -201,6 +201,23 @@ class MediaBrowseHelper(
         audioPlayerQueue.load(listOf(entry), autoPlay = true, startPosition = 0)
     }
 
+    /**
+     * Voice requests from Android Auto and Assistant ("play X on Spotube", "play music") arrive
+     * as a search query, not a media id. An empty query is "just play something", which here is
+     * the user's saved tracks; otherwise the best search hit is played.
+     */
+    suspend fun playFromSearch(query: String): Boolean {
+        if (query.isBlank()) {
+            collectionPlaybackHelper.playSavedTracks()
+            return true
+        }
+        val best = search(query).firstOrNull() ?: return false
+        // Search lists an artist as a folder; a voice request wants their music, not the folder.
+        val mediaId = best.mediaId.takeUnless { it.startsWith("$MEDIA_ID_ARTIST:") }
+            ?: "$MEDIA_ID_ARTIST_TRACKS:${best.mediaId.removePrefix("$MEDIA_ID_ARTIST:")}"
+        return resolveAndPlayFromMediaId(mediaId)
+    }
+
     suspend fun resolveAndPlayFromMediaId(mediaId: String): Boolean {
         return when {
             mediaId.startsWith("$MEDIA_ID_TRACK:") -> {

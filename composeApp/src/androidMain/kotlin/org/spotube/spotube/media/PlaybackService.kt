@@ -397,6 +397,10 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
         val firstItem = mediaItems.firstOrNull()
         if (firstItem != null) {
             val mediaId = firstItem.mediaId
+            val voiceQuery = firstItem.requestMetadata.searchQuery
+            if (mediaId.isEmpty() && voiceQuery != null) {
+                if (mediaBrowseHelper.playFromSearch(voiceQuery)) return
+            }
             when {
                 mediaId.startsWith("${MediaBrowseHelper.MEDIA_ID_PLAYLIST}:") -> {
                     val playlistId = mediaId.removePrefix("${MediaBrowseHelper.MEDIA_ID_PLAYLIST}:")
