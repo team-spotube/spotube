@@ -34,6 +34,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import org.spotube.spotube.core.ui.theming.AppTheme
 
 import com.composeunstyled.Text
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.ui.Alignment
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -101,6 +105,26 @@ internal fun LazyListScope.settingsSectionHeader(title: StringResource) {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         )
+    }
+}
+
+/**
+ * The small grey label above a group of cards, in a plain column (the lazy-list [settingsSectionHeader] twin), with
+ * optional [trailing] actions on the right. Same 16dp inset as every other settings header.
+ */
+@Composable
+internal fun SettingsSectionLabel(title: StringResource, modifier: Modifier = Modifier, trailing: (@Composable RowScope.() -> Unit)? = null) {
+    Row(
+        modifier = modifier.fillMaxWidth().heightIn(min = 40.dp).padding(start = 16.dp, end = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = stringResource(title),
+            style = AppTheme.typography.labelMedium,
+            color = Color.Gray,
+            modifier = Modifier.weight(1f),
+        )
+        trailing?.invoke(this)
     }
 }
 

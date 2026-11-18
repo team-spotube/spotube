@@ -66,7 +66,11 @@ import org.jetbrains.compose.resources.stringResource
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumDialog
+import org.spotube.millennium.composables.MillenniumSegmentedButton
+import org.spotube.millennium.composables.MillenniumSegmentedButtonDefaults
+import org.spotube.millennium.composables.MillenniumSegmentedButtonRow
 import org.spotube.millennium.composables.MillenniumSeparator
+import com.composeunstyled.Text
 import org.spotube.millennium.composables.MillenniumText
 import org.spotube.millennium.theme.MillenniumColorSchemes
 import org.spotube.millennium.theme.MillenniumPalette
@@ -110,31 +114,22 @@ internal fun LazyListScope.appearanceSection(
     item { ThemesPanel() }
 }
 
-/** The Light / Dark / System choice. Inline on large screens, at the top of the Appearance page on compact ones. */
+/** The Light / Dark / System choice as one segmented control. Inline on large screens, on top of the Appearance page on compact ones. */
 @Composable
 internal fun ThemeModeCard(settings: UserSettings, settingsViewModel: SettingsViewModel) {
-    SelectionSettingCard(
-        title = stringResource(Res.string.settings_theme_title),
-        subtitle = stringResource(
-            Res.string.settings_theme_subtitle_current,
-            settings.theme.displayLabel()
-        ),
-        icon = {
-            SettingsItemIcon(Iconsax.IconsaxColorSwatch, stringResource(Res.string.settings_theme_title))
-        },
-        selectedOption = settings.theme,
-        options = Theme.entries,
-        optionLabel = { it.displayLabel() },
-        onOptionSelected = { theme ->
-            settingsViewModel.updateSettings {
-                copy(theme = theme)
-            }
+    MillenniumSegmentedButtonRow(modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp)) {
+        Theme.entries.forEachIndexed { index, theme ->
+            MillenniumSegmentedButton(
+                selected = settings.theme == theme,
+                onClick = { settingsViewModel.updateSettings { copy(theme = theme) } },
+                shape = MillenniumSegmentedButtonDefaults.itemShape(index, Theme.entries.size),
+            ) { Text(theme.displayLabel()) }
         }
-    )
+    }
 }
 
 @Composable
-private fun Theme.displayLabel(): String {
+internal fun Theme.displayLabel(): String {
     return when (this) {
         Theme.LIGHT -> stringResource(Res.string.settings_theme_light)
         Theme.DARK -> stringResource(Res.string.settings_theme_dark)

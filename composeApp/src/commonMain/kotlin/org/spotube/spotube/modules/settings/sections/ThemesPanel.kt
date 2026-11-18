@@ -34,6 +34,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,6 +54,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
@@ -60,6 +62,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.composeunstyled.LocalTextStyle
 import com.composeunstyled.Text
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
@@ -81,6 +84,11 @@ import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
 import org.spotube.millennium.theme.resolve
 import org.spotube.spotube.core.ui.theming.AppIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.spotube.resources.iconsax.IconsaxAdd
+import org.spotube.spotube.resources.iconsax.IconsaxRefreshRight
+import org.spotube.spotube.resources.iconsax.IconsaxInformation
 import org.spotube.spotube.core.ui.theming.AppTheme
 import org.spotube.spotube.core.ui.theming.isLightAppearance
 import org.spotube.spotube.modules.plugin.components.PluginIconWell
@@ -106,63 +114,43 @@ internal fun ThemesPanel() {
         viewModel.onFileSelected(file)
     }
 
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(
-                    stringResource(Res.string.settings_themes_title),
-                    style = AppTheme.typography.titleMedium,
-                    color = AppTheme.colors.onSurface,
-                )
-                Text(
-                    stringResource(Res.string.settings_themes_subtitle),
-                    style = AppTheme.typography.bodySmall,
-                    color = AppTheme.colors.onSurfaceVariant,
-                )
-            }
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                MillenniumButton(onClick = { picker.launch() }) {
-                    Text(stringResource(Res.string.settings_themes_install))
+    Column(modifier = Modifier.fillMaxWidth()) {
+        SettingsSectionLabel(
+            title = Res.string.settings_themes_title,
+            trailing = {
+                val status = when {
+                    state.checkingUpdates -> Res.string.settings_themes_checking_updates
+                    state.updateCheckFailed -> Res.string.settings_themes_update_check_failed
+                    state.upToDate -> Res.string.settings_themes_up_to_date
+                    else -> null
                 }
-                MillenniumButton(
+                status?.let {
+                    Text(stringResource(it), style = AppTheme.typography.labelSmall, color = AppTheme.colors.onSurfaceVariant)
+                }
+                MillenniumIconButton(
+                    icon = Iconsax.IconsaxRefreshRight,
+                    contentDescription = stringResource(Res.string.settings_themes_check_updates),
                     onClick = viewModel::checkUpdates,
-                    style = MillenniumButtonStyle.Secondary,
+                    style = MillenniumIconButtonStyle.Quiet,
                     enabled = !state.checkingUpdates,
-                ) {
-                    Text(stringResource(if (state.checkingUpdates) Res.string.settings_themes_checking_updates else Res.string.settings_themes_check_updates))
-                }
-            }
-            when {
-                state.updateCheckFailed -> Text(stringResource(Res.string.settings_themes_update_check_failed), style = AppTheme.typography.labelMedium, color = AppTheme.colors.error)
-                state.upToDate -> Text(stringResource(Res.string.settings_themes_up_to_date), style = AppTheme.typography.labelMedium, color = AppTheme.colors.onSurfaceVariant)
-            }
-        }
+                )
+                MillenniumIconButton(
+                    icon = Iconsax.IconsaxAdd,
+                    contentDescription = stringResource(Res.string.settings_themes_install),
+                    onClick = { picker.launch() },
+                    style = MillenniumIconButtonStyle.Quiet,
+                )
+            },
+        )
         state.importError?.let { error ->
             Text(
                 importErrorMessage(error, state.importErrorDetail),
                 style = AppTheme.typography.bodyMedium,
                 color = AppTheme.colors.error,
-                modifier = Modifier.padding(horizontal = 8.dp),
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
             )
         }
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .millenniumSurface(
-                    background = millenniumPanelBrush(MillenniumTheme.colors),
-                    shape = AppTheme.shapes.medium,
-                    borderColor = MillenniumTheme.colors.border,
-                    borderWidth = 1.dp,
-                    shadowElevation = 6.dp,
-                )
-                .padding(vertical = 4.dp),
-        ) {
+        ThemeCardList {
             state.themes.forEachIndexed { index, card ->
                 if (index > 0) MillenniumSeparator()
                 ThemeRow(
@@ -198,6 +186,24 @@ internal fun ThemesPanel() {
     }
 }
 
+/** The rounded panel every list on this page sits in, inset like the other settings cards. */
+@Composable
+internal fun ThemeCardList(content: @Composable () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .millenniumSurface(
+                background = millenniumPanelBrush(MillenniumTheme.colors),
+                shape = AppTheme.shapes.medium,
+                borderColor = MillenniumTheme.colors.border,
+                borderWidth = 1.dp,
+                shadowElevation = 6.dp,
+            )
+            .padding(vertical = 4.dp),
+    ) { content() }
+}
+
 /**
  * One theme row. Built on [MillenniumListTile] so hover, press, focus and the selected look come from the active
  * theme (a bare `clickable` draws nothing: Millennium turns Compose's default indication off).
@@ -207,7 +213,7 @@ internal fun ThemeRow(card: ThemeCardUi, onOpen: () -> Unit, onSelect: () -> Uni
     MillenniumListTile(
         modifier = Modifier.fillMaxWidth(),
         selected = card.selected,
-        onClick = onOpen,
+        onClick = onSelect,
         leading = { PluginIconWell(size = 40.dp) { ThemeLogo(card) } },
         title = {
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -228,37 +234,32 @@ internal fun ThemeRow(card: ThemeCardUi, onOpen: () -> Unit, onSelect: () -> Uni
                 }
             }
         },
-        subtitle = {
-            Text(
-                listOfNotNull(
-                    card.author?.let { stringResource(Res.string.settings_theme_by_author, it) },
-                    card.license,
-                ).joinToString(" · "),
-                style = AppTheme.typography.labelMedium,
-                color = AppTheme.colors.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+        subtitle = card.author?.let { author ->
+            {
+                Text(
+                    stringResource(Res.string.settings_theme_by_author, author),
+                    style = AppTheme.typography.labelMedium,
+                    color = AppTheme.colors.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         },
         trailing = {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp), verticalAlignment = Alignment.CenterVertically) {
                 card.updateVersion?.let { version ->
                     MillenniumButton(onClick = onUpdate) {
                         Text(stringResource(Res.string.settings_theme_update_available, version))
                     }
                 }
-                if (card.selected) {
-                    Text(
-                        stringResource(Res.string.settings_theme_selected),
-                        style = AppTheme.typography.labelMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        color = AppTheme.colors.primary,
-                    )
-                } else {
-                    MillenniumButton(onClick = onSelect, style = MillenniumButtonStyle.Secondary) {
-                        Text(stringResource(Res.string.settings_theme_select))
-                    }
-                }
+                MillenniumIconButton(
+                    icon = Iconsax.IconsaxInformation,
+                    contentDescription = stringResource(Res.string.settings_theme_details),
+                    onClick = onOpen,
+                    style = MillenniumIconButtonStyle.Quiet,
+                    // Follow the row's text colour so the icon stays readable on a selected (filled) row.
+                    foreground = LocalTextStyle.current.color.takeIf { it != Color.Unspecified },
+                )
             }
         },
     )
@@ -314,18 +315,26 @@ private fun ThemeHeader(card: ThemeCardUi) {
     }
 }
 
+/** One label/value line of the theme info: the label column has a fixed width so every value lines up. */
+@Composable
+private fun InfoRow(label: String, modifier: Modifier = Modifier, value: @Composable () -> Unit) {
+    Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.Top) {
+        Text(label, style = AppTheme.typography.labelMedium, color = AppTheme.colors.onSurfaceVariant, modifier = Modifier.width(88.dp))
+        Box(Modifier.weight(1f)) { value() }
+    }
+}
+
+/** `https://github.com/owner/repo` -> `github.com/owner/repo`: shorter, and nothing is cut off. */
+private fun String.displayUrl() = removePrefix("mailto:").removePrefix("https://").removePrefix("http://").trimEnd('/')
+
 @Composable
 private fun ThemeLinks(card: ThemeCardUi) {
     val uri = LocalUriHandler.current
     @Composable
     fun link(label: String, url: String?) {
         if (url == null) return
-        Row(
-            modifier = Modifier.fillMaxWidth().clickable { uri.openUri(url) },
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text(label, style = AppTheme.typography.labelMedium, color = AppTheme.colors.onSurfaceVariant, modifier = Modifier.widthIn(min = 120.dp))
-            Text(url.removePrefix("mailto:"), style = AppTheme.typography.bodyMedium, color = AppTheme.colors.primary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        InfoRow(label, Modifier.clickable { uri.openUri(url) }) {
+            Text(url.displayUrl(), style = AppTheme.typography.bodyMedium, color = AppTheme.colors.primary, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
     }
     link(stringResource(Res.string.settings_theme_link_repository), card.repository)
@@ -338,36 +347,41 @@ private fun ThemeLinks(card: ThemeCardUi) {
 private fun ThemeLicense(card: ThemeCardUi) {
     if (card.license == null && card.licenseText == null) return
     var shown by remember { mutableStateOf(false) }
-    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(stringResource(Res.string.settings_theme_license), style = AppTheme.typography.labelMedium, color = AppTheme.colors.onSurfaceVariant, modifier = Modifier.widthIn(min = 120.dp))
-            Text(card.license.orEmpty(), style = AppTheme.typography.bodyMedium, color = AppTheme.colors.onSurface)
-        }
-        if (card.licenseText != null) {
-            Text(
-                stringResource(if (shown) Res.string.settings_theme_license_hide else Res.string.settings_theme_license_show),
-                style = AppTheme.typography.labelMedium,
-                color = AppTheme.colors.primary,
-                modifier = Modifier.clickable { shown = !shown },
-            )
-            if (shown) {
+    InfoRow(stringResource(Res.string.settings_theme_license)) {
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            card.license?.let { Text(it, style = AppTheme.typography.bodyMedium, color = AppTheme.colors.onSurface) }
+            if (card.licenseText != null) {
                 Text(
-                    card.licenseText,
-                    style = AppTheme.typography.bodySmall,
-                    color = AppTheme.colors.onSurfaceVariant,
-                    modifier = Modifier.heightIn(max = 200.dp).verticalScroll(rememberScrollState()),
+                    stringResource(if (shown) Res.string.settings_theme_license_hide else Res.string.settings_theme_license_show),
+                    style = AppTheme.typography.labelMedium,
+                    color = AppTheme.colors.primary,
+                    modifier = Modifier.clickable { shown = !shown },
                 )
+                if (shown) {
+                    Text(
+                        card.licenseText,
+                        style = AppTheme.typography.bodySmall,
+                        color = AppTheme.colors.onSurfaceVariant,
+                        modifier = Modifier.heightIn(max = 200.dp).verticalScroll(rememberScrollState()),
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-private fun ThemeContents(card: ThemeCardUi) {
-    if (card.fontFiles == 0 && card.icons == 0) return
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(stringResource(Res.string.settings_theme_contents), style = AppTheme.typography.labelMedium, color = AppTheme.colors.onSurfaceVariant, modifier = Modifier.widthIn(min = 120.dp))
-        Text(stringResource(Res.string.settings_theme_contents_value, card.fontFiles, card.icons), style = AppTheme.typography.bodyMedium, color = AppTheme.colors.onSurface)
+private fun ThemeContents(card: ThemeCardUi, sizeKb: Int? = null) {
+    if (card.fontFiles == 0 && card.icons == 0 && sizeKb == null) return
+    InfoRow(stringResource(Res.string.settings_theme_contents)) {
+        Text(
+            listOfNotNull(
+                stringResource(Res.string.settings_theme_contents_value, card.fontFiles, card.icons).takeIf { card.fontFiles > 0 || card.icons > 0 },
+                sizeKb?.let { stringResource(Res.string.settings_theme_install_size, it) },
+            ).joinToString(" · "),
+            style = AppTheme.typography.bodyMedium,
+            color = AppTheme.colors.onSurface,
+        )
     }
 }
 
@@ -455,8 +469,7 @@ private fun InstallThemeDialog(pending: PendingThemeUi, onConfirm: () -> Unit, o
                 }
                 ThemeLinks(card)
                 ThemeLicense(card)
-                ThemeContents(card)
-                Text(stringResource(Res.string.settings_theme_install_size, pending.sizeKb), style = AppTheme.typography.bodySmall, color = AppTheme.colors.onSurfaceVariant)
+                ThemeContents(card, sizeKb = pending.sizeKb)
                 Text(stringResource(Res.string.settings_theme_install_warning), style = AppTheme.typography.bodySmall, color = AppTheme.colors.onSurfaceVariant)
             }
         }

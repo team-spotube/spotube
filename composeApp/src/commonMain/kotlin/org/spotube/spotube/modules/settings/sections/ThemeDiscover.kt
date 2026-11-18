@@ -35,6 +35,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import compose.icons.FeatherIcons
+import compose.icons.feathericons.ChevronRight
+import org.spotube.spotube.core.ui.theming.AppIcon
 import com.composeunstyled.Text
 import org.jetbrains.compose.resources.stringResource
 import org.spotube.millennium.composables.MillenniumButton
@@ -51,6 +54,8 @@ import org.spotube.millennium.theme.MillenniumTheme
 import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
 import org.spotube.spotube.core.ui.theming.AppTheme
+import org.spotube.spotube.resources.iconsax.Iconsax
+import org.spotube.spotube.resources.iconsax.IconsaxImportArrow2
 import org.spotube.spotube.modules.settings.ThemeDiscoverUi
 import org.spotube.spotube.modules.settings.ThemeRepoUi
 import spotube.composeapp.generated.resources.Res
@@ -61,14 +66,12 @@ import spotube.composeapp.generated.resources.settings_theme_release_prerelease
 import spotube.composeapp.generated.resources.settings_theme_releases_failed
 import spotube.composeapp.generated.resources.settings_theme_releases_loading
 import spotube.composeapp.generated.resources.settings_theme_releases_none
-import spotube.composeapp.generated.resources.settings_theme_releases_title
 import spotube.composeapp.generated.resources.settings_theme_stars
 import spotube.composeapp.generated.resources.settings_themes_discover_empty
 import spotube.composeapp.generated.resources.settings_themes_discover_failed
 import spotube.composeapp.generated.resources.settings_themes_discover_load_more
 import spotube.composeapp.generated.resources.settings_themes_discover_loading
 import spotube.composeapp.generated.resources.settings_themes_discover_retry
-import spotube.composeapp.generated.resources.settings_themes_discover_subtitle
 import spotube.composeapp.generated.resources.settings_themes_discover_title
 
 /** Theme repositories on GitHub (topics `spotube` + `spotube-theme`, no forks, most starred first). */
@@ -79,46 +82,47 @@ internal fun ThemeDiscoverSection(
     onRetry: () -> Unit,
     onLoadMore: () -> Unit,
 ) {
+    SettingsSectionLabel(Res.string.settings_themes_discover_title)
+    when {
+        state.repos.isEmpty() && state.loading -> DiscoverNote(Res.string.settings_themes_discover_loading)
+        state.repos.isEmpty() && state.failed -> DiscoverNote(Res.string.settings_themes_discover_failed, error = true) {
+            MillenniumButton(onClick = onRetry, style = MillenniumButtonStyle.Secondary) {
+                Text(stringResource(Res.string.settings_themes_discover_retry))
+            }
+        }
+        state.repos.isEmpty() -> DiscoverNote(Res.string.settings_themes_discover_empty)
+        else -> ThemeCardList {
+            state.repos.forEachIndexed { index, repo ->
+                if (index > 0) MillenniumSeparator()
+                ThemeRepoRow(repo, onClick = { onOpen(repo) })
+            }
+        }
+    }
+    if (state.canLoadMore && state.repos.isNotEmpty()) {
+        MillenniumButton(
+            onClick = onLoadMore,
+            style = MillenniumButtonStyle.Quiet,
+            enabled = !state.loading,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+        ) {
+            Text(stringResource(if (state.loading) Res.string.settings_themes_discover_loading else Res.string.settings_themes_discover_load_more))
+        }
+    }
+}
+
+/** A one-line status (loading, empty, failed) aligned with the list cards, with an optional action under it. */
+@Composable
+private fun DiscoverNote(text: org.jetbrains.compose.resources.StringResource, error: Boolean = false, action: (@Composable () -> Unit)? = null) {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(stringResource(Res.string.settings_themes_discover_title), style = AppTheme.typography.titleMedium, color = AppTheme.colors.onSurface)
-            Text(stringResource(Res.string.settings_themes_discover_subtitle), style = AppTheme.typography.bodySmall, color = AppTheme.colors.onSurfaceVariant)
-        }
-        when {
-            state.repos.isEmpty() && state.loading ->
-                Text(stringResource(Res.string.settings_themes_discover_loading), style = AppTheme.typography.bodyMedium, color = AppTheme.colors.onSurfaceVariant)
-            state.repos.isEmpty() && state.failed -> Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(stringResource(Res.string.settings_themes_discover_failed), style = AppTheme.typography.bodyMedium, color = AppTheme.colors.error)
-                MillenniumButton(onClick = onRetry, style = MillenniumButtonStyle.Secondary) { Text(stringResource(Res.string.settings_themes_discover_retry)) }
-            }
-            state.repos.isEmpty() ->
-                Text(stringResource(Res.string.settings_themes_discover_empty), style = AppTheme.typography.bodyMedium, color = AppTheme.colors.onSurfaceVariant)
-            else -> Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .millenniumSurface(
-                        background = millenniumPanelBrush(MillenniumTheme.colors),
-                        shape = AppTheme.shapes.medium,
-                        borderColor = MillenniumTheme.colors.border,
-                        borderWidth = 1.dp,
-                        shadowElevation = 6.dp,
-                    )
-                    .padding(vertical = 4.dp),
-            ) {
-                state.repos.forEachIndexed { index, repo ->
-                    if (index > 0) MillenniumSeparator()
-                    ThemeRepoRow(repo, onClick = { onOpen(repo) })
-                }
-            }
-        }
-        if (state.canLoadMore && state.repos.isNotEmpty()) {
-            MillenniumButton(onClick = onLoadMore, style = MillenniumButtonStyle.Secondary, enabled = !state.loading) {
-                Text(stringResource(if (state.loading) Res.string.settings_themes_discover_loading else Res.string.settings_themes_discover_load_more))
-            }
-        }
+        Text(
+            stringResource(text),
+            style = AppTheme.typography.bodyMedium,
+            color = if (error) AppTheme.colors.error else AppTheme.colors.onSurfaceVariant,
+        )
+        action?.invoke()
     }
 }
 
@@ -139,15 +143,15 @@ private fun ThemeRepoRow(repo: ThemeRepoUi, onClick: () -> Unit) {
         },
         subtitle = {
             Text(
-                listOfNotNull(repo.owner, repo.description?.takeIf { it.isNotBlank() }).joinToString(" · "),
+                "${repo.owner} · ${stringResource(Res.string.settings_theme_stars, repo.stars)}",
                 style = AppTheme.typography.labelMedium,
                 color = AppTheme.colors.onSurfaceVariant,
-                maxLines = 2,
+                maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
         },
         trailing = {
-            Text(stringResource(Res.string.settings_theme_stars, repo.stars), style = AppTheme.typography.labelMedium, color = AppTheme.colors.onSurfaceVariant)
+            AppIcon(FeatherIcons.ChevronRight, contentDescription = null, tint = AppTheme.colors.onSurfaceVariant)
         },
     )
 }
@@ -162,7 +166,7 @@ internal fun ThemeReleasesDialog(
     val repo = state.repo ?: return
     MillenniumDialog(visible = true, onDismissRequest = onDismiss) {
         MillenniumDialogHeader {
-            MillenniumDialogTitle(stringResource(Res.string.settings_theme_releases_title, repo.name))
+            MillenniumDialogTitle(repo.fullName)
             MillenniumDialogClose()
         }
         MillenniumDialogBody {
@@ -170,6 +174,9 @@ internal fun ThemeReleasesDialog(
                 modifier = Modifier.heightIn(max = 480.dp).verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(14.dp),
             ) {
+                repo.description?.takeIf { it.isNotBlank() }?.let {
+                    Text(it, style = AppTheme.typography.bodyMedium, color = AppTheme.colors.onSurfaceVariant)
+                }
                 when {
                     state.loadingReleases ->
                         Text(stringResource(Res.string.settings_theme_releases_loading), style = AppTheme.typography.bodyMedium, color = AppTheme.colors.onSurfaceVariant)
@@ -185,13 +192,35 @@ internal fun ThemeReleasesDialog(
                                     Text(stringResource(Res.string.settings_theme_release_prerelease), style = AppTheme.typography.labelSmall, color = AppTheme.colors.onSurfaceVariant)
                                 }
                             }
-                            release.assets.forEach { asset ->
-                                MillenniumButton(
-                                    onClick = { onInstall(asset.url) },
-                                    style = MillenniumButtonStyle.Secondary,
-                                    enabled = state.downloading == null,
-                                ) {
-                                    Text(if (state.downloading == asset.url) stringResource(Res.string.settings_theme_downloading) else asset.name)
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .millenniumSurface(
+                                        background = millenniumPanelBrush(MillenniumTheme.colors),
+                                        shape = AppTheme.shapes.medium,
+                                        borderColor = MillenniumTheme.colors.border,
+                                        borderWidth = 1.dp,
+                                        shadowElevation = 0.dp,
+                                    )
+                                    .padding(vertical = 2.dp),
+                            ) {
+                                release.assets.forEachIndexed { index, asset ->
+                                    if (index > 0) MillenniumSeparator()
+                                    MillenniumListTile(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        enabled = state.downloading == null,
+                                        onClick = { onInstall(asset.url) },
+                                        title = {
+                                            Text(asset.name.removeSuffix(".zip"), style = AppTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                        },
+                                        trailing = {
+                                            if (state.downloading == asset.url) {
+                                                Text(stringResource(Res.string.settings_theme_downloading), style = AppTheme.typography.labelMedium, color = AppTheme.colors.onSurfaceVariant)
+                                            } else {
+                                                AppIcon(Iconsax.IconsaxImportArrow2, contentDescription = null, tint = AppTheme.colors.onSurfaceVariant)
+                                            }
+                                        },
+                                    )
                                 }
                             }
                         }

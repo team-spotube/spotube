@@ -156,22 +156,20 @@
 
 
     <string name="settings_themes_title">Themes</string>
-    <string name="settings_themes_subtitle">Pick a look, install a theme package (.zip), or discover themes on GitHub.</string>
     <string name="settings_themes_install">Install theme</string>
+    <string name="settings_theme_details">Details</string>
     <string name="settings_themes_check_updates">Check for updates</string>
-    <string name="settings_themes_checking_updates">Checking for updates…</string>
-    <string name="settings_themes_up_to_date">Your themes are up to date.</string>
-    <string name="settings_themes_update_check_failed">Couldn't check for updates. Try again later.</string>
+    <string name="settings_themes_checking_updates">Checking…</string>
+    <string name="settings_themes_up_to_date">Up to date</string>
+    <string name="settings_themes_update_check_failed">Check failed</string>
     <string name="settings_theme_update_available">Update to %1$s</string>
-    <string name="settings_themes_discover_title">Discover themes</string>
-    <string name="settings_themes_discover_subtitle">Open-source themes on GitHub tagged “spotube” and “spotube-theme”, most starred first.</string>
-    <string name="settings_themes_discover_loading">Loading themes…</string>
-    <string name="settings_themes_discover_failed">Couldn't load themes from GitHub.</string>
+    <string name="settings_themes_discover_title">Discover on GitHub</string>
+    <string name="settings_themes_discover_loading">Loading…</string>
+    <string name="settings_themes_discover_failed">Couldn't load themes</string>
     <string name="settings_themes_discover_retry">Retry</string>
-    <string name="settings_themes_discover_empty">No themes found.</string>
+    <string name="settings_themes_discover_empty">No themes found</string>
     <string name="settings_themes_discover_load_more">Load more</string>
     <string name="settings_theme_stars">%1$d ★</string>
-    <string name="settings_theme_releases_title">%1$s releases</string>
     <string name="settings_theme_releases_loading">Loading releases…</string>
     <string name="settings_theme_releases_failed">Couldn't load the releases.</string>
     <string name="settings_theme_releases_none">None of the releases has a .zip theme package.</string>
@@ -200,8 +198,8 @@
     <string name="settings_theme_license">License</string>
     <string name="settings_theme_license_show">Show license text</string>
     <string name="settings_theme_license_hide">Hide license text</string>
-    <string name="settings_theme_contents">Contents</string>
-    <string name="settings_theme_contents_value">%1$d font file(s), %2$d icon replacement(s)</string>
+    <string name="settings_theme_contents">Package</string>
+    <string name="settings_theme_contents_value">%1$d fonts · %2$d icons</string>
     <string name="settings_theme_warnings">Theme warnings</string>
     <string name="settings_theme_install_title">Install “%1$s”?</string>
     <string name="settings_theme_update_title">Update “%1$s”?</string>
@@ -211,7 +209,7 @@
     <string name="settings_theme_replace_downgrade">Installed version %1$s is newer than this one (%2$s). Replace it anyway?</string>
     <string name="settings_theme_replace_invalid_incoming">This theme uses an invalid semantic version (%1$s) and can't be compared with the installed one. Replace it anyway?</string>
     <string name="settings_theme_replace_invalid_installed">The installed version (%1$s) can't be compared using semantic versioning. Replace it with %2$s?</string>
-    <string name="settings_theme_install_size">Package size: %1$d KB.</string>
+    <string name="settings_theme_install_size">%1$d KB</string>
     <string name="settings_theme_install_warning">Fonts and images are decoded by system libraries, so only install themes from people you trust.</string>
     <string name="settings_theme_install_confirm">Install</string>
     <string name="settings_theme_install_update">Update</string>

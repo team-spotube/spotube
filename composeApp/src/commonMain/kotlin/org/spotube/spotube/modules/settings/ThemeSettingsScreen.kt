@@ -40,6 +40,8 @@ import org.spotube.spotube.modules.settings.sections.ThemesPanel
 import org.spotube.spotube.modules.shell.LocalAppShellBottomInset
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.settings_section_appearance
+import spotube.composeapp.generated.resources.settings_theme_title
+import org.spotube.spotube.modules.settings.sections.SettingsSectionLabel
 
 /** Appearance as its own page on compact screens: the Light/Dark/System choice, then the themes. Large screens show the same inline in Settings. */
 @Composable
@@ -58,6 +60,7 @@ fun ThemeSettingsScreen() {
                 contentPadding = contentPadding,
             ) {
                 settings?.let { current ->
+                    item { SettingsSectionLabel(Res.string.settings_theme_title) }
                     settingsSectionCard(items = listOf { ThemeModeCard(current, settingsViewModel) })
                 }
                 item { ThemesPanel() }
