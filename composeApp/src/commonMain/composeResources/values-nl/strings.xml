@@ -468,7 +468,7 @@
     <string name="welcome_how_step_search_title">1. Gedecentraliseerd ontdekken</string>
     <string name="welcome_how_step_search_desc">Zoekopdrachten gaan rechtstreeks naar je gekozen catalogusplug-in. Spotube maakt nooit een profiel van je smaak.</string>
     <string name="welcome_how_step_stream_title">2. Directe streams</string>
-    <string name="welcome_how_step_stream_desc">Audio wordt rechtstreeks van de contentservers naar je apparaat gestreamd. Geen proxy\'s ertussen en geen gegevensverzameling op afstand.</string>
+    <string name="welcome_how_step_stream_desc">Audio wordt rechtstreeks van de contentservers naar je apparaat gestreamd. Geen proxy's ertussen en geen gegevensverzameling op afstand.</string>
     <string name="welcome_how_step_playback_title">3. Lokale DSP &amp; afspelen</string>
     <string name="welcome_how_step_playback_desc">Lokaal gedecodeerd en gecachet, met equalizer en optioneel offline downloaden.</string>
     <string name="welcome_how_step_lyrics_title">4. Gesynchroniseerde songteksten &amp; Jam</string>
@@ -501,7 +501,7 @@
     <string name="devices_connecting">Verbinden...</string>
     <string name="devices_searching">Zoeken naar apparaten op het netwerk...</string>
     <string name="devices_empty">Geen apparaten gevonden</string>
-    <string name="devices_empty_hint">Zorg dat \"Bediening op afstand toestaan\" is ingeschakeld in de instellingen van het andere apparaat.</string>
+    <string name="devices_empty_hint">Zorg dat "Bediening op afstand toestaan" is ingeschakeld in de instellingen van het andere apparaat.</string>
     <string name="devices_unknown_device">Onbekend apparaat</string>
     <string name="devices_resolving">Bezig met ophalen...</string>
 
@@ -535,7 +535,7 @@
 
     <!-- Remote control: connection request dialog -->
     <string name="remote_request_title">Verzoek voor bediening op afstand</string>
-    <string name="remote_request_message">\"%1$s\" wil het afspelen op dit apparaat bedienen.</string>
+    <string name="remote_request_message">"%1$s" wil het afspelen op dit apparaat bedienen.</string>
     <string name="remote_request_deny">Weigeren</string>
     <string name="remote_request_allow">Toestaan</string>
     <string name="remote_request_allow_always">Altijd toestaan</string>
@@ -661,7 +661,7 @@
     <!-- Blacklist -->
     <string name="blacklist_filter_placeholder">Zwarte lijst filteren...</string>
     <string name="blacklist_empty">Niets op de zwarte lijst</string>
-    <string name="blacklist_no_results">Niets op de zwarte lijst komt overeen met \'%1$s\'</string>
+    <string name="blacklist_no_results">Niets op de zwarte lijst komt overeen met '%1$s'</string>
     <string name="blacklist_section_tracks">Nummers</string>
     <string name="blacklist_item_track">Nummer</string>
     <string name="blacklist_add">Toevoegen aan zwarte lijst</string>
@@ -764,7 +764,7 @@
     <string name="player_track_details_explicit">Expliciet</string>
     <string name="player_track_details_popularity">Populariteit</string>
     <string name="player_track_details_isrc">ISRC</string>
-    <string name="player_track_details_thumbnail_urls">Miniatuur-URL\'s</string>
+    <string name="player_track_details_thumbnail_urls">Miniatuur-URL's</string>
 
     <!-- Shell -->
     <string name="shell_sidebar_toggle_content_description">Zijbalk tonen/verbergen</string>

@@ -122,7 +122,7 @@
     <string name="settings_option_name_and_code">%1$s (%2$s)</string>
 
     <string name="settings_theme_title">Tema</string>
-    <string name="settings_theme_subtitle_current">Spotube\'un sistem görünümüne nasıl uyacağını seç. Geçerli: %1$s</string>
+    <string name="settings_theme_subtitle_current">Spotube'un sistem görünümüne nasıl uyacağını seç. Geçerli: %1$s</string>
     <string name="settings_theme_light">Açık</string>
     <string name="settings_theme_dark">Koyu</string>
     <string name="settings_theme_system">Sistem</string>
@@ -217,7 +217,7 @@
     <string name="settings_allow_remote_control_subtitle">Aynı ağdaki diğer cihazlar bağlandığında çalmayı kontrol edebilsin.</string>
     <string name="settings_remote_device_name_title">Uzaktan kontrol cihaz adı</string>
     <string name="settings_remote_device_name_subtitle">Diğer cihazların bu cihazı bulurken gördüğü ad. Geçerli: %1$s</string>
-    <string name="settings_remote_device_name_description">Ağındaki diğer cihazlar bu Spotube\'u bulduğunda görünecek kolay bir ad seç.</string>
+    <string name="settings_remote_device_name_description">Ağındaki diğer cihazlar bu Spotube'u bulduğunda görünecek kolay bir ad seç.</string>
     <string name="settings_remote_device_name_placeholder">örn. Salon Spotube</string>
     <string name="settings_remote_device_name_default">cihaz ana bilgisayar adı</string>
     <string name="settings_playback_port_subtitle_current">Çalma proxy sunucusunun kullandığı port. Geçerli: %1$d</string>
@@ -232,7 +232,7 @@
     <string name="settings_desktop_minimize_title">Sistem tepsisine küçült</string>
     <string name="settings_desktop_minimize_subtitle">Pencere küçültüldüğünde Spotube sistem tepsisinde çalışmaya devam etsin.</string>
     <string name="settings_desktop_discord_title">Discord Rich Presence</string>
-    <string name="settings_desktop_discord_subtitle">Masaüstünde şu an çalanı Discord\'da göster.</string>
+    <string name="settings_desktop_discord_subtitle">Masaüstünde şu an çalanı Discord'da göster.</string>
 
     <string name="settings_updates_auto_check_title">Güncellemeleri otomatik denetle</string>
     <string name="settings_updates_auto_check_subtitle">Yeni Spotube sürümlerini arka planda ara.</string>
@@ -259,7 +259,7 @@
     <string name="plugin_error_url_scheme">URL, http:// veya https:// ile başlamalı</string>
     <string name="plugin_error_download_failed">Eklenti indirilemedi</string>
     <string name="plugin_empty_title">Henüz yüklü eklenti yok</string>
-    <string name="plugin_empty_subtitle">Bir indirme URL\'si yapıştır veya yukarıdan bir dosya seç.</string>
+    <string name="plugin_empty_subtitle">Bir indirme URL'si yapıştır veya yukarıdan bir dosya seç.</string>
     <plurals name="plugin_installed_plugins_count">
         <item quantity="one">%1$d eklenti yüklü</item>
         <item quantity="other">%1$d eklenti yüklü</item>
@@ -274,7 +274,7 @@
     <string name="plugin_action_remove">Eklentiyi kaldır</string>
     <string name="plugin_action_login">Giriş yap</string>
     <string name="plugin_action_logout">Çıkış yap</string>
-    <string name="plugin_section_url_title">URL\'den indir</string>
+    <string name="plugin_section_url_title">URL'den indir</string>
     <string name="plugin_section_file_title">Dosyadan yükle</string>
     <string name="plugin_section_install">Yükle</string>
 
@@ -294,7 +294,7 @@
     <string name="settings_section_jam">Grup Jam</string>
     <string name="settings_jam_server_test">Bağlantıyı test et</string>
     <string name="settings_jam_server_testing">Test ediliyor…</string>
-    <string name="settings_jam_server_test_ok">%1$d ms\'de bağlandı</string>
+    <string name="settings_jam_server_test_ok">%1$d ms'de bağlandı</string>
     <string name="settings_jam_server_test_fail">Başarısız: %1$s</string>
     <string name="settings_jam_section_connection">Bağlantı</string>
     <string name="settings_jam_section_diagnostics">Tanılama</string>
@@ -327,7 +327,7 @@
     <string name="jam_error_create">Jam oturumu oluşturulamadı</string>
     <string name="jam_error_join">Jam oturumuna katılınamadı</string>
     <string name="jam_error_invalid_code">Harf ve rakamlardan oluşan altı karakterli bir oda kodu gir.</string>
-    <string name="jam_share_message">Spotube Jam\'ime şu kodla katıl: %1$s</string>
+    <string name="jam_share_message">Spotube Jam'ime şu kodla katıl: %1$s</string>
     <string name="settings_jam_server_title">Oda sunucusu</string>
     <string name="settings_jam_server_url">Sunucu URL’si</string>
     <string name="settings_jam_server_url_invalid">https:// ile başlayan bir URL gir.</string>
@@ -375,7 +375,7 @@
     <string name="welcome_brand_freedom">Müzik, hiçbir kısıtlama olmadan.</string>
     <string name="welcome_brand_quiet_description">Koca bir müzik dünyası için açık kaynaklı bir oynatıcı.\nKeşfetmesi sana kalmış. Kendine göre şekillendirmesi de.</string>
     <string name="welcome_donate_quiet_title">Bu projeyi yaşat.</string>
-    <string name="welcome_donate_letter">Spotube\'u bir abonelik şirketi değil, insanlar geliştiriyor. Günlük hayatının bir parçası olduysa, küçük bir destek bile ona hak ettiği özeni göstermemize yardımcı olur.\n\nBağımsız yazılıma yer açtığın için teşekkürler.</string>
+    <string name="welcome_donate_letter">Spotube'u bir abonelik şirketi değil, insanlar geliştiriyor. Günlük hayatının bir parçası olduysa, küçük bir destek bile ona hak ettiği özeni göstermemize yardımcı olur.\n\nBağımsız yazılıma yer açtığın için teşekkürler.</string>
     <string name="welcome_plugins_setup_guide">Şarkı ve çalma listesi bulmak için bir katalog eklentisiyle başla. Onları çalmak için bir ses eklentisi seç. Şarkı sözleri ve dinleme geçmişi isteğe bağlı. Aşağıdan bir eklenti keşfet, izinlerini incele, yükle ve burada seç.</string>
     <string name="welcome_plugins_discover">Eklentileri keşfet</string>
     <string name="welcome_plugins_sources">Kaynakların</string>
@@ -393,7 +393,7 @@
     <string name="welcome_guide_signin_title">Giriş yap</string>
     <string name="welcome_guide_signin_desc">hesabını bağla veya kendi katalog eklentini seç.</string>
     <string name="welcome_guide_search_title">Ara ve çal</string>
-    <string name="welcome_guide_search_desc">Herhangi bir şarkıyı, albümü veya sanatçıyı bul, sonra çal\'a bas.</string>
+    <string name="welcome_guide_search_desc">Herhangi bir şarkıyı, albümü veya sanatçıyı bul, sonra çal'a bas.</string>
     <string name="welcome_guide_offline_title">Çevrimdışı dinle</string>
     <string name="welcome_guide_offline_desc">Bağlantı olmadan dinlemeye devam etmek için parçaları indir.</string>
     <string name="welcome_guide_lyrics_title">Sözleri takip et</string>
@@ -427,8 +427,8 @@
     <string name="welcome_donate_open_content_description">%1$s sayfasını aç</string>
 
     <!-- Support / donations -->
-    <string name="support_button_label">Spotube\'u destekle</string>
-    <string name="support_dialog_title">Spotube\'u destekle</string>
+    <string name="support_button_label">Spotube'u destekle</string>
+    <string name="support_dialog_title">Spotube'u destekle</string>
     <string name="support_dialog_message">Spotube ücretsiz, özgür ve açık kaynak — reklam yok, abonelik yok, takip yok. Sana keyif veriyorsa projeyi desteklemeyi düşünebilirsin.</string>
     <string name="support_dialog_reminder_hint">Bu hatırlatıcıları Ayarlar → Destek bölümünden kapatabilirsin.</string>
     <string name="support_dialog_dismiss">Belki sonra</string>
@@ -446,7 +446,7 @@
     <string name="welcome_plugins_lyrics_title">Şarkı Sözü Motoru</string>
     <string name="welcome_plugins_lyrics_description">Zamanla senkronize karaoke sözlerini gerçek zamanlı olarak sunar.</string>
     <string name="welcome_plugins_scrobble_title">Scrobble Motoru</string>
-    <string name="welcome_plugins_scrobble_description">Dinleme geçmişini Last.fm veya ListenBrainz\'e kaydeder.</string>
+    <string name="welcome_plugins_scrobble_description">Dinleme geçmişini Last.fm veya ListenBrainz'e kaydeder.</string>
     <string name="welcome_plugins_badge_active">Etkin</string>
     <string name="welcome_plugins_badge_builtin">Yerleşik</string>
     <string name="welcome_plugins_badge_ready">Hazır</string>
@@ -460,7 +460,7 @@
     <!-- Page 4: how it works -->
     <string name="welcome_how_eyebrow">Retro-Modern Mimari</string>
     <string name="welcome_how_title">Saf Hi-Fi, sıfır aracı</string>
-    <string name="welcome_how_subtitle">Spotube\'un merkeziyetsiz çalmayı doğrudan cihazında nasıl yönettiğini gör.</string>
+    <string name="welcome_how_subtitle">Spotube'un merkeziyetsiz çalmayı doğrudan cihazında nasıl yönettiğini gör.</string>
     <string name="welcome_how_status_badge">DOĞRUDAN EŞLER ARASI • 256 KBPS OPUS</string>
     <string name="welcome_how_mockup_title">Mavi saat</string>
     <string name="welcome_how_mockup_artist">Spotube · oynatıcı tanıtımı</string>
@@ -501,7 +501,7 @@
     <string name="devices_connecting">Bağlanıyor...</string>
     <string name="devices_searching">Ağda cihaz aranıyor...</string>
     <string name="devices_empty">Cihaz bulunamadı</string>
-    <string name="devices_empty_hint">Diğer cihazın ayarlarında \"Uzaktan kontrole izin ver\" seçeneğinin açık olduğundan emin ol.</string>
+    <string name="devices_empty_hint">Diğer cihazın ayarlarında "Uzaktan kontrole izin ver" seçeneğinin açık olduğundan emin ol.</string>
     <string name="devices_unknown_device">Bilinmeyen Cihaz</string>
     <string name="devices_resolving">Çözümleniyor...</string>
 
@@ -519,7 +519,7 @@
     <string name="jam_destination_title">Nerede Çalınsın?</string>
     <string name="jam_destination_message">Etkin bir Jam oturumun var. Bu koleksiyonun nerede çalınacağını seç.</string>
     <string name="jam_destination_play_here">Burada çal</string>
-    <string name="jam_destination_suggest">Jam\'e öner</string>
+    <string name="jam_destination_suggest">Jam'e öner</string>
 
     <!-- Group Jam: connection errors -->
     <string name="jam_error_connection_failed">Bağlantı başarısız</string>
@@ -535,7 +535,7 @@
 
     <!-- Remote control: connection request dialog -->
     <string name="remote_request_title">Uzaktan Kontrol İsteği</string>
-    <string name="remote_request_message">\"%1$s\" bu cihazda çalmayı kontrol etmek istiyor.</string>
+    <string name="remote_request_message">"%1$s" bu cihazda çalmayı kontrol etmek istiyor.</string>
     <string name="remote_request_deny">Reddet</string>
     <string name="remote_request_allow">İzin ver</string>
     <string name="remote_request_allow_always">Her Zaman İzin Ver</string>
@@ -620,7 +620,7 @@
 
     <!-- Track options -->
     <string name="track_options_title">Parça seçenekleri</string>
-    <string name="track_options_add_to_jam">Jam\'e ekle</string>
+    <string name="track_options_add_to_jam">Jam'e ekle</string>
     <string name="track_options_start_radio">Radyo başlat</string>
     <string name="track_options_play_next">Sonra çal</string>
     <string name="track_options_move_to_next">Sıradakine taşı</string>
@@ -649,8 +649,8 @@
     <string name="track_list_play_count_next">%1$d Parçayı Sonra Çal</string>
     <string name="track_list_add_all_to_playlist">Tümünü Çalma Listesine Ekle</string>
     <string name="track_list_add_count_to_playlist">%1$d Parçayı Çalma Listesine Ekle</string>
-    <string name="track_list_add_all_to_jam">Tümünü Jam\'e Ekle</string>
-    <string name="track_list_add_count_to_jam">%1$d Parçayı Jam\'e Ekle</string>
+    <string name="track_list_add_all_to_jam">Tümünü Jam'e Ekle</string>
+    <string name="track_list_add_count_to_jam">%1$d Parçayı Jam'e Ekle</string>
     <string name="track_list_more_artists">+%1$d kişi daha</string>
 
     <!-- WebView -->
@@ -661,7 +661,7 @@
     <!-- Blacklist -->
     <string name="blacklist_filter_placeholder">Kara listeyi filtrele...</string>
     <string name="blacklist_empty">Kara listede öğe yok</string>
-    <string name="blacklist_no_results">Kara listede \'%1$s\' ile eşleşen öğe yok</string>
+    <string name="blacklist_no_results">Kara listede '%1$s' ile eşleşen öğe yok</string>
     <string name="blacklist_section_tracks">Parçalar</string>
     <string name="blacklist_item_track">Parça</string>
     <string name="blacklist_add">Kara listeye ekle</string>
@@ -669,8 +669,8 @@
 
     <!-- Downloads -->
     <string name="downloads_error_no_metadata">Parça meta verisi yok</string>
-    <string name="downloads_error_stream_unresolved_short">Akış URL\'si çözümlenemedi</string>
-    <string name="downloads_error_stream_unresolved">Akış URL\'si çözümlenemedi. Önce parçayı çalmayı dene.</string>
+    <string name="downloads_error_stream_unresolved_short">Akış URL'si çözümlenemedi</string>
+    <string name="downloads_error_stream_unresolved">Akış URL'si çözümlenemedi. Önce parçayı çalmayı dene.</string>
 
     <!-- Saved tracks -->
     <string name="saved_tracks_title">Kayıtlı Parçalar</string>
@@ -731,7 +731,7 @@
     <string name="player_sleep_timer_minutes_placeholder">1 ile 600 dakika arasında seç</string>
     <string name="player_sleep_timer_cancel">Zamanlayıcıyı iptal et</string>
     <string name="player_sleep_timer_start">Başlat</string>
-    <string name="player_track_details_stream_mismatch">Çalma URL\'si farklı akış ayarlarıyla çözümlendi. Vurgulanan akış geçerli tercihinle eşleşiyor; etkin URL bir sonraki akış isteğinde yenilenir.</string>
+    <string name="player_track_details_stream_mismatch">Çalma URL'si farklı akış ayarlarıyla çözümlendi. Vurgulanan akış geçerli tercihinle eşleşiyor; etkin URL bir sonraki akış isteğinde yenilenir.</string>
     <string name="player_track_details_matched_source">Eşleşen ses kaynağı</string>
     <string name="player_track_details_loading_source">Eşleşen kaynak yükleniyor…</string>
     <string name="player_track_details_source_not_needed">Önbellekteki yerel dosya çalınırken eşleşen bir uzak kaynağa gerek yok.</string>
@@ -745,7 +745,7 @@
     <string name="player_track_details_no_streams">Bu kaynak için kullanılabilir akış yok.</string>
     <string name="player_track_details_selected_stream_content_description">Şu an seçili akış</string>
     <string name="player_track_details_matches_preference">Akış biçimi ve kalite tercihinle eşleşiyor</string>
-    <string name="player_track_details_active_url">Etkin çalma URL\'si</string>
+    <string name="player_track_details_active_url">Etkin çalma URL'si</string>
     <string name="player_track_details_served_from_cache">Yerel önbellekten</string>
     <string name="player_track_details_metadata_track">Meta veri parçası</string>
     <string name="player_track_details_title">Başlık</string>
@@ -764,7 +764,7 @@
     <string name="player_track_details_explicit">Müstehcen</string>
     <string name="player_track_details_popularity">Popülerlik</string>
     <string name="player_track_details_isrc">ISRC</string>
-    <string name="player_track_details_thumbnail_urls">Küçük resim URL\'leri</string>
+    <string name="player_track_details_thumbnail_urls">Küçük resim URL'leri</string>
 
     <!-- Shell -->
     <string name="shell_sidebar_toggle_content_description">Kenar çubuğunu aç/kapat</string>
@@ -840,10 +840,10 @@
     <string name="plugin_error_builtin_remove">Yerleşik eklentiler kaldırılamaz.</string>
     <string name="plugin_error_api_version_invalid">%1$s geçersiz bir apiVersion (%2$s) bildiriyor. %3$s ile uyumlu anlamsal sürümleme bekleniyor.</string>
     <string name="plugin_error_app_api_version_invalid">Spotube eklenti API sürümü %1$s geçersiz.</string>
-    <string name="plugin_error_api_incompatible">%1$s, eklenti API\'si %2$s hedefliyor ancak Spotube uyumsuz eklenti API\'si %3$s destekliyor. Aynı ana API sürümü için derlenmiş bir eklenti yükle.</string>
+    <string name="plugin_error_api_incompatible">%1$s, eklenti API'si %2$s hedefliyor ancak Spotube uyumsuz eklenti API'si %3$s destekliyor. Aynı ana API sürümü için derlenmiş bir eklenti yükle.</string>
 
     <!-- Plugin install prompts -->
-    <string name="plugin_prompt_incompatible_title">Eklenti API\'si uyumlu değil</string>
+    <string name="plugin_prompt_incompatible_title">Eklenti API'si uyumlu değil</string>
     <string name="plugin_prompt_install_title">Eklenti yüklensin mi?</string>
     <string name="plugin_prompt_install_message">%1$s yüklü eklentilerine eklenecek.</string>
     <string name="plugin_prompt_update_title">Eklenti güncellensin mi?</string>
@@ -872,7 +872,7 @@
     <string name="plugin_discover_badge_official">Resmi</string>
     <string name="plugin_discover_badge_verified">Doğrulanmış</string>
     <string name="plugin_discover_stars_content_description">GitHub yıldızları</string>
-    <string name="plugin_discover_repository_content_description">GitHub depo URL\'si</string>
+    <string name="plugin_discover_repository_content_description">GitHub depo URL'si</string>
 
     <!-- Plugin release install dialog -->
     <string name="plugin_install_no_releases">Sürüm bulunamadı</string>

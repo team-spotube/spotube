@@ -501,7 +501,7 @@
     <string name="devices_connecting">কানেক্ট হচ্ছে...</string>
     <string name="devices_searching">নেটওয়ার্কে ডিভাইস খোঁজা হচ্ছে...</string>
     <string name="devices_empty">কোনো ডিভাইস পাওয়া যায়নি</string>
-    <string name="devices_empty_hint">অন্য ডিভাইসের সেটিংসে \"রিমোট কন্ট্রোলের অনুমতি দিন\" চালু আছে কিনা নিশ্চিত করুন।</string>
+    <string name="devices_empty_hint">অন্য ডিভাইসের সেটিংসে "রিমোট কন্ট্রোলের অনুমতি দিন" চালু আছে কিনা নিশ্চিত করুন।</string>
     <string name="devices_unknown_device">অজানা ডিভাইস</string>
     <string name="devices_resolving">খোঁজা হচ্ছে...</string>
 
@@ -535,7 +535,7 @@
 
     <!-- Remote control: connection request dialog -->
     <string name="remote_request_title">রিমোট কন্ট্রোলের অনুরোধ</string>
-    <string name="remote_request_message">\"%1$s\" এই ডিভাইসের প্লেব্যাক নিয়ন্ত্রণ করতে চায়।</string>
+    <string name="remote_request_message">"%1$s" এই ডিভাইসের প্লেব্যাক নিয়ন্ত্রণ করতে চায়।</string>
     <string name="remote_request_deny">প্রত্যাখ্যান</string>
     <string name="remote_request_allow">অনুমতি দিন</string>
     <string name="remote_request_allow_always">সবসময় অনুমতি দিন</string>
@@ -661,7 +661,7 @@
     <!-- Blacklist -->
     <string name="blacklist_filter_placeholder">ব্ল্যাকলিস্ট ফিল্টার করুন...</string>
     <string name="blacklist_empty">ব্ল্যাকলিস্টে কিছু নেই</string>
-    <string name="blacklist_no_results">\'%1$s\'-এর সাথে মেলে এমন কিছু ব্ল্যাকলিস্টে নেই</string>
+    <string name="blacklist_no_results">'%1$s'-এর সাথে মেলে এমন কিছু ব্ল্যাকলিস্টে নেই</string>
     <string name="blacklist_section_tracks">ট্র্যাক</string>
     <string name="blacklist_item_track">ট্র্যাক</string>
     <string name="blacklist_add">ব্ল্যাকলিস্টে যোগ করুন</string>
