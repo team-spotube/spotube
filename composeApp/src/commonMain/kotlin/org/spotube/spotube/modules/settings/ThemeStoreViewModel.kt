@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import org.spotube.spotube.core.network.HttpClientFactory
 import org.spotube.spotube.modules.plugin.GitHubRepo
+import org.spotube.spotube.modules.update.ThemeUpdateService
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.FlowPreview
@@ -206,15 +207,11 @@ class ThemeStoreViewModel(
     private val settings: SettingsRepository,
     private val themes: ThemePackageRepository,
     httpClientFactory: HttpClientFactory,
+    private val updateService: ThemeUpdateService,
 ) : ViewModel() {
     private val github = ThemeGitHubRepository(httpClientFactory.json)
     private val discover = MutableStateFlow(ThemeDiscoverUi(loading = true))
     private var discoverPage = 1
-    private val updates = MutableStateFlow<Map<String, ThemeUpdate>>(emptyMap())
-    private val updateStatus = MutableStateFlow(UpdateStatus())
-
-    private data class UpdateStatus(val checking: Boolean = false, val upToDate: Boolean = false, val failed: Boolean = false)
-
     private val prepared = MutableStateFlow<PreparedTheme?>(null)
 
     /** Parameter edits not yet written to settings (sliders fire on every tick); null when persisted. */
@@ -246,7 +243,7 @@ class ThemeStoreViewModel(
         )
     }
 
-    val uiState: StateFlow<ThemeStoreUiState> = combine(baseState, discover, updates, updateStatus) { base, disc, found, status ->
+    val uiState: StateFlow<ThemeStoreUiState> = combine(baseState, discover, updateService.updates, updateService.status) { base, disc, found, status ->
         base.copy(
             themes = base.themes.map { it.copy(updateVersion = found[it.id]?.version) },
             discover = disc,
@@ -258,10 +255,6 @@ class ThemeStoreViewModel(
 
     init {
         loadDiscover()
-        viewModelScope.launch {
-            themes.ready.first { it }
-            checkUpdates(manual = false)
-        }
         // Persist once edits settle: the theme recompiles on the saved value, so one drag costs one compile.
         @OptIn(FlowPreview::class)
         viewModelScope.launch {
@@ -457,36 +450,12 @@ class ThemeStoreViewModel(
 
     // ---- updates ------------------------------------------------------------------------------------------------
 
-    /** Looks for newer releases of every installed theme that declares an update source. */
-    fun checkUpdates(manual: Boolean = true) {
-        if (updateStatus.value.checking) return
-        val candidates = themes.installed.value.filter { it.meta.updates != null }
-        if (candidates.isEmpty()) {
-            if (manual) updateStatus.value = UpdateStatus(upToDate = true)
-            return
-        }
-        updateStatus.value = UpdateStatus(checking = true)
-        viewModelScope.launch {
-            var failures = 0
-            val found = LinkedHashMap<String, ThemeUpdate>()
-            for (theme in candidates) {
-                val source = theme.meta.updates ?: continue
-                runCatching { github.releases(source.owner, source.repo) }
-                    .onSuccess { releases -> latestThemeUpdate(theme.meta.version, releases, source)?.let { found[theme.id] = it } }
-                    .onFailure { e ->
-                        if (e is CancellationException) throw e
-                        failures++
-                    }
-            }
-            updates.value = found
-            // The automatic check on opening the page stays quiet unless something was found.
-            updateStatus.value = if (manual) UpdateStatus(upToDate = found.isEmpty() && failures == 0, failed = failures > 0 && found.isEmpty()) else UpdateStatus()
-        }
-    }
+    /** The manual check of every installed theme with an update source (the selected one is also checked on app start). */
+    fun checkUpdates() = updateService.checkAll()
 
     /** Downloads the newer release found for [themeId]; the install dialog then asks to confirm the update. */
     fun updateTheme(themeId: String) {
-        val update = updates.value[themeId] ?: return
+        val update = updateService.updates.value[themeId] ?: return
         installAsset(update.assetUrl)
     }
 
@@ -500,7 +469,6 @@ class ThemeStoreViewModel(
                     settings.updateSettings(settings.getCurrentSettings().copy(selectedThemeId = candidate.theme.id))
                 }
                 prepared.value = null
-                updates.update { it - candidate.theme.id }
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {

@@ -93,6 +93,8 @@ data class UserSettings(
     val autoCheckForUpdates: Boolean = true,
     val ignoredAppUpdateVersion: String? = null,
     val ignoredPluginUpdateVersions: Map<String, String> = emptyMap(),
+    /** Theme id -> the update version the user chose to ignore. */
+    val ignoredThemeUpdateVersions: Map<String, String> = emptyMap(),
 
     // Support
     val supportRemindersEnabled: Boolean = true,

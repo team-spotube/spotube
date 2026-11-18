@@ -57,6 +57,8 @@ import org.spotube.spotube.modules.update.AppUpdateService
 import org.spotube.spotube.modules.plugin.components.PluginPermissionDialog
 import org.spotube.spotube.modules.update.PluginUpdateDialog
 import org.spotube.spotube.modules.update.PluginUpdateService
+import org.spotube.spotube.modules.update.ThemeUpdateDialog
+import org.spotube.spotube.modules.update.ThemeUpdateService
 import org.spotube.spotube.modules.webview.WebViewScreen
 import org.spotube.spotube.modules.welcome.WelcomeRepository
 import org.spotube.spotube.resources.iconsax.Iconsax
@@ -168,6 +170,8 @@ fun App(
     }
     val appUpdateService: AppUpdateService = koinInject()
     val pluginUpdateService: PluginUpdateService = koinInject()
+    val themeUpdateService: ThemeUpdateService = koinInject()
+    val availableThemeUpdate by themeUpdateService.prompt.collectAsStateWithLifecycle()
     val availableAppUpdate by appUpdateService.availableUpdate.collectAsStateWithLifecycle()
     val availablePluginUpdate by pluginUpdateService.availableUpdate.collectAsStateWithLifecycle()
     val pluginPermissionReview by pluginUpdateService.permissionReview.collectAsStateWithLifecycle()
@@ -273,6 +277,13 @@ fun App(
                         onDismiss = pluginUpdateService::dismissUpdate,
                         onIgnore = pluginUpdateService::ignoreUpdate,
                         onUpdate = pluginUpdateService::installUpdate)
+                }
+                availableThemeUpdate?.let { update ->
+                    ThemeUpdateDialog(
+                        update = update,
+                        onDismiss = themeUpdateService::dismissPrompt,
+                        onIgnore = themeUpdateService::ignorePrompt,
+                        onUpdate = themeUpdateService::installPrompt)
                 }
                 pluginPermissionReview?.let { review ->
                     PluginPermissionDialog(

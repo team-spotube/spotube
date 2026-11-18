@@ -88,7 +88,7 @@ internal fun parseReleaseVersion(tag: String): SemVer? = try {
 }
 
 /** A newer release of an installed theme that carries the declared archive. */
-data class ThemeUpdate(val version: String, val tag: String, val assetUrl: String)
+data class ThemeUpdate(val version: String, val tag: String, val assetUrl: String, val notes: String = "")
 
 /**
  * The newest release that is a published (not draft, not pre-release) semantic version with the [source]'s archive,
@@ -106,5 +106,5 @@ fun latestThemeUpdate(installedVersion: String?, releases: List<GitHubRelease>, 
         }
         .maxByOrNull { it.first } ?: return null
     if (installed != null && best.first <= installed) return null
-    return ThemeUpdate(best.first.toString(), best.second.tagName, best.third.browserDownloadUrl)
+    return ThemeUpdate(best.first.toString(), best.second.tagName, best.third.browserDownloadUrl, best.second.body.orEmpty())
 }

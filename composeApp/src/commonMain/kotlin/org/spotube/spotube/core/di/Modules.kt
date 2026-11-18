@@ -178,6 +178,7 @@ val sharedModules = module {
     // Updates
     single { AppUpdateService(get(), get()) } withOptions { createdAtStart() }
     single { PluginUpdateService(get(), get()) } withOptions { createdAtStart() }
+    single { org.spotube.spotube.modules.update.ThemeUpdateService(get(), get(), get()) } withOptions { createdAtStart() }
 
     // Downloads
     singleOf(::DownloadManager)

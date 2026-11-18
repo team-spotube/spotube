@@ -134,11 +134,14 @@ internal fun ThemesPanel() {
                     style = MillenniumIconButtonStyle.Quiet,
                     enabled = !state.checkingUpdates,
                 )
+                // The main action of the page: a filled, larger button so it is easy to see and hit.
                 MillenniumIconButton(
                     icon = Iconsax.IconsaxAdd,
                     contentDescription = stringResource(Res.string.settings_themes_install),
                     onClick = { picker.launch() },
-                    style = MillenniumIconButtonStyle.Quiet,
+                    style = MillenniumIconButtonStyle.Primary,
+                    iconSize = 24.dp,
+                    modifier = Modifier.padding(start = 4.dp),
                 )
             },
         )

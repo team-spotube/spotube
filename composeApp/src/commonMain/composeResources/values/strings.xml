@@ -592,6 +592,9 @@
     <string name="update_action_update">Update</string>
     <string name="app_update_dialog_title">Spotube %1$s is available</string>
     <string name="app_update_dialog_no_notes">See what’s new in this release on the Spotube downloads page.</string>
+    <string name="theme_update_dialog_title">%1$s %2$s is available</string>
+    <string name="theme_update_dialog_current_version">Currently installed: %1$s</string>
+    <string name="theme_update_dialog_no_notes">See what’s new on the theme’s GitHub page.</string>
     <string name="plugin_update_dialog_title">%1$s %2$s is available</string>
     <string name="plugin_update_dialog_current_version">Currently installed: %1$s</string>
     <string name="plugin_update_dialog_no_notes">See what’s new in this update from the plugin’s page.</string>
