@@ -19,4 +19,7 @@
     <string name="app_name">Spotube</string>
     <string name="now_playing">Now Playing</string>
     <string name="car_connect_hint">Play music from your phone to start listening in the car</string>
+    <string name="widget_now_playing_description">Control music from your home screen</string>
+    <string name="widget_idle_title">Nothing playing</string>
+    <string name="widget_idle_subtitle">Open Spotube to pick something</string>
 </resources>
