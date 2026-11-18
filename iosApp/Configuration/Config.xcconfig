@@ -5,3 +5,9 @@ PRODUCT_BUNDLE_IDENTIFIER=org.spotube.spotube.Spotube$(TEAM_ID)
 
 CURRENT_PROJECT_VERSION=1
 MARKETING_VERSION=1.0
+
+// CarPlay audio needs an entitlement Apple grants per developer account (developer.apple.com/carplay).
+// Signing a device build with it before you have it fails provisioning, so it is opt-in: set this to
+// iosApp/iosApp.entitlements once your profile includes com.apple.developer.carplay-audio.
+// Simulator builds always use it, so CarPlay can be tried there (I/O > External Displays > CarPlay).
+CARPLAY_ENTITLEMENTS =
