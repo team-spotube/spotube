@@ -46,24 +46,6 @@ plugins {
     kotlin("plugin.atomicfu") version libs.versions.kotlin
 }
 
-abstract class CargoBuildMutex :
-    org.gradle.api.services.BuildService<org.gradle.api.services.BuildServiceParameters.None>
-
-val cargoBuildMutex = gradle.sharedServices.registerIfAbsent(
-    "cargoBuildMutex",
-    CargoBuildMutex::class
-) {
-    maxParallelUsages.set(1)
-}
-
-// Gobley starts a separate Cargo process per target. Those processes share the crate's target
-// directory, and concurrent builds can remove build-script output files while another task reads
-// them (for example quote/.../output). Keep Cargo tasks sequential; Cargo still parallelizes each
-// individual build internally.
-tasks.matching { it.name.startsWith("cargoBuild") }.configureEach {
-    usesService(cargoBuildMutex)
-}
-
 val bundleId = "org.spotube.spotube"
 val version = "6.0.0"
 // Set to N to release <version>-beta.N (same app id, icons and name as stable); null for a plain stable release.
