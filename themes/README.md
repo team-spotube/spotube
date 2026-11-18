@@ -25,6 +25,7 @@ my-theme.zip
 | `contact` | no | an email address or an `http(s)` URL |
 | `license` | no | SPDX id or a short name; ship the text as `LICENSE` |
 | `logo` | no | path of a `.png` inside the zip |
+| `updates` | no | `{ "github": "https://github.com/owner/repo", "asset": "my-theme.zip" }` (since 1.2.0): where Spotube looks for newer versions. It reads the repository's published releases, takes the newest whose tag is a semver (with or without `v`) and that has an asset named `asset`, and offers an update when it is newer than `version` |
 | `schema` | yes | the theme format version this theme is written for, semver (`"1.1.0"`; declare the lowest version that has every feature you use). See [Schema and versioning](https://docs.spotube.cc/themes/schema-versioning); the JSON Schema is `schema/theme.schema.json` (also `https://docs.spotube.cc/schemas/theme/1.json`) |
 | `$schema` | no | editor hint: `"https://docs.spotube.cc/schemas/theme/1.json"` |
 

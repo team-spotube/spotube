@@ -79,42 +79,19 @@ internal fun LazyListScope.appearanceSection(
     settings: UserSettings,
     settingsViewModel: SettingsViewModel,
     includeHeader: Boolean = true,
-    /** When set, themes are a page opened from a single row (compact screens) instead of an inline list. */
+    /** When set (compact screens), Appearance is its own page opened from a single row instead of an inline section. */
     themesPageNavigation: NavigationCommands? = null) {
-    if (includeHeader) {
-        settingsSectionHeader(Res.string.settings_section_appearance)
-    }
-    settingsSectionCard(
-        items = listOf(
-            {
-                SelectionSettingCard(
-                    title = stringResource(Res.string.settings_theme_title),
+    if (themesPageNavigation != null) {
+        settingsSectionCard(
+            items = listOf {
+                SettingCardItem(
+                    title = stringResource(Res.string.settings_section_appearance),
                     subtitle = stringResource(
                         Res.string.settings_theme_subtitle_current,
                         settings.theme.displayLabel()
                     ),
                     icon = {
-                        SettingsItemIcon(Iconsax.IconsaxColorSwatch, stringResource(Res.string.settings_theme_title))
-                    },
-                    selectedOption = settings.theme,
-                    options = Theme.entries,
-                    optionLabel = { it.displayLabel() },
-                    onOptionSelected = { theme ->
-                        settingsViewModel.updateSettings {
-                            copy(theme = theme)
-                        }
-                    }
-                )
-            })
-    )
-    if (themesPageNavigation != null) {
-        settingsSectionCard(
-            items = listOf {
-                SettingCardItem(
-                    title = stringResource(Res.string.settings_themes_title),
-                    subtitle = stringResource(Res.string.settings_themes_subtitle),
-                    icon = {
-                        SettingsItemIcon(Iconsax.IconsaxMagic, stringResource(Res.string.settings_themes_title))
+                        SettingsItemIcon(Iconsax.IconsaxColorSwatch, stringResource(Res.string.settings_section_appearance))
                     },
                     trailingContent = {
                         AppIcon(
@@ -124,9 +101,36 @@ internal fun LazyListScope.appearanceSection(
                     },
                     onClick = { themesPageNavigation.navigateTo(Routes.ThemeSettings) })
             })
-    } else {
-        item { ThemesPanel() }
+        return
     }
+    if (includeHeader) {
+        settingsSectionHeader(Res.string.settings_section_appearance)
+    }
+    settingsSectionCard(items = listOf { ThemeModeCard(settings, settingsViewModel) })
+    item { ThemesPanel() }
+}
+
+/** The Light / Dark / System choice. Inline on large screens, at the top of the Appearance page on compact ones. */
+@Composable
+internal fun ThemeModeCard(settings: UserSettings, settingsViewModel: SettingsViewModel) {
+    SelectionSettingCard(
+        title = stringResource(Res.string.settings_theme_title),
+        subtitle = stringResource(
+            Res.string.settings_theme_subtitle_current,
+            settings.theme.displayLabel()
+        ),
+        icon = {
+            SettingsItemIcon(Iconsax.IconsaxColorSwatch, stringResource(Res.string.settings_theme_title))
+        },
+        selectedOption = settings.theme,
+        options = Theme.entries,
+        optionLabel = { it.displayLabel() },
+        onOptionSelected = { theme ->
+            settingsViewModel.updateSettings {
+                copy(theme = theme)
+            }
+        }
+    )
 }
 
 @Composable

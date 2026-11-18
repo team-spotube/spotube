@@ -156,10 +156,28 @@
 
 
     <string name="settings_themes_title">Themes</string>
-    <string name="settings_themes_subtitle">Pick a look, or install a theme package (.zip) made by someone else.</string>
+    <string name="settings_themes_subtitle">Pick a look, install a theme package (.zip), or discover themes on GitHub.</string>
     <string name="settings_themes_install">Install theme</string>
-    <string name="settings_themes_find">Find themes on GitHub</string>
-    <string name="settings_themes_find_hint">Themes people share are tagged “%1$s” on GitHub: download the .zip from a theme's releases or repository, then install it here.</string>
+    <string name="settings_themes_check_updates">Check for updates</string>
+    <string name="settings_themes_checking_updates">Checking for updates…</string>
+    <string name="settings_themes_up_to_date">Your themes are up to date.</string>
+    <string name="settings_themes_update_check_failed">Couldn't check for updates. Try again later.</string>
+    <string name="settings_theme_update_available">Update to %1$s</string>
+    <string name="settings_themes_discover_title">Discover themes</string>
+    <string name="settings_themes_discover_subtitle">Open-source themes on GitHub tagged “spotube” and “spotube-theme”, most starred first.</string>
+    <string name="settings_themes_discover_loading">Loading themes…</string>
+    <string name="settings_themes_discover_failed">Couldn't load themes from GitHub.</string>
+    <string name="settings_themes_discover_retry">Retry</string>
+    <string name="settings_themes_discover_empty">No themes found.</string>
+    <string name="settings_themes_discover_load_more">Load more</string>
+    <string name="settings_theme_stars">%1$d ★</string>
+    <string name="settings_theme_releases_title">%1$s releases</string>
+    <string name="settings_theme_releases_loading">Loading releases…</string>
+    <string name="settings_theme_releases_failed">Couldn't load the releases.</string>
+    <string name="settings_theme_releases_none">None of the releases has a .zip theme package.</string>
+    <string name="settings_theme_release_prerelease">Pre-release</string>
+    <string name="settings_theme_downloading">Downloading…</string>
+    <string name="settings_theme_download_failed">Couldn't download that file.</string>
     <string name="settings_theme_millennium_name">Millennium</string>
     <string name="settings_theme_accent_label">Accent color</string>
     <string name="settings_theme_builtin_description">The built-in Millennium look: glossy gel buttons and pearl surfaces.</string>

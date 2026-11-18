@@ -197,6 +197,16 @@ const schema = {
     contact: { type: 'string', maxLength: 200, description: 'An email address or an http(s) URL.' },
     license: { type: 'string', maxLength: 60, description: 'SPDX identifier; ship the full text as LICENSE.' },
     logo: { type: 'string', pattern: '\\.png$', description: 'Path of a .png (max 512x512) inside the package.' },
+    updates: {
+      type: 'object',
+      description: 'GitHub release based update checks (since 1.2.0). Release tags must be semantic versions, with or without a leading v, and the release must have an asset with this name.',
+      required: ['github', 'asset'],
+      properties: {
+        github: { type: 'string', pattern: '^https://github\\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/?$', description: 'The repository URL: https://github.com/owner/repo' },
+        asset: { type: 'string', pattern: '^[A-Za-z0-9][A-Za-z0-9._-]*\\.zip$', description: 'Name of the theme .zip in each release, for example my-theme.zip' },
+      },
+      additionalProperties: false,
+    },
     parameters: { type: 'object', description: 'Settings offered to users (`{params.name}`), at most 24.', propertyNames: { pattern: '^[A-Za-z][A-Za-z0-9_]{0,31}$' }, maxProperties: 24, additionalProperties: { $ref: '#/$defs/parameter' } },
     vars: { type: 'object', description: "The author's private token store (`{vars.name}`).", additionalProperties: { $ref: '#/$defs/varDecl' } },
     assets: {

@@ -37,12 +37,12 @@ import kotlinx.serialization.json.intOrNull
  *   the theme is newer.
  * - **patch**: clarifications and fixes, never visible to themes.
  *
- * History: 1.0.0 first release; 1.1.0 `assets.iconPack.images` (PNG icon packs from any icon library).
+ * History: 1.0.0 first release; 1.1.0 `assets.iconPack.images` (PNG icon packs from any icon library); 1.2.0 `updates` (GitHub release based update checks).
  *
  * Keep in sync with `themes/schema/theme.schema.json` (`ThemeSchemaTest` checks it) and bump it with every
  * change to the theme format.
  */
-const val THEME_SCHEMA_VERSION = "1.1.0"
+const val THEME_SCHEMA_VERSION = "1.2.0"
 
 /** A parsed `MAJOR.MINOR.PATCH`. */
 data class SchemaVersion(val major: Int, val minor: Int, val patch: Int) {
@@ -200,6 +200,8 @@ data class ThemeMetadata(
     val license: String? = null,
     /** Path of a `.png` inside the package. */
     val logo: String? = null,
+    /** Where to look for new versions of this theme (GitHub releases), if the author opted in. */
+    val updates: ThemeUpdateSource? = null,
 ) {
     /** Fields every installable theme must declare, like a plugin manifest. */
     fun missingRequired(name: String?): String? = when {
@@ -207,6 +209,29 @@ data class ThemeMetadata(
         version.isNullOrBlank() -> "version"
         author.isNullOrBlank() -> "author"
         else -> null
+    }
+}
+
+/**
+ * Update source declared by a theme: `"updates": { "github": "https://github.com/owner/repo", "asset": "my-theme.zip" }`.
+ * Release tags must be semantic versions, with or without a leading `v`; the release must carry an asset named [asset].
+ */
+data class ThemeUpdateSource(val owner: String, val repo: String, val asset: String) {
+    val repositoryUrl: String get() = "https://github.com/$owner/$repo"
+}
+
+private val GITHUB_REPO_URL = Regex("https://github\\.com/([A-Za-z0-9_.-]{1,100})/([A-Za-z0-9_.-]{1,100})/?")
+private val UPDATE_ASSET = Regex("[A-Za-z0-9][A-Za-z0-9._-]{0,100}\\.zip")
+
+private fun parseUpdateSource(root: JsonObject, problems: MutableSet<String>): ThemeUpdateSource? {
+    val obj = root["updates"] as? JsonObject ?: return null
+    val url = (obj["github"] as? JsonPrimitive)?.contentOrNull?.trim()
+    val asset = (obj["asset"] as? JsonPrimitive)?.contentOrNull?.trim()
+    val match = url?.let { GITHUB_REPO_URL.matchEntire(it) }
+    return when {
+        match == null -> null.also { problems += "updates.github must be a https://github.com/<owner>/<repo> URL" }
+        asset == null || !UPDATE_ASSET.matches(asset) -> null.also { problems += "updates.asset must be the name of a .zip release asset" }
+        else -> ThemeUpdateSource(match.groupValues[1], match.groupValues[2].removeSuffix(".git"), asset)
     }
 }
 
@@ -237,6 +262,7 @@ private fun parseThemeMetadata(root: JsonObject, problems: MutableSet<String>): 
         homepage = link("homepage"),
         license = str("license", 60),
         logo = str("logo", ThemeLimits.MAX_NAME_LENGTH),
+        updates = parseUpdateSource(root, problems),
     )
 }
 

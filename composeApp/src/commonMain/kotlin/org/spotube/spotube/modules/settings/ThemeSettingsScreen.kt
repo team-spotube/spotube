@@ -24,6 +24,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.compose.viewmodel.koinViewModel
+import org.spotube.spotube.modules.settings.sections.ThemeModeCard
+import org.spotube.spotube.modules.settings.sections.settingsSectionCard
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,22 +39,27 @@ import org.spotube.spotube.core.ui.component.ApplicationMainBar
 import org.spotube.spotube.modules.settings.sections.ThemesPanel
 import org.spotube.spotube.modules.shell.LocalAppShellBottomInset
 import spotube.composeapp.generated.resources.Res
-import spotube.composeapp.generated.resources.settings_themes_title
+import spotube.composeapp.generated.resources.settings_section_appearance
 
-/** The themes list as its own page; on compact screens Appearance only links here instead of listing every theme. */
+/** Appearance as its own page on compact screens: the Light/Dark/System choice, then the themes. Large screens show the same inline in Settings. */
 @Composable
 fun ThemeSettingsScreen() {
     val shellBottomInset = LocalAppShellBottomInset.current
     val contentPadding = remember(shellBottomInset) {
         PaddingValues(top = 16.dp, bottom = 16.dp + shellBottomInset)
     }
+    val settingsViewModel = koinViewModel<SettingsViewModel>()
+    val settings by settingsViewModel.settingsState.collectAsStateWithLifecycle()
     Column(modifier = Modifier.fillMaxSize()) {
-        ApplicationMainBar(title = { Text(stringResource(Res.string.settings_themes_title)) })
+        ApplicationMainBar(title = { Text(stringResource(Res.string.settings_section_appearance)) })
         Box(modifier = Modifier.weight(1f).fillMaxSize()) {
             LazyColumn(
                 modifier = Modifier.widthIn(max = 1280.dp).align(Alignment.TopCenter),
                 contentPadding = contentPadding,
             ) {
+                settings?.let { current ->
+                    settingsSectionCard(items = listOf { ThemeModeCard(current, settingsViewModel) })
+                }
                 item { ThemesPanel() }
             }
         }

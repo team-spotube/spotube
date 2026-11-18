@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://docs.spotube.cc/schemas/theme/1.1.0.json",
+  "$id": "https://docs.spotube.cc/schemas/theme/1.2.0.json",
   "title": "Spotube theme (theme.json)",
-  "description": "Theme format 1.1.0. Semver: a theme of the same major always loads; a newer minor loads with its newer parts ignored. Latest 1.x: https://docs.spotube.cc/schemas/theme/1.json",
-  "x-schemaVersion": "1.1.0",
+  "description": "Theme format 1.2.0. Semver: a theme of the same major always loads; a newer minor loads with its newer parts ignored. Latest 1.x: https://docs.spotube.cc/schemas/theme/1.json",
+  "x-schemaVersion": "1.2.0",
   "type": "object",
   "required": [
     "schema",
@@ -20,7 +20,7 @@
     "schema": {
       "type": "string",
       "pattern": "^(0|[1-9][0-9]{0,5})\\.(0|[1-9][0-9]{0,5})\\.(0|[1-9][0-9]{0,5})$",
-      "description": "The theme schema version this theme is written for (semver), for example \"1.1.0\"."
+      "description": "The theme schema version this theme is written for (semver), for example \"1.2.0\"."
     },
     "id": {
       "type": "string",
@@ -67,6 +67,27 @@
       "type": "string",
       "pattern": "\\.png$",
       "description": "Path of a .png (max 512x512) inside the package."
+    },
+    "updates": {
+      "type": "object",
+      "description": "GitHub release based update checks (since 1.2.0). Release tags must be semantic versions, with or without a leading v, and the release must have an asset with this name.",
+      "required": [
+        "github",
+        "asset"
+      ],
+      "properties": {
+        "github": {
+          "type": "string",
+          "pattern": "^https://github\\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/?$",
+          "description": "The repository URL: https://github.com/owner/repo"
+        },
+        "asset": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*\\.zip$",
+          "description": "Name of the theme .zip in each release, for example my-theme.zip"
+        }
+      },
+      "additionalProperties": false
     },
     "parameters": {
       "type": "object",

@@ -25,7 +25,12 @@ import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.readBytes
 import io.github.vinceglb.filekit.size
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
+import org.spotube.spotube.core.network.HttpClientFactory
+import org.spotube.spotube.modules.plugin.GitHubRepo
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.FlowPreview
@@ -112,6 +117,10 @@ data class ThemeCardUi(
     val parameters: List<ThemeParamUi> = emptyList(),
     /** True when the user has changed any parameter from its default. */
     val hasCustomParameters: Boolean = false,
+    /** True when the theme declares where to look for new versions (`updates` in theme.json). */
+    val checksForUpdates: Boolean = false,
+    /** A newer version found by the last update check. */
+    val updateVersion: String? = null,
 ) {
     val isBuiltin: Boolean get() = isMillennium || isModern
 }
@@ -127,6 +136,42 @@ data class PendingThemeUi(
     val sizeKb: Int,
 )
 
+/** A GitHub repository tagged `spotube` and `spotube-theme`. */
+@Immutable
+data class ThemeRepoUi(
+    val fullName: String,
+    val name: String,
+    val owner: String,
+    val avatarUrl: String,
+    val description: String?,
+    val stars: Int,
+    val url: String,
+)
+
+@Immutable
+data class ThemeAssetUi(val name: String, val url: String)
+
+/** A release of a theme repository with the `.zip` assets that can be installed. */
+@Immutable
+data class ThemeReleaseUi(val tag: String, val title: String, val prerelease: Boolean, val assets: List<ThemeAssetUi>)
+
+/** The "discover themes on GitHub" list and the release picker opened from it. */
+@Immutable
+data class ThemeDiscoverUi(
+    val repos: List<ThemeRepoUi> = emptyList(),
+    val loading: Boolean = false,
+    val failed: Boolean = false,
+    val canLoadMore: Boolean = false,
+    /** The repository whose releases are being browsed, if any. */
+    val repo: ThemeRepoUi? = null,
+    val releases: List<ThemeReleaseUi> = emptyList(),
+    val loadingReleases: Boolean = false,
+    val releasesFailed: Boolean = false,
+    /** URL of the asset being downloaded (also set while an update downloads). */
+    val downloading: String? = null,
+    val downloadFailed: Boolean = false,
+)
+
 @Immutable
 data class ThemeStoreUiState(
     val themes: List<ThemeCardUi> = emptyList(),
@@ -134,15 +179,17 @@ data class ThemeStoreUiState(
     val importError: ThemeImportError? = null,
     /** The missing manifest field for [ThemeImportError.MissingMetadata]. */
     val importErrorDetail: String? = null,
+    val discover: ThemeDiscoverUi = ThemeDiscoverUi(),
+    val checkingUpdates: Boolean = false,
+    /** Set after a manual check when nothing is newer (so the UI can say so). */
+    val upToDate: Boolean = false,
+    val updateCheckFailed: Boolean = false,
 )
 
 private const val MILLENNIUM_ID = BuiltInThemes.MILLENNIUM_ID
 private const val MILLENNIUM_REPO = "https://github.com/team-spotube/millennium"
 private const val SPOTUBE_REPO = "https://github.com/team-spotube/spotube"
 
-/** The GitHub topic theme authors tag their repositories with so people can find them. */
-const val THEME_DISCOVERY_TOPIC = "spotube-theme"
-const val THEME_DISCOVERY_URL = "https://github.com/topics/$THEME_DISCOVERY_TOPIC"
 
 /** The theme id to treat as selected: unknown, removed and older `builtin:blue/orange/lime` ids all mean Millennium. */
 internal fun normalizeSelectedThemeId(selected: String?, installedIds: List<String>): String =
@@ -158,14 +205,23 @@ internal fun MillenniumPalette.accentHex(): String {
 class ThemeStoreViewModel(
     private val settings: SettingsRepository,
     private val themes: ThemePackageRepository,
+    httpClientFactory: HttpClientFactory,
 ) : ViewModel() {
+    private val github = ThemeGitHubRepository(httpClientFactory.json)
+    private val discover = MutableStateFlow(ThemeDiscoverUi(loading = true))
+    private var discoverPage = 1
+    private val updates = MutableStateFlow<Map<String, ThemeUpdate>>(emptyMap())
+    private val updateStatus = MutableStateFlow(UpdateStatus())
+
+    private data class UpdateStatus(val checking: Boolean = false, val upToDate: Boolean = false, val failed: Boolean = false)
+
     private val prepared = MutableStateFlow<PreparedTheme?>(null)
 
     /** Parameter edits not yet written to settings (sliders fire on every tick); null when persisted. */
     private val pendingParameters = MutableStateFlow<Map<String, String>?>(null)
     private val importError = MutableStateFlow<Pair<ThemeImportError, String?>?>(null)
 
-    val uiState: StateFlow<ThemeStoreUiState> = combine(
+    private val baseState: Flow<ThemeStoreUiState> = combine(
         settings.userSettings, themes.installed, prepared, importError, pendingParameters,
     ) { userSettings, installed, candidate, error, pendingParams ->
         val overrides = pendingParams ?: userSettings.themeParameters
@@ -188,9 +244,24 @@ class ThemeStoreViewModel(
             importError = error?.first,
             importErrorDetail = error?.second,
         )
+    }
+
+    val uiState: StateFlow<ThemeStoreUiState> = combine(baseState, discover, updates, updateStatus) { base, disc, found, status ->
+        base.copy(
+            themes = base.themes.map { it.copy(updateVersion = found[it.id]?.version) },
+            discover = disc,
+            checkingUpdates = status.checking,
+            upToDate = status.upToDate,
+            updateCheckFailed = status.failed,
+        )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ThemeStoreUiState())
 
     init {
+        loadDiscover()
+        viewModelScope.launch {
+            themes.ready.first { it }
+            checkUpdates(manual = false)
+        }
         // Persist once edits settle: the theme recompiles on the saved value, so one drag costs one compile.
         @OptIn(FlowPreview::class)
         viewModelScope.launch {
@@ -288,6 +359,137 @@ class ThemeStoreViewModel(
         }
     }
 
+    // ---- discover on GitHub ---------------------------------------------------------------------------------------
+
+    /** Loads the first page of theme repositories (once; [retryDiscover] reloads). */
+    fun loadDiscover() {
+        if (discover.value.repos.isNotEmpty() && !discover.value.failed) return
+        discoverPage = 1
+        discover.update { it.copy(loading = true, failed = false) }
+        viewModelScope.launch {
+            runCatching { github.searchThemes(page = 1) }
+                .onSuccess { r ->
+                    discover.update { it.copy(repos = r.items.map(::toRepoUi), loading = false, canLoadMore = r.items.size < r.totalCount) }
+                }
+                .onFailure { e ->
+                    if (e is CancellationException) throw e
+                    discover.update { it.copy(loading = false, failed = true) }
+                }
+        }
+    }
+
+    fun retryDiscover() {
+        discover.update { it.copy(repos = emptyList(), failed = false) }
+        loadDiscover()
+    }
+
+    fun loadMoreDiscover() {
+        val state = discover.value
+        if (state.loading || !state.canLoadMore) return
+        discover.update { it.copy(loading = true) }
+        viewModelScope.launch {
+            runCatching { github.searchThemes(page = discoverPage + 1) }
+                .onSuccess { r ->
+                    discoverPage++
+                    discover.update {
+                        val merged = (it.repos + r.items.map(::toRepoUi)).distinctBy { repo -> repo.fullName }
+                        it.copy(repos = merged, loading = false, canLoadMore = r.items.isNotEmpty() && merged.size < r.totalCount)
+                    }
+                }
+                .onFailure { e ->
+                    if (e is CancellationException) throw e
+                    discover.update { it.copy(loading = false, canLoadMore = false) }
+                }
+        }
+    }
+
+    private fun toRepoUi(r: GitHubRepo) = ThemeRepoUi(
+        fullName = r.fullName,
+        name = r.fullName.substringAfterLast('/'),
+        owner = r.owner.login,
+        avatarUrl = r.owner.avatarUrl,
+        description = r.description,
+        stars = r.stargazersCount,
+        url = r.htmlUrl,
+    )
+
+    /** Opens the release picker of [repo]: every published release with the `.zip` assets it carries. */
+    fun openRepo(repo: ThemeRepoUi) {
+        discover.update { it.copy(repo = repo, releases = emptyList(), loadingReleases = true, releasesFailed = false, downloadFailed = false) }
+        val (owner, name) = repo.fullName.split('/', limit = 2).let { it[0] to it.getOrElse(1) { "" } }
+        viewModelScope.launch {
+            runCatching { github.releases(owner, name) }
+                .onSuccess { list ->
+                    val releases = list.filter { !it.draft }.mapNotNull { r ->
+                        val zips = r.assets.filter { it.name.endsWith(".zip", ignoreCase = true) && isGitHubAssetUrl(it.browserDownloadUrl) }
+                        if (zips.isEmpty()) null
+                        else ThemeReleaseUi(r.tagName, r.name?.takeIf { n -> n.isNotBlank() } ?: r.tagName, r.prerelease, zips.map { ThemeAssetUi(it.name, it.browserDownloadUrl) })
+                    }
+                    discover.update { it.copy(releases = releases, loadingReleases = false) }
+                }
+                .onFailure { e ->
+                    if (e is CancellationException) throw e
+                    discover.update { it.copy(loadingReleases = false, releasesFailed = true) }
+                }
+        }
+    }
+
+    fun closeRepo() {
+        discover.update { it.copy(repo = null, releases = emptyList(), releasesFailed = false, downloadFailed = false) }
+    }
+
+    /** Downloads a release asset and validates it; on success the usual install dialog is shown. */
+    fun installAsset(url: String) {
+        if (discover.value.downloading != null) return
+        discover.update { it.copy(downloading = url, downloadFailed = false) }
+        viewModelScope.launch {
+            try {
+                val bytes = github.download(url)
+                discover.update { it.copy(downloading = null, repo = null, releases = emptyList()) }
+                prepare(bytes)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                discover.update { it.copy(downloading = null, downloadFailed = true) }
+            }
+        }
+    }
+
+    // ---- updates ------------------------------------------------------------------------------------------------
+
+    /** Looks for newer releases of every installed theme that declares an update source. */
+    fun checkUpdates(manual: Boolean = true) {
+        if (updateStatus.value.checking) return
+        val candidates = themes.installed.value.filter { it.meta.updates != null }
+        if (candidates.isEmpty()) {
+            if (manual) updateStatus.value = UpdateStatus(upToDate = true)
+            return
+        }
+        updateStatus.value = UpdateStatus(checking = true)
+        viewModelScope.launch {
+            var failures = 0
+            val found = LinkedHashMap<String, ThemeUpdate>()
+            for (theme in candidates) {
+                val source = theme.meta.updates ?: continue
+                runCatching { github.releases(source.owner, source.repo) }
+                    .onSuccess { releases -> latestThemeUpdate(theme.meta.version, releases, source)?.let { found[theme.id] = it } }
+                    .onFailure { e ->
+                        if (e is CancellationException) throw e
+                        failures++
+                    }
+            }
+            updates.value = found
+            // The automatic check on opening the page stays quiet unless something was found.
+            updateStatus.value = if (manual) UpdateStatus(upToDate = found.isEmpty() && failures == 0, failed = failures > 0 && found.isEmpty()) else UpdateStatus()
+        }
+    }
+
+    /** Downloads the newer release found for [themeId]; the install dialog then asks to confirm the update. */
+    fun updateTheme(themeId: String) {
+        val update = updates.value[themeId] ?: return
+        installAsset(update.assetUrl)
+    }
+
     fun confirmInstall() {
         val candidate = prepared.value ?: return
         viewModelScope.launch {
@@ -298,6 +500,7 @@ class ThemeStoreViewModel(
                     settings.updateSettings(settings.getCurrentSettings().copy(selectedThemeId = candidate.theme.id))
                 }
                 prepared.value = null
+                updates.update { it - candidate.theme.id }
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
@@ -360,6 +563,7 @@ class ThemeStoreViewModel(
         problems = problems.toList(),
         parameters = parameterUis(id, doc, overrides),
         hasCustomParameters = overrides.keys.any { it.startsWith("$id.") },
+        checksForUpdates = meta.updates != null,
     )
 
     private fun parameterUis(themeId: String, doc: ThemeDocument, overrides: Map<String, String>): List<ThemeParamUi> =

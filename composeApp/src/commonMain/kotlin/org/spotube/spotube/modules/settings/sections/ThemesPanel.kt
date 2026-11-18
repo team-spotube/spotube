@@ -88,8 +88,6 @@ import org.spotube.spotube.core.ui.theming.engine.ThemeInstallKind
 import org.spotube.spotube.modules.settings.PendingThemeUi
 import org.spotube.spotube.modules.settings.ThemeCardUi
 import org.spotube.spotube.modules.settings.ThemeImportError
-import org.spotube.spotube.modules.settings.THEME_DISCOVERY_TOPIC
-import org.spotube.spotube.modules.settings.THEME_DISCOVERY_URL
 import org.spotube.spotube.modules.settings.ThemeStoreViewModel
 import org.spotube.spotube.resources.iconsax.Iconsax
 import org.spotube.spotube.resources.iconsax.IconsaxMagic
@@ -128,20 +126,22 @@ internal fun ThemesPanel() {
                     color = AppTheme.colors.onSurfaceVariant,
                 )
             }
-            val uriHandler = LocalUriHandler.current
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 MillenniumButton(onClick = { picker.launch() }) {
                     Text(stringResource(Res.string.settings_themes_install))
                 }
-                MillenniumButton(onClick = { uriHandler.openUri(THEME_DISCOVERY_URL) }, style = MillenniumButtonStyle.Secondary) {
-                    Text(stringResource(Res.string.settings_themes_find))
+                MillenniumButton(
+                    onClick = viewModel::checkUpdates,
+                    style = MillenniumButtonStyle.Secondary,
+                    enabled = !state.checkingUpdates,
+                ) {
+                    Text(stringResource(if (state.checkingUpdates) Res.string.settings_themes_checking_updates else Res.string.settings_themes_check_updates))
                 }
             }
-            Text(
-                stringResource(Res.string.settings_themes_find_hint, THEME_DISCOVERY_TOPIC),
-                style = AppTheme.typography.labelMedium,
-                color = AppTheme.colors.onSurfaceVariant,
-            )
+            when {
+                state.updateCheckFailed -> Text(stringResource(Res.string.settings_themes_update_check_failed), style = AppTheme.typography.labelMedium, color = AppTheme.colors.error)
+                state.upToDate -> Text(stringResource(Res.string.settings_themes_up_to_date), style = AppTheme.typography.labelMedium, color = AppTheme.colors.onSurfaceVariant)
+            }
         }
         state.importError?.let { error ->
             Text(
@@ -169,10 +169,19 @@ internal fun ThemesPanel() {
                     card = card,
                     onOpen = { detailsId = card.id },
                     onSelect = { viewModel.select(card.id) },
+                    onUpdate = { viewModel.updateTheme(card.id) },
                 )
             }
         }
+        ThemeDiscoverSection(
+            state = state.discover,
+            onOpen = viewModel::openRepo,
+            onRetry = viewModel::retryDiscover,
+            onLoadMore = viewModel::loadMoreDiscover,
+        )
     }
+
+    ThemeReleasesDialog(state.discover, onInstall = viewModel::installAsset, onDismiss = viewModel::closeRepo)
 
     state.themes.firstOrNull { it.id == detailsId }?.let { card ->
         ThemeDetailsDialog(
@@ -194,7 +203,7 @@ internal fun ThemesPanel() {
  * theme (a bare `clickable` draws nothing: Millennium turns Compose's default indication off).
  */
 @Composable
-internal fun ThemeRow(card: ThemeCardUi, onOpen: () -> Unit, onSelect: () -> Unit) {
+internal fun ThemeRow(card: ThemeCardUi, onOpen: () -> Unit, onSelect: () -> Unit, onUpdate: () -> Unit = {}) {
     MillenniumListTile(
         modifier = Modifier.fillMaxWidth(),
         selected = card.selected,
@@ -232,16 +241,23 @@ internal fun ThemeRow(card: ThemeCardUi, onOpen: () -> Unit, onSelect: () -> Uni
             )
         },
         trailing = {
-            if (card.selected) {
-                Text(
-                    stringResource(Res.string.settings_theme_selected),
-                    style = AppTheme.typography.labelMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = AppTheme.colors.primary,
-                )
-            } else {
-                MillenniumButton(onClick = onSelect, style = MillenniumButtonStyle.Secondary) {
-                    Text(stringResource(Res.string.settings_theme_select))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                card.updateVersion?.let { version ->
+                    MillenniumButton(onClick = onUpdate) {
+                        Text(stringResource(Res.string.settings_theme_update_available, version))
+                    }
+                }
+                if (card.selected) {
+                    Text(
+                        stringResource(Res.string.settings_theme_selected),
+                        style = AppTheme.typography.labelMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = AppTheme.colors.primary,
+                    )
+                } else {
+                    MillenniumButton(onClick = onSelect, style = MillenniumButtonStyle.Secondary) {
+                        Text(stringResource(Res.string.settings_theme_select))
+                    }
                 }
             }
         },
