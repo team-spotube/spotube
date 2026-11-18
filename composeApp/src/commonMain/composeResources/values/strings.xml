@@ -159,7 +159,7 @@
     <string name="settings_themes_subtitle">Pick a look, or install a theme package (.zip) made by someone else.</string>
     <string name="settings_themes_install">Install theme</string>
     <string name="settings_themes_find">Find themes on GitHub</string>
-    <string name="settings_themes_find_hint">Themes people share are tagged \"%1$s\" on GitHub: download the .zip from a theme's releases or repository, then install it here.</string>
+    <string name="settings_themes_find_hint">Themes people share are tagged “%1$s” on GitHub: download the .zip from a theme's releases or repository, then install it here.</string>
     <string name="settings_theme_millennium_name">Millennium</string>
     <string name="settings_theme_accent_label">Accent color</string>
     <string name="settings_theme_builtin_description">The built-in Millennium look: glossy gel buttons and pearl surfaces.</string>
@@ -185,9 +185,9 @@
     <string name="settings_theme_contents">Contents</string>
     <string name="settings_theme_contents_value">%1$d font file(s), %2$d icon replacement(s)</string>
     <string name="settings_theme_warnings">Theme warnings</string>
-    <string name="settings_theme_install_title">Install \"%1$s\"?</string>
-    <string name="settings_theme_update_title">Update \"%1$s\"?</string>
-    <string name="settings_theme_replace_title">Replace \"%1$s\"?</string>
+    <string name="settings_theme_install_title">Install “%1$s”?</string>
+    <string name="settings_theme_update_title">Update “%1$s”?</string>
+    <string name="settings_theme_replace_title">Replace “%1$s”?</string>
     <string name="settings_theme_update_message">An older version is installed (%1$s). Update to %2$s?</string>
     <string name="settings_theme_replace_same_version">Version %1$s is already installed. Replace the installed theme with this copy?</string>
     <string name="settings_theme_replace_downgrade">Installed version %1$s is newer than this one (%2$s). Replace it anyway?</string>
