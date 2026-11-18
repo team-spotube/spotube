@@ -30,6 +30,10 @@ import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Matrix
 import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.graphics.RadialGradient
 import android.graphics.RectF
 import android.graphics.Shader
 import android.util.Log
@@ -42,6 +46,7 @@ import coil3.request.ImageRequest
 import coil3.request.allowHardware
 import coil3.size.Size
 import coil3.toBitmap
+import kotlin.math.roundToInt
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -85,11 +90,13 @@ import spotube.composeapp.generated.resources.widget_remote_caption
 object NowPlayingWidget : KoinComponent {
     private const val TAG = "NowPlayingWidget"
     private const val ARTWORK_SIZE_PX = 256
-    private const val ARTWORK_CORNER_RATIO = 0.18f // 16dp on the 88dp cover
-    private const val DEFAULT_ACCENT = 0xFF1F7BE0.toInt()
+    private const val ARTWORK_CORNER_RATIO = 0.18f // 18dp on the 100dp cover
+    private const val DEFAULT_ACCENT = 0xFF1976B9.toInt()
+    private const val DEFAULT_ORB_TOP = 0xFF1976B9.toInt() // dark Blue palette accentTop
+    private const val DEFAULT_ORB_BOTTOM = 0xFF002D74.toInt() // dark Blue palette accentBottom
+    private const val ORB_STRENGTH = 0.48f // MillenniumIconButton's default orbStrength
+    private const val ORB_BORDER_FRACTION = 1f / 46f // its 1dp border on the 46dp button
     private const val MIN_ACCENT_SATURATION = 0.18f
-    private const val MAX_ICON_BACKDROP_LUMINANCE = 0.3 // white icon on it stays above 3:1
-    private const val BUTTON_ALPHA = 0xF0
     private const val BUTTON_BITMAP_PX = 192
 
     const val ACTION_PAUSE = "org.spotube.spotube.widget.PAUSE"
@@ -316,39 +323,109 @@ object NowPlayingWidget : KoinComponent {
     private class Artwork(val cover: Bitmap, val accent: Int)
 
     /**
-     * The Play/Pause button's glass, tinted with the cover's primary colour. RemoteViews can't
-     * tint a gradient per instance, so it is drawn here. A grey cover has no colour to follow and
-     * keeps the app's blue; a pale one is darkened until the white icon keeps 3:1 contrast on it.
+     * The Play/Pause orb: a port of the app's own Primary icon button (Millennium's
+     * `MillenniumIconButton`, `millenniumIconOrb` and `millenniumIconOrbStops`), so the widget's
+     * button is the player's button. RemoteViews can't draw Compose or tint a gradient per
+     * instance, so it is drawn here, once per cover, at the library's default strength.
+     *
+     * The colours come from the cover instead of the palette: [orbPair] gives the bright and deep
+     * accent for the cover's hue, which for the default blue is exactly the dark theme's accent.
      */
     private fun accentButton(accent: Int): Bitmap {
-        val hsv = FloatArray(3)
-        Color.colorToHSV(accent, hsv)
-        if (hsv[1] < MIN_ACCENT_SATURATION) Color.colorToHSV(DEFAULT_ACCENT, hsv)
-        val hue = hsv[0]
-        val saturation = hsv[1].coerceAtLeast(0.55f)
-        fun top(value: Float) = Color.HSVToColor(BUTTON_ALPHA, floatArrayOf(hue, saturation * 0.9f, value))
-        var value = hsv[2].coerceIn(0.55f, 0.9f) // dark covers would otherwise give a muddy button
-        while (value > 0.3f && ColorUtils.calculateLuminance(top(value)) > MAX_ICON_BACKDROP_LUMINANCE) {
-            value *= 0.92f
-        }
-        val bottom = Color.HSVToColor(BUTTON_ALPHA, floatArrayOf(hue, saturation, value * 0.68f))
-
+        val (top, bottom) = orbPair(accent)
         val size = BUTTON_BITMAP_PX
-        val half = size / 2f
+        val s = size.toFloat()
+        val half = s / 2f
+        val strength = ORB_STRENGTH
+        fun alpha(color: Int, factor: Float) = ColorUtils.setAlphaComponent(color, (255 * factor).roundToInt())
+
         val out = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(out)
         val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-        paint.shader = LinearGradient(0f, 0f, 0f, size.toFloat(), top(value), bottom, Shader.TileMode.CLAMP)
-        canvas.drawCircle(half, half, half - 1f, paint)
+
+        // Body: dark jewel glass, brightest only at the lower lip (millenniumIconOrbStops).
+        val body = ColorUtils.blendARGB(bottom, Color.BLACK, 0.52f)
         paint.shader = LinearGradient(
-            0f, 0f, size.toFloat(), size.toFloat(), 0x66FFFFFF, 0x00FFFFFF, Shader.TileMode.CLAMP)
-        canvas.drawCircle(half, half, half - 3f, paint)
-        paint.shader = null
+            0f, 0f, 0f, s,
+            intArrayOf(ColorUtils.blendARGB(bottom, body, 0.65f), body, body, ColorUtils.blendARGB(body, top, 0.40f), top),
+            floatArrayOf(0f, 0.28f, 0.60f, 0.82f, 1f),
+            Shader.TileMode.CLAMP)
+        canvas.drawRect(0f, 0f, s, s, paint)
+
+        // A light pool under the sphere.
+        val glow = if (Color.blue(top) > Color.red(top) && Color.blue(top) > Color.green(top)) {
+            ColorUtils.blendARGB(top, 0xFF65E8FF.toInt(), 0.65f)
+        } else {
+            ColorUtils.blendARGB(top, Color.WHITE, 0.25f)
+        }
+        paint.shader = RadialGradient(
+            half, s * 1.12f, s * 0.66f,
+            intArrayOf(alpha(glow, strength * 0.95f), alpha(glow, strength * 0.65f), alpha(glow, strength * 0.10f), Color.TRANSPARENT),
+            floatArrayOf(0f, 0.40f, 0.78f, 1f),
+            Shader.TileMode.CLAMP)
+        canvas.drawRect(0f, 0f, s, s, paint)
+
+        // The curved glass dome on the upper half.
+        val dome = Path().apply {
+            moveTo(s * 0.08f, s * 0.37f)
+            cubicTo(s * 0.12f, -s * 0.04f, s * 0.88f, -s * 0.04f, s * 0.92f, s * 0.37f)
+            cubicTo(s * 0.94f, s * 0.49f, s * 0.81f, s * 0.39f, s * 0.70f, s * 0.38f)
+            cubicTo(s * 0.48f, s * 0.32f, s * 0.28f, s * 0.43f, s * 0.12f, s * 0.44f)
+            cubicTo(s * 0.08f, s * 0.45f, s * 0.07f, s * 0.41f, s * 0.08f, s * 0.37f)
+            close()
+        }
+        paint.shader = RadialGradient(
+            s * 0.46f, s * 0.04f, s * 0.63f,
+            intArrayOf(alpha(Color.WHITE, strength), alpha(Color.WHITE, strength * 0.42f), alpha(Color.WHITE, strength * 0.03f)),
+            floatArrayOf(0f, 0.50f, 1f),
+            Shader.TileMode.CLAMP)
+        canvas.drawPath(dome, paint)
+
+        // Metallic rim, then the thin inner rim lit from above and below.
+        val rim = maxOf(s * ORB_BORDER_FRACTION, s * 0.025f)
         paint.style = Paint.Style.STROKE
-        paint.strokeWidth = 3f
-        paint.color = 0xB3FFFFFF.toInt()
-        canvas.drawCircle(half, half, half - 1.5f, paint)
+        paint.shader = LinearGradient(
+            0f, 0f, s * 0.65f, s,
+            intArrayOf(0xFF26364F.toInt(), 0xFF66748A.toInt(), 0xFFC6D4DA.toInt(), 0xFF89949D.toInt()),
+            floatArrayOf(0f, 0.28f, 0.62f, 1f),
+            Shader.TileMode.CLAMP)
+        paint.strokeWidth = rim * 2f
+        canvas.drawCircle(half, half, half, paint)
+
+        val inset = rim * 1.7f
+        paint.shader = LinearGradient(
+            0f, inset, 0f, s - inset,
+            intArrayOf(alpha(Color.WHITE, strength * 0.70f), Color.TRANSPARENT, Color.TRANSPARENT, alpha(glow, strength * 0.75f)),
+            floatArrayOf(0f, 0.35f, 0.75f, 1f),
+            Shader.TileMode.CLAMP)
+        paint.strokeWidth = s * 0.018f
+        canvas.drawCircle(half, half, half - inset, paint)
+
+        // Everything above is square; clear what lies outside the circle, with an anti-aliased edge.
+        // (A DST_IN circle would not do: it only touches the area the circle covers.)
+        paint.shader = null
+        paint.style = Paint.Style.FILL
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+        canvas.drawPath(
+            Path().apply {
+                addCircle(half, half, half, Path.Direction.CW)
+                fillType = Path.FillType.INVERSE_WINDING
+            },
+            paint)
         return out
+    }
+
+    /**
+     * The bright and deep accent for a cover's hue. The pair keeps the proportions of the app's dark
+     * blue accent (#1976B9 over #002D74), so a blue cover gives exactly the player's orb. A cover
+     * with no colour of its own (grey, near white) keeps the app's blue.
+     */
+    private fun orbPair(accent: Int): Pair<Int, Int> {
+        val hsv = FloatArray(3)
+        Color.colorToHSV(accent, hsv)
+        if (hsv[1] < MIN_ACCENT_SATURATION) return DEFAULT_ORB_TOP to DEFAULT_ORB_BOTTOM
+        val hue = hsv[0]
+        return Color.HSVToColor(floatArrayOf(hue, 0.86f, 0.73f)) to Color.HSVToColor(floatArrayOf(hue, 1f, 0.45f))
     }
 
     private data class WidgetState(

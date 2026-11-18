@@ -9,8 +9,8 @@
     android:padding="10dp">
 
     <FrameLayout
-        android:layout_width="88dp"
-        android:layout_height="88dp">
+        android:layout_width="100dp"
+        android:layout_height="100dp">
 
         <ImageView
             android:id="@+id/widget_art"
@@ -65,6 +65,8 @@
             android:textColor="#FFF2F6FC"
             android:textSize="13sp" />
 
+        <!-- Three equal-weight cells with the buttons centred in them, so the row spans the
+             text column at any widget width instead of bunching at its left edge. -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -72,47 +74,66 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <ImageButton
-                android:id="@+id/widget_previous"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/widget_button_glass"
-                android:padding="9dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_widget_previous" />
-
             <FrameLayout
-                android:layout_width="46dp"
+                android:layout_width="0dp"
                 android:layout_height="46dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp">
-
-                <ImageView
-                    android:id="@+id/widget_play_bg"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:importantForAccessibility="no"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/widget_button_gel" />
+                android:layout_weight="1">
 
                 <ImageButton
-                    android:id="@+id/widget_play_pause"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:id="@+id/widget_previous"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
                     android:background="@drawable/widget_button_ripple"
-                    android:padding="11dp"
+                    android:padding="10dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_widget_play" />
+                    android:src="@drawable/ic_widget_previous" />
             </FrameLayout>
 
-            <ImageButton
-                android:id="@+id/widget_next"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/widget_button_glass"
-                android:padding="9dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_widget_next" />
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="46dp"
+                android:layout_weight="1.2">
+
+                <FrameLayout
+                    android:layout_width="46dp"
+                    android:layout_height="46dp"
+                    android:layout_gravity="center">
+
+                    <ImageView
+                        android:id="@+id/widget_play_bg"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:importantForAccessibility="no"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/widget_button_orb" />
+
+                    <ImageButton
+                        android:id="@+id/widget_play_pause"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/widget_button_ripple"
+                        android:padding="8dp"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_widget_play" />
+                </FrameLayout>
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="46dp"
+                android:layout_weight="1">
+
+                <ImageButton
+                    android:id="@+id/widget_next"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/widget_button_ripple"
+                    android:padding="10dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_widget_next" />
+            </FrameLayout>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

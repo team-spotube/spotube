@@ -6,14 +6,14 @@
                 android:angle="270"
                 android:endColor="#661F3A66"
                 android:startColor="#996FA0DC" />
-            <corners android:radius="16dp" />
+            <corners android:radius="18dp" />
         </shape>
     </item>
     <item
-        android:bottom="26dp"
-        android:left="26dp"
-        android:right="26dp"
-        android:top="26dp">
+        android:bottom="30dp"
+        android:left="30dp"
+        android:right="30dp"
+        android:top="30dp">
         <vector
             android:width="24dp"
             android:height="24dp"
