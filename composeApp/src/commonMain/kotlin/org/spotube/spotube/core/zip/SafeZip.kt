@@ -25,6 +25,7 @@ import okio.HashingSink
 import okio.Path
 import okio.Path.Companion.toPath
 import okio.buffer
+import okio.use
 
 /** Caps for untrusted archives. Sizes are counted while reading, never taken from zip headers. */
 data class ZipLimits(

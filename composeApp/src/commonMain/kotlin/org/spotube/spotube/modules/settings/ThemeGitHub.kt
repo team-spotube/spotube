@@ -27,6 +27,7 @@ import io.ktor.http.append
 import io.ktor.http.contentLength
 import io.ktor.utils.io.readRemaining
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 import kotlinx.io.readByteArray
 import net.swiftzer.semver.SemVer

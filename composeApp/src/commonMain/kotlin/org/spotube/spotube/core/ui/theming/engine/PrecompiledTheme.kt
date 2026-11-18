@@ -17,6 +17,7 @@
 
 package org.spotube.spotube.core.ui.theming.engine
 
+import androidx.collection.LruCache
 import androidx.compose.runtime.Immutable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -75,14 +76,14 @@ class PrecompiledTheme internal constructor(
     fun compileWith(isDark: Boolean, compact: Boolean, live: Map<String, Any?>, item: Map<String, Any?> = emptyMap()): CompiledTheme =
         compile(loaded, palette, parameters, isDark, ThemeEnv(isDark, compact, if (item.isEmpty()) live else live + ("item" to item)))
 
-    private val itemCache = object : LinkedHashMap<Pair<Boolean, Map<String, Any?>>, CompiledTheme>(16, 0.75f, true) {
-        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<Pair<Boolean, Map<String, Any?>>, CompiledTheme>) = size > 24
-    }
+    // LruCache is thread safe and exists on every target (LinkedHashMap.removeEldestEntry and
+    // synchronized are JVM only, which broke the iOS build).
+    private val itemCache = LruCache<Pair<Boolean, Map<String, Any?>>, CompiledTheme>(24)
 
     /** Per-row variant for `ctx.item.*`, memoized: rows with the same facts share one compiled theme. */
     fun forItem(isDark: Boolean, item: Map<String, Any?>, live: Map<String, Any?>, compact: Boolean): CompiledTheme =
-        synchronized(itemCache) {
-            itemCache.getOrPut(isDark to (item + live + ("compact" to compact))) { compileWith(isDark, compact, live, item) }
+        (isDark to (item + live + ("compact" to compact))).let { key ->
+            itemCache[key] ?: compileWith(isDark, compact, live, item).also { itemCache.put(key, it) }
         }
 
     companion object {
