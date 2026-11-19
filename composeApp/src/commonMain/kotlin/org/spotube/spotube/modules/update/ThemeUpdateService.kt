@@ -55,11 +55,10 @@ data class ThemeUpdateStatus(val checking: Boolean = false, val upToDate: Boolea
 class ThemeUpdateService(
     private val settings: SettingsRepository,
     private val themes: ThemePackageRepository,
-    httpClientFactory: HttpClientFactory,
+    private val github: ThemeGitHubRepository,
 ) {
     private val logger = Logger.withTag("ThemeUpdateService")
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-    private val github = ThemeGitHubRepository(httpClientFactory.json)
 
     private val _updates = MutableStateFlow<Map<String, ThemeUpdate>>(emptyMap())
     /** Every update found so far, by theme id. */

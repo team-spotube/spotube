@@ -166,6 +166,7 @@
     <string name="settings_themes_discover_title">Discover on GitHub</string>
     <string name="settings_themes_discover_loading">Loading…</string>
     <string name="settings_themes_discover_failed">Couldn't load themes</string>
+    <string name="settings_themes_discover_rate_limited">GitHub is limiting requests right now. Try again in a few minutes.</string>
     <string name="settings_themes_discover_retry">Retry</string>
     <string name="settings_themes_discover_empty">No themes found</string>
     <string name="settings_themes_discover_load_more">Load more</string>

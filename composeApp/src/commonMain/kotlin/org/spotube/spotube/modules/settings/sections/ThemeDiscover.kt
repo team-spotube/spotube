@@ -69,6 +69,7 @@ import spotube.composeapp.generated.resources.settings_theme_releases_none
 import spotube.composeapp.generated.resources.settings_theme_stars
 import spotube.composeapp.generated.resources.settings_themes_discover_empty
 import spotube.composeapp.generated.resources.settings_themes_discover_failed
+import spotube.composeapp.generated.resources.settings_themes_discover_rate_limited
 import spotube.composeapp.generated.resources.settings_themes_discover_load_more
 import spotube.composeapp.generated.resources.settings_themes_discover_loading
 import spotube.composeapp.generated.resources.settings_themes_discover_retry
@@ -85,7 +86,10 @@ internal fun ThemeDiscoverSection(
     SettingsSectionLabel(Res.string.settings_themes_discover_title)
     when {
         state.repos.isEmpty() && state.loading -> DiscoverNote(Res.string.settings_themes_discover_loading)
-        state.repos.isEmpty() && state.failed -> DiscoverNote(Res.string.settings_themes_discover_failed, error = true) {
+        state.repos.isEmpty() && state.failed -> DiscoverNote(
+            if (state.rateLimited) Res.string.settings_themes_discover_rate_limited else Res.string.settings_themes_discover_failed,
+            error = true,
+        ) {
             MillenniumButton(onClick = onRetry, style = MillenniumButtonStyle.Secondary) {
                 Text(stringResource(Res.string.settings_themes_discover_retry))
             }
