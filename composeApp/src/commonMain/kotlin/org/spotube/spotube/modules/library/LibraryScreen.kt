@@ -41,6 +41,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composeunstyled.Text
@@ -269,6 +270,9 @@ private fun LibrarySourceFilterMenu(
             if (expandedDesktop) {
                 MillenniumButton(
                     onClick = { expanded = true },
+                    modifier = Modifier.padding(vertical = 4.dp),
+                    minSize = DpSize(0.dp, 36.dp),
+                    padding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
                     style = if (active) MillenniumButtonStyle.Primary else MillenniumButtonStyle.Secondary
                 ) {
                     AppIcon(Iconsax.IconsaxFilterSearch, null, modifier = Modifier.size(16.dp))
