@@ -1,0 +1,1210 @@
+<!--
+  ~ Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="queue_title">Lejátszási sor</string>
+    <string name="queue_clear_queue">Lejátszási sor törlése</string>
+    <string name="queue_filter_queue">Lejátszási sor szűrése...</string>
+    <string name="queue_no_queue_entries">A lejátszási sor üres</string>
+
+    <string name="search_placeholder">Dalok, előadók, albumok keresése...</string>
+    <string name="search_clear_history">Előzmények törlése</string>
+    <string name="search_filter_placeholder">Keresés...</string>
+
+    <!-- Library toolbar -->
+    <string name="library_screen_title">Gyűjteményed</string>
+    <string name="library_toolbar_compact_title">Gyűjtemény</string>
+    <string name="library_tab_playlists">Lejátszási listák</string>
+    <string name="library_tab_albums">Albumok</string>
+    <string name="library_tab_artists">Előadók</string>
+    <string name="library_tab_local_tracks">Helyi számok</string>
+    <string name="library_tab_downloads">Letöltések</string>
+    <string name="library_filter_playlists">Mentett lejátszási listák keresése…</string>
+    <string name="library_filter_albums">Mentett albumok keresése…</string>
+    <string name="library_filter_artists">Mentett előadók keresése…</string>
+    <string name="library_filter_local_tracks">Mappák vagy számok keresése…</string>
+    <string name="library_action_search">Gyűjtemény szűrése</string>
+    <string name="library_action_close_search">Szűrő bezárása</string>
+    <string name="library_action_create_playlist">Lejátszási lista létrehozása</string>
+    <string name="library_action_refresh_local_tracks">Helyi számok frissítése</string>
+    <string name="library_action_grid_view">Váltás rácsnézetre</string>
+    <string name="library_action_list_view">Váltás listanézetre</string>
+    <string name="library_playlists_empty">Nincsenek mentett lejátszási listák</string>
+    <string name="library_playlists_no_results">Nincs a következőnek megfelelő lejátszási lista: „%1$s”</string>
+    <string name="library_albums_empty">Nincsenek mentett albumok</string>
+    <string name="library_albums_no_results">Nincs a következőnek megfelelő album: „%1$s”</string>
+    <string name="library_artists_empty">Nincsenek mentett előadók</string>
+    <string name="library_artists_no_results">Nincs a következőnek megfelelő előadó: „%1$s”</string>
+
+    <!-- Local media -->
+    <string name="library_local_folders">Mappák</string>
+    <string name="library_local_folder">Mappa</string>
+    <string name="library_local_summary">%1$s • %2$s</string>
+    <plurals name="library_local_tracks_count">
+        <item quantity="one">%1$d szám</item>
+        <item quantity="other">%1$d szám</item>
+    </plurals>
+    <plurals name="library_local_folders_count">
+        <item quantity="one">%1$d mappa</item>
+        <item quantity="other">%1$d mappa</item>
+    </plurals>
+    <string name="library_local_back">Vissza a mappákhoz</string>
+    <string name="library_local_play_folder">Mappa lejátszása</string>
+    <string name="library_local_permission_title">Hozzáférés szükséges a hangfájlokhoz</string>
+    <string name="library_local_permission_description">Engedélyezd a hangfájlokhoz való hozzáférést, hogy böngészhesd az eszközödön lévő zenéket.</string>
+    <string name="library_local_grant_access">Hozzáférés engedélyezése</string>
+    <string name="library_local_empty_folders">Nem található helyi mappa</string>
+    <string name="library_local_empty_folders_description">Adj hozzá egy zenét tartalmazó mappát, és lejátszhatod itt. Ehhez nem kell bővítmény.</string>
+    <string name="library_local_add_folder">Mappa hozzáadása</string>
+    <string name="library_local_empty_tracks">Ebben a mappában nincsenek számok</string>
+    <string name="library_local_no_results">Nincs egyező mappa vagy szám</string>
+    <string name="library_local_refresh_failed">Nem sikerült frissíteni a helyi médiát</string>
+
+    <!-- Downloads -->
+    <string name="downloads_summary">%1$d folyamatban • %2$d kész</string>
+    <string name="downloads_saved_to">Mentés helye: %1$s</string>
+    <string name="downloads_clear_completed">Befejezettek törlése</string>
+    <string name="downloads_empty">Még nincsenek letöltések</string>
+    <string name="downloads_status_downloading">Letöltés: %1$d%</string>
+    <string name="downloads_status_queued">Várakozik</string>
+    <string name="downloads_status_completed">Kész</string>
+    <string name="downloads_status_cancelled">Megszakítva</string>
+    <string name="downloads_status_failed">Sikertelen</string>
+    <string name="downloads_status_failed_error">Sikertelen: %1$s</string>
+    <string name="downloads_action_cancel">Letöltés megszakítása</string>
+    <string name="downloads_action_retry">Letöltés újrapróbálása</string>
+    <string name="downloads_action_remove">Letöltés eltávolítása</string>
+
+    <!-- Shared media items -->
+    <string name="media_artist">Előadó</string>
+    <string name="media_blacklisted">Feketelistán</string>
+    <string name="media_liked_tracks">Kedvelt számok</string>
+    <string name="media_saved_songs">Mentett dalaid</string>
+    <string name="media_unknown_artist">Ismeretlen előadó</string>
+    <string name="media_preview_title">Szám címe</string>
+    <string name="media_preview_subtitle">Előadó neve</string>
+
+    <string name="accessibility_selected">Kijelölve</string>
+
+    <string name="settings_screen_title">Beállítások</string>
+
+    <string name="settings_section_plugins">Bővítmények</string>
+    <string name="settings_section_language_region">Nyelv és régió</string>
+    <string name="settings_section_appearance">Megjelenés</string>
+    <string name="settings_section_playback">Lejátszás</string>
+    <string name="settings_section_downloads">Letöltések</string>
+    <string name="settings_section_caching">Gyorsítótár</string>
+    <string name="settings_section_desktop">Asztali</string>
+    <string name="settings_section_updates">Frissítések</string>
+    <string name="settings_section_support">Támogatás</string>
+    <string name="settings_section_about">Névjegy</string>
+
+    <string name="common_close">Bezárás</string>
+    <string name="common_save">Mentés</string>
+    <string name="common_cancel">Mégse</string>
+
+    <string name="settings_language_title">Nyelv</string>
+    <string name="settings_language_subtitle_current">Az alkalmazás felületének nyelve. Jelenleg: %1$s</string>
+    <string name="settings_language_system_default">Rendszer alapértelmezése</string>
+    <string name="settings_country_title">Ország</string>
+    <string name="settings_country_subtitle_current">Ország a tartalmakhoz és az elérhetőséghez. Jelenleg: %1$s</string>
+    <string name="settings_option_name_and_code">%1$s (%2$s)</string>
+
+    <string name="settings_theme_title">Téma</string>
+    <string name="settings_theme_subtitle_current">Válaszd ki, hogyan kövesse a Spotube a rendszer megjelenését. Jelenleg: %1$s</string>
+    <string name="settings_theme_light">Világos</string>
+    <string name="settings_theme_dark">Sötét</string>
+    <string name="settings_theme_system">Rendszer</string>
+
+    <string name="settings_surface_theme_title">Felület</string>
+    <string name="settings_surface_theme_subtitle_current">Az alkalmazás háttéranyaga. Jelenleg: %1$s</string>
+    <string name="settings_surface_watery">Vizes</string>
+    <string name="settings_surface_icy">Jeges</string>
+    <string name="settings_surface_chrome">Króm</string>
+    <string name="settings_surface_acrylic">Akril</string>
+    <string name="settings_surface_glass">Üveg</string>
+
+    <string name="settings_accent_title">Kiemelőszín</string>
+    <string name="settings_accent_subtitle_current">Jelenlegi paletta: %1$s</string>
+    <string name="settings_accent_dialog_title">Kiemelőszín</string>
+    <string name="settings_accent_dialog_description">Válassz kiemelőszín-palettát, és nézd meg előnézetben világos és sötét témában is.</string>
+    <string name="settings_preview_light">Világos</string>
+    <string name="settings_preview_dark">Sötét</string>
+    <string name="settings_preview_label">Előnézet</string>
+    <string name="settings_preview_button">Gomb</string>
+    <string name="settings_accent_green_goblin">Zöld manó</string>
+    <string name="settings_accent_electric_violet">Elektromos ibolya</string>
+    <string name="settings_accent_oceanic_cyan">Óceánkék</string>
+    <string name="settings_accent_sunset_orange">Naplementenarancs</string>
+    <string name="settings_accent_rose_garden">Rózsakert</string>
+    <string name="settings_accent_midnight_blue">Éjkék</string>
+    <string name="settings_accent_metallic_slate">Fémes palaszürke</string>
+
+
+    <string name="settings_themes_title">Témák</string>
+    <string name="settings_themes_install">Téma telepítése</string>
+    <string name="settings_theme_details">Részletek</string>
+    <string name="settings_themes_check_updates">Frissítések keresése</string>
+    <string name="settings_themes_checking_updates">Keresés…</string>
+    <string name="settings_themes_up_to_date">Naprakész</string>
+    <string name="settings_themes_update_check_failed">Sikertelen ellenőrzés</string>
+    <string name="settings_theme_update_available">Frissítés erre: %1$s</string>
+    <string name="settings_themes_discover_title">Felfedezés a GitHubon</string>
+    <string name="settings_themes_discover_loading">Betöltés…</string>
+    <string name="settings_themes_discover_failed">Nem sikerült betölteni a témákat</string>
+    <string name="settings_themes_discover_rate_limited">A GitHub jelenleg korlátozza a kéréseket. Próbáld újra néhány perc múlva.</string>
+    <string name="settings_themes_discover_retry">Újra</string>
+    <string name="settings_themes_discover_empty">Nem található téma</string>
+    <string name="settings_themes_discover_load_more">Továbbiak betöltése</string>
+    <string name="settings_theme_stars">%1$d ★</string>
+    <string name="settings_theme_releases_loading">Kiadások betöltése…</string>
+    <string name="settings_theme_releases_failed">Nem sikerült betölteni a kiadásokat.</string>
+    <string name="settings_theme_releases_none">Egyik kiadásban sincs .zip témacsomag.</string>
+    <string name="settings_theme_release_prerelease">Előzetes kiadás</string>
+    <string name="settings_theme_downloading">Letöltés…</string>
+    <string name="settings_theme_download_failed">Nem sikerült letölteni a fájlt.</string>
+    <string name="settings_theme_millennium_name">Millennium</string>
+    <string name="settings_theme_accent_label">Kiemelőszín</string>
+    <string name="settings_theme_builtin_description">A beépített Millennium megjelenés: fényes, zselés gombok és gyöngyház felületek.</string>
+    <string name="settings_theme_modern_name">Modern</string>
+    <string name="settings_theme_modern_description">Semleges, lapos és minimalista megjelenés a shadcn/ui ihletésére: egyszínű felületek, hajszálvékony szegélyek, fényesség nélkül.</string>
+    <string name="settings_theme_customize">Testreszabás</string>
+    <string name="settings_theme_customize_reset">Alapértékek visszaállítása</string>
+    <string name="settings_theme_customize_unselected">Válaszd ki ezt a témát, hogy lásd a módosításaidat. A módosítások mindenképpen mentésre kerülnek ehhez a témához.</string>
+    <string name="settings_theme_color_hint">Hexadecimális szín, például #3B82F6</string>
+    <string name="settings_theme_selected">Kiválasztva</string>
+    <string name="settings_theme_select">Kiválasztás</string>
+    <string name="settings_theme_by_author">Készítette: %1$s</string>
+    <string name="settings_theme_version">v%1$s</string>
+    <string name="settings_theme_remove">Téma eltávolítása</string>
+    <string name="settings_theme_close">Bezárás</string>
+    <string name="settings_theme_link_repository">Tároló</string>
+    <string name="settings_theme_link_report">Hiba bejelentése</string>
+    <string name="settings_theme_link_homepage">Honlap</string>
+    <string name="settings_theme_link_contact">Kapcsolatfelvétel a szerzővel</string>
+    <string name="settings_theme_license">Licenc</string>
+    <string name="settings_theme_license_show">Licencszöveg megjelenítése</string>
+    <string name="settings_theme_license_hide">Licencszöveg elrejtése</string>
+    <string name="settings_theme_contents">Csomag</string>
+    <string name="settings_theme_contents_value">%1$d betűtípus · %2$d ikon</string>
+    <string name="settings_theme_warnings">Témafigyelmeztetések</string>
+    <string name="settings_theme_install_title">Telepíted ezt: „%1$s”?</string>
+    <string name="settings_theme_update_title">Frissíted ezt: „%1$s”?</string>
+    <string name="settings_theme_replace_title">Lecseréled ezt: „%1$s”?</string>
+    <string name="settings_theme_update_message">Egy régebbi verzió van telepítve (%1$s). Frissítesz erre: %2$s?</string>
+    <string name="settings_theme_replace_same_version">A(z) %1$s verzió már telepítve van. Lecseréled a telepített témát erre a példányra?</string>
+    <string name="settings_theme_replace_downgrade">A telepített %1$s verzió újabb, mint ez (%2$s). Mégis lecseréled?</string>
+    <string name="settings_theme_replace_invalid_incoming">Ez a téma érvénytelen szemantikus verziószámot használ (%1$s), ezért nem hasonlítható össze a telepítettel. Mégis lecseréled?</string>
+    <string name="settings_theme_replace_invalid_installed">A telepített verzió (%1$s) nem hasonlítható össze szemantikus verziószámozással. Lecseréled erre: %2$s?</string>
+    <string name="settings_theme_install_size">%1$d KB</string>
+    <string name="settings_theme_install_warning">A betűtípusokat és a képeket rendszerkönyvtárak dekódolják, ezért csak megbízható személyektől származó témákat telepíts.</string>
+    <string name="settings_theme_install_confirm">Telepítés</string>
+    <string name="settings_theme_install_update">Frissítés</string>
+    <string name="settings_theme_install_replace">Csere</string>
+    <string name="settings_custom_theme_import_failed">Ez a fájl nem érvényes Spotube-téma.</string>
+    <string name="settings_custom_theme_error_unreadable">A fájlt nem sikerült beolvasni.</string>
+    <string name="settings_custom_theme_error_too_large">A téma nagyobb a megengedett méretnél.</string>
+    <string name="settings_custom_theme_error_corrupt">Az archívum sérült, vagy nem támogatott formátumú.</string>
+    <string name="settings_custom_theme_error_unsafe">Az archívum nem biztonságos fájlútvonalakat tartalmaz, ezért elutasítottuk.</string>
+    <string name="settings_custom_theme_error_disallowed">Az archívum olyan fájlokat tartalmaz, amelyek nem lehetnek egy témában. Csak a theme.json, egy logó, .ttf/.otf betűtípusok és .png képek (valamint egy LICENSE fájl) engedélyezettek.</string>
+    <string name="settings_custom_theme_error_font">Az egyik betűtípus nem érvényes TrueType/OpenType fájl.</string>
+    <string name="settings_custom_theme_error_image">Az egyik kép nem érvényes PNG (legfeljebb 512 x 512).</string>
+    <string name="settings_custom_theme_error_metadata">A témának meg kell adnia a nevét, verzióját és szerzőjét a theme.json fájlban (hiányzik: %1$s).</string>
+
+    <string name="settings_appearance_title">Megjelenés és stílus</string>
+    <string name="settings_appearance_subtitle_current">Felületanyag és kiemelőszín. Jelenleg: %1$s · %2$s</string>
+    <string name="settings_appearance_dialog_title">Megjelenés és stílus</string>
+    <string name="settings_appearance_dialog_description">Válassz felületanyagot, majd egy hozzá illő kiemelőszínt. Minden lehetőség gondosan összeválogatott kombináció.</string>
+    <string name="settings_appearance_surface_label">Felület</string>
+    <string name="settings_appearance_accent_label">Kiemelőszín</string>
+    <string name="settings_preview_secondary">Másodlagos</string>
+
+    <string name="settings_palette_title">Paletta</string>
+    <string name="settings_palette_subtitle_current">Millennium kiemelőszín-paletta. Jelenleg: %1$s</string>
+    <string name="settings_palette_dialog_title">Paletta</string>
+    <string name="settings_palette_dialog_description">Válassz Millennium kiemelőszín-palettát, és nézd meg előnézetben világos és sötét témában.</string>
+    <string name="settings_palette_label">Paletta</string>
+    <string name="settings_appearance_subtitle_palette">Millennium paletta és kiemelőszín. Jelenleg: %1$s</string>
+    <string name="settings_palette_blue">Kék</string>
+    <string name="settings_palette_orange">Narancs</string>
+    <string name="settings_palette_lime">Lime</string>
+
+    <string name="settings_download_folder_title">Egyéni letöltési mappa</string>
+    <string name="settings_download_folder_current">Jelenlegi mappa: %1$s</string>
+    <string name="settings_download_folder_default_path">Jelenlegi mappa: %1$s (alapértelmezett)</string>
+    <string name="settings_download_folder_description">Hagyd üresen az alapértelmezett zenei mappa használatához.</string>
+    <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
+    <string name="settings_local_media_folders_title">Helyi médiamappák</string>
+    <string name="settings_local_media_folders_subtitle_current">Asztali gépen átvizsgált egyéni mappák. Hozzáadva: %1$d</string>
+    <string name="settings_local_media_folders_subtitle_empty">Még nincs egyéni mappa hozzáadva</string>
+    <string name="settings_local_media_folders_description">Egyéni mappák a helyi zenei gyűjteményedhez.</string>
+    <string name="settings_local_media_folders_manage">Kezelés</string>
+    <string name="settings_local_media_folders_add_action">Mappa hozzáadása</string>
+    <string name="settings_local_media_folders_remove_action">Mappa eltávolítása</string>
+    <string name="settings_local_media_folders_none_added">Nincs egyéni mappa hozzáadva.</string>
+    <string name="settings_local_media_folders_remove_named">%1$s eltávolítása az átvizsgálandó mappák közül</string>
+    <string name="settings_local_media_folders_automatic_both">A letöltési és a zenei gyorsítótár-mappa automatikusan bekerül.</string>
+    <string name="settings_local_media_folders_automatic_downloads">A letöltési mappád automatikusan bekerül.</string>
+    <string name="settings_local_media_folders_automatic_cache">A zenei gyorsítótár mappája automatikusan bekerül.</string>
+    <string name="settings_local_media_folders_saving">Mentés…</string>
+    <string name="settings_local_media_folders_save_error">Nem sikerült menteni a mappákat. A módosításaid megmaradtak, próbáld újra.</string>
+    <plurals name="settings_local_media_folders_count">
+        <item quantity="one">%1$d mappa</item>
+        <item quantity="other">%1$d mappa</item>
+    </plurals>
+    <string name="settings_download_format_title">Letöltött zene formátuma</string>
+    <string name="settings_download_format_subtitle_current">A letöltésekhez előnyben részesített kodek és konténer. Jelenleg: %1$s</string>
+    <string name="settings_download_quality_title">Letöltött zene minősége</string>
+
+    <string name="settings_streaming_format_title">Streamelt zene formátuma</string>
+    <string name="settings_streaming_format_subtitle_current">A zenestreameléshez előnyben részesített kodek és konténer. Jelenleg: %1$s</string>
+    <string name="settings_streaming_quality_title">Streamelt zene minősége</string>
+    <string name="settings_subtitle_current">Jelenleg: %1$s</string>
+    <string name="settings_enable_music_caching_title">Zene gyorsítótárazása</string>
+    <string name="settings_enable_music_caching_subtitle">A streamelt hang helyi tárolása a gyorsabb ismételt lejátszáshoz.</string>
+    <string name="settings_cache_folder_title">Gyorsítótár mappája</string>
+    <string name="settings_cache_folder_current">Jelenleg: %1$s</string>
+    <string name="settings_cache_folder_default">Jelenleg: az alkalmazás alapértelmezett gyorsítótára</string>
+    <string name="settings_cache_size_limit_title">Gyorsítótár méretkorlátja</string>
+    <string name="settings_cache_size_limit_unlimited">Nincs korlát</string>
+    <string name="settings_cache_size_limit_current">Jelenlegi korlát: %1$d MB</string>
+    <string name="settings_cache_size_limit_description">Add meg a gyorsítótár legnagyobb méretét MB-ban. Írj 0-t, vagy hagyd üresen, ha nem szeretnél korlátot.</string>
+    <string name="settings_cache_size_limit_placeholder">500</string>
+    <string name="settings_error_cache_size_range">A méret 0 vagy pozitív szám lehet.</string>
+    <string name="settings_enable_endless_playback_title">Végtelen lejátszás</string>
+    <string name="settings_enable_endless_playback_subtitle">Ajánlott számokkal folytatja a lejátszást, amikor a lejátszási sor véget ér.</string>
+    <string name="settings_playback_port_title">Lejátszási proxyszerver portja</string>
+    <string name="settings_allow_remote_control_title">Távvezérlés engedélyezése</string>
+    <string name="settings_allow_remote_control_subtitle">Az ugyanazon a hálózaton lévő más eszközök csatlakozás után vezérelhetik a lejátszást.</string>
+    <string name="settings_remote_device_name_title">Eszköznév távvezérléshez</string>
+    <string name="settings_remote_device_name_subtitle">Ezt a nevet látják más eszközök, amikor megtalálják ezt az eszközt. Jelenleg: %1$s</string>
+    <string name="settings_remote_device_name_description">Adj meg egy barátságos nevet, amelyet a hálózatodon lévő más eszközök látnak, amikor megtalálják ezt a Spotube-példányt.</string>
+    <string name="settings_remote_device_name_placeholder">pl. Nappali Spotube</string>
+    <string name="settings_remote_device_name_default">az eszköz gépneve</string>
+    <string name="settings_playback_port_subtitle_current">A lejátszási proxyszerver által használt port. Jelenleg: %1$d</string>
+    <string name="settings_playback_port_description">Válassz egy portot 1 és 65535 között.</string>
+    <string name="settings_playback_port_placeholder">14769</string>
+    <string name="settings_error_whole_number">Adj meg egy érvényes egész számot.</string>
+    <string name="settings_error_port_range">A portnak 1 és 65535 között kell lennie.</string>
+
+    <string name="settings_blacklist_title">Feketelista</string>
+    <string name="settings_blacklist_subtitle">Feketelistára tett számok és előadók kezelése</string>
+
+    <string name="settings_desktop_minimize_title">Kis méret a tálcára</string>
+    <string name="settings_desktop_minimize_subtitle">A Spotube tovább fut a rendszertálcán, amikor az ablakot kis méretre állítod.</string>
+    <string name="settings_desktop_discord_title">Discord Rich Presence</string>
+    <string name="settings_desktop_discord_subtitle">A jelenlegi lejátszás megjelenítése a Discordon asztali gépen.</string>
+
+    <string name="settings_updates_auto_check_title">Frissítések automatikus keresése</string>
+    <string name="settings_updates_auto_check_subtitle">Új Spotube-kiadások keresése a háttérben.</string>
+
+    <string name="settings_plugins_manage_title">Bővítmények kezelése</string>
+    <string name="settings_plugins_manage_subtitle">A bővítményeid kezelése</string>
+    <string name="settings_plugins_default_ability_title">Alapértelmezett bővítmény – %1$s</string>
+    <string name="settings_plugins_ability_metadata">Metaadatok</string>
+    <string name="settings_plugins_ability_audio">Hang</string>
+    <string name="settings_plugins_ability_lyrics">Dalszöveg</string>
+    <string name="settings_plugins_ability_scrobble">Scrobble</string>
+    <string name="settings_plugins_no_selection">Nincs kiválasztott bővítmény</string>
+    <string name="settings_plugins_action_change">Módosítás</string>
+    <string name="settings_plugins_action_select">Kiválasztás</string>
+    <string name="settings_plugins_selected">Kiválasztva</string>
+    <string name="settings_plugins_clear">Kijelölés törlése</string>
+    <string name="settings_plugins_no_plugins">Nincs elérhető bővítmény</string>
+    <string name="settings_plugins_plugin_content_description">%1$s bővítmény</string>
+    <string name="settings_plugins_clear_content_description">Törlés</string>
+
+    <string name="plugin_configure_title">Beállítás</string>
+    <string name="plugin_defaults_title">Használatban</string>
+    <string name="plugin_selection_none">Nincs</string>
+    <string name="plugin_ability_metadata_caption">Dalok, albumok, előadók és keresés</string>
+    <string name="plugin_ability_audio_caption">Lejátssza a zenét</string>
+    <string name="plugin_ability_lyrics_caption">Szinkronizált dalszöveg</string>
+    <string name="plugin_ability_scrobble_caption">Naplózza, mit hallgatsz</string>
+    <string name="plugin_installed_title">Telepítve</string>
+    <string name="plugin_action_details">Bővítmény részletei</string>
+    <string name="plugin_action_support">Támogatás</string>
+    <string name="plugin_action_more">További lehetőségek</string>
+    <string name="plugin_screen_title">Bővítménykezelő</string>
+    <string name="plugin_error_enter_url">Adj meg egy URL-t</string>
+    <string name="plugin_error_url_scheme">Az URL-nek http:// vagy https:// előtaggal kell kezdődnie</string>
+    <string name="plugin_error_download_failed">Nem sikerült letölteni a bővítményt</string>
+    <string name="plugin_empty_title">Még nincs telepített bővítmény</string>
+    <string name="plugin_empty_subtitle">Illessz be egy letöltési URL-t, vagy válassz fent egy fájlt.</string>
+    <string name="no_metadata_plugin_title">Nincs kiválasztott metaadat-bővítmény</string>
+    <string name="no_metadata_plugin_description_install">A Spotube-nak metaadat-bővítményre van szüksége a zenéid böngészéséhez, kereséséhez és megjelenítéséhez. Telepíts egyet a kezdéshez.</string>
+    <string name="no_metadata_plugin_description_select">Már vannak telepített bővítményeid, de egyik sincs metaadatforrásként beállítva. Válassz egyet a böngészés megkezdéséhez.</string>
+    <string name="no_metadata_plugin_step_discover">Keress egy metaadat-bővítményt</string>
+    <string name="no_metadata_plugin_step_install">Nézd át az engedélyeit, és telepítsd</string>
+    <string name="no_metadata_plugin_step_select">Válaszd ki metaadatforrásként</string>
+    <string name="no_metadata_plugin_action_install">Bővítmény telepítése</string>
+    <string name="no_metadata_plugin_action_select">Bővítmény kiválasztása</string>
+    <string name="no_metadata_plugin_action_local">Helyi zene lejátszása</string>
+    <string name="no_metadata_plugin_local_hint">A helyi számok és a letöltések bővítmény nélkül is működnek.</string>
+    <plurals name="plugin_installed_plugins_count">
+        <item quantity="one">%1$d bővítmény telepítve</item>
+        <item quantity="other">%1$d bővítmény telepítve</item>
+    </plurals>
+    <string name="plugin_install_sheet_subtitle">Bővítmény hozzáadása hivatkozásból vagy az eszközödön lévő fájlból.</string>
+    <string name="plugin_install_file_hint">Válassz egy .smplug fájlt az eszközödről</string>
+    <string name="plugin_install_or">vagy</string>
+    <string name="plugin_info_dialog_title">Bővítmény részletei</string>
+    <string name="plugin_install_section_title">Bővítmény telepítése</string>
+    <string name="plugin_url_placeholder">https://example.com/plugin.smplug</string>
+    <string name="plugin_action_download">Letöltés</string>
+    <string name="plugin_action_install_from_file">Telepítés fájlból (.smplug)</string>
+    <string name="plugin_state_active">Aktív</string>
+    <string name="plugin_version_label">v%1$s</string>
+    <string name="plugin_state_builtin">Beépített</string>
+    <string name="plugin_action_remove">Bővítmény eltávolítása</string>
+    <string name="plugin_action_login">Bejelentkezés</string>
+    <string name="plugin_action_logout">Kijelentkezés</string>
+    <string name="plugin_section_url_title">Letöltés URL-ről</string>
+    <string name="plugin_section_file_title">Telepítés fájlból</string>
+    <string name="plugin_section_install">Telepítés</string>
+
+    <string name="plugin_permissions_author_version">• %1$s</string>
+    <string name="plugin_permissions_requested_title">Kért engedélyek</string>
+    <string name="plugin_permissions_none">Ennek a bővítménynek nincs szüksége különleges engedélyekre.</string>
+    <string name="plugin_permissions_compare_title">Telepített és megadott összevetése</string>
+    <string name="plugin_permissions_installed_label">Telepített</string>
+    <string name="plugin_permissions_supplied_label">Megadott</string>
+    <string name="plugin_permissions_api_diff">API %1$s → %2$s</string>
+    <string name="plugin_permissions_capability_storage_title">Tartós tárhely</string>
+    <string name="plugin_permissions_capability_storage_desc">Adatok olvasása és írása a lemezre</string>
+    <string name="plugin_permissions_capability_network_title">Hálózati kérések</string>
+    <string name="plugin_permissions_capability_network_desc">Adatok küldése és fogadása az interneten keresztül</string>
+    <string name="plugin_permissions_capability_webview_title">WebView</string>
+    <string name="plugin_permissions_capability_webview_desc">Webes tartalom megjelenítése az alkalmazáson belül</string>
+    <string name="plugin_permissions_cookie_domains_title">Innen olvashat sütiket</string>
+    <string name="plugin_permissions_cookie_domains_none">Nincs hozzáférés a sütikhez</string>
+    <string name="plugin_permissions_cookie_domain_subdomains">%1$s bármely aldomainje</string>
+    <string name="plugin_permissions_new_badge">Új</string>
+    <string name="plugin_permissions_update_adds">Ez a frissítés olyan engedélyeket kér, amelyekkel a telepített verzió nem rendelkezik. Frissítés előtt nézd át őket.</string>
+    <string name="settings_section_jam">Közös Jam</string>
+    <string name="settings_jam_server_title">Szobaszerver</string>
+    <string name="settings_jam_server_url">Szerver URL-je</string>
+    <string name="settings_jam_server_url_invalid">Adj meg egy https:// előtaggal kezdődő URL-t</string>
+    <string name="settings_jam_server_diagnostics_subtitle">Ellenőrizd a szobaszervert, mielőtt szobát indítasz.</string>
+    <string name="settings_jam_server_note">A Jam a Spotube ingyenes szobaszerverét használja. Saját szerver üzemeltetéséhez telepítsd a szervert a github.com/team-spotube/jam-server oldalról, és add meg az URL-jét.</string>
+    <string name="settings_jam_server_test">Kapcsolat tesztelése</string>
+    <string name="settings_jam_server_testing">Tesztelés…</string>
+    <string name="settings_jam_server_test_ok">Csatlakozva %1$d ms alatt</string>
+    <string name="settings_jam_server_test_fail">Sikertelen: %1$s</string>
+    <string name="settings_jam_section_connection">Kapcsolat</string>
+    <string name="settings_jam_section_diagnostics">Diagnosztika</string>
+    <string name="settings_jam_section_you">Te</string>
+
+    <!-- Group Jam -->
+    <string name="jam_screen_title">Közös Jam</string>
+    <string name="jam_setup_create_tab">Létrehozás</string>
+    <string name="jam_setup_join_tab">Csatlakozás</string>
+    <string name="jam_setup_create_hint">Hozz létre egy szobát, majd oszd meg a kódját a barátaiddal.</string>
+    <string name="jam_setup_create_button">Szoba létrehozása</string>
+    <string name="jam_setup_join_button">Csatlakozás a szobához</string>
+    <string name="jam_setup_working">Csatlakozás…</string>
+    <string name="jam_setup_code_label">Szobakód</string>
+    <string name="jam_setup_code_placeholder">ABC123</string>
+    <string name="jam_connection_host">Szerver: %1$s</string>
+    <string name="jam_connection_missing">Szoba indításához vagy csatlakozáshoz állíts be szobaszervert a Beállításokban.</string>
+    <string name="jam_connection_settings">Szerverbeállítások</string>
+    <string name="jam_session_connected">Csatlakozva</string>
+    <string name="jam_session_connecting">Újracsatlakozás…</string>
+    <string name="jam_invite_copy">Kód másolása</string>
+    <string name="jam_invite_copied">Másolva!</string>
+    <string name="jam_invite_share">Megosztás</string>
+    <string name="jam_participants_heading">Résztvevők (%1$d)</string>
+    <string name="jam_participants_host">Házigazda</string>
+    <string name="jam_participants_guest">Hallgató</string>
+    <string name="jam_participants_you">%1$s (te)</string>
+    <string name="jam_participants_waiting">Várakozás hallgatókra…</string>
+    <string name="jam_participants_remove">Eltávolítás</string>
+    <string name="jam_participants_ban">Kitiltás</string>
+    <string name="jam_participants_manage">Kezelés</string>
+    <string name="jam_session_leave">Kilépés a szobából</string>
+    <string name="jam_error_title">Nem sikerült csatlakozni</string>
+    <string name="jam_error_dismiss">Elvetés</string>
+    <string name="jam_error_create">Nem sikerült létrehozni a jam munkamenetet</string>
+    <string name="jam_error_join">Nem sikerült csatlakozni a jam munkamenethez</string>
+    <string name="jam_error_invalid_code">Adj meg egy hatkarakteres, betűkből és számjegyekből álló szobakódot.</string>
+    <string name="jam_share_message">Csatlakozz a Spotube Jamemhez ezzel a kóddal: %1$s</string>
+    <string name="jam_name_title">Neved</string>
+    <string name="jam_name_subtitle">A jam többi résztvevője így lát: %1$s</string>
+    <string name="jam_name_description">A jam minden résztvevője látja. Ha üresen hagyod, a(z) %1$s nevet használjuk. Az új név a következő szobaindításkor vagy csatlakozáskor lép életbe.</string>
+    <string name="jam_name_too_long">Legfeljebb %1$d karaktert használj.</string>
+    <!-- A generated name: adjective, then animal (e.g. "Mellow Otter"). Reorder for your language if needed. -->
+    <string name="jam_name_format">%1$s %2$s</string>
+    <!-- Word lists for generated jam names. Translations may use their own words and any number of them. -->
+    <string-array name="jam_name_adjectives">
+        <item>Bátor</item>
+        <item>Ragyogó</item>
+        <item>Nyugodt</item>
+        <item>Vidám</item>
+        <item>Laza</item>
+        <item>Okos</item>
+        <item>Kozmikus</item>
+        <item>Kényelmes</item>
+        <item>Kíváncsi</item>
+        <item>Elegáns</item>
+        <item>Álmodozó</item>
+        <item>Lelkes</item>
+        <item>Villámgyors</item>
+        <item>Puccos</item>
+        <item>Rettenthetetlen</item>
+        <item>Pezsgő</item>
+        <item>Pihe-puha</item>
+        <item>Funky</item>
+        <item>Szelíd</item>
+        <item>Kótyagos</item>
+        <item>Izzó</item>
+        <item>Aranyos</item>
+        <item>Menő</item>
+        <item>Boldog</item>
+        <item>Szerény</item>
+        <item>Jazzes</item>
+        <item>Jókedvű</item>
+        <item>Ugrabugra</item>
+        <item>Kedves</item>
+        <item>Eleven</item>
+        <item>Szerencsés</item>
+        <item>Holdbéli</item>
+        <item>Lágy</item>
+        <item>Derűs</item>
+        <item>Hatalmas</item>
+        <item>Ködös</item>
+        <item>Fürge</item>
+        <item>Pörgős</item>
+        <item>Merész</item>
+        <item>Udvarias</item>
+        <item>Gyors</item>
+        <item>Csendes</item>
+        <item>Sebes</item>
+        <item>Ritmusos</item>
+        <item>Rózsás</item>
+        <item>Bolondos</item>
+        <item>Álmos</item>
+        <item>Simulékony</item>
+        <item>Pattogós</item>
+        <item>Lélekkel teli</item>
+        <item>Csillogó</item>
+        <item>Száguldó</item>
+        <item>Csípős</item>
+        <item>Napfényes</item>
+        <item>Szélsebes</item>
+        <item>Rendes</item>
+        <item>Apró</item>
+        <item>Élénk</item>
+        <item>Hullámos</item>
+        <item>Fütyülő</item>
+        <item>Szellemes</item>
+        <item>Hóbortos</item>
+        <item>Pikáns</item>
+        <item>Cikázó</item>
+    </string-array>
+    <string-array name="jam_name_animals">
+        <item>Alpaka</item>
+        <item>Borz</item>
+        <item>Hód</item>
+        <item>Bölény</item>
+        <item>Nyuszi</item>
+        <item>Vízidisznó</item>
+        <item>Gepárd</item>
+        <item>Mókus</item>
+        <item>Kobra</item>
+        <item>Corgi</item>
+        <item>Prérifarkas</item>
+        <item>Daru</item>
+        <item>Dingó</item>
+        <item>Delfin</item>
+        <item>Kiskacsa</item>
+        <item>Sas</item>
+        <item>Sólyom</item>
+        <item>Görény</item>
+        <item>Pinty</item>
+        <item>Flamingó</item>
+        <item>Róka</item>
+        <item>Gazella</item>
+        <item>Gekkó</item>
+        <item>Zsiráf</item>
+        <item>Sün</item>
+        <item>Gém</item>
+        <item>Víziló</item>
+        <item>Íbisz</item>
+        <item>Jaguár</item>
+        <item>Koala</item>
+        <item>Maki</item>
+        <item>Láma</item>
+        <item>Hiúz</item>
+        <item>Szarka</item>
+        <item>Lamantin</item>
+        <item>Mormota</item>
+        <item>Szurikáta</item>
+        <item>Mongúz</item>
+        <item>Jávorszarvas</item>
+        <item>Narvál</item>
+        <item>Ocelot</item>
+        <item>Polip</item>
+        <item>Kardszárnyú delfin</item>
+        <item>Vidra</item>
+        <item>Bagoly</item>
+        <item>Panda</item>
+        <item>Tobzoska</item>
+        <item>Papagáj</item>
+        <item>Pelikán</item>
+        <item>Pingvin</item>
+        <item>Lunda</item>
+        <item>Quokka</item>
+        <item>Mosómedve</item>
+        <item>Holló</item>
+        <item>Vörösbegy</item>
+        <item>Fóka</item>
+        <item>Lajhár</item>
+        <item>Veréb</item>
+        <item>Ürge</item>
+        <item>Tapír</item>
+        <item>Tigris</item>
+        <item>Tukán</item>
+        <item>Rozmár</item>
+        <item>Vombat</item>
+    </string-array>
+
+    <string name="player_go_to_album">Ugrás az albumra</string>
+    <string name="player_sleep_timer">Elalvási időzítő</string>
+    <string name="player_track_details">Szám részletei</string>
+    <string name="player_play_content_description">Lejátszás</string>
+    <string name="player_pause_content_description">Szünet</string>
+    <string name="player_nothing_playing">Nincs lejátszás</string>
+    <string name="player_add_to_queue_content_description">Hozzáadás a lejátszási sorhoz</string>
+
+    <string name="update_action_ignore">Kihagyás</string>
+    <string name="update_action_update">Frissítés</string>
+    <string name="app_update_dialog_title">Elérhető a Spotube %1$s</string>
+    <string name="app_update_dialog_no_notes">A kiadás újdonságait a Spotube letöltési oldalán találod.</string>
+    <string name="theme_update_dialog_title">Elérhető: %1$s %2$s</string>
+    <string name="theme_update_dialog_current_version">Jelenleg telepítve: %1$s</string>
+    <string name="theme_update_dialog_no_notes">Az újdonságokat a téma GitHub-oldalán találod.</string>
+    <string name="plugin_update_dialog_title">Elérhető: %1$s %2$s</string>
+    <string name="plugin_update_dialog_current_version">Jelenleg telepítve: %1$s</string>
+    <string name="plugin_update_dialog_no_notes">A frissítés újdonságait a bővítmény oldalán találod.</string>
+
+    <string name="welcome_skip">Kihagyás</string>
+    <string name="welcome_next">Tovább</string>
+    <string name="welcome_back">Vissza</string>
+    <string name="welcome_get_started">Kezdjük</string>
+    <string name="welcome_app_name">Spotube</string>
+    <string name="welcome_brand_freedom">Zene, kötöttségek nélkül.</string>
+    <string name="welcome_brand_quiet_description">Nyílt forráskódú lejátszó a zene teljes világához.\nFedezd fel. Tedd a magadévá.</string>
+    <string name="welcome_donate_quiet_title">Tartsd életben a projektet.</string>
+    <string name="welcome_donate_letter">A Spotube-ot emberek készítik, nem egy előfizetéses vállalkozás. Ha a mindennapjaid részévé válik, egy kis támogatással segíthetsz, hogy megkapja a neki járó törődést.\n\nKöszönjük, hogy teret adsz a független szoftvereknek.</string>
+    <string name="welcome_plugins_setup_guide">Kezdd egy katalógusbővítménnyel, amellyel dalokat és lejátszási listákat találhatsz. Válassz egy hangbővítményt a lejátszásukhoz. A dalszöveg és a hallgatási előzmények opcionálisak. Keress lent egy bővítményt, nézd át az engedélyeit, telepítsd, majd válaszd ki itt.</string>
+    <string name="welcome_plugins_discover">Bővítmények felfedezése</string>
+    <string name="welcome_plugins_sources">Forrásaid</string>
+    <string name="welcome_plugins_retry">Újra</string>
+    <string name="welcome_plugins_more">További bővítmények</string>
+    <string name="welcome_plugins_discovery_empty">Nem található új bővítmény. Fent hivatkozásból vagy .smplug fájlból is telepíthetsz egyet.</string>
+    <string name="welcome_plugins_discovery_error">A bővítménykeresés jelenleg nem érhető el. Próbáld újra, vagy telepíts hivatkozásból vagy fájlból.</string>
+    <string name="welcome_step_welcome">Üdvözlés</string>
+    <string name="welcome_step_support">Támogatás</string>
+    <string name="welcome_step_plugins">Bővítmények</string>
+    <string name="welcome_step_guide">Útmutató</string>
+
+    <string name="welcome_guide_title">A Spotube használata</string>
+    <string name="welcome_guide_subtitle">Négy gyors lépés, és már szól is a zene.</string>
+    <string name="welcome_guide_signin_title">Jelentkezz be</string>
+    <string name="welcome_guide_signin_desc">Kapcsold össze a fiókodat, vagy válassz saját katalógusbővítményt.</string>
+    <string name="welcome_guide_search_title">Keress és játssz le</string>
+    <string name="welcome_guide_search_desc">Keress meg bármilyen dalt, albumot vagy előadót, majd indítsd el.</string>
+    <string name="welcome_guide_offline_title">Hallgasd offline</string>
+    <string name="welcome_guide_offline_desc">Töltsd le a számokat, és kapcsolat nélkül is hallgathatod őket.</string>
+    <string name="welcome_guide_lyrics_title">Kövesd a dalszöveget</string>
+    <string name="welcome_guide_lyrics_desc">Lejátszás közben nyisd meg a szinkronizált dalszöveget a lejátszóból.</string>
+
+    <!-- Page 1: branding -->
+    <string name="welcome_brand_tagline">A te zenéd. A te forrásaid. A te szabályaid.</string>
+    <string name="welcome_brand_subtitle">Ingyenes, nyílt forráskódú zenelejátszó, amelyet egy egyszerűen csak a zenét szerető közösség készít.</string>
+    <string name="welcome_brand_chip_open_source">Nyílt forráskód</string>
+    <string name="welcome_brand_chip_no_ads">Nincs reklám</string>
+    <string name="welcome_brand_chip_no_tracking">Nincs telemetria</string>
+    <string name="welcome_brand_chip_plugin_powered">Bővítményalapú</string>
+    <string name="welcome_lets_go">Gyerünk</string>
+
+    <!-- Page 2: donations -->
+    <string name="welcome_donate_eyebrow">A támogatóink visznek előre</string>
+    <string name="welcome_donate_title">Szenvedéllyel készült. Te tartod életben.</string>
+    <string name="welcome_donate_message">A Spotube 100%-ban ingyenes, szabad és nyílt forráskódú – nincs reklám, nincs előfizetés, nincs követés. Minden funkció azért létezik, mert hozzád hasonló emberek úgy döntöttek, hogy segítenek a fejlesztésben.</string>
+    <string name="welcome_donate_patreon_title">Patreon</string>
+    <string name="welcome_donate_patreon_tag">Havi támogató</string>
+    <string name="welcome_donate_patreon_subtitle">A folyamatos fejlesztés és az infrastruktúra támogatása</string>
+    <string name="welcome_donate_bmac_title">Buy Me a Coffee</string>
+    <string name="welcome_donate_bmac_tag">Egy kávé</string>
+    <string name="welcome_donate_bmac_subtitle">Egy gyors borravalóval egy éjszakai kódolást táplálhatsz</string>
+    <string name="welcome_donate_opencollective_title">Open Collective</string>
+    <string name="welcome_donate_opencollective_tag">Közösségi alap</string>
+    <string name="welcome_donate_opencollective_subtitle">Átlátható, a közösség által kezelt anyagi támogatás</string>
+    <string name="welcome_donate_thanks">Szívből köszönjük, hogy hiszel a nyílt zenében.</string>
+    <string name="welcome_donate_optional">A támogatás teljesen önkéntes – a Spotube mindenképpen ingyenes marad.</string>
+    <string name="welcome_donate_action">Támogatás</string>
+    <string name="welcome_donate_open_content_description">%1$s megnyitása</string>
+
+    <!-- Support / donations -->
+    <string name="support_button_label">A Spotube támogatása</string>
+    <string name="support_dialog_title">A Spotube támogatása</string>
+    <string name="support_dialog_message">A Spotube ingyenes, szabad és nyílt forráskódú – nincs reklám, nincs előfizetés, nincs követés. Ha örömet okoz, fontold meg a projekt támogatását.</string>
+    <string name="support_dialog_reminder_hint">Ezeket az emlékeztetőket a Beállítások → Támogatás menüben kapcsolhatod ki.</string>
+    <string name="support_dialog_dismiss">Talán később</string>
+    <string name="settings_support_reminders_title">Támogatási emlékeztetők</string>
+    <string name="settings_support_reminders_subtitle">7 naponta egy kíméletes emlékeztető a projekt támogatására.</string>
+
+    <!-- Page 3: plugins -->
+    <string name="welcome_plugins_eyebrow">Moduláris felépítés</string>
+    <string name="welcome_plugins_title">Válaszd ki, honnan jöjjön a zenéd.</string>
+    <string name="welcome_plugins_subtitle">A Spotube külön kezeli a katalógusböngészést, a hangstreamelést és a szinkronizált dalszöveget. Állítsd be lent a motorokat, vagy cseréld őket bármikor.</string>
+    <string name="welcome_plugins_metadata_title">Metaadat-motor</string>
+    <string name="welcome_plugins_metadata_description">Ez hajtja a zenefelfedezést, a keresést, a számlistákat és a lejátszási listákat.</string>
+    <string name="welcome_plugins_audio_title">Hangmotor</string>
+    <string name="welcome_plugins_audio_description">Lekéri és dekódolja a lejátszott hangfolyamokat.</string>
+    <string name="welcome_plugins_lyrics_title">Dalszövegmotor</string>
+    <string name="welcome_plugins_lyrics_description">Valós időben, időzítve jeleníti meg a karaoke-dalszöveget.</string>
+    <string name="welcome_plugins_scrobble_title">Scrobble-motor</string>
+    <string name="welcome_plugins_scrobble_description">Rögzíti a hallgatási előzményeket a Last.fm-en vagy a ListenBrainzen.</string>
+    <string name="welcome_plugins_badge_active">Aktív</string>
+    <string name="welcome_plugins_badge_builtin">Beépített</string>
+    <string name="welcome_plugins_badge_ready">Kész</string>
+    <string name="welcome_plugins_badge_optional">Opcionális</string>
+    <string name="welcome_plugins_none_selected">Válassz motort</string>
+    <string name="welcome_plugins_installed_section">Telepített motorok</string>
+    <string name="welcome_plugins_set_default">Beállítás alapértelmezettként</string>
+    <string name="welcome_plugins_builtin_note">A NewPipe YouTube és az LRCLib Lyrics beépített, és azonnal használható.</string>
+    <string name="welcome_plugins_tip">Közösségi bővítményeket bármikor kezelhetsz vagy hozzáadhatsz a Beállítások → Bővítmények menüben.</string>
+
+    <!-- Page 4: how it works -->
+    <string name="welcome_how_eyebrow">Retro-modern felépítés</string>
+    <string name="welcome_how_title">Tiszta hi-fi, közvetítők nélkül</string>
+    <string name="welcome_how_subtitle">Így vezényli le a Spotube a decentralizált lejátszást közvetlenül a gépeden.</string>
+    <string name="welcome_how_status_badge">KÖZVETLEN P2P • 256 KBPS OPUS</string>
+    <string name="welcome_how_mockup_title">Kék óra</string>
+    <string name="welcome_how_mockup_artist">Spotube · lejátszóbemutató</string>
+    <string name="welcome_how_mockup_lyric">Egy kis zene a köztes pillanatokra.</string>
+    <string name="welcome_how_step_search_title">1. Decentralizált felfedezés</string>
+    <string name="welcome_how_step_search_desc">A keresések közvetlenül a kiválasztott katalógusbővítményhez jutnak. A Spotube soha nem készít profilt az ízlésedről.</string>
+    <string name="welcome_how_step_stream_title">2. Közvetlen streamfeloldás</string>
+    <string name="welcome_how_step_stream_desc">A hang közvetlenül a tartalomszerverekről érkezik a gépedre. Nincsenek proxy-ugrások és távoli adatgyűjtés.</string>
+    <string name="welcome_how_step_playback_title">3. Helyi DSP és lejátszás</string>
+    <string name="welcome_how_step_playback_desc">Helyi dekódolás és gyorsítótárazás, hangszínszabályzóval és opcionális offline letöltéssel.</string>
+    <string name="welcome_how_step_lyrics_title">4. Szinkronizált dalszöveg és Jam</string>
+    <string name="welcome_how_step_lyrics_desc">A karaoke-dalszöveg követi a lejátszás idejét, emellett van helyi hálózati távvezérlés és Közös Jam is.</string>
+    <string name="welcome_how_footer">Nincsenek közvetítő szerverek. A lejátszás közvetlenül az eszközödön történik – alapból védi a magánszférádat.</string>
+
+    <!-- Devices: play destination picker -->
+    <string name="devices_destination_title">Válassz eszközt</string>
+    <string name="devices_destination_prompt">%1$s: „%2$s”</string>
+    <string name="devices_destination_action_play">Lejátszás</string>
+    <string name="devices_destination_action_add_to_queue">Hozzáadás a lejátszási sorhoz</string>
+    <string name="devices_destination_action_play_next">Lejátszás következőként</string>
+    <string name="devices_destination_this_device">Ez az eszköz</string>
+    <string name="devices_destination_this_device_subtitle">Ezen az eszközön</string>
+    <string name="devices_destination_remote_device">Távoli eszköz</string>
+    <string name="devices_destination_remote_device_host">Távoli eszköz (%1$s)</string>
+    <string name="devices_destination_remote_subtitle">A csatlakoztatott eszközön</string>
+
+    <!-- Devices: connection errors -->
+    <string name="devices_error_connection_failed">Sikertelen kapcsolódás</string>
+    <string name="devices_error_connection_lost">Megszakadt a kapcsolat</string>
+    <string name="devices_error_connection_denied">A másik eszköz elutasította a kérést, vagy ki van kapcsolva rajta a távvezérlés.</string>
+    <string name="devices_error_send_failed">Sikertelen küldés</string>
+    <string name="devices_error_discovery_failed">Sikertelen eszközkeresés: %1$s</string>
+    <string name="devices_error_connect_failed">Nem sikerült csatlakozni: %1$s</string>
+
+    <!-- Devices: discovery screen -->
+    <string name="devices_title">Eszközök</string>
+    <string name="devices_refresh">Frissítés</string>
+    <string name="devices_disconnect">Leválasztás</string>
+    <string name="devices_connecting">Csatlakozás...</string>
+    <string name="devices_searching">Eszközök keresése a hálózaton...</string>
+    <string name="devices_empty">Nem található eszköz</string>
+    <string name="devices_empty_hint">Ellenőrizd, hogy a másik eszközön be van-e kapcsolva a „Távvezérlés engedélyezése” beállítás.</string>
+    <string name="devices_unknown_device">Ismeretlen eszköz</string>
+    <string name="devices_resolving">Feloldás...</string>
+    <string name="devices_section_connected">Csatlakoztatva</string>
+    <string name="devices_section_available">Elérhető eszközök</string>
+    <string name="devices_section_this_device">Ez az eszköz</string>
+    <string name="devices_status_connected">Csatlakozva</string>
+    <string name="devices_open_remote">Távvezérlő megnyitása</string>
+    <string name="devices_search_again">Keresés újra</string>
+    <string name="devices_searching_more">További eszközök keresése...</string>
+
+    <!-- Devices: remote control screen -->
+    <string name="devices_remote_title">Távvezérlés</string>
+    <string name="devices_remote_disconnected">Leválasztva</string>
+    <string name="devices_remote_connection_error">Kapcsolódási hiba: %1$s</string>
+    <string name="devices_remote_unknown_track">Ismeretlen szám</string>
+    <string name="devices_remote_unknown_artist">Ismeretlen előadó</string>
+    <string name="devices_remote_volume">Hangerő</string>
+    <string name="devices_remote_remove_from_queue">Eltávolítás a lejátszási sorból</string>
+    <string name="devices_remote_more_options">További lehetőségek</string>
+    <string name="devices_remote_playing_on">Lejátszás itt: %1$s</string>
+    <string name="devices_remote_connecting_hint">Ha a rendszer kéri, előbb engedélyezd ezt az eszközt a másik Spotube-ban.</string>
+    <string name="devices_remote_disconnected_hint">Már nem vezérled a másik eszközt. Válaszd ki újra az újracsatlakozáshoz.</string>
+    <string name="devices_remote_back_to_devices">Vissza az eszközökhöz</string>
+    <string name="devices_remote_nothing_playing">Nincs lejátszás</string>
+    <string name="devices_remote_nothing_playing_hint">Indíts el valamit a másik eszközön, vagy válassz egy számot a lejátszási sorából.</string>
+
+    <!-- Group Jam: play destination picker -->
+    <string name="jam_destination_title">Hol játsszuk le?</string>
+    <string name="jam_destination_message">Aktív jam munkameneted van. Válaszd ki, hol szóljon ez a gyűjtemény.</string>
+    <string name="jam_destination_play_here">Lejátszás itt</string>
+    <string name="jam_destination_suggest">Javaslat a Jamnek</string>
+
+    <!-- Group Jam: connection errors -->
+    <string name="jam_error_no_server">Nincs beállítva jam szerver</string>
+    <string name="jam_error_server_unreachable">Nem érhető el a jam szerver. Ellenőrizd a hálózatot vagy a szerver URL-jét a Beállítások → Jam menüben.</string>
+    <string name="jam_error_server_incompatible">A jam szerver nem kompatibilis verziót futtat.</string>
+    <string name="jam_error_room_not_found">Nincs ilyen kódú szoba. Ellenőrizd, és próbáld újra.</string>
+    <string name="jam_error_room_full">Ez a szoba megtelt.</string>
+    <string name="jam_error_banned">A házigazda kitiltott ebből a szobából.</string>
+    <string name="jam_error_kicked">A házigazda eltávolított a szobából.</string>
+    <string name="jam_error_replaced">Ezt a szobát újra megnyitották ezen az eszközön, ezért ez a kapcsolat bezárult.</string>
+    <string name="jam_error_connection_failed">Sikertelen kapcsolódás</string>
+    <string name="jam_error_connection_lost">Megszakadt a kapcsolat</string>
+
+
+    <!-- Group Jam: queue snackbar -->
+    <string name="jam_queue_added_track">Hozzáadva a jam lejátszási sorához</string>
+    <plurals name="jam_queue_added_tracks">
+        <item quantity="one">%1$d szám hozzáadva a jam lejátszási sorához</item>
+        <item quantity="other">%1$d szám hozzáadva a jam lejátszási sorához</item>
+    </plurals>
+
+    <!-- Remote control: connection request dialog -->
+    <string name="remote_request_title">Távvezérlési kérés</string>
+    <string name="remote_request_message">„%1$s” szeretné vezérelni a lejátszást ezen az eszközön.</string>
+    <string name="remote_request_deny">Elutasítás</string>
+    <string name="remote_request_allow">Engedélyezés</string>
+    <string name="remote_request_allow_always">Mindig engedélyez</string>
+
+    <!-- Search -->
+    <string name="search_results_title">Keresési eredmények</string>
+    <string name="search_tab_all">Összes</string>
+    <string name="search_section_tracks">Számok</string>
+    <string name="search_section_users">Felhasználók</string>
+    <string name="search_no_search_types">Nincs elérhető keresési típus</string>
+    <string name="search_start_typing">Kezdj el gépelni a kereséshez</string>
+    <string name="search_start_typing_tracks">Kezdj el gépelni a számok kereséséhez</string>
+    <string name="search_no_results">Nincs találat</string>
+    <string name="common_no_results">Nincs találat</string>
+    <string name="search_see_all">Összes megtekintése</string>
+    <string name="search_searching">Keresés</string>
+    <string name="search_loading_tracks">Számok betöltése...</string>
+    <string name="search_loading_albums">Albumok betöltése...</string>
+    <string name="search_loading_artists">Előadók betöltése...</string>
+    <string name="search_loading_playlists">Lejátszási listák betöltése...</string>
+    <string name="search_loading_users">Felhasználók betöltése...</string>
+    <string name="search_no_albums">Nem található album</string>
+    <string name="search_no_artists">Nem található előadó</string>
+    <string name="search_no_playlists">Nem található lejátszási lista</string>
+    <string name="search_no_users">Nem található felhasználó</string>
+    <string name="search_warm_crates">Turkálás a lemezesládákban...</string>
+    <string name="search_warm_cosmos">A kozmosz átkutatása...</string>
+    <string name="search_warm_speakers">Hangszórók bemelegítése...</string>
+    <string name="search_warm_vinyl">A bakelit leporolása...</string>
+    <string name="search_warm_music_gods">Tanácskozás a zene isteneivel...</string>
+    <string name="search_warm_antennas">Antennák hangolása...</string>
+    <string name="search_warm_records">Lapozás a lemezek között...</string>
+    <string name="search_error_capabilities">Nem sikerült betölteni a keresési lehetőségeket</string>
+    <string name="search_error_search">Sikertelen keresés</string>
+    <string name="search_error_tracks">Nem sikerült számokat keresni</string>
+    <string name="search_error_albums">Nem sikerült albumokat keresni</string>
+    <string name="search_error_artists">Nem sikerült előadókat keresni</string>
+    <string name="search_error_playlists">Nem sikerült lejátszási listákat keresni</string>
+    <string name="search_error_users">Nem sikerült felhasználókat keresni</string>
+
+    <!-- Home -->
+    <string name="home_title_browse">Böngészés</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_mode_synced">Szinkronizált</string>
+    <string name="lyrics_mode_plain">Egyszerű</string>
+    <string name="lyrics_no_synced">Nem érhető el szinkronizált dalszöveg</string>
+    <string name="lyrics_no_plain">Nem érhető el egyszerű dalszöveg</string>
+
+    <!-- Settings: audio format/quality labels -->
+    <string name="settings_audio_format_label">%1$s (%2$s)</string>
+    <string name="settings_audio_quality_lossy">%1$d kbps</string>
+    <string name="settings_audio_quality_lossless">%1$s kHz • %2$d csat.</string>
+    <string name="search_error_no_metadata_plugin">Nincs kiválasztott metaadat-bővítmény</string>
+
+    <!-- Common -->
+    <string name="common_back">Vissza</string>
+    <string name="common_retry">Újra</string>
+    <string name="common_close_dialog">Párbeszédablak bezárása</string>
+    <string name="common_loading">Betöltés...</string>
+    <string name="common_unknown">Ismeretlen</string>
+    <string name="common_unknown_error">Ismeretlen hiba</string>
+
+    <!-- Media cards -->
+    <string name="media_user">Felhasználó</string>
+    <string name="media_playlist">Lejátszási lista</string>
+
+    <!-- Login required -->
+    <string name="login_required_title">A folytatáshoz jelentkezz be</string>
+    <string name="login_required_description">A Spotube ezen részéhez be kell jelentkezned a zeneszolgáltatódnál. Elég egyszer bejelentkezni, és minden megjelenik itt.</string>
+    <string name="login_required_description_plugin">A(z) %1$s bővítményhez be kell jelentkezned, mielőtt ezt megjelenítheti. Elég egyszer bejelentkezni, és minden megjelenik itt.</string>
+    <string name="login_required_action">Bejelentkezés</string>
+
+    <!-- Error display -->
+    <string name="error_title">Őszintén sajnáljuk</string>
+    <string name="error_description">Valami most nem működik megfelelően. Fontos számunkra az élményed, és mindent megteszünk a javításáért. Próbáld újra, vagy nézd meg lent a hiba részleteit.</string>
+    <string name="error_details">Hiba részletei</string>
+    <string name="error_copy_to_clipboard">Másolás a vágólapra</string>
+    <string name="error_view_full_log">Teljes napló megtekintése</string>
+    <string name="error_full_log_title">Teljes hibanapló</string>
+
+    <!-- Collection details -->
+    <string name="collection_details_shuffle">Keverés</string>
+    <string name="collection_details_shuffle_play">Keverés és lejátszás</string>
+    <string name="collection_details_follow">Követés</string>
+    <string name="collection_details_unfollow">Követés leállítása</string>
+    <string name="collection_details_edit_playlist">Lejátszási lista szerkesztése</string>
+    <string name="collection_details_by_owner">Készítette: %1$s</string>
+
+    <!-- Track options -->
+    <string name="track_options_title">Szám beállításai</string>
+    <string name="track_options_add_to_jam">Hozzáadás a Jamhez</string>
+    <string name="track_options_start_radio">Rádió indítása</string>
+    <string name="track_options_play_next">Lejátszás következőként</string>
+    <string name="track_options_move_to_next">Áthelyezés következőnek</string>
+    <string name="track_options_remove_from_queue">Eltávolítás a lejátszási sorból</string>
+    <string name="track_options_remove_from_favorites">Eltávolítás a kedvencek közül</string>
+    <string name="track_options_save_as_favorite">Mentés kedvencként</string>
+    <string name="track_options_add_to_playlist">Hozzáadás lejátszási listához</string>
+    <string name="track_options_download">Letöltés</string>
+    <string name="track_options_share">Megosztás</string>
+
+    <!-- Track list -->
+    <string name="track_list_sort_original">Eredeti</string>
+    <string name="track_list_sort_title">Cím</string>
+    <string name="track_list_sort_artist">Előadó</string>
+    <string name="track_list_sort_album">Album</string>
+    <string name="track_list_sort_duration">Időtartam</string>
+    <string name="track_list_sort">Rendezés</string>
+    <string name="track_list_no_tracks">Nem található szám</string>
+    <string name="track_list_filter_placeholder">Szűrés</string>
+    <string name="track_list_bulk_actions">Tömeges műveletek</string>
+    <string name="track_list_download_all">Összes letöltése</string>
+    <string name="track_list_download_count">%1$d letöltése</string>
+    <string name="track_list_add_all_to_queue">Összes hozzáadása a lejátszási sorhoz</string>
+    <string name="track_list_add_count_to_queue">%1$d hozzáadása a lejátszási sorhoz</string>
+    <string name="track_list_play_all_next">Összes lejátszása következőként</string>
+    <string name="track_list_play_count_next">%1$d lejátszása következőként</string>
+    <string name="track_list_add_all_to_playlist">Összes hozzáadása lejátszási listához</string>
+    <string name="track_list_add_count_to_playlist">%1$d hozzáadása lejátszási listához</string>
+    <string name="track_list_add_all_to_jam">Összes hozzáadása a Jamhez</string>
+    <string name="track_list_add_count_to_jam">%1$d hozzáadása a Jamhez</string>
+    <string name="track_list_more_artists">+%1$d további</string>
+
+    <!-- WebView -->
+    <string name="webview_no_url">Nincs betöltendő URL</string>
+    <string name="webview_go_back">Vissza a böngészési előzményekben</string>
+    <string name="webview_go_forward">Előre a böngészési előzményekben</string>
+
+    <!-- Blacklist -->
+    <string name="blacklist_filter_placeholder">Feketelista szűrése...</string>
+    <string name="blacklist_empty">Nincsenek feketelistás elemek</string>
+    <string name="blacklist_no_results">Nincs a következőnek megfelelő feketelistás elem: „%1$s”</string>
+    <string name="blacklist_section_tracks">Számok</string>
+    <string name="blacklist_item_track">Szám</string>
+    <string name="blacklist_add">Hozzáadás a feketelistához</string>
+    <string name="blacklist_remove">Eltávolítás a feketelistáról</string>
+
+    <!-- Downloads -->
+    <string name="downloads_error_no_metadata">Nincsenek metaadatok a számhoz</string>
+    <string name="downloads_error_stream_unresolved_short">Nem sikerült feloldani a stream URL-jét</string>
+    <string name="downloads_error_stream_unresolved">Nem sikerült feloldani a stream URL-jét. Próbáld előbb lejátszani a számot.</string>
+    <string name="downloads_error_http">A szerver elutasította a letöltést (HTTP %1$d)</string>
+    <string name="downloads_error_range_ignored">A szerver hiányos letöltést küldött. Próbáld újra.</string>
+    <string name="downloads_error_video_only">Ehhez a számhoz csak videó érhető el, ezért nem lett letöltve</string>
+
+    <!-- Saved tracks -->
+    <string name="saved_tracks_title">Mentett számok</string>
+    <string name="saved_tracks_owner_you">Te</string>
+
+    <!-- Artist -->
+    <string name="artist_following">Követed</string>
+    <string name="artist_top_tracks">Legnépszerűbb számok</string>
+    <string name="artist_play_top_tracks">Legnépszerűbb számok lejátszása</string>
+    <string name="artist_add_top_tracks_to_queue">Legnépszerűbb számok hozzáadása a lejátszási sorhoz</string>
+    <string name="artist_related_artists">Hasonló előadók</string>
+    <string name="artist_featured_playlists">Kiemelt lejátszási listák</string>
+    <string name="artist_error_load_failed">Nem sikerült betölteni az előadó áttekintését</string>
+    <string name="artist_followers_unavailable">A követők száma nem érhető el</string>
+    <string name="artist_followers_thousands">%1$s E követő</string>
+    <string name="artist_followers_millions">%1$s M követő</string>
+    <string name="artist_followers_billions">%1$s Mrd követő</string>
+    <plurals name="artist_followers_count">
+        <item quantity="one">%1$d követő</item>
+        <item quantity="other">%1$d követő</item>
+    </plurals>
+
+    <!-- Player -->
+    <string name="player_like_content_description">Kedvelés</string>
+    <string name="player_unlike_content_description">Kedvelés visszavonása</string>
+    <string name="player_fallback_title">Nincs szám címe</string>
+    <string name="player_fallback_artists">Nincsenek előadók</string>
+    <string name="player_unknown_album">Ismeretlen album</string>
+    <string name="player_seek_label">Tekerés</string>
+    <string name="player_volume_label">Hangerő</string>
+    <string name="player_enable_shuffle_content_description">Keverés bekapcsolása</string>
+    <string name="player_disable_shuffle_content_description">Keverés kikapcsolása</string>
+    <string name="player_previous_content_description">Előző</string>
+    <string name="player_next_content_description">Következő</string>
+    <string name="player_play_or_pause_content_description">Lejátszás vagy szünet</string>
+    <string name="player_loop_mode_none">Ismétlés kikapcsolva</string>
+    <string name="player_loop_mode_one">Egy szám ismétlése</string>
+    <string name="player_loop_mode_all">Összes ismétlése</string>
+    <string name="player_mute_content_description">Némítás</string>
+    <string name="player_unmute_content_description">Némítás feloldása</string>
+    <string name="player_more_options_content_description">További lehetőségek</string>
+    <string name="player_options_content_description">Lejátszó beállításai</string>
+    <string name="player_collapse_content_description">Lejátszó összecsukása</string>
+    <string name="player_expand_lyrics_content_description">Dalszöveg kinyitása</string>
+    <string name="player_now_playing">Most szól</string>
+    <string name="player_lyrics">Dalszöveg</string>
+    <string name="player_alternative_source">Alternatív forrás</string>
+    <string name="player_alternative_source_content_description">Alternatív forrás</string>
+    <string name="player_download">Letöltés</string>
+    <string name="player_download_status_downloaded">Letöltve</string>
+    <string name="player_download_status_downloading">Letöltés...</string>
+    <string name="player_download_already_downloaded">Már le van töltve</string>
+    <string name="player_download_retrying">Letöltés újrapróbálása...</string>
+    <string name="player_download_started">Letöltés: %1$s</string>
+    <string name="player_sleep_timer_remaining">A lejátszás %1$s múlva szünetel.</string>
+    <string name="player_sleep_timer_description">A lejátszás szüneteltetése a megadott számú perc után.</string>
+    <string name="player_sleep_timer_minutes_label">Perc</string>
+    <string name="player_sleep_timer_minutes_placeholder">1 és 600 perc között</string>
+    <string name="player_sleep_timer_cancel">Időzítő törlése</string>
+    <string name="player_sleep_timer_start">Indítás</string>
+    <string name="player_track_details_stream_mismatch">A lejátszási URL más streamelési beállításokkal lett feloldva. A kiemelt stream megfelel a jelenlegi beállításodnak; az aktív URL a következő streamkéréskor frissül.</string>
+    <string name="player_track_details_matched_source">Egyeztetett hangforrás</string>
+    <string name="player_track_details_loading_source">Egyeztetett forrás betöltése…</string>
+    <string name="player_track_details_source_not_needed">A helyi gyorsítótárban lévő fájl lejátszása közben nincs szükség egyeztetett távoli forrásra.</string>
+    <string name="player_track_details_no_source">Nem érhető el egyeztetett forrás.</string>
+    <string name="player_track_details_no_cached_source">Ehhez a számhoz nincs egyeztetett hangforrás a gyorsítótárban.</string>
+    <string name="player_track_details_streams_not_cached">A stream részletei még nincsenek a gyorsítótárban. Betöltésükhöz előbb játszd le a számot.</string>
+    <string name="player_track_details_load_failed">Nem sikerült betölteni a szám részleteit.</string>
+    <string name="player_track_details_available_streams">Elérhető streamek</string>
+    <string name="player_track_details_served_from_cache_description">Ez a szám a helyi gyorsítótárból szól. Ennél a lejátszásnál nincsenek használatban streamváltozatok.</string>
+    <string name="player_track_details_loading_streams">Streamek betöltése…</string>
+    <string name="player_track_details_no_streams">Ehhez a forráshoz nem érhető el stream.</string>
+    <string name="player_track_details_selected_stream_content_description">Jelenleg kiválasztott stream</string>
+    <string name="player_track_details_matches_preference">Megfelel a streamelési formátum- és minőségbeállításodnak</string>
+    <string name="player_track_details_active_url">Aktív lejátszási URL</string>
+    <string name="player_track_details_served_from_cache">A helyi gyorsítótárból</string>
+    <string name="player_track_details_metadata_track">Metaadat szerinti szám</string>
+    <string name="player_track_details_title">Cím</string>
+    <string name="player_track_details_id">Azonosító</string>
+    <string name="player_track_details_album">Album</string>
+    <string name="player_track_details_confidence">Egyezés</string>
+    <string name="player_track_details_external_uri">Külső URI</string>
+    <string name="player_track_details_copy_url">URL másolása</string>
+    <string name="player_track_details_album_id">Album azonosítója</string>
+    <string name="player_track_details_album_type">Album típusa</string>
+    <string name="player_track_details_album_release_date">Album megjelenési dátuma</string>
+    <string name="player_track_details_album_track_count">Számok száma az albumon</string>
+    <string name="player_track_details_album_genres">Album műfajai</string>
+    <string name="player_track_details_duration">Időtartam</string>
+    <string name="player_track_details_track_number">Sorszám</string>
+    <string name="player_track_details_disc_number">Lemez sorszáma</string>
+    <string name="player_track_details_explicit">Felnőtt tartalom</string>
+    <string name="player_track_details_popularity">Népszerűség</string>
+    <string name="player_track_details_isrc">ISRC</string>
+    <string name="player_track_details_thumbnail_urls">Bélyegkép URL-ek</string>
+
+    <!-- Shell -->
+    <string name="shell_sidebar_toggle_content_description">Oldalsáv be/ki</string>
+
+    <!-- Alternative track -->
+    <string name="alternative_track_title">Alternatív források</string>
+    <string name="alternative_track_no_track">Jelenleg nem szól szám</string>
+    <string name="alternative_track_searching">Alternatív források keresése...</string>
+    <string name="alternative_track_empty">Nem található alternatív forrás</string>
+    <string name="alternative_track_confidence">Egyezés: %1$d%</string>
+    <string name="alternative_track_active_source">Aktív forrás</string>
+
+    <!-- Queue -->
+    <string name="queue_participant_kick">Kirúgás</string>
+    <string name="queue_participant_kick_description">Eltávolítás a munkamenetből</string>
+    <string name="queue_participant_ban_description">Kirúgás és az újracsatlakozás megtiltása</string>
+    <string name="queue_participant_remove_suggestions">Javaslatok eltávolítása</string>
+    <string name="queue_participant_remove_suggestions_description">Az általa a lejátszási sorhoz adott összes szám eltávolítása</string>
+    <string name="queue_reorder_content_description">Átrendezés</string>
+    <string name="queue_remove_from_queue">Eltávolítás a lejátszási sorból</string>
+    <string name="queue_item_subtitle_added_by">%1$s • Hozzáadta: %2$s</string>
+
+    <!-- Playlist -->
+    <string name="playlist_owner_unknown">Ismeretlen</string>
+    <string name="playlist_loading_title">Lejátszási lista betöltése...</string>
+    <string name="playlist_add_tracks_button">Számok hozzáadása</string>
+    <string name="playlist_add_tracks_title">Számok hozzáadása a lejátszási listához</string>
+    <string name="playlist_add_tracks_search_placeholder">Számok keresése...</string>
+    <string name="playlist_add_tracks_search_content_description">Keresés</string>
+    <string name="playlist_add_tracks_no_results">Nem található szám</string>
+    <string name="playlist_add_tracks_hint">Keress hozzáadandó számokat</string>
+    <string name="playlist_add_tracks_done">Kész</string>
+    <string name="playlist_add_tracks_add">Hozzáadás</string>
+    <string name="playlist_add_tracks_added_content_description">Hozzáadva</string>
+
+    <!-- Album -->
+    <string name="album_loading_title">Album betöltése...</string>
+
+    <!-- Library -->
+    <string name="library_add_to_playlist_title">Hozzáadás a lejátszási listádhoz</string>
+    <string name="library_add_to_playlist_search_content_description">Keresés</string>
+    <string name="library_add_to_playlist_search_placeholder">Lejátszási listáid keresése...</string>
+    <string name="library_add_to_playlist_loading">Lejátszási listáid betöltése...</string>
+    <string name="library_add_to_playlist_empty">Még nincs saját lejátszási listád.\nHozz létre egyet, hogy számokat adhass hozzá.</string>
+    <string name="library_playlist_form_create_title">Lejátszási lista létrehozása</string>
+    <string name="library_playlist_form_edit_title">Lejátszási lista szerkesztése</string>
+    <string name="library_playlist_form_create">Létrehozás</string>
+    <string name="library_playlist_form_name_label">Név</string>
+    <string name="library_playlist_form_name_placeholder">Lejátszási lista neve</string>
+    <string name="library_playlist_form_description_label">Leírás</string>
+    <string name="library_playlist_form_description_placeholder">Leírás (nem kötelező)</string>
+    <string name="library_playlist_form_public">Nyilvános</string>
+    <string name="library_playlist_form_public_description">Bárki láthatja ezt a lejátszási listát</string>
+    <string name="library_playlist_form_collaborative">Közös</string>
+    <string name="library_playlist_form_collaborative_description">Mások is adhatnak számokat ehhez a lejátszási listához</string>
+    <string name="library_playlist_form_cover_image">Borítókép</string>
+    <string name="library_playlist_form_cover_content_description">Lejátszási lista borítója</string>
+    <string name="library_playlist_form_no_image">Nincs kép</string>
+    <string name="library_playlist_form_change_image">Kép módosítása</string>
+    <string name="library_playlist_form_pick_image">Kép kiválasztása</string>
+
+    <!-- Plugin install / errors -->
+    <string name="plugin_action_install">Telepítés</string>
+    <string name="plugin_action_replace">Csere</string>
+    <string name="plugin_error_unsafe_archive">A bővítménycsomag nem biztonságos vagy túl nagy, ezért elutasítottuk (%1$s).</string>
+    <string name="plugin_error_plugin_json_missing">A plugin.json nem található a zip-fájlban</string>
+    <string name="plugin_error_zipline_manifest_missing">A manifest.zipline.json nem található a zip-fájlban</string>
+    <string name="plugin_error_invalid_plugin_json">Érvénytelen plugin.json formátum: %1$s</string>
+    <string name="plugin_error_read_failed">Nem sikerült beolvasni a bővítményt: %1$s</string>
+    <string name="plugin_error_install_failed">Nem sikerült telepíteni a bővítményt: %1$s</string>
+    <string name="plugin_error_update_needs_confirmation">Elérhető a(z) %1$s újabb verziója. Telepítés előtt erősítsd meg a frissítést.</string>
+    <string name="plugin_error_replace_needs_confirmation">A(z) %1$s már telepítve van. Telepítés előtt erősítsd meg a cserét.</string>
+    <string name="plugin_error_builtin_add">A beépített bővítmények már részei az alkalmazásnak, nem adhatók hozzá újra.</string>
+    <string name="plugin_error_builtin_remove">A beépített bővítmények nem távolíthatók el.</string>
+    <string name="plugin_error_api_version_invalid">A(z) %1$s érvénytelen apiVersion értéket ad meg (%2$s). A(z) %3$s verzióval kompatibilis szemantikus verziószám szükséges.</string>
+    <string name="plugin_error_app_api_version_invalid">A Spotube bővítmény-API %1$s verziója érvénytelen.</string>
+    <string name="plugin_error_api_incompatible">A(z) %1$s a(z) %2$s bővítmény-API-ra készült, de a Spotube a(z) %3$s főverziójú bővítmény-API-t támogatja. Telepíts egy ugyanerre a főverzióra készült bővítményt.</string>
+    <string name="plugin_error_api_webview_outdated">A(z) %1$s a(z) %2$s bővítmény-API-ra készült, abból az időből, amikor a WebView-bővítményeknek még nem kellett megadniuk, mely oldalakról olvasnak sütiket. Telepíts egy 0.1-es vagy újabb bővítmény-API-ra készült verziót.</string>
+    <string name="plugin_error_invalid_cookie_domains">A(z) %1$s érvénytelen cookieDomains értéket ad meg a plugin.json fájlban: %2$s. Használj olyan gépnevet, mint az example.com, vagy *.example.com formát az aldomainekhez. A közös utótagok, például a *.co.uk vagy a *.github.io, nem engedélyezettek.</string>
+    <string name="plugin_error_suffix_list_unavailable">A(z) %1$s a(z) %2$s összes aldomainjének sütijeit kéri. A Spotube ezeket a publicsuffix.org nyilvános utótaglistájával ellenőrzi, amely még nincs letöltve. Csatlakozz az internethez, és próbáld újra.</string>
+    <string name="plugin_update_install_failed">Nem sikerült telepíteni a frissítést: %1$s</string>
+
+    <!-- Plugin install prompts -->
+    <string name="plugin_prompt_incompatible_title">A bővítmény-API nem kompatibilis</string>
+    <string name="plugin_prompt_invalid_title">A bővítmény nem telepíthető</string>
+    <string name="plugin_prompt_install_title">Telepíted a bővítményt?</string>
+    <string name="plugin_prompt_install_message">A(z) %1$s bekerül a telepített bővítményeid közé.</string>
+    <string name="plugin_prompt_update_title">Frissíted a bővítményt?</string>
+    <string name="plugin_prompt_update_message">Egy régebbi verzió van telepítve (%1$s). Frissítesz erre: %2$s?</string>
+    <string name="plugin_prompt_replace_title">Lecseréled a telepített bővítményt?</string>
+    <string name="plugin_prompt_replace_invalid_incoming">A(z) %1$s érvénytelen szemantikus verziószámot használ (%2$s), ezért nem hasonlítható össze frissítésként. Mégis lecseréled a telepített bővítményt?</string>
+    <string name="plugin_prompt_replace_invalid_installed">A telepített verzió (%1$s) nem hasonlítható össze szemantikus verziószámozással. Lecseréled erre: %2$s?</string>
+    <string name="plugin_prompt_replace_same_version">A(z) %1$s verzió már telepítve van. Lecseréled a meglévő bővítményt a megadott példányra?</string>
+    <string name="plugin_prompt_replace_downgrade">A telepített %1$s verzió újabb, mint a megadott %2$s verzió. Mégis lecseréled?</string>
+    <string name="plugin_prompt_replace_generic">Lecseréled a telepített bővítményt a megadott példányra?</string>
+
+    <!-- Plugin info dialog -->
+    <string name="plugin_info_label_format">%1$s:</string>
+    <string name="plugin_info_version">Verzió</string>
+    <string name="plugin_info_api_version">API-verzió</string>
+    <string name="plugin_info_author">Szerző</string>
+    <string name="plugin_info_license">Licenc</string>
+    <string name="plugin_info_capabilities">Jogosultságok</string>
+    <string name="plugin_info_cookie_domains">Sütihozzáférés</string>
+    <string name="plugin_info_abilities">Képességek</string>
+    <string name="plugin_info_repository">Tároló</string>
+    <string name="plugin_info_contact">Kapcsolat</string>
+    <string name="plugin_info_report_bugs">Hibabejelentés</string>
+    <string name="plugin_support_dialog_title">%1$s támogatása</string>
+    <string name="plugin_support_unavailable">Ez a bővítmény még nem adott meg támogatási lehetőséget.</string>
+
+    <!-- Plugin discovery -->
+    <string name="plugin_discover_badge_official">Hivatalos</string>
+    <string name="plugin_discover_badge_verified">Ellenőrzött</string>
+    <string name="plugin_discover_stars_content_description">GitHub-csillagok</string>
+    <string name="plugin_discover_repository_content_description">GitHub-tároló URL-je</string>
+    <string name="plugin_discover_repository_host">github.com</string>
+
+    <!-- Plugin release install dialog -->
+    <string name="plugin_install_no_releases">Nem található kiadás</string>
+    <string name="plugin_install_select_release_label">Kiadás kiválasztása</string>
+    <string name="plugin_install_select_release_placeholder">Válassz kiadást</string>
+    <string name="plugin_install_prerelease">Előzetes kiadás</string>
+    <string name="plugin_install_release_notes">Kiadási megjegyzések</string>
+
+    <!-- App navigation -->
+    <string name="nav_home">Kezdőlap</string>
+    <string name="nav_search">Keresés</string>
+    <string name="nav_group_on_device">Az eszközön</string>
+    <string name="nav_group_connect">Kapcsolódás</string>
+    <string name="nav_devices">Eszközök</string>
+    <plurals name="connect_jam_hosting">
+        <item quantity="one">Házigazda · %1$d hallgató</item>
+        <item quantity="other">Házigazda · %1$d hallgató</item>
+    </plurals>
+    <plurals name="connect_jam_joined">
+        <item quantity="one">Jamben · %1$d hallgató</item>
+        <item quantity="other">Jamben · %1$d hallgató</item>
+    </plurals>
+
+    <!-- System tray (desktop) -->
+    <string name="tray_hide_window">Ablak elrejtése</string>
+    <string name="tray_show_window">Ablak megjelenítése</string>
+    <string name="tray_next_track">Következő szám</string>
+    <string name="tray_previous_track">Előző szám</string>
+    <string name="tray_shuffle">Keverés</string>
+    <string name="tray_loop">Ismétlés</string>
+    <string name="tray_loop_off">Ismétlés: KI</string>
+    <string name="tray_loop_one">Ismétlés: EGY</string>
+    <string name="tray_loop_all">Ismétlés: MIND</string>
+    <string name="tray_volume">Hangerő: %1$d%</string>
+    <string name="tray_volume_up">Hangerő +</string>
+    <string name="tray_volume_down">Hangerő -</string>
+    <string name="tray_mute">Némítás</string>
+    <string name="tray_unmute">Némítás feloldása</string>
+    <string name="tray_like_track">Szám kedvelése</string>
+    <string name="tray_unlike_track">Kedvelés visszavonása</string>
+    <string name="tray_exit">Kilépés</string>
+
+    <!-- Desktop window controls -->
+    <string name="app_window_minimize">Kis méret</string>
+    <string name="app_window_maximize">Teljes méret</string>
+    <string name="app_window_restore">Előző méret</string>
+    <string name="app_window_close">Bezárás</string>
+
+    <!-- Android playback notification -->
+    <string name="notification_playback_channel_name">Lejátszás</string>
+    <string name="notification_playback_channel_description">Médialejátszás vezérlői</string>
+
+    <!-- Android Auto / media browser -->
+    <string name="media_browser_browse">Böngészés</string>
+    <string name="media_browser_now_playing">Most szól</string>
+    <string name="media_browser_featured">Kiemelt</string>
+    <string name="media_browser_saved_tracks">Mentett számok</string>
+    <string name="media_browser_top_tracks">Legnépszerűbb számok</string>
+</resources>
