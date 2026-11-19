@@ -157,9 +157,10 @@ val sharedModules = module {
             localPlaylistRepository = get(),
             collectionsRepository = get(),
             audioPlayerQueue = get(),
-            navigationCommands = get())
+            navigationCommands = get(),
+            audioPlayer = get())
     }
-    viewModel { (albumName: String) -> LocalAlbumViewModel(albumName, get(), get()) }
+    viewModel { (albumName: String) -> LocalAlbumViewModel(albumName, get(), get(), get()) }
     viewModel { (artistName: String) -> LocalArtistViewModel(artistName, get(), get()) }
 
     // Plugin system

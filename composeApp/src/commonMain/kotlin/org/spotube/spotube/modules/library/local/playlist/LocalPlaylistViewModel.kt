@@ -29,12 +29,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.spotube.spotube.core.audioplayer.AudioPlayerQueue
+import org.spotube.spotube.core.audioplayer.AudioPlayerInterface
+import org.spotube.spotube.core.audioplayer.PlayerState
 import org.spotube.spotube.core.audioplayer.QueueCollectionEntry
 import org.spotube.spotube.core.audioplayer.QueueEntry
 import org.spotube.spotube.core.di.injectLogger
 import org.spotube.spotube.core.i18n.getString
 import org.spotube.spotube.core.navigation.NavigationCommands
 import org.spotube.spotube.modules.library.local.LocalMediaCollectionsRepository
+import org.spotube.spotube.modules.library.local.LocalCollectionTrack
 import org.spotube.spotube.modules.library.local.LocalPlaylist
 import org.spotube.spotube.modules.library.local.LocalPlaylistRepository
 import org.spotube.spotube.modules.library.local.reencodeLocalCoverBase64
@@ -47,12 +50,12 @@ import spotube.composeapp.generated.resources.media_unknown_artist
 
 /** One resolved track of a local playlist, in playlist order; missing paths are skipped upstream. */
 data class LocalPlaylistTrackUi(
-    val path: String,
-    val title: String,
-    val subtitle: String?,
-    val durationLabel: String?,
-    val artwork: ByteArray?
-)
+    override val path: String,
+    override val title: String,
+    override val subtitle: String?,
+    override val durationLabel: String?,
+    override val artwork: ByteArray?
+) : LocalCollectionTrack
 
 /** One row of the add-tracks picker (the same mapping as [LocalPlaylistTrackUi], minus duration). */
 data class LocalTrackPickerTrackUi(
@@ -123,7 +126,8 @@ class LocalPlaylistViewModel(
     private val localPlaylistRepository: LocalPlaylistRepository,
     private val collectionsRepository: LocalMediaCollectionsRepository,
     private val audioPlayerQueue: AudioPlayerQueue,
-    private val navigationCommands: NavigationCommands
+    private val navigationCommands: NavigationCommands,
+    private val audioPlayer: AudioPlayerInterface
 ) : ViewModel(), KoinComponent {
     private val logger by injectLogger<LocalPlaylistViewModel>()
 
@@ -136,14 +140,17 @@ class LocalPlaylistViewModel(
     private val transient = MutableStateFlow(TransientState())
 
     private val editForm = PlaylistFormController(viewModelScope, logger)
+    private val playback = combine(audioPlayerQueue.currentCollectionEntryFlow, audioPlayer.playerStateFlow) { collection, player ->
+        collection to player
+    }
 
     val uiState: StateFlow<LocalPlaylistUiState> = combine(
         localPlaylistRepository.playlistsFlow,
         collectionsRepository.tracks,
-        audioPlayerQueue.currentCollectionEntryFlow,
+        playback,
         editForm.uiState,
         transient
-    ) { playlists, mediaTracks, collectionEntry, formState, t ->
+    ) { playlists, mediaTracks, playback, formState, t ->
         val playlist = playlists.firstOrNull { it.id == playlistId }
             ?: return@combine LocalPlaylistUiState.NotFound
         val tracksByPath = HashMap<String, LocalMediaTrack>(mediaTracks.size)
@@ -152,7 +159,7 @@ class LocalPlaylistViewModel(
             playlist = playlist,
             tracks = playlist.trackPaths.mapNotNull { tracksByPath[it] }
                 .map { localPlaylistTrackUi(it) },
-            isPlaying = collectionEntry is QueueCollectionEntry.Playlist && collectionEntry.id == playlistId,
+            isPlaying = (playback.first as? QueueCollectionEntry.Playlist)?.id == playlistId && playback.second == PlayerState.PLAYING,
             showEditForm = formState.isVisible,
             showAddTracks = t.addTracks.visible,
             showDeleteConfirm = t.showDeleteConfirm,
@@ -205,7 +212,13 @@ class LocalPlaylistViewModel(
     }
 
     fun play() {
-        if (audioPlayerQueue.isPlaylistPlaying(playlistId)) return
+        if (audioPlayerQueue.isPlaylistPlaying(playlistId)) {
+            viewModelScope.launch {
+                if (audioPlayer.playerStateFlow.value == PlayerState.PLAYING) audioPlayer.pause()
+                else audioPlayer.play()
+            }
+            return
+        }
         val state = uiState.value as? LocalPlaylistUiState.Loaded ?: return
         playTracks(resolveTracks(state.playlist), 0)
     }

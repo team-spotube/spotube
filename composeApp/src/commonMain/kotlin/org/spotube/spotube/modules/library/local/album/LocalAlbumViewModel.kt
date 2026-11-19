@@ -25,22 +25,25 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.spotube.spotube.core.audioplayer.AudioPlayerQueue
+import org.spotube.spotube.core.audioplayer.AudioPlayerInterface
+import org.spotube.spotube.core.audioplayer.PlayerState
 import org.spotube.spotube.core.audioplayer.QueueCollectionEntry
 import org.spotube.spotube.core.audioplayer.QueueEntry
 import org.spotube.spotube.core.i18n.getString
 import org.spotube.spotube.modules.library.local.LocalMediaAlbum
+import org.spotube.spotube.modules.library.local.LocalCollectionTrack
 import org.spotube.spotube.modules.library.local.LocalMediaCollectionsRepository
 import org.spotube.spotube.modules.library.local_tracks.media.LocalMediaTrack
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.media_unknown_artist
 
 data class LocalAlbumTrackUi(
-    val path: String,
-    val title: String,
-    val subtitle: String?,
-    val durationLabel: String?,
-    val artwork: ByteArray?
-)
+    override val path: String,
+    override val title: String,
+    override val subtitle: String?,
+    override val durationLabel: String?,
+    override val artwork: ByteArray?
+) : LocalCollectionTrack
 
 sealed interface LocalAlbumUiState {
     data object Loading : LocalAlbumUiState
@@ -62,28 +65,36 @@ sealed interface LocalAlbumUiState {
 class LocalAlbumViewModel(
     private val albumName: String,
     private val collectionsRepository: LocalMediaCollectionsRepository,
-    private val audioPlayerQueue: AudioPlayerQueue
+    private val audioPlayerQueue: AudioPlayerQueue,
+    private val audioPlayer: AudioPlayerInterface
 ) : ViewModel() {
     val state: StateFlow<LocalAlbumUiState> = combine(
         collectionsRepository.albumFlow(albumName),
-        audioPlayerQueue.currentCollectionEntryFlow
-    ) { album, currentCollectionEntry ->
+        audioPlayerQueue.currentCollectionEntryFlow,
+        audioPlayer.playerStateFlow
+    ) { album, currentCollectionEntry, playerState ->
         if (album == null) LocalAlbumUiState.NotFound
         else LocalAlbumUiState.Loaded(
             album = album,
             tracks = album.tracks.map { it.toTrackUi() },
             artistsLabel = album.artistsLabel(),
-            isPlaying = currentCollectionEntry?.id == album.key
+            isPlaying = currentCollectionEntry is QueueCollectionEntry.Album && currentCollectionEntry.id == album.key && playerState == PlayerState.PLAYING
         )
     }.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(5_000),
         LocalAlbumUiState.Loading
     )
 
-    /** Plays the album from its first track; a no-op while it is already the active collection. */
+    /** Plays from the first track, or toggles pause/resume while this album is active. */
     fun play() {
         val album = currentAlbum() ?: return
-        if (audioPlayerQueue.currentCollectionEntryFlow.value?.id == album.key) return
+        if (audioPlayerQueue.currentCollectionEntryFlow.value == QueueCollectionEntry.Album(album.key)) {
+            viewModelScope.launch {
+                if (audioPlayer.playerStateFlow.value == PlayerState.PLAYING) audioPlayer.pause()
+                else audioPlayer.play()
+            }
+            return
+        }
         playTracks(album.tracks, 0, album.key)
     }
 

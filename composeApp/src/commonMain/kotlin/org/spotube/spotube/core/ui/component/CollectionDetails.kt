@@ -98,7 +98,13 @@ fun CollectionDetails(
     onFollowClick: () -> Unit = { },
     showFollowButton: Boolean = true,
     onEdit: (() -> Unit)? = null,
-    sharedElementKey: String? = null) {
+    sharedElementKey: String? = null,
+    /** Coil model for on-device artwork; an embedded ByteArray takes priority over [imageURL]. */
+    imageModel: Any? = null,
+    showOwner: Boolean = true,
+    extraActions: (@Composable () -> Unit)? = null,
+    artworkShape: androidx.compose.ui.graphics.Shape? = null,
+    placeholderIcon: androidx.compose.ui.graphics.vector.ImageVector? = null) {
     Box(modifier = modifier.fillMaxWidth()) {
         val isCompact = currentWindowWidthBreakpoint() isBelow WindowBreakpoints.Medium
         val look = AppComponents.slot(ContentSlots.CollectionHeader)[AppState.Default]
@@ -165,7 +171,9 @@ fun CollectionDetails(
                         contentDescription = stringResource(Res.string.player_add_to_queue_content_description)
                     )
                 }
-                MillenniumSeparator(modifier = Modifier.height(look.actionSeparatorHeight), vertical = true)
+                if (showFollowButton || onEdit != null || extraActions != null) {
+                    MillenniumSeparator(modifier = Modifier.height(look.actionSeparatorHeight), vertical = true)
+                }
                 if (showFollowButton) {
                     if (isFollowing) {
                         MillenniumIconButton(
@@ -189,7 +197,7 @@ fun CollectionDetails(
                     }
                 }
                 if (onEdit != null) {
-                    MillenniumSeparator(modifier = Modifier.height(look.actionSeparatorHeight), vertical = true)
+                    if (showFollowButton) MillenniumSeparator(modifier = Modifier.height(look.actionSeparatorHeight), vertical = true)
                     MillenniumIconButton(
                         onClick = onEdit,
                         style = MillenniumIconButtonStyle.Quiet) {
@@ -198,6 +206,7 @@ fun CollectionDetails(
                             contentDescription = stringResource(Res.string.collection_details_edit_playlist))
                     }
                 }
+                extraActions?.invoke()
             }
         }
         val ownerInfo = @Composable {
@@ -237,16 +246,16 @@ fun CollectionDetails(
             Box(
                 modifier = Modifier
                     .size(if (isCompact) look.compactArtworkSize else look.artworkSize)
-                    .clip(look.artworkShape)
+                    .clip(artworkShape ?: look.artworkShape)
                     .sharedElementOrNone(
                         key = sharedElementKey,
                         sharedTransitionScope = sharedTransitionScope,
                         animatedVisibilityScope = animatedVisibilityScope)
                     .shimmerApply(),
                 contentAlignment = Alignment.Center) {
-                if (imageURL.isNotBlank()) {
+                if (imageModel != null || imageURL.isNotBlank()) {
                     AsyncImage(
-                        model = imageURL,
+                        model = imageModel ?: imageURL,
                         contentDescription = title,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop)
@@ -256,6 +265,12 @@ fun CollectionDetails(
                         contentDescription = title,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop)
+                } else if (placeholderIcon != null) {
+                    AppIcon(
+                        imageVector = placeholderIcon,
+                        contentDescription = null,
+                        modifier = Modifier.size(if (isCompact) 40.dp else 56.dp),
+                        tint = AppTheme.colors.onSurfaceVariant)
                 } else {
                     Text(
                         text = title.take(1).ifBlank { "?" }.uppercase(),
@@ -302,7 +317,7 @@ fun CollectionDetails(
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.spacedBy(look.compactInfoSpacing)) {
                             metadata()
-                            ownerInfo()
+                            if (showOwner) ownerInfo()
                             actions()
                         }
                     }
@@ -321,7 +336,7 @@ fun CollectionDetails(
                         modifier = Modifier.weight(1f),
                         verticalArrangement = Arrangement.spacedBy(look.infoSpacing)) {
                         metadata()
-                        ownerInfo()
+                        if (showOwner) ownerInfo()
                         actions()
                         playPauseButton()
                     }

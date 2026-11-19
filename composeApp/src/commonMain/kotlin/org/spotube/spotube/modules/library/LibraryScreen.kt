@@ -220,7 +220,7 @@ internal fun RowScope.LibraryToolbarActions(
             }
         }
         if (state.canFilterSource) {
-            LibrarySourceFilterMenu(state, onFilterSource, actionModifier)
+            LibrarySourceFilterMenu(state, onFilterSource, actionModifier, expandedDesktop)
         }
         if (state.canCreatePlaylist) {
             MillenniumIconButton(
@@ -257,7 +257,8 @@ internal fun RowScope.LibraryToolbarActions(
 private fun LibrarySourceFilterMenu(
     state: LibraryToolbarUiState,
     onFilterSource: (LibrarySourceFilter) -> Unit,
-    actionModifier: Modifier
+    actionModifier: Modifier,
+    expandedDesktop: Boolean
 ) {
     var expanded by remember { mutableStateOf(false) }
     val active = state.sourceFilter != LibrarySourceFilter.All
@@ -265,13 +266,23 @@ private fun LibrarySourceFilterMenu(
         expanded = expanded,
         onExpandedChange = { expanded = it },
         anchor = {
-            MillenniumIconButton(
-                icon = Iconsax.IconsaxFilterSearch,
-                contentDescription = stringResource(Res.string.library_filter_source_content_description),
-                onClick = { expanded = true },
-                modifier = actionModifier,
-                style = if (active) MillenniumIconButtonStyle.Primary else MillenniumIconButtonStyle.Quiet
-            )
+            if (expandedDesktop) {
+                MillenniumButton(
+                    onClick = { expanded = true },
+                    style = if (active) MillenniumButtonStyle.Primary else MillenniumButtonStyle.Secondary
+                ) {
+                    AppIcon(Iconsax.IconsaxFilterSearch, null, modifier = Modifier.size(16.dp))
+                    Text(stringResource(state.sourceFilter.labelResource))
+                }
+            } else {
+                MillenniumIconButton(
+                    icon = Iconsax.IconsaxFilterSearch,
+                    contentDescription = stringResource(Res.string.library_filter_source_content_description),
+                    onClick = { expanded = true },
+                    modifier = actionModifier,
+                    style = if (active) MillenniumIconButtonStyle.Primary else MillenniumIconButtonStyle.Quiet
+                )
+            }
         }
     ) {
         LibrarySourceFilter.entries.forEach { filter ->

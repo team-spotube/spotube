@@ -33,9 +33,9 @@
     <string name="library_tab_artists">Artists</string>
     <string name="library_tab_local_tracks">Local Tracks</string>
     <string name="library_tab_downloads">Downloads</string>
-    <string name="library_filter_playlists">Search saved playlists…</string>
-    <string name="library_filter_albums">Search saved albums…</string>
-    <string name="library_filter_artists">Search saved artists…</string>
+    <string name="library_filter_playlists">Search playlists…</string>
+    <string name="library_filter_albums">Search albums…</string>
+    <string name="library_filter_artists">Search artists…</string>
     <string name="library_filter_local_tracks">Search folders or tracks…</string>
     <string name="library_action_search">Filter library</string>
     <string name="library_action_close_search">Close filter</string>

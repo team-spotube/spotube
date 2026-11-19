@@ -27,16 +27,17 @@ import kotlinx.coroutines.launch
 import org.spotube.spotube.core.audioplayer.AudioPlayerQueue
 import org.spotube.spotube.core.audioplayer.QueueEntry
 import org.spotube.spotube.modules.library.local.LocalMediaArtist
+import org.spotube.spotube.modules.library.local.LocalCollectionTrack
 import org.spotube.spotube.modules.library.local.LocalMediaCollectionsRepository
 import org.spotube.spotube.modules.library.local_tracks.media.LocalMediaTrack
 
 data class LocalArtistTrackUi(
-    val path: String,
-    val title: String,
-    val subtitle: String?,
-    val durationLabel: String?,
-    val artwork: ByteArray?
-)
+    override val path: String,
+    override val title: String,
+    override val subtitle: String?,
+    override val durationLabel: String?,
+    override val artwork: ByteArray?
+) : LocalCollectionTrack
 
 sealed interface LocalArtistUiState {
     data object Loading : LocalArtistUiState
