@@ -170,6 +170,19 @@
     <string name="settings_palette_blue">Bleu</string>
     <string name="settings_palette_orange">Orange</string>
     <string name="settings_palette_lime">Citron vert</string>
+    <string name="settings_accent_lavender">Lavande</string>
+    <string name="settings_accent_rose">Rose</string>
+    <string name="settings_accent_red">Rouge</string>
+    <string name="settings_accent_amber">Ambre</string>
+    <string name="settings_accent_mint">Menthe</string>
+    <string name="settings_accent_teal">Sarcelle</string>
+    <string name="settings_accent_sky">Ciel</string>
+    <string name="settings_accent_orchid">Orchidée</string>
+    <string name="settings_accent_label">Autres accents</string>
+    <string name="settings_ui_style_title">Style d’interface</string>
+    <string name="settings_ui_style_subtitle_current">Commandes brillantes classiques, ou mise en page moderne et épurée. Actuel : %1$s</string>
+    <string name="settings_ui_style_classic">Classique</string>
+    <string name="settings_ui_style_modern">Moderne</string>
 
     <string name="settings_download_folder_title">Dossier de téléchargement personnalisé</string>
     <string name="settings_download_folder_current">Dossier actuel : %1$s</string>

@@ -44,6 +44,8 @@ import org.spotube.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import org.spotube.spotube.core.ui.misc.TextWithShimmer
 import org.spotube.spotube.core.ui.misc.shimmerApply
 import org.spotube.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.currentWindowWidthBreakpoint
+import org.spotube.millennium.adaptive.WindowBreakpoints
 import org.spotube.spotube.resources.iconsax.Iconsax
 import org.spotube.spotube.resources.iconsax.IconsaxPauseCircle
 import org.spotube.spotube.resources.iconsax.IconsaxPlayCircle2
@@ -110,53 +112,88 @@ fun CollectionView(
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        ApplicationMainBar(
-            backButton = true,
-            title = if (isCollapsed) {
-                {
-                    CollapsedCollectionTitle(
-                        title = title,
-                        imageURL = imageURL,
-                        imageResource = imageResource)
-                }
-            } else {
-                {}
-            },
-            actions = if (isCollapsed && !isJamGuest) {
-                {
-                    MillenniumIconButton(
-                        onClick = onPlay,
-                        loading = isPlayLoading,
-                        style = MillenniumIconButtonStyle.Quiet) {
-                        MillenniumIcon(
-                            imageVector = if (isPlaying) Iconsax.IconsaxPauseCircle else Iconsax.IconsaxPlayCircle2,
-                            contentDescription = if (isPlaying) stringResource(Res.string.player_pause_content_description) else stringResource(Res.string.player_play_content_description))
+    Box(modifier = Modifier.fillMaxSize()) {
+        if (AppTheme.isModern) {
+            // The artwork glow runs from the top edge, behind the bar, down past the header.
+            val isCompact = currentWindowWidthBreakpoint() isBelow WindowBreakpoints.Medium
+            ScrollingArtworkBackdrop(
+                imageURL = imageURL,
+                listState = listState,
+                height = if (isCompact) 440.dp else 400.dp)
+        }
+        Column(modifier = Modifier.fillMaxSize()) {
+            ApplicationMainBar(
+                backButton = true,
+                transparent = AppTheme.isModern,
+                title = if (isCollapsed) {
+                    {
+                        CollapsedCollectionTitle(
+                            title = title,
+                            imageURL = imageURL,
+                            imageResource = imageResource)
                     }
-                }
-            } else {
-                {}
-            })
+                } else {
+                    {}
+                },
+                actions = if (isCollapsed && !isJamGuest) {
+                    {
+                        MillenniumIconButton(
+                            onClick = onPlay,
+                            loading = isPlayLoading,
+                            style = MillenniumIconButtonStyle.Quiet) {
+                            MillenniumIcon(
+                                imageVector = if (isPlaying) Iconsax.IconsaxPauseCircle else Iconsax.IconsaxPlayCircle2,
+                                contentDescription = if (isPlaying) stringResource(Res.string.player_pause_content_description) else stringResource(Res.string.player_play_content_description))
+                        }
+                    }
+                } else {
+                    {}
+                })
 
-        Box(modifier = Modifier.weight(1f).fillMaxSize()) {
-        if (error != null && tracks.isEmpty() && !isLoading) {
-            ErrorDisplay(
-                errorMessage = error,
-                onRetry = onRetry ?: {},
-                modifier = Modifier.fillMaxSize())
-        } else {
-            TrackList(
-                modifier = Modifier.fillMaxSize(),
-                state = listState,
-                headerContent = {
-                    if (isLoading && tracks.isEmpty()) {
-                        org.spotube.spotube.core.ui.misc.SkeletonTree(true) {
+            Box(modifier = Modifier.weight(1f).fillMaxSize()) {
+            if (error != null && tracks.isEmpty() && !isLoading) {
+                ErrorDisplay(
+                    errorMessage = error,
+                    onRetry = onRetry ?: {},
+                    modifier = Modifier.fillMaxSize())
+            } else {
+                TrackList(
+                    modifier = Modifier.fillMaxSize(),
+                    state = listState,
+                    headerContent = {
+                        if (isLoading && tracks.isEmpty()) {
+                            org.spotube.spotube.core.ui.misc.SkeletonTree(true) {
+                                CollectionDetails(
+                                    title = title.ifBlank { stringResource(Res.string.common_loading) },
+                                    description = description,
+                                    imageURL = imageURL,
+                                    imageResource = imageResource,
+                                    ownerName = ownerName.ifBlank { stringResource(Res.string.common_unknown) },
+                                    ownerImageURL = ownerImageURL,
+                                    onOwnerClick = onOwnerClick,
+                                    onPlay = onPlay,
+                                    onShufflePlay = onShufflePlay,
+                                    onAddToQueue = onAddToQueue,
+                                    isPlaying = isPlaying,
+                                    isFollowing = isFollowing,
+                                    isFollowLoading = isFollowLoading,
+                                    isPlayLoading = isPlayLoading,
+                                    isShuffleLoading = isShuffleLoading,
+                                    isAddToQueueLoading = isAddToQueueLoading,
+                                    onFollowClick = onFollowClick,
+                                    showFollowButton = showFollowButton,
+                                    onEdit = onEdit,
+                                    sharedElementKey = sharedElementKey,
+                                    isJamGuest = isJamGuest,
+                                    onAddToJam = { onAddToJam(tracks) })
+                            }
+                        } else {
                             CollectionDetails(
-                                title = title.ifBlank { stringResource(Res.string.common_loading) },
+                                title = title,
                                 description = description,
                                 imageURL = imageURL,
                                 imageResource = imageResource,
-                                ownerName = ownerName.ifBlank { stringResource(Res.string.common_unknown) },
+                                ownerName = ownerName,
                                 ownerImageURL = ownerImageURL,
                                 onOwnerClick = onOwnerClick,
                                 onPlay = onPlay,
@@ -175,57 +212,33 @@ fun CollectionView(
                                 isJamGuest = isJamGuest,
                                 onAddToJam = { onAddToJam(tracks) })
                         }
-                    } else {
-                        CollectionDetails(
-                            title = title,
-                            description = description,
-                            imageURL = imageURL,
-                            imageResource = imageResource,
-                            ownerName = ownerName,
-                            ownerImageURL = ownerImageURL,
-                            onOwnerClick = onOwnerClick,
-                            onPlay = onPlay,
-                            onShufflePlay = onShufflePlay,
-                            onAddToQueue = onAddToQueue,
-                            isPlaying = isPlaying,
-                            isFollowing = isFollowing,
-                            isFollowLoading = isFollowLoading,
-                            isPlayLoading = isPlayLoading,
-                            isShuffleLoading = isShuffleLoading,
-                            isAddToQueueLoading = isAddToQueueLoading,
-                            onFollowClick = onFollowClick,
-                            showFollowButton = showFollowButton,
-                            onEdit = onEdit,
-                            sharedElementKey = sharedElementKey,
-                            isJamGuest = isJamGuest,
-                            onAddToJam = { onAddToJam(tracks) })
-                    }
-                },
-                footerContent = footerContent,
-                tracks = tracks,
-                error = error,
-                hasMore = hasMore,
-                isLoading = isLoading,
-                isLoadingNextPage = isLoadingNextPage,
-                currentTrackId = currentTrackId,
-                isCurrentTrackPlaying = isCurrentTrackPlaying,
-                onTrackClick = onTrackClick,
-                onLoadNextPage = onLoadNextPage,
-                onTrackOptionsAction = onTrackOptionsAction,
-                onArtistClick = onArtistClick,
-                onAlbumClick = onAlbumClick,
-                onArtistsOverflowClick = onArtistsOverflowClick,
-                onBulkDownload = onBulkDownload,
-                onBulkAddToQueue = onBulkAddToQueue,
-                onBulkPlayNext = onBulkPlayNext,
-                onBulkAddToPlaylist = onBulkAddToPlaylist,
-                onBulkAddToJam = onBulkAddToJam,
-                isInJam = isInJam,
-                isJamGuest = isJamGuest,
-                trackOptionsState = trackOptionsState)
-        }
+                    },
+                    footerContent = footerContent,
+                    tracks = tracks,
+                    error = error,
+                    hasMore = hasMore,
+                    isLoading = isLoading,
+                    isLoadingNextPage = isLoadingNextPage,
+                    currentTrackId = currentTrackId,
+                    isCurrentTrackPlaying = isCurrentTrackPlaying,
+                    onTrackClick = onTrackClick,
+                    onLoadNextPage = onLoadNextPage,
+                    onTrackOptionsAction = onTrackOptionsAction,
+                    onArtistClick = onArtistClick,
+                    onAlbumClick = onAlbumClick,
+                    onArtistsOverflowClick = onArtistsOverflowClick,
+                    onBulkDownload = onBulkDownload,
+                    onBulkAddToQueue = onBulkAddToQueue,
+                    onBulkPlayNext = onBulkPlayNext,
+                    onBulkAddToPlaylist = onBulkAddToPlaylist,
+                    onBulkAddToJam = onBulkAddToJam,
+                    isInJam = isInJam,
+                    isJamGuest = isJamGuest,
+                    trackOptionsState = trackOptionsState)
+            }
 
-        trailingContent()
+            trailingContent()
+            }
         }
     }
 }

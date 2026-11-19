@@ -18,6 +18,7 @@
 package org.spotube.spotube.modules.devices
 
 
+import org.spotube.spotube.core.ui.component.PageTitle
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumCard
@@ -157,7 +158,7 @@ fun RemoteControlScreen(
 
         Column(modifier = Modifier.fillMaxSize()) {
             ApplicationMainBar(
-                title = { Text(stringResource(Res.string.devices_remote_title)) },
+                title = { PageTitle(stringResource(Res.string.devices_remote_title)) },
                 subtitle = {
                     if (isConnected && state.deviceName.isNotBlank()) {
                         Text(stringResource(Res.string.devices_remote_playing_on, state.deviceName))

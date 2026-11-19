@@ -95,7 +95,7 @@ fun LoginRequiredDisplay(
                 MillenniumIcon(
                     imageVector = FeatherIcons.LogIn,
                     contentDescription = null,
-                    modifier = Modifier.padding(end = 8.dp).size(18.dp))
+                    modifier = Modifier.padding(end = 8.dp).size(18.dp), tint = buttonIconTint())
                 Text(stringResource(Res.string.login_required_action))
             }
         }

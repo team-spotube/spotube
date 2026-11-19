@@ -29,7 +29,12 @@ import org.spotube.spotube.modules.plugin.PluginManager
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import org.spotube.spotube.core.ui.component.featuredArtworkUrl
+import org.spotube.spotube.core.ui.component.featuredCarouselItems
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -82,6 +87,24 @@ class HomeScreenViewModel(
 
     private val state = MutableStateFlow<HomeScreenState>(HomeScreenState.Loading)
     val uiState = state.asStateFlow()
+
+    private val centeredFeaturedItem = MutableStateFlow<MetadataBrowseItem?>(null)
+
+    /**
+     * Artwork of the featured item in the middle of the carousel, which the Modern style blurs
+     * behind the top of the screen. Starts at the item the carousel starts on (the middle one).
+     */
+    val featuredBackdropUrl: StateFlow<String?> = combine(state, centeredFeaturedItem) { current, centered ->
+        val items = (current as? HomeScreenState.Data)?.featuredItems
+            ?.let(::featuredCarouselItems)
+            .orEmpty()
+        val item = centered?.takeIf { it in items } ?: items.getOrNull(items.size / 2)
+        item?.featuredArtworkUrl()
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    fun onFeaturedItemCentered(item: MetadataBrowseItem) {
+        centeredFeaturedItem.value = item
+    }
 
     init {
         viewModelScope.launch {

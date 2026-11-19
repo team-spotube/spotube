@@ -18,6 +18,10 @@
 package org.spotube.spotube.core.ui.component
 
 
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.graphics.Color
+import org.spotube.spotube.core.ui.misc.LocalSkeletonLoading
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.height
 import org.spotube.millennium.composables.MillenniumButton
@@ -113,7 +117,7 @@ fun CollectionDetails(
                             onClick = onAddToJam!!) {
                             MillenniumIcon(
                                 imageVector = Iconsax.IconsaxAddSquare,
-                                contentDescription = stringResource(Res.string.track_options_add_to_jam))
+                                contentDescription = stringResource(Res.string.track_options_add_to_jam), tint = buttonIconTint())
                             TextWithShimmer(text = stringResource(Res.string.track_options_add_to_jam))
                         }
                     }
@@ -134,7 +138,7 @@ fun CollectionDetails(
                         loading = isPlayLoading) {
                         MillenniumIcon(
                             imageVector = if (isPlaying) Iconsax.IconsaxPauseCircle else Iconsax.IconsaxPlayCircle2,
-                            contentDescription = if (isPlaying) stringResource(Res.string.player_pause_content_description) else stringResource(Res.string.player_play_content_description))
+                            contentDescription = if (isPlaying) stringResource(Res.string.player_pause_content_description) else stringResource(Res.string.player_play_content_description), tint = buttonIconTint())
                         TextWithShimmer(text = if (isPlaying) stringResource(Res.string.player_pause_content_description) else stringResource(Res.string.player_play_content_description))
                     }
                     MillenniumButton(
@@ -233,8 +237,14 @@ fun CollectionDetails(
         val artwork = @Composable {
             Box(
                 modifier = Modifier
-                    .size(if (isCompact) 100.dp else 200.dp)
-                    .clip(RoundedCornerShape(12.dp))
+                    .size(
+                        when {
+                            AppTheme.isModern && isCompact -> 120.dp
+                            AppTheme.isModern -> 220.dp
+                            isCompact -> 100.dp
+                            else -> 200.dp
+                        })
+                    .clip(RoundedCornerShape(if (AppTheme.isModern) 14.dp else 12.dp))
                     .sharedElementOrNone(
                         key = sharedElementKey,
                         sharedTransitionScope = sharedTransitionScope,
@@ -281,6 +291,19 @@ fun CollectionDetails(
             }
         }
 
+        if (AppTheme.isModern) {
+            ModernCollectionHeader(
+                isCompact = isCompact,
+                title = title,
+                description = description,
+                imageURL = imageURL,
+                artwork = artwork,
+                ownerInfo = ownerInfo,
+                actions = actions,
+                playPauseButton = playPauseButton)
+            return@Box
+        }
+
         MillenniumCard(
             modifier = Modifier
                 .fillMaxWidth()
@@ -323,6 +346,89 @@ fun CollectionDetails(
                         ownerInfo()
                         actions()
                         playPauseButton()
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Modern header: no card. The artwork lights the area behind it, the title is set large in the
+ * display face with the accent stop, and the actions sit under it.
+ */
+@Composable
+private fun ModernCollectionHeader(
+    isCompact: Boolean,
+    title: String,
+    description: String,
+    imageURL: String,
+    artwork: @Composable () -> Unit,
+    ownerInfo: @Composable () -> Unit,
+    actions: @Composable () -> Unit,
+    playPauseButton: @Composable () -> Unit
+) {
+    val modernTitle = @Composable {
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            // Like TextWithShimmer, the glyphs hide while the skeleton is loading.
+            val loading = LocalSkeletonLoading.current
+            Text(
+                text = if (loading) AnnotatedString(title) else stopped(title, AppTheme.colors.primary),
+                modifier = Modifier.shimmerApply(),
+                color = if (loading) Color.Transparent else AppTheme.colors.onSurface,
+                style = if (isCompact) AppTheme.typography.headlineMedium else AppTheme.typography.displaySmall,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis)
+            if (description.isNotBlank()) {
+                TextWithShimmer(
+                    text = description,
+                    style = AppTheme.typography.bodyMedium,
+                    color = AppTheme.colors.onSurfaceVariant,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis)
+            }
+        }
+    }
+    // The artwork glow is drawn by CollectionView behind the top bar, so it reaches the top edge.
+    Box(modifier = Modifier.fillMaxWidth()) {
+        if (isCompact) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.Bottom) {
+                    artwork()
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        modernTitle()
+                        ownerInfo()
+                    }
+                }
+                actions()
+                playPauseButton()
+            }
+        } else {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 24.dp, end = 24.dp, top = 28.dp, bottom = 24.dp),
+                horizontalArrangement = Arrangement.spacedBy(28.dp),
+                verticalAlignment = Alignment.Bottom) {
+                artwork()
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    modernTitle()
+                    ownerInfo()
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically) {
+                        Box(Modifier.widthIn(max = 320.dp)) { playPauseButton() }
+                        actions()
                     }
                 }
             }

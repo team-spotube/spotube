@@ -18,6 +18,9 @@
 package org.spotube.spotube.modules.home
 
 
+import org.spotube.spotube.core.ui.component.ModernWordmark
+import org.spotube.spotube.core.ui.component.ScrollingArtworkBackdrop
+import org.spotube.spotube.core.ui.component.PageTitle
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
@@ -133,99 +136,117 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
             }
     }
 
-    Column(
+    val featuredBackdropUrl by viewModel.featuredBackdropUrl.collectAsStateWithLifecycle()
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MillenniumTheme.colors.background)
     ) {
-        ApplicationMainBar(
-            backButton = false,
-            title = {
-                if (isSmallScreen) {
-                    Text(
-                        "Spotube",
-                        style = AppTheme.typography.headlineLarge.copy(
-                            fontFamily = FontFamily(
-                                listOf(Font(Res.font.cookie_regular, weight = FontWeight.Normal))
-                            )
-                        ),
-                        color = AppTheme.colors.onSurface
-                    )
-                } else {
-                    Text(stringResource(Res.string.home_title_browse))
-                }
-
-            },
-            actions = {
-                if (isSmallScreen) {
-                    MillenniumIconButton(
-                        onClick = { navigationCommands.navigateTo(Routes.Devices) },
-                        style = MillenniumIconButtonStyle.Quiet
-                    ) {
-                        MillenniumIcon(
-                            imageVector = Iconsax.IconsaxMirrorScreenRegular,
-                            contentDescription = stringResource(Res.string.devices_title)
-                        )
-                    }
-                    MillenniumIconButton(
-                        onClick = { navigationCommands.navigateTo(Routes.Jam) },
-                        style = MillenniumIconButtonStyle.Quiet
-                    ) {
-                        MillenniumIcon(
-                            imageVector = Iconsax.IconsaxSoundTwotone,
-                            contentDescription = stringResource(Res.string.jam_screen_title)
-                        )
-                    }
-                    val supportLabel = stringResource(Res.string.support_button_label)
-                    MillenniumIconButton(
-                        onClick = openSupport,
-                        style = MillenniumIconButtonStyle.Quiet
-                    ) {
-                        MillenniumIcon(
-                            imageVector = Iconsax.IconsaxHeart2,
-                            contentDescription = supportLabel
-                        )
-                    }
-                }
-            })
-        if (isSmallScreen) {
-            ConnectStatusBanner(
-                onOpenRemote = { navigationCommands.navigateTo(Routes.RemoteControl) },
-                onOpenJam = { navigationCommands.navigateTo(Routes.Jam) }
-            )
+        if (AppTheme.isModern) {
+            // The centred featured artwork glows from the top edge down behind the carousel.
+            ScrollingArtworkBackdrop(
+                imageURL = featuredBackdropUrl,
+                listState = listState,
+                height = if (isSmallScreen) 400.dp else 440.dp)
         }
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(1f)
+        Column(
+            modifier = Modifier.fillMaxSize()
         ) {
-            if (!isSmallScreen) {
-                HomeContent(
-                    listState = listState,
-                    state = state,
-                    onRetry = { viewModel.refresh() },
-                    onGenreSelected = { viewModel.selectGenre(it) })
-            } else {
-                MillenniumPullToRefreshBox(
-                    isRefreshing = state is HomeScreenState.Loading,
-                    onRefresh = {
-                        viewModel.refresh()
-                    },
-                    modifier = Modifier.fillMaxSize()
-                ) {
+            ApplicationMainBar(
+                backButton = false,
+                transparent = AppTheme.isModern,
+                title = {
+                    if (isSmallScreen && AppTheme.isModern) {
+                        ModernWordmark(size = 28)
+                    } else if (isSmallScreen) {
+                        Text(
+                            "Spotube",
+                            style = AppTheme.typography.headlineLarge.copy(
+                                fontFamily = FontFamily(
+                                    listOf(Font(Res.font.cookie_regular, weight = FontWeight.Normal))
+                                )
+                            ),
+                            color = AppTheme.colors.onSurface
+                        )
+                    } else {
+                        PageTitle(stringResource(Res.string.home_title_browse))
+                    }
+
+                },
+                actions = {
+                    if (isSmallScreen) {
+                        MillenniumIconButton(
+                            onClick = { navigationCommands.navigateTo(Routes.Devices) },
+                            style = MillenniumIconButtonStyle.Quiet
+                        ) {
+                            MillenniumIcon(
+                                imageVector = Iconsax.IconsaxMirrorScreenRegular,
+                                contentDescription = stringResource(Res.string.devices_title)
+                            )
+                        }
+                        MillenniumIconButton(
+                            onClick = { navigationCommands.navigateTo(Routes.Jam) },
+                            style = MillenniumIconButtonStyle.Quiet
+                        ) {
+                            MillenniumIcon(
+                                imageVector = Iconsax.IconsaxSoundTwotone,
+                                contentDescription = stringResource(Res.string.jam_screen_title)
+                            )
+                        }
+                        val supportLabel = stringResource(Res.string.support_button_label)
+                        MillenniumIconButton(
+                            onClick = openSupport,
+                            style = MillenniumIconButtonStyle.Quiet
+                        ) {
+                            MillenniumIcon(
+                                imageVector = Iconsax.IconsaxHeart2,
+                                contentDescription = supportLabel
+                            )
+                        }
+                    }
+                })
+            if (isSmallScreen) {
+                ConnectStatusBanner(
+                    onOpenRemote = { navigationCommands.navigateTo(Routes.RemoteControl) },
+                    onOpenJam = { navigationCommands.navigateTo(Routes.Jam) }
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f)
+            ) {
+                if (!isSmallScreen) {
                     HomeContent(
                         listState = listState,
                         state = state,
                         onRetry = { viewModel.refresh() },
-                        onGenreSelected = { viewModel.selectGenre(it) })
+                        onGenreSelected = { viewModel.selectGenre(it) },
+                        onFeaturedItemCentered = viewModel::onFeaturedItemCentered)
+                } else {
+                    MillenniumPullToRefreshBox(
+                        isRefreshing = state is HomeScreenState.Loading,
+                        onRefresh = {
+                            viewModel.refresh()
+                        },
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        HomeContent(
+                            listState = listState,
+                            state = state,
+                            onRetry = { viewModel.refresh() },
+                            onGenreSelected = { viewModel.selectGenre(it) },
+                            onFeaturedItemCentered = viewModel::onFeaturedItemCentered)
+                    }
                 }
-            }
 
-            VerticalScrollbar(
-                listState = listState,
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-            )
+                VerticalScrollbar(
+                    listState = listState,
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                )
+            }
         }
     }
 }
@@ -235,7 +256,8 @@ private fun HomeContent(
     listState: androidx.compose.foundation.lazy.LazyListState,
     state: HomeScreenState,
     onRetry: () -> Unit,
-    onGenreSelected: (String) -> Unit
+    onGenreSelected: (String) -> Unit,
+    onFeaturedItemCentered: (MetadataBrowseItem) -> Unit = {}
 ) {
     val shellBottomInset = LocalAppShellBottomInset.current
     val contentPadding = remember(shellBottomInset) {
@@ -298,7 +320,9 @@ private fun HomeContent(
             is HomeScreenState.Data -> {
                 if (state.featuredItems.isNotEmpty()) {
                     item {
-                        FeaturedCarousel(items = state.featuredItems)
+                        FeaturedCarousel(
+                            items = state.featuredItems,
+                            onCenteredItemChanged = onFeaturedItemCentered)
                     }
                 }
 
@@ -403,7 +427,7 @@ private fun HomeSection(
         if (!subtitle.isNullOrEmpty()) Text(
             text = subtitle,
             style = AppTheme.typography.labelMedium.copy(
-                color = AppTheme.colors.secondary,
+                color = if (AppTheme.isModern) AppTheme.colors.onSurfaceVariant else AppTheme.colors.secondary,
                 fontWeight = FontWeight.Medium
             ),
             modifier = Modifier.padding(horizontal = 16.dp)

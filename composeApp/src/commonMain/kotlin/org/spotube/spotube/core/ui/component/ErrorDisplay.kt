@@ -189,7 +189,7 @@ fun ErrorDisplay(
                     MillenniumIcon(
                         imageVector = FeatherIcons.RefreshCw,
                         contentDescription = null,
-                        modifier = Modifier.padding(end = 8.dp).size(18.dp))
+                        modifier = Modifier.padding(end = 8.dp).size(18.dp), tint = buttonIconTint())
                     Text(stringResource(Res.string.common_retry))
                 }
             }

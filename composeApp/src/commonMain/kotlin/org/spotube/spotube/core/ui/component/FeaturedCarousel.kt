@@ -89,27 +89,43 @@ import org.koin.compose.koinInject
 import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.*
 
+/** The browse items the carousel can show: albums, playlists and tracks. */
+fun featuredCarouselItems(items: List<MetadataBrowseItem>): List<MetadataBrowseItem> =
+    items.filter { it is MetadataBrowseItem.Album || it is MetadataBrowseItem.Playlist || it is MetadataBrowseItem.Track }
+
+/** The artwork a carousel card shows for this item. */
+fun MetadataBrowseItem.featuredArtworkUrl(): String? = when (this) {
+    is MetadataBrowseItem.Album -> data.thumbnails.firstOrNull()?.url
+    is MetadataBrowseItem.Playlist -> data.thumbnails.firstOrNull()?.url
+    is MetadataBrowseItem.Track -> (data.album?.thumbnails ?: data.thumbnails)?.firstOrNull()?.url
+    else -> null
+}
+
 @Composable
 fun FeaturedCarousel(
     items: List<MetadataBrowseItem>,
-    modifier: Modifier = Modifier) {
-    val filteredItems = remember(items) {
-        items.filter { it is MetadataBrowseItem.Album || it is MetadataBrowseItem.Playlist || it is MetadataBrowseItem.Track }
-    }
+    modifier: Modifier = Modifier,
+    onCenteredItemChanged: (MetadataBrowseItem) -> Unit = {}) {
+    val filteredItems = remember(items) { featuredCarouselItems(items) }
 
     if (filteredItems.isEmpty()) return
 
     FeaturedCarouselContent(
-        items = filteredItems)
+        items = filteredItems,
+        onCenteredItemChanged = onCenteredItemChanged)
 }
 
 @Composable
 private fun FeaturedCarouselContent(
     items: List<MetadataBrowseItem>,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier,
+    onCenteredItemChanged: (MetadataBrowseItem) -> Unit = {}) {
     val centerIndex = items.size / 2
     var selectedIndex by remember { mutableIntStateOf(centerIndex) }
-    val state = rememberCoverflowState(centerIndex) { index -> selectedIndex = index }
+    val state = rememberCoverflowState(centerIndex) { index ->
+        selectedIndex = index
+        items.getOrNull(index)?.let(onCenteredItemChanged)
+    }
     val isSmallScreen = currentWindowWidthBreakpoint() isBelow WindowBreakpoints.Medium
 
     Box(
@@ -154,12 +170,7 @@ private fun FeaturedCarouselCard(
 
     val hazeState = rememberHazeState()
 
-    val thumbnailUrl = when (item) {
-        is MetadataBrowseItem.Album -> item.data.thumbnails.firstOrNull()?.url
-        is MetadataBrowseItem.Playlist -> item.data.thumbnails.firstOrNull()?.url
-        is MetadataBrowseItem.Track -> (item.data.album?.thumbnails ?: item.data.thumbnails)?.firstOrNull()?.url
-        else -> null
-    }
+    val thumbnailUrl = item.featuredArtworkUrl()
 
     val title = when (item) {
         is MetadataBrowseItem.Album -> item.data.title

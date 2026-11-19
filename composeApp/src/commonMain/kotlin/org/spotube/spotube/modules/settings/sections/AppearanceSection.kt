@@ -28,6 +28,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -51,6 +53,12 @@ import org.spotube.spotube.core.ui.theming.AppTheme
 import org.spotube.spotube.core.ui.theming.isLightAppearance
 import org.spotube.spotube.modules.settings.SettingsViewModel
 import org.spotube.spotube.modules.settings.Theme
+import org.spotube.spotube.modules.settings.UiStyle
+import org.spotube.spotube.core.ui.theming.LocalModernFonts
+import org.spotube.spotube.core.ui.theming.modernColorSchemes
+import org.spotube.spotube.modules.settings.ModernAccent
+import org.spotube.spotube.core.ui.theming.modernThemeComponents
+import org.spotube.spotube.resources.iconsax.IconsaxColorsSquare
 import org.spotube.spotube.modules.settings.UserSettings
 import org.spotube.spotube.modules.settings.components.SelectionSettingCard
 import org.spotube.spotube.modules.settings.components.SettingCardItem
@@ -100,17 +108,40 @@ internal fun LazyListScope.appearanceSection(
                 )
             },
             {
+                SelectionSettingCard(
+                    title = stringResource(Res.string.settings_ui_style_title),
+                    subtitle = stringResource(
+                        Res.string.settings_ui_style_subtitle_current,
+                        settings.uiStyle.displayLabel()
+                    ),
+                    icon = {
+                        SettingsItemIcon(Iconsax.IconsaxColorsSquare, stringResource(Res.string.settings_ui_style_title))
+                    },
+                    selectedOption = settings.uiStyle,
+                    options = UiStyle.entries,
+                    optionLabel = { it.displayLabel() },
+                    onOptionSelected = { style ->
+                        settingsViewModel.updateSettings {
+                            copy(uiStyle = style)
+                        }
+                    }
+                )
+            },
+            {
                 AppearanceSettingCard(
                     selectedPalette = settings.palette,
+                    selectedAccent = settings.modernAccent,
                     icon = {
                         SettingsItemIcon(
                             Iconsax.IconsaxMagic,
                             stringResource(Res.string.settings_appearance_title)
                         )
                     },
-                    onSaved = { palette ->
+                    onSaved = { palette, accent, modern ->
                         settingsViewModel.updateSettings {
-                            copy(palette = palette)
+                            // Classic has no extra accents, so it leaves the Modern one as it is.
+                            if (modern) copy(palette = palette, modernAccent = accent)
+                            else copy(palette = palette)
                         }
                     })
             })
@@ -127,33 +158,64 @@ private fun Theme.displayLabel(): String {
 }
 
 @Composable
+private fun UiStyle.displayLabel(): String = when (this) {
+    UiStyle.CLASSIC -> stringResource(Res.string.settings_ui_style_classic)
+    UiStyle.MODERN -> stringResource(Res.string.settings_ui_style_modern)
+}
+
+/** The role sets of the active interface style, so swatches show the accent as it will look. */
+@Composable
+private fun activeColorSchemes(accent: ModernAccent? = null): MillenniumColorSchemes =
+    if (AppTheme.isModern) modernColorSchemes(accent) else MillenniumColorSchemes()
+
+@Composable
+private fun ModernAccent.displayLabel(): String = when (this) {
+    ModernAccent.LAVENDER -> stringResource(Res.string.settings_accent_lavender)
+    ModernAccent.ROSE -> stringResource(Res.string.settings_accent_rose)
+    ModernAccent.RED -> stringResource(Res.string.settings_accent_red)
+    ModernAccent.AMBER -> stringResource(Res.string.settings_accent_amber)
+    ModernAccent.MINT -> stringResource(Res.string.settings_accent_mint)
+    ModernAccent.TEAL -> stringResource(Res.string.settings_accent_teal)
+    ModernAccent.SKY -> stringResource(Res.string.settings_accent_sky)
+    ModernAccent.ORCHID -> stringResource(Res.string.settings_accent_orchid)
+}
+
+@Composable
 private fun MillenniumPalette.displayLabel(): String = when (this) {
     MillenniumPalette.Blue -> stringResource(Res.string.settings_palette_blue)
     MillenniumPalette.Orange -> stringResource(Res.string.settings_palette_orange)
     MillenniumPalette.Lime -> stringResource(Res.string.settings_palette_lime)
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun AppearanceSettingCard(
     selectedPalette: MillenniumPalette,
+    selectedAccent: ModernAccent?,
     icon: (@Composable () -> Unit)? = null,
-    onSaved: (MillenniumPalette) -> Unit) {
+    onSaved: (palette: MillenniumPalette, accent: ModernAccent?, modern: Boolean) -> Unit) {
     var isDialogOpen by remember { mutableStateOf(false) }
+    val modern = AppTheme.isModern
+    // Extra accents only exist in the Modern style.
+    val shownAccent = selectedAccent.takeIf { modern }
 
     SettingCardItem(
         title = stringResource(Res.string.settings_appearance_title),
         subtitle = stringResource(
             Res.string.settings_appearance_subtitle_palette,
-            selectedPalette.displayLabel()),
+            shownAccent?.displayLabel() ?: selectedPalette.displayLabel()),
         icon = icon,
         trailingContent = {
-            PaletteTrailingSwatch(selectedPalette)
+            PaletteTrailingSwatch(selectedPalette, shownAccent)
         },
         onClick = { isDialogOpen = true })
 
     if (isDialogOpen) {
         var draftPalette by remember(selectedPalette, isDialogOpen) {
             mutableStateOf(selectedPalette)
+        }
+        var draftAccent by remember(shownAccent, isDialogOpen) {
+            mutableStateOf(shownAccent)
         }
 
         MillenniumDialog(visible = true, onDismissRequest = { isDialogOpen = false }) {
@@ -168,19 +230,42 @@ private fun AppearanceSettingCard(
             MillenniumText(
                 stringResource(Res.string.settings_palette_label),
                 color = AppTheme.colors.onSurface)
-            Row(
+            FlowRow(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 MillenniumPalette.entries.forEach { palette ->
                     PaletteSwatch(
                         palette = palette,
+                        accent = null,
                         label = palette.displayLabel(),
-                        selected = palette == draftPalette,
-                        onClick = { draftPalette = palette })
+                        selected = palette == draftPalette && draftAccent == null,
+                        onClick = {
+                            draftPalette = palette
+                            draftAccent = null
+                        })
+                }
+            }
+            if (modern) {
+                MillenniumText(
+                    stringResource(Res.string.settings_accent_label),
+                    color = AppTheme.colors.onSurface)
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    ModernAccent.entries.forEach { accent ->
+                        PaletteSwatch(
+                            palette = draftPalette,
+                            accent = accent,
+                            label = accent.displayLabel(),
+                            selected = accent == draftAccent,
+                            onClick = { draftAccent = accent })
+                    }
                 }
             }
 
-            PalettePreview(draftPalette)
+            PalettePreview(draftPalette, draftAccent)
             }
             MillenniumDialogFooter {
                 MillenniumButton(
@@ -190,7 +275,7 @@ private fun AppearanceSettingCard(
                 }
                 MillenniumButton(
                     onClick = {
-                        onSaved(draftPalette)
+                        onSaved(draftPalette, draftAccent, modern)
                         isDialogOpen = false
                     }) {
                     MillenniumText(stringResource(Res.string.common_save))
@@ -203,11 +288,13 @@ private fun AppearanceSettingCard(
 @Composable
 private fun PaletteSwatch(
     palette: MillenniumPalette,
+    accent: ModernAccent?,
     label: String,
     selected: Boolean,
     onClick: () -> Unit) {
     val dark = !isLightAppearance()
-    val scheme = remember(palette, dark) { MillenniumColorSchemes().resolve(palette, dark = dark) }
+    val schemes = activeColorSchemes(accent)
+    val scheme = remember(palette, dark, schemes) { schemes.resolve(palette, dark = dark) }
     Box(
         modifier = Modifier
             .size(40.dp)
@@ -222,9 +309,10 @@ private fun PaletteSwatch(
 }
 
 @Composable
-private fun PaletteTrailingSwatch(palette: MillenniumPalette) {
+private fun PaletteTrailingSwatch(palette: MillenniumPalette, accent: ModernAccent?) {
     val dark = !isLightAppearance()
-    val scheme = remember(palette, dark) { MillenniumColorSchemes().resolve(palette, dark = dark) }
+    val schemes = activeColorSchemes(accent)
+    val scheme = remember(palette, dark, schemes) { schemes.resolve(palette, dark = dark) }
     Row(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically) {
@@ -242,9 +330,22 @@ private fun PaletteTrailingSwatch(palette: MillenniumPalette) {
 }
 
 @Composable
-private fun PalettePreview(palette: MillenniumPalette) {
+private fun PalettePreview(palette: MillenniumPalette, accent: ModernAccent?) {
     val dark = !isLightAppearance()
-    MillenniumTheme(dark = dark, config = MillenniumThemeConfig(palette = palette)) {
+    val modernFonts = LocalModernFonts.current
+    val config = remember(palette, accent, dark, modernFonts) {
+        if (modernFonts == null) {
+            MillenniumThemeConfig(palette = palette)
+        } else {
+            val schemes = modernColorSchemes(accent)
+            val components = modernThemeComponents(schemes.resolve(palette, dark), modernFonts)
+            MillenniumThemeConfig(
+                colorSchemes = schemes, palette = palette,
+                dark = components, light = components
+            )
+        }
+    }
+    MillenniumTheme(dark = dark, config = config) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()

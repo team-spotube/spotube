@@ -17,6 +17,7 @@
 
 package org.spotube.spotube.modules.welcome
 
+import org.spotube.spotube.core.ui.component.stopped
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -60,6 +61,19 @@ fun WelcomeWordmark(
     modifier: Modifier = Modifier,
     fontSize: TextUnit = AppTheme.typography.displaySmall.fontSize
 ) {
+    if (AppTheme.isModern) {
+        // The Modern wordmark: display face, tight tracking, the accent stop.
+        Text(
+            stopped(stringResource(Res.string.welcome_app_name), AppTheme.colors.primary),
+            modifier = modifier,
+            style = AppTheme.typography.displaySmall.copy(
+                fontSize = fontSize * 0.8f,
+                lineHeight = fontSize * 0.8f,
+                letterSpacing = fontSize * -0.03f
+            ),
+            color = AppTheme.colors.onSurface)
+        return
+    }
     Text(
         stringResource(Res.string.welcome_app_name),
         modifier = modifier,

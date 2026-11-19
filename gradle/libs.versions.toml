@@ -65,10 +65,12 @@ vanniktechMavenPublish = "0.37.0"
 uniffi = "0.3.7"
 mokkery = "3.5.1"
 jmustache = "1.16"
+asm = "9.10.1"
 
 [libraries]
 # buildSrc: renders the package manager manifests in packaging/
 jmustache = { module = "com.samskivert:jmustache", version.ref = "jmustache" }
+asm = { module = "org.ow2.asm:asm", version.ref = "asm" }
 appdirs = { module = "net.harawata:appdirs", version.ref = "appdirs" }
 cache4k = { module = "io.github.reactivecircus.cache4k:cache4k", version.ref = "cache4k" }
 androidx-car-app = { module = "androidx.car.app:app", version.ref = "carApp" }

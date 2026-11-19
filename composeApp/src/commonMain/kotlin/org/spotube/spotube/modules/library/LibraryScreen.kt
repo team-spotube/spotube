@@ -17,6 +17,7 @@
 
 package org.spotube.spotube.modules.library
 
+import org.spotube.spotube.core.ui.component.PageTitle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -166,10 +167,8 @@ internal fun LibraryToolbarTitle(
             autoFocus = true
         )
     } else if (!expandedDesktop) {
-        Text(
-            stringResource(if (compactDesktop) Res.string.library_toolbar_compact_title else Res.string.library_screen_title),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+        PageTitle(
+            stringResource(if (compactDesktop) Res.string.library_toolbar_compact_title else Res.string.library_screen_title)
         )
     }
 }

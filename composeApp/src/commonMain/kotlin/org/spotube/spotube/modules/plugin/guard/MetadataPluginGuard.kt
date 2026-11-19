@@ -17,6 +17,7 @@
 
 package org.spotube.spotube.modules.plugin.guard
 
+import org.spotube.spotube.core.ui.component.buttonIconTint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -189,7 +190,7 @@ private fun NoMetadataPluginScreen(
                         MillenniumIcon(
                             if (hasInstalledPlugins) Iconsax.IconsaxCheckCircle else Iconsax.IconsaxAdd,
                             contentDescription = null,
-                            modifier = Modifier.size(18.dp))
+                            modifier = Modifier.size(18.dp), tint = buttonIconTint())
                         Text(
                             stringResource(
                                 if (hasInstalledPlugins) Res.string.no_metadata_plugin_action_select

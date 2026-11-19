@@ -18,6 +18,8 @@
 package org.spotube.spotube.modules.settings.sections
 
 
+import org.spotube.spotube.core.ui.component.stopped
+import androidx.compose.foundation.border
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumSeparator
 import org.spotube.millennium.theme.MillenniumTheme
@@ -93,6 +95,17 @@ internal val downloadFormatPresets = listOf(
 
 internal fun LazyListScope.settingsSectionHeader(title: StringResource) {
     item {
+        if (AppTheme.isModern) {
+            Text(
+                text = stringResource(title),
+                style = AppTheme.typography.titleLarge,
+                color = AppTheme.colors.onSurface,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 8.dp)
+            )
+            return@item
+        }
         Text(
             text = stringResource(title),
             style = AppTheme.typography.labelMedium,
@@ -110,6 +123,17 @@ internal fun LazyListScope.settingsSectionHeader(title: StringResource) {
  */
 @Composable
 internal fun SettingsPageTitle(title: StringResource) {
+    if (AppTheme.isModern) {
+        Text(
+            text = stopped(stringResource(title), AppTheme.colors.primary),
+            style = AppTheme.typography.headlineLarge,
+            color = AppTheme.colors.onSurface,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 12.dp)
+        )
+        return
+    }
     Text(
         text = stringResource(title),
         style = AppTheme.typography.headlineSmall,
@@ -200,12 +224,19 @@ internal fun LazyListScope.settingsSectionCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp, vertical = 4.dp)
-                .millenniumSurface(
-                    background = millenniumPanelBrush(MillenniumTheme.colors),
-                    shape = AppTheme.shapes.medium,
-                    borderColor = MillenniumTheme.colors.border,
-                    borderWidth = 1.dp,
-                    shadowElevation = 6.dp)
+                .then(
+                    if (AppTheme.isModern) {
+                        Modifier
+                            .background(MillenniumTheme.colors.surface, AppTheme.shapes.large)
+                            .border(1.dp, MillenniumTheme.colors.border, AppTheme.shapes.large)
+                    } else {
+                        Modifier.millenniumSurface(
+                            background = millenniumPanelBrush(MillenniumTheme.colors),
+                            shape = AppTheme.shapes.medium,
+                            borderColor = MillenniumTheme.colors.border,
+                            borderWidth = 1.dp,
+                            shadowElevation = 6.dp)
+                    })
                 .padding(top = 4.dp, bottom = 4.dp)
         ) {
             items.forEachIndexed { index, content ->

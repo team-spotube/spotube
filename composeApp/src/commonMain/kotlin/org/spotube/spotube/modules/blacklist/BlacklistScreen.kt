@@ -18,6 +18,7 @@
 package org.spotube.spotube.modules.blacklist
 
 
+import org.spotube.spotube.core.ui.component.PageTitle
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
@@ -72,7 +73,7 @@ fun BlacklistScreen() {
     Column(modifier = Modifier.fillMaxSize()) {
         ApplicationMainBar(
             backButton = true,
-            title = { Text(stringResource(Res.string.settings_blacklist_title)) })
+            title = { PageTitle(stringResource(Res.string.settings_blacklist_title)) })
         BlacklistContent(
             viewModel = viewModel,
             modifier = Modifier.weight(1f))

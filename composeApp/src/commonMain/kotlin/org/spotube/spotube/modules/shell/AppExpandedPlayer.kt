@@ -18,6 +18,7 @@
 package org.spotube.spotube.modules.shell
 
 
+import org.spotube.spotube.core.ui.component.styled
 import org.spotube.millennium.composables.MillenniumIcon
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
@@ -598,7 +599,7 @@ fun AppExpandedPlayer(
                         style = MillenniumIconButtonStyle.Quiet
                     ) {
                         MillenniumIcon(
-                            Iconsax.IconsaxShuffle,
+                            Iconsax.IconsaxShuffle.styled(),
                             contentDescription = stringResource(if (playerUiState.isShuffling) Res.string.player_disable_shuffle_content_description else Res.string.player_enable_shuffle_content_description),
                             tint = if (playerUiState.isShuffling) {
                                 AppTheme.colors.primary
@@ -612,7 +613,7 @@ fun AppExpandedPlayer(
                         enabled = !isJamGuest,
                         style = MillenniumIconButtonStyle.Quiet
                     ) {
-                        MillenniumIcon(Iconsax.IconsaxPrevious, contentDescription = stringResource(Res.string.player_previous_content_description))
+                        MillenniumIcon(Iconsax.IconsaxPrevious.styled(), contentDescription = stringResource(Res.string.player_previous_content_description))
                     }
                     MillenniumIconButton(
                         onClick = ::onPlayPause,
@@ -630,7 +631,7 @@ fun AppExpandedPlayer(
                         enabled = !isJamGuest,
                         style = MillenniumIconButtonStyle.Quiet
                     ) {
-                        MillenniumIcon(Iconsax.IconsaxNext, contentDescription = stringResource(Res.string.player_next_content_description))
+                        MillenniumIcon(Iconsax.IconsaxNext.styled(), contentDescription = stringResource(Res.string.player_next_content_description))
                     }
                     MillenniumIconButton(
                         onClick = ::onLoopToggle,
@@ -639,9 +640,9 @@ fun AppExpandedPlayer(
                     ) {
                         MillenniumIcon(
                             imageVector = when (playerUiState.loopState) {
-                                LoopState.NONE -> Iconsax.IconsaxRepeateMusic
+                                LoopState.NONE -> Iconsax.IconsaxRepeateMusic.styled()
                                 LoopState.ONE -> Iconsax.IconsaxRepeateOne
-                                LoopState.ALL -> Iconsax.IconsaxRepeatMusic
+                                LoopState.ALL -> Iconsax.IconsaxRepeatMusic.styled()
                             },
                             contentDescription = stringResource(when (playerUiState.loopState) { LoopState.NONE -> Res.string.player_loop_mode_none; LoopState.ONE -> Res.string.player_loop_mode_one; LoopState.ALL -> Res.string.player_loop_mode_all }),
                             tint = if (playerUiState.loopState == LoopState.NONE) {

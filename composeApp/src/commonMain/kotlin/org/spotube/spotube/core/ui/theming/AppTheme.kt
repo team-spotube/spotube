@@ -33,7 +33,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+import org.spotube.spotube.modules.settings.ModernAccent
 import org.spotube.spotube.modules.settings.Theme
+import org.spotube.spotube.modules.settings.UiStyle
 import org.spotube.spotube.modules.settings.UserSettings
 import org.spotube.millennium.composables.MillenniumModalBottomSheetTheme
 import org.spotube.millennium.composables.MillenniumTooltipHost
@@ -47,6 +49,7 @@ import org.spotube.millennium.theme.MillenniumLightThemeComponents
 import org.spotube.millennium.theme.MillenniumPalette
 import org.spotube.millennium.theme.MillenniumTheme
 import org.spotube.millennium.theme.MillenniumThemeConfig
+import org.spotube.millennium.theme.resolve
 
 /**
  * Semantic color roles used across the app, resolved from the active Millennium palette.
@@ -181,12 +184,17 @@ val LocalAppColors =
     staticCompositionLocalOf { appColorsFrom(org.spotube.millennium.theme.MillenniumLightColors) }
 val LocalAppTypography = staticCompositionLocalOf { AppDefaultTypography }
 val LocalAppShapes = staticCompositionLocalOf { AppDefaultShapes }
+val LocalUiStyle = staticCompositionLocalOf { UiStyle.CLASSIC }
+val LocalModernFonts = staticCompositionLocalOf<ModernFonts?> { null }
 
 /** Reads the active app theme tokens, all backed by Millennium. */
 object AppTheme {
     val colors: AppColors @Composable get() = LocalAppColors.current
     val typography: AppTypography @Composable get() = LocalAppTypography.current
     val shapes: AppShapes @Composable get() = LocalAppShapes.current
+
+    /** Whether the Modern interface style is active; screens add its details only when true. */
+    val isModern: Boolean @Composable get() = LocalUiStyle.current == UiStyle.MODERN
 }
 
 /**
@@ -207,6 +215,13 @@ fun SpotubeTheme(
         Theme.SYSTEM -> isSystemDarkTheme()
     }
     val palette: MillenniumPalette = settings.palette
+    // Modern components draw their own flat hover and press fills; drop Millennium's gel on top.
+    MillenniumInteraction.glossEnabled = settings.uiStyle != UiStyle.MODERN
+
+    if (settings.uiStyle == UiStyle.MODERN) {
+        ModernSpotubeTheme(isDarkTheme, palette, settings.modernAccent, content)
+        return
+    }
 
     val darkTheme = MillenniumDarkThemeComponents
     val lightTheme = MillenniumLightThemeComponents
@@ -239,6 +254,43 @@ fun SpotubeTheme(
                 LocalAppColors provides colors,
                 LocalAppTypography provides AppDefaultTypography,
                 LocalAppShapes provides AppDefaultShapes,
+                content = content
+            )
+        }
+    }
+}
+
+/** The Modern style: flat graphite components, display type, the same palette families. */
+@Composable
+private fun ModernSpotubeTheme(
+    isDarkTheme: Boolean,
+    palette: MillenniumPalette,
+    accent: ModernAccent?,
+    content: @Composable () -> Unit
+) {
+    val fonts = rememberModernFonts()
+    val config = remember(palette, accent, fonts) {
+        val schemes = modernColorSchemes(accent)
+        MillenniumThemeConfig(
+            colorSchemes = schemes,
+            palette = palette,
+            dark = modernThemeComponents(schemes.resolve(palette, dark = true), fonts),
+            light = modernThemeComponents(schemes.resolve(palette, dark = false), fonts)
+        )
+    }
+    val typography = remember(fonts) { modernTypography(fonts) }
+    MillenniumTheme(dark = isDarkTheme, config = config) {
+        val colors = appColorsFrom(MillenniumTheme.colors).copy(
+            secondaryContainer = MillenniumTheme.colors.segment(),
+            surfaceContainerHigh = MillenniumTheme.colors.cardHover()
+        )
+        MillenniumTooltipHost {
+            CompositionLocalProvider(
+                LocalAppColors provides colors,
+                LocalAppTypography provides typography,
+                LocalAppShapes provides ModernShapes,
+                LocalUiStyle provides UiStyle.MODERN,
+                LocalModernFonts provides fonts,
                 content = content
             )
         }

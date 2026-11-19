@@ -28,6 +28,20 @@ enum class Theme {
     LIGHT, DARK, SYSTEM
 }
 
+/**
+ * The overall look of the interface. [CLASSIC] is the glossy Millennium look; [MODERN] is flat
+ * graphite surfaces, softly rounded controls and display type. Both follow [UserSettings.palette] and
+ * [UserSettings.theme].
+ */
+@Serializable
+enum class UiStyle {
+    CLASSIC, MODERN
+}
+
+/** Accent colours offered by the Modern style on top of the three Millennium palettes. */
+@Serializable
+enum class ModernAccent { LAVENDER, ROSE, RED, AMBER, MINT, TEAL, SKY, ORCHID }
+
 @Serializable
 data class UserSettings(
     // Language and Region
@@ -40,6 +54,9 @@ data class UserSettings(
     // Appearance
     val theme: Theme = Theme.SYSTEM,
     val palette: MillenniumPalette = MillenniumPalette.Blue,
+    val uiStyle: UiStyle = UiStyle.MODERN,
+    /** An extra accent for the Modern style; null uses the [palette]'s own accent. */
+    val modernAccent: ModernAccent? = null,
 
     // Playback
     val streamingMusicFormat: AudioFormat = defaultStreamingMusicFormat(),

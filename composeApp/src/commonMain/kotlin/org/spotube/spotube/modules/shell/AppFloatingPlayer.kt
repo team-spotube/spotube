@@ -29,6 +29,7 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -131,6 +132,11 @@ internal fun FloatingPlayerContent(
     onPlayPause: () -> Unit,
     heartButton: @Composable () -> Unit
 ) {
+    if (AppTheme.isModern) {
+        ModernFloatingPlayerContent(playerUiState, modifier, albumArtModifier, onPlayPause, heartButton)
+        return
+    }
+
     val coverModel = playerUiState.coverModel
 
     Box(
@@ -222,6 +228,106 @@ internal fun FloatingPlayerContent(
                 }
             }
         }
+    }
+}
+
+/**
+ * Modern: a card with all four corners rounded, inset from the screen edges and sitting just
+ * above the floating navigation bar instead of tucked under it. Progress is a thin line along
+ * its bottom edge, inside the card. Same height and the same controls as the Classic player.
+ */
+@Composable
+private fun ModernFloatingPlayerContent(
+    playerUiState: PlayerUiState,
+    modifier: Modifier,
+    albumArtModifier: Modifier,
+    onPlayPause: () -> Unit,
+    heartButton: @Composable () -> Unit
+) {
+    val coverModel = playerUiState.coverModel
+    val shape = RoundedCornerShape(18.dp)
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(FloatingPlayerContentHeight + FloatingPlayerBottomBleed)
+            // The bleed band stays empty: the card ends above the navigation bar.
+            .padding(start = 8.dp, end = 8.dp, top = 2.dp, bottom = FloatingPlayerBottomBleed)
+            .clip(shape)
+            .background(MillenniumTheme.colors.surface)
+            .border(1.dp, MillenniumTheme.colors.border, shape)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 10.dp, end = 8.dp, bottom = 2.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(42.dp)
+                        .then(albumArtModifier)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(AppTheme.colors.onSurface.copy(alpha = 0.12f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (coverModel != null) AsyncImage(
+                        model = coverModel,
+                        contentDescription = playerUiState.title,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                    else MillenniumIcon(
+                        Iconsax.IconsaxMusic, contentDescription = null,
+                        tint = AppTheme.colors.onSurfaceVariant, modifier = Modifier.size(22.dp)
+                    )
+                }
+                Column(modifier = Modifier.padding(start = 10.dp)) {
+                    Text(
+                        text = if (playerUiState.queue.isEmpty()) stringResource(Res.string.player_nothing_playing) else playerUiState.title,
+                        style = AppTheme.typography.bodyMedium,
+                        color = AppTheme.colors.onSurface,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    if (playerUiState.queue.isNotEmpty()) Text(
+                        text = playerUiState.artists,
+                        style = AppTheme.typography.bodySmall,
+                        color = AppTheme.colors.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                heartButton()
+                Spacer(modifier = Modifier.size(4.dp))
+                MillenniumIconButton(
+                    onClick = onPlayPause,
+                    enabled = playerUiState.queue.isNotEmpty(),
+                    style = MillenniumIconButtonStyle.Secondary
+                ) {
+                    MillenniumIcon(
+                        if (playerUiState.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
+                        contentDescription = stringResource(if (playerUiState.isPlaying) Res.string.player_pause_content_description else Res.string.player_play_content_description)
+                    )
+                }
+            }
+        }
+        MillenniumProgress(
+            progress = playerUiState.progress,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, bottom = 4.dp)
+                .height(2.dp)
+        )
     }
 }
 

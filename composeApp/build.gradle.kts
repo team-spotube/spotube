@@ -446,6 +446,42 @@ dependencies {
     debugImplementation(libs.compose.uiTooling)
 }
 
+// Millennium paints a gel over hovered/focused/pressed controls that no theme value reaches. Patch it
+// so the app can switch it off for the Modern style (see MillenniumInteractionPatch in buildSrc and
+// core/ui/theming/MillenniumInteraction.kt). Desktop: transform the jar on the JVM runtime
+// classpaths. Android: AGP class instrumentation.
+val millenniumFlatInteraction = Attribute.of("org.spotube.millenniumFlatInteraction", Boolean::class.javaObjectType)
+dependencies {
+    attributesSchema { attribute(millenniumFlatInteraction) }
+    artifactTypes.maybeCreate("jar").attributes.attribute(millenniumFlatInteraction, false)
+    registerTransform(org.spotube.gradle.PatchMillenniumJar::class) {
+        from.attribute(millenniumFlatInteraction, false).attribute(org.gradle.api.artifacts.type.ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, "jar")
+        to.attribute(millenniumFlatInteraction, true).attribute(org.gradle.api.artifacts.type.ArtifactTypeDefinition.ARTIFACT_TYPE_ATTRIBUTE, "jar")
+    }
+}
+configurations.matching { it.name == "jvmRuntimeClasspath" || it.name == "jvmTestRuntimeClasspath" }.configureEach {
+    attributes.attribute(millenniumFlatInteraction, true)
+}
+abstract class MillenniumInteractionAsmFactory :
+    com.android.build.api.instrumentation.AsmClassVisitorFactory<com.android.build.api.instrumentation.InstrumentationParameters.None> {
+    override fun createClassVisitor(
+        classContext: com.android.build.api.instrumentation.ClassContext,
+        nextClassVisitor: org.objectweb.asm.ClassVisitor
+    ): org.objectweb.asm.ClassVisitor =
+        org.spotube.gradle.MillenniumInteractionPatch.visitor(classContext.currentClassData.className, nextClassVisitor)
+
+    override fun isInstrumentable(classData: com.android.build.api.instrumentation.ClassData): Boolean =
+        classData.className in org.spotube.gradle.MillenniumInteractionPatch.classNames
+}
+androidComponents {
+    onVariants { variant ->
+        variant.instrumentation.transformClassesWith(
+            MillenniumInteractionAsmFactory::class.java,
+            com.android.build.api.instrumentation.InstrumentationScope.ALL
+        ) {}
+    }
+}
+
 nucleus.application {
     mainClass = "org.spotube.spotube.MainKt"
 
