@@ -18,6 +18,7 @@
 package org.spotube.spotube.modules.shell
 
 
+import org.spotube.spotube.core.ui.component.styled
 import org.spotube.millennium.composables.MillenniumDropdownMenuItem
 import org.spotube.spotube.resources.iconsax.IconsaxCd
 import org.spotube.spotube.resources.iconsax.IconsaxMoon
@@ -320,12 +321,12 @@ fun AppLargePlayer(
                     ) {
                         Text(
                             text = formatPlayerTime(playerUiState.position),
-                            style = AppTheme.typography.labelSmall,
+                            style = AppTheme.typography.labelSmall.copy(fontFeatureSettings = "tnum"),
                             color = AppTheme.colors.onSurfaceVariant
                         )
                         Text(
                             text = formatPlayerTime(playerUiState.displayDuration),
-                            style = AppTheme.typography.labelSmall,
+                            style = AppTheme.typography.labelSmall.copy(fontFeatureSettings = "tnum"),
                             color = AppTheme.colors.onSurfaceVariant
                         )
                     }
@@ -340,7 +341,7 @@ fun AppLargePlayer(
                             style = if (playerUiState.isShuffling) MillenniumIconButtonStyle.Secondary else MillenniumIconButtonStyle.Quiet
                         ) {
                             MillenniumIcon(
-                                Iconsax.IconsaxShuffle,
+                                Iconsax.IconsaxShuffle.styled(),
                                 contentDescription = stringResource(if (playerUiState.isShuffling) Res.string.player_disable_shuffle_content_description else Res.string.player_enable_shuffle_content_description),
                                 tint = if (playerUiState.isShuffling) {
                                     AppTheme.colors.primary
@@ -354,7 +355,7 @@ fun AppLargePlayer(
                             enabled = !isJamGuest,
                             style = MillenniumIconButtonStyle.Quiet
                         ) {
-                            MillenniumIcon(Iconsax.IconsaxPrevious, contentDescription = stringResource(Res.string.player_previous_content_description))
+                            MillenniumIcon(Iconsax.IconsaxPrevious.styled(), contentDescription = stringResource(Res.string.player_previous_content_description))
                         }
                         MillenniumIconButton(
                             onClick = ::onPlayPause,
@@ -371,7 +372,7 @@ fun AppLargePlayer(
                             enabled = !isJamGuest,
                             style = MillenniumIconButtonStyle.Quiet
                         ) {
-                            MillenniumIcon(Iconsax.IconsaxNext, contentDescription = stringResource(Res.string.player_next_content_description))
+                            MillenniumIcon(Iconsax.IconsaxNext.styled(), contentDescription = stringResource(Res.string.player_next_content_description))
                         }
                         MillenniumIconButton(
                             onClick = ::onLoopToggle,
@@ -380,9 +381,9 @@ fun AppLargePlayer(
                         ) {
                             MillenniumIcon(
                                 imageVector = when (playerUiState.loopState) {
-                                    LoopState.NONE -> Iconsax.IconsaxRepeateMusic
+                                    LoopState.NONE -> Iconsax.IconsaxRepeateMusic.styled()
                                     LoopState.ONE -> Iconsax.IconsaxRepeateOne
-                                    LoopState.ALL -> Iconsax.IconsaxRepeatMusic
+                                    LoopState.ALL -> Iconsax.IconsaxRepeatMusic.styled()
                                 },
                                 contentDescription = stringResource(when (playerUiState.loopState) { LoopState.NONE -> Res.string.player_loop_mode_none; LoopState.ONE -> Res.string.player_loop_mode_one; LoopState.ALL -> Res.string.player_loop_mode_all }),
                                 tint = if (playerUiState.loopState == LoopState.NONE) {
@@ -403,7 +404,7 @@ fun AppLargePlayer(
                         MillenniumIconButton(
                             style = MillenniumIconButtonStyle.Quiet, onClick = onQueue
                         ) {
-                            MillenniumIcon(Iconsax.IconsaxMusicFilter, contentDescription = stringResource(Res.string.queue_title))
+                            MillenniumIcon(Iconsax.IconsaxMusicFilter.styled(), contentDescription = stringResource(Res.string.queue_title))
                         }
                         MillenniumIconButton(
                             style = MillenniumIconButtonStyle.Quiet,
@@ -415,7 +416,7 @@ fun AppLargePlayer(
                             }) {
                             DownloadProgressIcon(
                                 track = (currentEntry as? QueueEntry.StreamingTrack)?.track,
-                                icon = Iconsax.IconsaxDirectboxReceive,
+                                icon = Iconsax.IconsaxDirectboxReceive.styled(),
                                 contentDescription = stringResource(Res.string.player_download)
                             )
                         }
@@ -430,7 +431,7 @@ fun AppLargePlayer(
                         MillenniumIconButton(
                             style = MillenniumIconButtonStyle.Quiet, onClick = onLyrics
                         ) {
-                            MillenniumIcon(Iconsax.IconsaxMusic, contentDescription = stringResource(Res.string.player_lyrics))
+                            MillenniumIcon(Iconsax.IconsaxMusic.styled(), contentDescription = stringResource(Res.string.player_lyrics))
                         }
                         val goToAlbumLabel = stringResource(Res.string.player_go_to_album)
                         val sleepTimerLabel = stringResource(Res.string.player_sleep_timer)
@@ -450,14 +451,14 @@ fun AppLargePlayer(
                                     }
                                 ) {
                                     MillenniumIcon(
-                                        Iconsax.Iconsax3DotsMore,
+                                        Iconsax.Iconsax3DotsMore.styled(),
                                         contentDescription = stringResource(Res.string.player_more_options_content_description)
                                     )
                                 }
                             }) {
                             MillenniumDropdownMenuItem(
                                 label = goToAlbumLabel,
-                                icon = Iconsax.IconsaxCd,
+                                icon = Iconsax.IconsaxCd.styled(),
                                 onClick = {
                                     playerOptionsViewModel.dismissMoreOptionsMenu()
                                     currentTrack?.album?.id?.let { albumId ->
@@ -466,14 +467,14 @@ fun AppLargePlayer(
                                 })
                             MillenniumDropdownMenuItem(
                                 label = sleepTimerLabel,
-                                icon = Iconsax.IconsaxMoon,
+                                icon = Iconsax.IconsaxMoon.styled(),
                                 onClick = {
                                     playerOptionsViewModel.dismissMoreOptionsMenu()
                                     playerOptionsViewModel.showSleepTimerDialog()
                                 })
                             MillenniumDropdownMenuItem(
                                 label = trackDetailsLabel,
-                                icon = Iconsax.IconsaxInformation,
+                                icon = Iconsax.IconsaxInformation.styled(),
                                 onClick = {
                                     playerOptionsViewModel.dismissMoreOptionsMenu()
                                     playerOptionsViewModel.showTrackDetails()
@@ -495,9 +496,9 @@ fun AppLargePlayer(
                             }
                         ) {
                             val volumeIcon = when {
-                                playerUiState.volume <= 0f -> Iconsax.IconsaxVolumeCross
-                                playerUiState.volume < 0.5f -> Iconsax.IconsaxVolumeLow
-                                else -> Iconsax.IconsaxVolumeHigh
+                                playerUiState.volume <= 0f -> Iconsax.IconsaxVolumeCross.styled()
+                                playerUiState.volume < 0.5f -> Iconsax.IconsaxVolumeLow.styled()
+                                else -> Iconsax.IconsaxVolumeHigh.styled()
                             }
                             MillenniumIcon(
                                 imageVector = volumeIcon,

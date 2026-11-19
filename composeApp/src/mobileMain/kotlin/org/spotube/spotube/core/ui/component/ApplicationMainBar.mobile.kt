@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.statusBars
 import org.spotube.millennium.composables.MillenniumTopAppBar
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.runtime.Composable
 
 @Composable
@@ -36,6 +37,8 @@ actual fun ApplicationMainBar(
         subtitle = subtitle,
         actions = actions,
         windowInsets = WindowInsets.statusBars,
+        background = if (transparent) SolidColor(Color.Transparent) else null,
+        separatorColor = if (transparent) Color.Transparent else null,
         navigationIcon = {
             if (backButton) {
                 ApplicationBackButton()

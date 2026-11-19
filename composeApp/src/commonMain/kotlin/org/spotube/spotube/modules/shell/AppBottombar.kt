@@ -17,6 +17,13 @@
 
 package org.spotube.spotube.modules.shell
 
+import org.spotube.spotube.core.ui.component.styled
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.ui.unit.dp
+import org.spotube.spotube.core.ui.theming.AppTheme
 import com.composeunstyled.LocalTextStyle
 import com.composeunstyled.Text
 import org.spotube.millennium.composables.MillenniumBottomNavigationBar
@@ -39,7 +46,17 @@ fun AppBottombar(
     modifier: Modifier = Modifier,
     libraryBadge: @Composable () -> Unit = { DownloadBadgeIndicator() }
 ) {
-    MillenniumBottomNavigationBar(modifier = modifier) {
+    // Modern: the bar floats as a pill above the system navigation area.
+    val modern = AppTheme.isModern
+    MillenniumBottomNavigationBar(
+        modifier = if (modern) {
+            modifier
+                .windowInsetsPadding(WindowInsets.navigationBars)
+                .padding(start = 14.dp, end = 14.dp, top = 6.dp, bottom = 10.dp)
+        } else modifier,
+        windowInsets = if (modern) WindowInsets(0, 0, 0, 0) else WindowInsets.navigationBars,
+        minimumHeight = if (modern) 64.dp else null
+    ) {
         bottombarTabs.filterIsInstance<NavigationItem.Tab<*>>()
             .forEach { tab ->
                 val selected = navigationState.topLevelRoute == tab.route
@@ -50,7 +67,7 @@ fun AppBottombar(
                     contentDescription = title,
                     icon = {
                         MillenniumIcon(
-                            imageVector = tab.icon,
+                            imageVector = tab.icon.styled(),
                             contentDescription = null,
                             tint = LocalTextStyle.current.color
                         )

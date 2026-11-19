@@ -3,6 +3,7 @@
  */
 package org.spotube.spotube.modules.downloads
 
+import org.spotube.spotube.core.ui.component.PageTitle
 import org.spotube.millennium.composables.MillenniumStripedProgress
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -81,6 +82,10 @@ fun DownloadsScreen(
 
 @Composable
 internal fun DownloadsToolbarTitle() {
+    if (AppTheme.isModern) {
+        PageTitle(stringResource(Res.string.library_tab_downloads))
+        return
+    }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)

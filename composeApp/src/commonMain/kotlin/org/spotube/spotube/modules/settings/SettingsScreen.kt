@@ -18,6 +18,7 @@
 package org.spotube.spotube.modules.settings
 
 
+import org.spotube.spotube.core.ui.component.PageTitle
 import com.composeunstyled.currentWindowWidthBreakpoint
 import org.spotube.millennium.adaptive.WindowBreakpoints
 import androidx.compose.foundation.layout.Box
@@ -94,7 +95,7 @@ private fun CompactSettingsScreen(settingsViewModel: SettingsViewModel) {
     Column(modifier = Modifier.fillMaxSize()) {
         ApplicationMainBar(
             title = {
-                Text(stringResource(Res.string.settings_screen_title))
+                PageTitle(stringResource(Res.string.settings_screen_title))
             },
             backButton = false
         )

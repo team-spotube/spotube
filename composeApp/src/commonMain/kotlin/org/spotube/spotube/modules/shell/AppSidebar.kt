@@ -17,6 +17,8 @@
 
 package org.spotube.spotube.modules.shell
 
+import org.spotube.spotube.core.ui.component.styled
+import org.spotube.spotube.core.ui.component.ModernWordmark
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -118,6 +120,10 @@ fun AppSidebar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 AnimatedVisibility(visible = expanded, enter = fadeIn(), exit = fadeOut()) {
+                    if (AppTheme.isModern) {
+                        ModernWordmark(modifier = Modifier.padding(start = 6.dp))
+                        return@AnimatedVisibility
+                    }
                     Text(
                         text = "Spotube",
                         style = AppTheme.typography.headlineLarge.copy(
@@ -130,7 +136,7 @@ fun AppSidebar(
                 }
                 MillenniumSidebarTrigger {
                     MillenniumIconButton(
-                        if (it.collapsed) Iconsax.IconsaxSidebarRightBroken else Iconsax.IconsaxSidebarLeftBroken,
+                        (if (it.collapsed) Iconsax.IconsaxSidebarRightBroken else Iconsax.IconsaxSidebarLeftBroken).styled(),
                         contentDescription = stringResource(Res.string.shell_sidebar_toggle_content_description),
                         style = MillenniumIconButtonStyle.Quiet,
                         onClick = { it.toggle() }
@@ -200,14 +206,14 @@ fun AppSidebar(
                 label = supportLabel,
                 onClick = { openSupport() },
                 contentDescription = supportLabel,
-                icon = Iconsax.IconsaxHeart2
+                icon = Iconsax.IconsaxHeart2.styled()
             )
             MillenniumSidebarItem(
                 label = stringResource(Res.string.settings_screen_title),
                 onClick = { navigator.navigate(Routes.Settings) },
                 selected = navigationState.topLevelRoute == Routes.Settings,
                 contentDescription = stringResource(Res.string.settings_screen_title),
-                icon = Iconsax.IconsaxSetting2
+                icon = Iconsax.IconsaxSetting2.styled()
             )
         }
     }
@@ -231,7 +237,7 @@ private fun SidebarNavItem(
         onClick = onClick,
         selected = selected,
         contentDescription = title,
-        icon = item.icon
+        icon = item.icon.styled()
     )
 }
 
@@ -253,7 +259,7 @@ private fun LiveSidebarNavItem(
         val contentColor = LocalTextStyle.current.color
         Box {
             MillenniumIcon(
-                imageVector = item.icon,
+                imageVector = item.icon.styled(),
                 contentDescription = null,
                 tint = contentColor,
                 modifier = Modifier.size(metrics.iconSize)

@@ -1,5 +1,6 @@
 package org.spotube.spotube.modules.settings
 
+import org.spotube.spotube.core.ui.component.PageTitle
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -50,7 +51,7 @@ fun JamSettingsScreen(
     viewModel: JamSettingsViewModel = koinViewModel()) {
     Column(modifier = Modifier.fillMaxSize()) {
         ApplicationMainBar(
-            title = { Text(stringResource(Res.string.settings_section_jam)) })
+            title = { PageTitle(stringResource(Res.string.settings_section_jam)) })
         JamSettingsContent(
             viewModel = viewModel,
             modifier = Modifier.weight(1f))

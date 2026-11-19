@@ -18,6 +18,8 @@
 package org.spotube.spotube.modules.settings
 
 
+import org.spotube.spotube.core.ui.component.styled
+import androidx.compose.ui.graphics.SolidColor
 import org.spotube.millennium.composables.MillenniumCircularProgress
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumIconButton
@@ -184,11 +186,12 @@ private fun SettingsPane(
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .millenniumSurface(
-                    background = millenniumPanelBrush(MillenniumTheme.colors),
+                    background = if (AppTheme.isModern) SolidColor(MillenniumTheme.colors.surface)
+                    else millenniumPanelBrush(MillenniumTheme.colors),
                     shape = AppTheme.shapes.large,
                     borderColor = MillenniumTheme.colors.border,
                     borderWidth = 1.dp,
-                    shadowElevation = 16.dp)) {
+                    shadowElevation = if (AppTheme.isModern) 0.dp else 16.dp)) {
             SettingsSidebar(
                 tabs = tabs,
                 selectedTab = selectedTab,
@@ -211,7 +214,7 @@ private fun SettingsPane(
                         modifier = Modifier.padding(end = 8.dp),
                         style = MillenniumIconButtonStyle.Quiet) {
                         MillenniumIcon(
-                            imageVector = Iconsax.IconsaxCloseSquare,
+                            imageVector = Iconsax.IconsaxCloseSquare.styled(),
                             contentDescription = stringResource(Res.string.common_close))
                     }
                 }

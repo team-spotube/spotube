@@ -129,6 +129,10 @@
     <string name="settings_theme_light">Light</string>
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_theme_system">System</string>
+    <string name="settings_ui_style_title">Interface style</string>
+    <string name="settings_ui_style_subtitle_current">Classic glossy controls, or the flat modern layout. Current: %1$s</string>
+    <string name="settings_ui_style_classic">Classic</string>
+    <string name="settings_ui_style_modern">Modern</string>
 
     <string name="settings_surface_theme_title">Surface</string>
     <string name="settings_surface_theme_subtitle_current">Background material of the app. Current: %1$s</string>
@@ -171,6 +175,15 @@
     <string name="settings_palette_blue">Blue</string>
     <string name="settings_palette_orange">Orange</string>
     <string name="settings_palette_lime">Lime</string>
+    <string name="settings_accent_lavender">Lavender</string>
+    <string name="settings_accent_rose">Rose</string>
+    <string name="settings_accent_red">Red</string>
+    <string name="settings_accent_amber">Amber</string>
+    <string name="settings_accent_mint">Mint</string>
+    <string name="settings_accent_teal">Teal</string>
+    <string name="settings_accent_sky">Sky</string>
+    <string name="settings_accent_orchid">Orchid</string>
+    <string name="settings_accent_label">More accents</string>
 
     <string name="settings_download_folder_title">Download folder override</string>
     <string name="settings_download_folder_current">Current folder: %1$s</string>

@@ -3,6 +3,9 @@
  */
 package org.spotube.spotube.core.ui.component.cards
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import org.spotube.spotube.core.ui.theming.AppTheme
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.LocalIndication
@@ -51,10 +54,28 @@ internal fun MediaCardSurface(
         tween(140)
     )
     val scale by animateFloatAsState(if (pressed) 0.985f else 1f, tween(100))
-    val shape = RoundedCornerShape(10.dp)
+    val modern = AppTheme.isModern
+    val shape = RoundedCornerShape(if (modern) 14.dp else 10.dp)
+    // Modern: a card lifts a little under the pointer on a faint wash; no bevel, glow or shadow.
+    val lift by animateFloatAsState(if (modern && (hovered || groupFocused)) 1f else 0f, tween(250))
+    val surface = if (modern) {
+        Modifier.background(
+            if (isBlacklisted) colors.danger.copy(alpha = 0.12f + highlight * 0.08f)
+            else colors.text.copy(alpha = 0.05f * highlight),
+            shape
+        ).border(
+            width = if (focused) 2.dp else 1.dp,
+            color = if (focused) colors.accent else colors.border.copy(alpha = highlight * 0.6f),
+            shape = shape
+        )
+    } else Modifier
     Box(
-        modifier.graphicsLayer { scaleX = scale; scaleY = scale }
-            .millenniumSurface(
+        modifier.graphicsLayer {
+            scaleX = scale; scaleY = scale
+            translationY = -4.dp.toPx() * lift
+        }
+            .then(surface)
+            .then(if (modern) Modifier else Modifier.millenniumSurface(
                 background = Brush.verticalGradient(
                     listOf(
                         colors.raised.copy(alpha = highlight),
@@ -67,7 +88,7 @@ internal fun MediaCardSurface(
                 borderWidth = if (focused) 2.dp else 1.dp,
                 innerGlowColor = colors.highlight.copy(alpha = highlight * 0.4f),
                 shadowElevation = (highlight * 4f).dp
-            )
+            ))
             .clip(shape)
             .onFocusChanged { groupFocused = it.hasFocus }
             .focusGroup()

@@ -17,6 +17,8 @@
 
 package org.spotube.spotube.modules.plugin
 
+import org.spotube.spotube.core.ui.component.buttonIconTint
+import org.spotube.spotube.core.ui.component.PageTitle
 import org.spotube.millennium.composables.MillenniumCircularProgress
 import org.spotube.millennium.composables.MillenniumDotsLoader
 import org.spotube.millennium.composables.MillenniumSpokeSpinner
@@ -172,7 +174,7 @@ fun PluginScreen(
     onboarding: Boolean = false) {
     Column(modifier = Modifier.fillMaxSize()) {
         if (!onboarding) {
-            ApplicationMainBar(title = { Text(stringResource(Res.string.plugin_screen_title)) })
+            ApplicationMainBar(title = { PageTitle(stringResource(Res.string.plugin_screen_title)) })
         }
         PluginScreenContent(
             viewModel = viewModel,
@@ -347,7 +349,7 @@ internal fun PluginScreenContent(
                                                 MillenniumIcon(
                                                     Iconsax.IconsaxAdd,
                                                     contentDescription = null,
-                                                    modifier = Modifier.size(16.dp))
+                                                    modifier = Modifier.size(16.dp), tint = buttonIconTint())
                                                 Text(stringResource(Res.string.plugin_section_install))
                                             }
                                         }
@@ -581,7 +583,7 @@ private fun InstallSheet(
                             MillenniumIcon(
                                 Iconsax.IconsaxImportArrow2Bulk,
                                 contentDescription = null,
-                                modifier = Modifier.size(18.dp))
+                                modifier = Modifier.size(18.dp), tint = buttonIconTint())
                             Text(stringResource(Res.string.plugin_action_download))
                         }
                     }

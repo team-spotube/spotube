@@ -18,6 +18,7 @@
 package org.spotube.spotube.modules.welcome
 
 
+import org.spotube.spotube.core.ui.component.buttonIconTint
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumCard
@@ -192,7 +193,7 @@ private fun WelcomeActionBar(
                         Iconsax.IconsaxNext
                     },
                     contentDescription = null,
-                    modifier = Modifier.size(16.dp))
+                    modifier = Modifier.size(16.dp), tint = buttonIconTint())
             }
         }
     }

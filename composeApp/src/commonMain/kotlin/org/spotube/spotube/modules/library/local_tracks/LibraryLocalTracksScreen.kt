@@ -3,6 +3,7 @@
  */
 package org.spotube.spotube.modules.library.local_tracks
 
+import org.spotube.spotube.core.ui.component.buttonIconTint
 import org.spotube.millennium.composables.MillenniumCircularProgress
 import org.spotube.millennium.composables.MillenniumSpokeSpinner
 import androidx.compose.foundation.layout.Arrangement
@@ -179,8 +180,7 @@ internal fun LocalTracksContent(
                                 ) {
                                     MillenniumIcon(
                                         Iconsax.IconsaxFolderAdd, null,
-                                        modifier = Modifier.size(18.dp)
-                                    )
+                                        modifier = Modifier.size(18.dp), tint = buttonIconTint())
                                     Text(stringResource(Res.string.library_local_add_folder))
                                 }
                             }
