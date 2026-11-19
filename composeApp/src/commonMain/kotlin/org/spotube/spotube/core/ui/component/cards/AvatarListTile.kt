@@ -16,7 +16,8 @@ fun AvatarListTile(
     imageURL: String? = null,
     onClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
-    isBlacklisted: Boolean = false
+    isBlacklisted: Boolean = false,
+    imageModel: Any? = null
 ) {
     PlayableListTile(
         title = title,
@@ -26,6 +27,7 @@ fun AvatarListTile(
         modifier = modifier,
         imageShape = CircleShape,
         placeholderIcon = Iconsax.User,
-        isBlacklisted = isBlacklisted
+        isBlacklisted = isBlacklisted,
+        imageModel = imageModel ?: imageURL
     )
 }

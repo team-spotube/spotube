@@ -50,10 +50,13 @@ fun AvatarCard(
     onClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     isBlacklisted: Boolean = false,
-    listMode: Boolean = false
+    listMode: Boolean = false,
+    /** Raw artwork (e.g. embedded cover bytes) that wins over [imageURL] when not null. */
+    imageModel: Any? = null
 ) {
+    val artworkModel = imageModel ?: imageURL
     if (listMode) {
-        AvatarListTile(title, subtitle, imageURL, onClick, modifier, isBlacklisted)
+        AvatarListTile(title, subtitle, imageURL, onClick, modifier, isBlacklisted, imageModel = artworkModel)
         return
     }
 
@@ -72,7 +75,7 @@ fun AvatarCard(
                 contentAlignment = Alignment.Center
             ) {
                 MediaArtwork(
-                    model = imageURL,
+                    model = artworkModel,
                     title = title,
                     modifier = Modifier
                         .fillMaxWidth()

@@ -32,8 +32,25 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import org.jetbrains.compose.resources.StringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.library_filter_source_all
+import spotube.composeapp.generated.resources.library_filter_source_local
+import spotube.composeapp.generated.resources.library_filter_source_online
 
 enum class LibraryViewMode { Grid, List }
+
+/** Which kind of items the Playlists/Albums/Artists tabs show: everything, plugin (online) items only, or on-device items only. */
+enum class LibrarySourceFilter {
+    All, Online, Local;
+
+    val labelResource: StringResource
+        get() = when (this) {
+            All -> Res.string.library_filter_source_all
+            Online -> Res.string.library_filter_source_online
+            Local -> Res.string.library_filter_source_local
+        }
+}
 
 data class LibraryToolbarUiState(
     val currentTab: LibraryTab = LibraryTab.Playlists,
@@ -45,7 +62,9 @@ data class LibraryToolbarUiState(
     val isRefreshing: Boolean = false,
     val showCreatePlaylist: Boolean = false,
     val canChangeView: Boolean = true,
-    val viewModeOverride: LibraryViewMode? = null
+    val viewModeOverride: LibraryViewMode? = null,
+    val canFilterSource: Boolean = false,
+    val sourceFilter: LibrarySourceFilter = LibrarySourceFilter.All
 )
 
 /** Shared with the sidebar for the app lifetime; each library tab retains its own filter. */
@@ -56,17 +75,21 @@ class LibraryState : ViewModel() {
     private val searchStates = LibraryTab.entries.associateWith { TextFieldState() }
     private val createPlaylistVisible = MutableStateFlow(false)
     private val viewModes = MutableStateFlow<Map<LibraryTab, LibraryViewMode>>(emptyMap())
+    private val sourceFilters = MutableStateFlow<Map<LibraryTab, LibrarySourceFilter>>(emptyMap())
     private val refreshRequests = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     val localRefreshRequests = refreshRequests.asSharedFlow()
     private val localRefreshing = MutableStateFlow(false)
+
+    /** View mode + source filter for the active tab, combined to stay within the typed combine arity. */
+    private val tabDisplayState = viewModes.combine(sourceFilters) { modes, filters -> modes to filters }
 
     val uiState = combine(
         currentTab.flatMapLatest { tab -> queryFlow(tab).map { query -> tab to query } },
         searchMode,
         createPlaylistVisible,
-        viewModes,
+        tabDisplayState,
         localRefreshing
-    ) { (tab, query), searching, creating, modes, refreshing ->
+    ) { (tab, query), searching, creating, (modes, filters), refreshing ->
         LibraryToolbarUiState(
             currentTab = tab,
             searchMode = tab != LibraryTab.Downloads && (searching || query.isNotEmpty()),
@@ -77,7 +100,9 @@ class LibraryState : ViewModel() {
             isRefreshing = tab == LibraryTab.LocalTracks && refreshing,
             showCreatePlaylist = tab == LibraryTab.Playlists && creating,
             canChangeView = tab == LibraryTab.Playlists || tab == LibraryTab.Albums || tab == LibraryTab.Artists,
-            viewModeOverride = modes[tab]
+            viewModeOverride = modes[tab],
+            canFilterSource = tab == LibraryTab.Playlists || tab == LibraryTab.Albums || tab == LibraryTab.Artists,
+            sourceFilter = filters[tab] ?: LibrarySourceFilter.All
         )
     }.stateIn(
         viewModelScope, SharingStarted.Eagerly,
@@ -130,6 +155,16 @@ class LibraryState : ViewModel() {
             modes + (tab to if (current == LibraryViewMode.Grid) LibraryViewMode.List else LibraryViewMode.Grid)
         }
     }
+
+    fun setSourceFilter(tab: LibraryTab, filter: LibrarySourceFilter) {
+        if (tab != LibraryTab.Playlists && tab != LibraryTab.Albums && tab != LibraryTab.Artists) return
+        sourceFilters.update { filters ->
+            if (filter == LibrarySourceFilter.All) filters - tab else filters + (tab to filter)
+        }
+    }
+
+    fun sourceFilterFlow(tab: LibraryTab) =
+        sourceFilters.map { it[tab] ?: LibrarySourceFilter.All }
 }
 
 internal fun defaultLibraryViewMode(isCompact: Boolean) =

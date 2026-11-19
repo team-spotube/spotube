@@ -26,6 +26,12 @@ import org.spotube.spotube.modules.devices.RemoteControlScreen
 import org.spotube.spotube.modules.jam.JamScreen
 import org.spotube.spotube.modules.home.HomeScreen
 import org.spotube.spotube.modules.library.LibraryScreen
+import org.spotube.spotube.modules.library.local.album.LocalAlbumScreen
+import org.spotube.spotube.modules.library.local.album.LocalAlbumViewModel
+import org.spotube.spotube.modules.library.local.artist.LocalArtistScreen
+import org.spotube.spotube.modules.library.local.artist.LocalArtistViewModel
+import org.spotube.spotube.modules.library.local.playlist.LocalPlaylistScreen
+import org.spotube.spotube.modules.library.local.playlist.LocalPlaylistViewModel
 import org.spotube.spotube.modules.library.local_tracks.LocalFolderScreen
 import org.spotube.spotube.modules.library.local_tracks.LocalFolderViewModel
 import org.spotube.spotube.modules.lyrics.LyricsScreen
@@ -74,10 +80,21 @@ sealed interface Routes : NavKey {
     data class Playlist(val playlistId: String) : Routes
 
     @Serializable
+    data class LocalPlaylist(val playlistId: String) : Routes
+
+    @Serializable
     data class Artist(val artistId: String) : Routes
 
     @Serializable
     data class Album(val albumId: String) : Routes
+
+    /** [name] is the synthetic local album's normalized key (see LocalMediaAlbum). */
+    @Serializable
+    data class LocalAlbum(val name: String) : Routes
+
+    /** [name] is the synthetic local artist's normalized key (see LocalMediaArtist). */
+    @Serializable
+    data class LocalArtist(val name: String) : Routes
 
     @Serializable
     data object SavedTracks : Routes
@@ -131,6 +148,31 @@ val navigationModule = module {
                 parameters = { parametersOf(it.folderPath) }
             ),
             onBack = { get<NavigationCommands>().pop() })
+    }
+    navigation<Routes.LocalPlaylist> {
+        LocalPlaylistScreen(
+            playlistId = it.playlistId,
+            viewModel = koinViewModel(
+                key = it.playlistId,
+                parameters = { parametersOf(it.playlistId) }
+            ),
+            navigationCommands = get())
+    }
+    navigation<Routes.LocalAlbum> {
+        LocalAlbumScreen(
+            albumName = it.name,
+            viewModel = koinViewModel(
+                key = it.name,
+                parameters = { parametersOf(it.name) }
+            ))
+    }
+    navigation<Routes.LocalArtist> {
+        LocalArtistScreen(
+            artistName = it.name,
+            viewModel = koinViewModel(
+                key = it.name,
+                parameters = { parametersOf(it.name) }
+            ))
     }
     navigation<Routes.Settings> {
         SettingsScreen(settingsViewModel = koinViewModel())

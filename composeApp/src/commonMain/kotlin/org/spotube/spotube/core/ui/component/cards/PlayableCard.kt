@@ -80,8 +80,11 @@ fun PlayableCard(
     sharedElementKey: String? = null,
     listMode: Boolean = false,
     playLoading: Boolean = false,
-    addToQueueLoading: Boolean = false
+    addToQueueLoading: Boolean = false,
+    /** Raw artwork (e.g. embedded cover bytes) that wins over [imageURL] when not null. */
+    imageModel: Any? = null
 ) {
+    val artworkModel = imageModel ?: imageURL
     if (listMode) {
         PlayableListTile(
             title,
@@ -94,7 +97,8 @@ fun PlayableCard(
             modifier,
             sharedElementKey,
             playLoading = playLoading,
-            addToQueueLoading = addToQueueLoading
+            addToQueueLoading = addToQueueLoading,
+            imageModel = artworkModel
         )
         return
     }
@@ -113,7 +117,7 @@ fun PlayableCard(
         Column(modifier = Modifier.fillMaxWidth()) {
             Box(modifier = Modifier.fillMaxWidth().shimmerApply()) {
                 MediaArtwork(
-                    model = imageURL,
+                    model = artworkModel,
                     title = title,
                     modifier = Modifier
                         .fillMaxWidth()

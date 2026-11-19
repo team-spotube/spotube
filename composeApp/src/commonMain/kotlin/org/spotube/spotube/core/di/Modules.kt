@@ -63,6 +63,11 @@ import org.spotube.spotube.modules.library.LibraryRepository
 import org.spotube.spotube.modules.library.LibraryState
 import org.spotube.spotube.modules.library.album.LibraryAlbumsViewModel
 import org.spotube.spotube.modules.library.artist.LibraryArtistsViewModel
+import org.spotube.spotube.modules.library.local.LocalMediaCollectionsRepository
+import org.spotube.spotube.modules.library.local.LocalPlaylistRepository
+import org.spotube.spotube.modules.library.local.album.LocalAlbumViewModel
+import org.spotube.spotube.modules.library.local.artist.LocalArtistViewModel
+import org.spotube.spotube.modules.library.local.playlist.LocalPlaylistViewModel
 import org.spotube.spotube.modules.library.local_tracks.LibraryLocalTracksViewModel
 import org.spotube.spotube.modules.library.local_tracks.LocalFolderViewModel
 import org.spotube.spotube.modules.library.local_tracks.media.LocalMediaCacheRepository
@@ -139,11 +144,23 @@ val sharedModules = module {
     singleOf(::LocalMediaCacheRepository)
     singleOf(::LocalMediaFoldersConfig)
     singleOf(::LocalMediaLibraryCoordinator)
+    singleOf(::LocalMediaCollectionsRepository)
+    single { LocalPlaylistRepository(get<Database>().localPlaylistsDataStore) }
     viewModelOf(::LibraryPlaylistsViewModel)
     viewModelOf(::LibraryAlbumsViewModel)
     viewModelOf(::LibraryArtistsViewModel)
     viewModelOf(::LibraryLocalTracksViewModel)
     viewModel { (folderPath: String) -> LocalFolderViewModel(folderPath, get(), get()) }
+    viewModel { (playlistId: String) ->
+        LocalPlaylistViewModel(
+            playlistId = playlistId,
+            localPlaylistRepository = get(),
+            collectionsRepository = get(),
+            audioPlayerQueue = get(),
+            navigationCommands = get())
+    }
+    viewModel { (albumName: String) -> LocalAlbumViewModel(albumName, get(), get()) }
+    viewModel { (artistName: String) -> LocalArtistViewModel(artistName, get(), get()) }
 
     // Plugin system
     single { PublicSuffixListRepository.create(get(), get()) } withOptions { createdAtStart() }
