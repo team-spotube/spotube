@@ -18,6 +18,9 @@
 package org.spotube.spotube.core.ui.component
 
 
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppState
+import org.spotube.spotube.core.ui.theming.engine.ContentSlots
 import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
@@ -111,22 +114,23 @@ private fun FeaturedCarouselContent(
     var selectedIndex by remember { mutableIntStateOf(centerIndex) }
     val state = rememberCoverflowState(centerIndex) { index -> selectedIndex = index }
     val isSmallScreen = currentWindowWidthBreakpoint() isBelow WindowBreakpoints.Medium
+    val look = AppComponents.slot(ContentSlots.FeaturedCarousel)[AppState.Default]
 
     Box(
         modifier = modifier
             .fillMaxWidth()
             .height(
-                if (isSmallScreen) 200.dp else 300.dp
+                if (isSmallScreen) look.compactHeight else look.height
             ),
         contentAlignment = Alignment.Center) {
         Coverflow(
             state = state,
             params = CoverflowParams(
                 size = 1f,
-                offset = 0.38f,
-                angle = 12f,
-                shift = 0.255f,
-                zoom = 0.7864f,
+                offset = look.itemOffset,
+                angle = look.itemAngle,
+                shift = look.itemShift,
+                zoom = look.itemZoom,
                 mirror = false),
             modifier = modifier) {
             items(
@@ -153,6 +157,7 @@ private fun FeaturedCarouselCard(
     val audioPlayerQueue = koinInject<AudioPlayerQueue>()
 
     val hazeState = rememberHazeState()
+    val look = AppComponents.slot(ContentSlots.FeaturedCarousel)[AppState.Default]
 
     val thumbnailUrl = when (item) {
         is MetadataBrowseItem.Album -> item.data.thumbnails.firstOrNull()?.url
@@ -178,13 +183,13 @@ private fun FeaturedCarouselCard(
     }
 
     val dimAlpha by animateFloatAsState(
-        targetValue = if (isCentered) 0f else 0.5f,
+        targetValue = if (isCentered) 0f else look.dimAlpha,
         label = "dim_alpha"
     )
 
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(24.dp))
+            .clip(look.cardShape)
             .clickable() {
                 if (!isCentered) {
                     onScrollToCenter()
@@ -221,12 +226,12 @@ private fun FeaturedCarouselCard(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(140.dp)
+                    .height(look.scrimHeight)
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
                                 Color.Transparent,
-                                Color.Black.copy(alpha = 0.9f)))))
+                                look.scrimColor))))
         }
     }
 
@@ -239,27 +244,24 @@ private fun FeaturedCarouselCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)) {
+                .padding(look.contentPadding)) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = title,
-                    style = AppTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
+                    style = look.titleStyle,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis)
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(look.textSpacing))
                 Text(
                     text = subtitle,
-                    style = AppTheme.typography.bodySmall,
-                    color = Color.White.copy(alpha = 0.85f),
+                    style = look.subtitleStyle,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis)
             }
 
             val animatedAlpha by animateFloatAsState(
                 targetValue = if (isCentered) 1f else 0f,
-                animationSpec = tween(durationMillis = 300),
+                animationSpec = tween(durationMillis = look.fadeMillis),
                 label = "ButtonFade"
             )
 
@@ -275,9 +277,9 @@ private fun FeaturedCarouselCard(
                     }
                     .hazeEffect(state = hazeState) {
                         blurEffect {
-                            blurRadius = 20.dp
+                            blurRadius = look.buttonBlur
                             colorEffects =
-                                listOf(HazeColorEffect.tint(Color.White.copy(alpha = 0.1f)))
+                                listOf(HazeColorEffect.tint(look.buttonGlassTint))
                         }
                     }
             )
@@ -297,6 +299,7 @@ private fun FeaturedPlayButton(
     val scope = rememberCoroutineScope()
     val currentCollectionEntry by audioPlayerQueue.currentCollectionEntryFlow.collectAsStateWithLifecycle()
     val busyCollections by remotePlaybackController.busyCollections.collectAsStateWithLifecycle()
+    val look = AppComponents.slot(ContentSlots.FeaturedCarousel)[AppState.Default]
 
     when (item) {
         is MetadataBrowseItem.Album -> {
@@ -304,7 +307,7 @@ private fun FeaturedPlayButton(
                     (currentCollectionEntry as QueueCollectionEntry.Album).id == item.data.id
 
             Box(
-                modifier = modifier.size(44.dp),
+                modifier = modifier.size(look.buttonSize),
                 contentAlignment = Alignment.BottomEnd
             ) {
                 MillenniumIconButton(
@@ -324,12 +327,12 @@ private fun FeaturedPlayButton(
                     loading = CollectionPlaybackKey(
                         RemoteCollectionType.Album, item.data.id, PlaybackDestinationAction.Play
                     ) in busyCollections,
-                    foreground = Color.White
+                    foreground = look.buttonTint
                 ) {
                     AppIcon(
                         imageVector = if (isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                         contentDescription = null,
-                        tint = Color.White
+                        tint = look.buttonTint
                     )
                 }
             }
@@ -340,7 +343,7 @@ private fun FeaturedPlayButton(
                     (currentCollectionEntry as QueueCollectionEntry.Playlist).id == item.data.id
 
             Box(
-                modifier = modifier.size(44.dp),
+                modifier = modifier.size(look.buttonSize),
                 contentAlignment = Alignment.BottomEnd
             ) {
                 MillenniumIconButton(
@@ -360,12 +363,12 @@ private fun FeaturedPlayButton(
                     loading = CollectionPlaybackKey(
                         RemoteCollectionType.Playlist, item.data.id, PlaybackDestinationAction.Play
                     ) in busyCollections,
-                    foreground = Color.White
+                    foreground = look.buttonTint
                 ) {
                     AppIcon(
                         imageVector = if (isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                         contentDescription = null,
-                        tint = Color.White
+                        tint = look.buttonTint
                     )
                 }
             }
@@ -379,7 +382,7 @@ private fun FeaturedPlayButton(
                         item.data.id
 
             Box(
-                modifier = modifier.size(44.dp),
+                modifier = modifier.size(look.buttonSize),
                 contentAlignment = Alignment.BottomEnd
             ) {
                 MillenniumIconButton(
@@ -398,7 +401,7 @@ private fun FeaturedPlayButton(
                     AppIcon(
                         imageVector = if (isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                         contentDescription = null,
-                        tint = Color.White
+                        tint = look.buttonTint
                     )
                 }
             }

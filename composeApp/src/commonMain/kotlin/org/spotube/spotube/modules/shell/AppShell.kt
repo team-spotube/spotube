@@ -17,6 +17,10 @@
 
 package org.spotube.spotube.modules.shell
 
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppSlots
+import org.spotube.spotube.core.ui.theming.engine.AppState
+import org.spotube.spotube.core.ui.theming.engine.ScreensSlots
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -361,7 +365,7 @@ fun AppShell(
             hostState = snackbarHostState,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = bottomOverlayInset + 12.dp)
+                .padding(bottom = bottomOverlayInset + AppComponents.slot(ScreensSlots.AppShellRoot)[AppState.Default].snackbarOffset)
         )
     }
     }

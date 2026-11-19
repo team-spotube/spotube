@@ -18,6 +18,9 @@
 package org.spotube.spotube.core.ui.component
 
 
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppState
+import org.spotube.spotube.core.ui.theming.engine.ContentSlots
 import org.spotube.spotube.core.ui.theming.appBackground
 import org.spotube.millennium.composables.MillenniumDialogHeader
 import org.spotube.millennium.composables.MillenniumDialogTitle
@@ -94,32 +97,29 @@ fun ErrorDisplay(
     }
     var showFullLog by remember { mutableStateOf(false) }
     val clipboardManager = LocalClipboardManager.current
+    val look = AppComponents.slot(ContentSlots.ErrorDisplay)[AppState.Default]
 
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(look.padding),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(20.dp)) {
+        verticalArrangement = Arrangement.spacedBy(look.spacing)) {
         AppIcon(
             imageVector = FeatherIcons.AlertCircle,
             contentDescription = null,
-            modifier = Modifier.size(64.dp),
-            tint = AppTheme.colors.error.copy(alpha = 0.7f))
+            modifier = Modifier.size(look.iconSize),
+            tint = look.iconTint)
 
         Text(
             text = stringResource(Res.string.error_title),
-            style = AppTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-            color = AppTheme.colors.onSurface,
+            style = look.titleStyle,
             textAlign = TextAlign.Center)
 
         Text(
             text = stringResource(Res.string.error_description),
-            style = AppTheme.typography.bodyMedium,
-            color = AppTheme.colors.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-            lineHeight = AppTheme.typography.bodyMedium.lineHeight * 1.2)
+            style = look.descriptionStyle,
+            textAlign = TextAlign.Center)
 
         MillenniumCard(
             modifier = Modifier.fillMaxWidth(),
@@ -129,14 +129,12 @@ fun ErrorDisplay(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                        .padding(look.detailsHeaderPadding),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = stringResource(Res.string.error_details),
-                        style = AppTheme.typography.labelMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        color = AppTheme.colors.onSurfaceVariant)
+                        style = look.detailsHeaderStyle)
 
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -144,22 +142,22 @@ fun ErrorDisplay(
                             onClick = {
                                 clipboardManager.setText(AnnotatedString(errorMessage))
                             },
-                            modifier = Modifier.size(32.dp),
+                            modifier = Modifier.size(look.detailsActionSize),
                             style = MillenniumIconButtonStyle.Quiet) {
                             AppIcon(
                                 imageVector = FeatherIcons.Copy,
                                 contentDescription = stringResource(Res.string.error_copy_to_clipboard),
-                                modifier = Modifier.size(16.dp))
+                                modifier = Modifier.size(look.detailsIconSize))
                         }
 
                         MillenniumIconButton(
                             onClick = { showFullLog = true },
-                            modifier = Modifier.size(32.dp),
+                            modifier = Modifier.size(look.detailsActionSize),
                             style = MillenniumIconButtonStyle.Quiet) {
                             AppIcon(
                                 imageVector = FeatherIcons.Maximize2,
                                 contentDescription = stringResource(Res.string.error_view_full_log),
-                                modifier = Modifier.size(16.dp))
+                                modifier = Modifier.size(look.detailsIconSize))
                         }
                     }
                 }
@@ -170,12 +168,10 @@ fun ErrorDisplay(
                     SelectionContainer {
                         Text(
                             text = errorMessage,
-                            style = AppTheme.typography.bodySmall.copy(
-                                fontFamily = FontFamily.Monospace),
-                            color = AppTheme.colors.onSurfaceVariant,
-                            maxLines = 5,
+                            style = look.logStyle,
+                            maxLines = look.logMaxLines,
                             overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.padding(12.dp))
+                            modifier = Modifier.padding(look.logPadding))
                     }
                 }
             }
@@ -185,12 +181,12 @@ fun ErrorDisplay(
             horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             MillenniumButton(
                 onClick = onRetry,
-                modifier = Modifier.height(40.dp)) {
+                modifier = Modifier.height(look.retryHeight)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     AppIcon(
                         imageVector = FeatherIcons.RefreshCw,
                         contentDescription = null,
-                        modifier = Modifier.padding(end = 8.dp).size(18.dp))
+                        modifier = Modifier.padding(end = 8.dp).size(look.retryIconSize))
                     Text(stringResource(Res.string.common_retry))
                 }
             }

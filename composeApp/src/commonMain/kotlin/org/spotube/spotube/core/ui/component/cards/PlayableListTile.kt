@@ -3,6 +3,10 @@
  */
 package org.spotube.spotube.core.ui.component.cards
 
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppSlots
+import org.spotube.spotube.core.ui.theming.engine.AppState
+import org.spotube.spotube.core.ui.theming.engine.ContentSlots
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -59,40 +63,43 @@ fun PlayableListTile(
     playLoading: Boolean = false,
     addToQueueLoading: Boolean = false,
     imageModel: Any? = imageURL,
-    imageShape: Shape = RoundedCornerShape(6.dp),
+    imageShape: Shape? = null,
     placeholderIcon: ImageVector = Iconsax.IconsaxMusic,
     artwork: (@Composable () -> Unit)? = null,
     trailingContent: (@Composable () -> Unit)? = null,
     isBlacklisted: Boolean = false,
     compact: Boolean = false
 ) {
-    val colors = MillenniumTheme.colors
+    val slot = AppComponents.slot(ContentSlots.MediaListTile)
+    // Background follows "playing"; border and title colour also follow "blacklisted".
+    val look = slot[if (isPlaying) AppState.Selected else AppState.Default]
+    val tone = slot[if (isBlacklisted) AppState.Error else if (isPlaying) AppState.Selected else AppState.Default]
     MillenniumListTile(
         modifier = modifier,
         onClick = onClick ?: onPlay,
         selected = isPlaying,
-        background = if (isPlaying) null else millenniumPanelBrush(colors),
-        shape = RoundedCornerShape(8.dp),
-        borderColor = if (isBlacklisted) colors.danger.copy(alpha = 0.5f) else if (isPlaying) null else colors.border,
-        titleForeground = if (isBlacklisted) colors.danger else null,
-        borderWidth = 1.dp,
-        contentPadding = PaddingValues(if (compact) 8.dp else 12.dp),
-        minimumHeight = if (compact) 52.dp else 76.dp,
+        background = look.background,
+        shape = look.shape,
+        borderColor = tone.borderColor,
+        titleForeground = tone.titleForeground,
+        borderWidth = look.borderWidth,
+        contentPadding = PaddingValues(if (compact) look.compactPadding else look.padding),
+        minimumHeight = if (compact) look.compactMinimumHeight else look.minimumHeight,
         leading = {
             MediaArtwork(
                 imageModel, title,
-                Modifier.size(if (compact) 36.dp else 52.dp).sharedElementOrNone(
+                Modifier.size(if (compact) look.compactArtworkSize else look.artworkSize).sharedElementOrNone(
                     sharedElementKey,
                     LocalSharedTransitionScope.current,
                     LocalAnimatedVisibilityScope.current
                 ),
-                imageShape, placeholderIcon, artwork
+                imageShape ?: AppComponents.slot(ContentSlots.MediaArtwork)[AppState.Default].shape, placeholderIcon, artwork
             )
         },
         title = {
             TextWithShimmer(
                 title,
-                style = AppTheme.typography.titleSmall,
+                style = look.titleStyle,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -101,7 +108,7 @@ fun PlayableListTile(
             {
                 TextWithShimmer(
                     text,
-                    style = AppTheme.typography.bodySmall,
+                    style = look.subtitleStyle,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -110,7 +117,7 @@ fun PlayableListTile(
         trailing = if (onPlay != null || onAddToQueue != null || trailingContent != null) {
             {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(look.actionSpacing),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     trailingContent?.invoke()
@@ -118,7 +125,7 @@ fun PlayableListTile(
                         MillenniumIconButton(
                             onClick = onAddToQueue,
                             loading = addToQueueLoading,
-                            modifier = Modifier.size(if (compact) 32.dp else 40.dp),
+                            modifier = Modifier.size(if (compact) look.compactActionSize else look.actionSize),
                             style = MillenniumIconButtonStyle.Secondary
                         ) {
                             AppIcon(
@@ -131,7 +138,7 @@ fun PlayableListTile(
                         MillenniumIconButton(
                             onClick = onPlay,
                             loading = playLoading,
-                            modifier = Modifier.size(if (compact) 32.dp else 40.dp),
+                            modifier = Modifier.size(if (compact) look.compactActionSize else look.actionSize),
                             style = MillenniumIconButtonStyle.Primary
                         ) {
                             AppIcon(
@@ -152,16 +159,18 @@ internal fun MediaArtwork(
     model: Any?,
     title: String,
     modifier: Modifier,
-    shape: Shape = RoundedCornerShape(6.dp),
+    shape: Shape? = null,
     placeholderIcon: ImageVector = Iconsax.IconsaxMusic,
     artwork: (@Composable () -> Unit)? = null
 ) {
+    val look = AppComponents.slot(ContentSlots.MediaArtwork)[AppState.Default]
+    val shape = shape ?: look.shape
     Box(
         modifier.millenniumSurface(
-            background = millenniumBevelBrush(MillenniumTheme.colors),
+            background = look.background,
             shape = shape,
-            borderColor = MillenniumTheme.colors.border,
-            borderWidth = 1.dp
+            borderColor = look.borderColor,
+            borderWidth = look.borderWidth
         ).clip(shape).shimmerApply(),
         contentAlignment = Alignment.Center
     ) {
@@ -175,8 +184,8 @@ internal fun MediaArtwork(
         else AppIcon(
             placeholderIcon,
             null,
-            modifier = Modifier.size(24.dp),
-            tint = AppTheme.colors.onSurfaceVariant
+            modifier = Modifier.size(look.placeholderSize),
+            tint = look.placeholderTint
         )
     }
 }

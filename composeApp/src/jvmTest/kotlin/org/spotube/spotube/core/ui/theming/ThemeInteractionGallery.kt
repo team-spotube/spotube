@@ -175,15 +175,15 @@ internal object ThemeInteractionGallery {
     fun ThemeRows() {
         Column(Modifier.fillMaxWidth().padding(8.dp)) {
             org.spotube.spotube.modules.settings.sections.ThemeRow(
-                themeCard("a", org.spotube.millennium.theme.MillenniumPalette.Blue, true), onOpen = {}, onSelect = {},
+                themeCard("a", org.spotube.millennium.theme.MillenniumPalette.Blue, true), onOpen = {},
             )
             Box(Modifier.track("row1")) {
                 org.spotube.spotube.modules.settings.sections.ThemeRow(
-                    themeCard("b", org.spotube.millennium.theme.MillenniumPalette.Orange, false), onOpen = {}, onSelect = {},
+                    themeCard("b", org.spotube.millennium.theme.MillenniumPalette.Orange, false), onOpen = {},
                 )
             }
             org.spotube.spotube.modules.settings.sections.ThemeRow(
-                themeCard("c", org.spotube.millennium.theme.MillenniumPalette.Lime, false), onOpen = {}, onSelect = {},
+                themeCard("c", org.spotube.millennium.theme.MillenniumPalette.Lime, false), onOpen = {},
             )
         }
     }

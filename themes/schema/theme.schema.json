@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://docs.spotube.cc/schemas/theme/1.2.0.json",
+  "$id": "https://docs.spotube.cc/schemas/theme/1.3.0.json",
   "title": "Spotube theme (theme.json)",
-  "description": "Theme format 1.2.0. Semver: a theme of the same major always loads; a newer minor loads with its newer parts ignored. Latest 1.x: https://docs.spotube.cc/schemas/theme/1.json",
-  "x-schemaVersion": "1.2.0",
+  "description": "Theme format 1.3.0. Semver: a theme of the same major always loads; a newer minor loads with its newer parts ignored. Latest 1.x: https://docs.spotube.cc/schemas/theme/1.json",
+  "x-schemaVersion": "1.3.0",
   "type": "object",
   "required": [
     "schema",
@@ -20,7 +20,7 @@
     "schema": {
       "type": "string",
       "pattern": "^(0|[1-9][0-9]{0,5})\\.(0|[1-9][0-9]{0,5})\\.(0|[1-9][0-9]{0,5})$",
-      "description": "The theme schema version this theme is written for (semver), for example \"1.2.0\"."
+      "description": "The theme schema version this theme is written for (semver), for example \"1.3.0\"."
     },
     "id": {
       "type": "string",
@@ -386,6 +386,115 @@
     "components": {
       "type": "object",
       "properties": {
+        "appShell": {
+          "type": "object",
+          "description": "Theme of the `appShell` component.",
+          "properties": {
+            "base": {
+              "$ref": "#/$defs/props.app.appShell_root"
+            },
+            "states": {
+              "type": "object",
+              "description": "Properties per interaction state; they win over `base` in that state.",
+              "properties": {
+                "default": {
+                  "$ref": "#/$defs/props.app.appShell_root"
+                },
+                "hovered": {
+                  "$ref": "#/$defs/props.app.appShell_root"
+                },
+                "focused": {
+                  "$ref": "#/$defs/props.app.appShell_root"
+                },
+                "pressed": {
+                  "$ref": "#/$defs/props.app.appShell_root"
+                },
+                "disabled": {
+                  "$ref": "#/$defs/props.app.appShell_root"
+                },
+                "selected": {
+                  "$ref": "#/$defs/props.app.appShell_root"
+                },
+                "error": {
+                  "$ref": "#/$defs/props.app.appShell_root"
+                }
+              },
+              "additionalProperties": false
+            },
+            "rules": {
+              "type": "array",
+              "description": "Conditional overrides, applied last: `{ \"when\": <condition>, \"set\": { ...properties } }`.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "when",
+                  "set"
+                ],
+                "properties": {
+                  "when": {
+                    "$ref": "#/$defs/condition"
+                  },
+                  "set": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "vars": {
+              "type": "object",
+              "description": "Variables local to this component (they shadow global ones).",
+              "additionalProperties": {
+                "$ref": "#/$defs/varDecl"
+              }
+            },
+            "variants": {
+              "type": "object",
+              "description": "One entry per slot/variant; a `base` above applies to all of them, so put slot-specific properties here.",
+              "properties": {
+                "root": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.appShell_root"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.appShell_root"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.appShell_root"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.appShell_root"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.appShell_root"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.appShell_root"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.appShell_root"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.appShell_root"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
         "autocomplete": {
           "type": "object",
           "description": "Theme of the `autocomplete` component.",
@@ -1077,6 +1186,254 @@
           },
           "additionalProperties": false
         },
+        "collectionHeader": {
+          "type": "object",
+          "description": "Theme of the `collectionHeader` component.",
+          "properties": {
+            "base": {
+              "$ref": "#/$defs/props.app.collectionHeader_null"
+            },
+            "states": {
+              "type": "object",
+              "description": "Properties per interaction state; they win over `base` in that state.",
+              "properties": {
+                "default": {
+                  "$ref": "#/$defs/props.app.collectionHeader_null"
+                },
+                "hovered": {
+                  "$ref": "#/$defs/props.app.collectionHeader_null"
+                },
+                "focused": {
+                  "$ref": "#/$defs/props.app.collectionHeader_null"
+                },
+                "pressed": {
+                  "$ref": "#/$defs/props.app.collectionHeader_null"
+                },
+                "disabled": {
+                  "$ref": "#/$defs/props.app.collectionHeader_null"
+                },
+                "selected": {
+                  "$ref": "#/$defs/props.app.collectionHeader_null"
+                },
+                "error": {
+                  "$ref": "#/$defs/props.app.collectionHeader_null"
+                }
+              },
+              "additionalProperties": false
+            },
+            "rules": {
+              "type": "array",
+              "description": "Conditional overrides, applied last: `{ \"when\": <condition>, \"set\": { ...properties } }`.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "when",
+                  "set"
+                ],
+                "properties": {
+                  "when": {
+                    "$ref": "#/$defs/condition"
+                  },
+                  "set": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "vars": {
+              "type": "object",
+              "description": "Variables local to this component (they shadow global ones).",
+              "additionalProperties": {
+                "$ref": "#/$defs/varDecl"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "connectBanner": {
+          "type": "object",
+          "description": "Theme of the `connectBanner` component.",
+          "properties": {
+            "base": {
+              "$ref": "#/$defs/props.app.connectBanner_rootAll"
+            },
+            "states": {
+              "type": "object",
+              "description": "Properties per interaction state; they win over `base` in that state.",
+              "properties": {
+                "default": {
+                  "$ref": "#/$defs/props.app.connectBanner_rootAll"
+                },
+                "hovered": {
+                  "$ref": "#/$defs/props.app.connectBanner_rootAll"
+                },
+                "focused": {
+                  "$ref": "#/$defs/props.app.connectBanner_rootAll"
+                },
+                "pressed": {
+                  "$ref": "#/$defs/props.app.connectBanner_rootAll"
+                },
+                "disabled": {
+                  "$ref": "#/$defs/props.app.connectBanner_rootAll"
+                },
+                "selected": {
+                  "$ref": "#/$defs/props.app.connectBanner_rootAll"
+                },
+                "error": {
+                  "$ref": "#/$defs/props.app.connectBanner_rootAll"
+                }
+              },
+              "additionalProperties": false
+            },
+            "rules": {
+              "type": "array",
+              "description": "Conditional overrides, applied last: `{ \"when\": <condition>, \"set\": { ...properties } }`.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "when",
+                  "set"
+                ],
+                "properties": {
+                  "when": {
+                    "$ref": "#/$defs/condition"
+                  },
+                  "set": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "vars": {
+              "type": "object",
+              "description": "Variables local to this component (they shadow global ones).",
+              "additionalProperties": {
+                "$ref": "#/$defs/varDecl"
+              }
+            },
+            "variants": {
+              "type": "object",
+              "description": "One entry per slot/variant; a `base` above applies to all of them, so put slot-specific properties here.",
+              "properties": {
+                "root": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.connectBanner_root"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.connectBanner_root"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.connectBanner_root"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.connectBanner_root"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.connectBanner_root"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.connectBanner_root"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.connectBanner_root"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.connectBanner_root"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "row": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.connectBanner_row"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.connectBanner_row"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.connectBanner_row"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.connectBanner_row"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.connectBanner_row"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.connectBanner_row"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.connectBanner_row"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.connectBanner_row"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "dot": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.connectBanner_dot"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.connectBanner_dot"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.connectBanner_dot"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.connectBanner_dot"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.connectBanner_dot"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.connectBanner_dot"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.connectBanner_dot"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.connectBanner_dot"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
         "dialog": {
           "type": "object",
           "description": "Theme of the `dialog` component.",
@@ -1333,6 +1690,678 @@
               "additionalProperties": {
                 "$ref": "#/$defs/varDecl"
               }
+            }
+          },
+          "additionalProperties": false
+        },
+        "emptyState": {
+          "type": "object",
+          "description": "Theme of the `emptyState` component.",
+          "properties": {
+            "base": {
+              "$ref": "#/$defs/props.app.emptyState_null"
+            },
+            "states": {
+              "type": "object",
+              "description": "Properties per interaction state; they win over `base` in that state.",
+              "properties": {
+                "default": {
+                  "$ref": "#/$defs/props.app.emptyState_null"
+                },
+                "hovered": {
+                  "$ref": "#/$defs/props.app.emptyState_null"
+                },
+                "focused": {
+                  "$ref": "#/$defs/props.app.emptyState_null"
+                },
+                "pressed": {
+                  "$ref": "#/$defs/props.app.emptyState_null"
+                },
+                "disabled": {
+                  "$ref": "#/$defs/props.app.emptyState_null"
+                },
+                "selected": {
+                  "$ref": "#/$defs/props.app.emptyState_null"
+                },
+                "error": {
+                  "$ref": "#/$defs/props.app.emptyState_null"
+                }
+              },
+              "additionalProperties": false
+            },
+            "rules": {
+              "type": "array",
+              "description": "Conditional overrides, applied last: `{ \"when\": <condition>, \"set\": { ...properties } }`.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "when",
+                  "set"
+                ],
+                "properties": {
+                  "when": {
+                    "$ref": "#/$defs/condition"
+                  },
+                  "set": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "vars": {
+              "type": "object",
+              "description": "Variables local to this component (they shadow global ones).",
+              "additionalProperties": {
+                "$ref": "#/$defs/varDecl"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "errorDisplay": {
+          "type": "object",
+          "description": "Theme of the `errorDisplay` component.",
+          "properties": {
+            "base": {
+              "$ref": "#/$defs/props.app.errorDisplay_null"
+            },
+            "states": {
+              "type": "object",
+              "description": "Properties per interaction state; they win over `base` in that state.",
+              "properties": {
+                "default": {
+                  "$ref": "#/$defs/props.app.errorDisplay_null"
+                },
+                "hovered": {
+                  "$ref": "#/$defs/props.app.errorDisplay_null"
+                },
+                "focused": {
+                  "$ref": "#/$defs/props.app.errorDisplay_null"
+                },
+                "pressed": {
+                  "$ref": "#/$defs/props.app.errorDisplay_null"
+                },
+                "disabled": {
+                  "$ref": "#/$defs/props.app.errorDisplay_null"
+                },
+                "selected": {
+                  "$ref": "#/$defs/props.app.errorDisplay_null"
+                },
+                "error": {
+                  "$ref": "#/$defs/props.app.errorDisplay_null"
+                }
+              },
+              "additionalProperties": false
+            },
+            "rules": {
+              "type": "array",
+              "description": "Conditional overrides, applied last: `{ \"when\": <condition>, \"set\": { ...properties } }`.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "when",
+                  "set"
+                ],
+                "properties": {
+                  "when": {
+                    "$ref": "#/$defs/condition"
+                  },
+                  "set": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "vars": {
+              "type": "object",
+              "description": "Variables local to this component (they shadow global ones).",
+              "additionalProperties": {
+                "$ref": "#/$defs/varDecl"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "expandedPlayer": {
+          "type": "object",
+          "description": "Theme of the `expandedPlayer` component.",
+          "properties": {
+            "base": {
+              "$ref": "#/$defs/props.app.expandedPlayer_rootAll"
+            },
+            "states": {
+              "type": "object",
+              "description": "Properties per interaction state; they win over `base` in that state.",
+              "properties": {
+                "default": {
+                  "$ref": "#/$defs/props.app.expandedPlayer_rootAll"
+                },
+                "hovered": {
+                  "$ref": "#/$defs/props.app.expandedPlayer_rootAll"
+                },
+                "focused": {
+                  "$ref": "#/$defs/props.app.expandedPlayer_rootAll"
+                },
+                "pressed": {
+                  "$ref": "#/$defs/props.app.expandedPlayer_rootAll"
+                },
+                "disabled": {
+                  "$ref": "#/$defs/props.app.expandedPlayer_rootAll"
+                },
+                "selected": {
+                  "$ref": "#/$defs/props.app.expandedPlayer_rootAll"
+                },
+                "error": {
+                  "$ref": "#/$defs/props.app.expandedPlayer_rootAll"
+                }
+              },
+              "additionalProperties": false
+            },
+            "rules": {
+              "type": "array",
+              "description": "Conditional overrides, applied last: `{ \"when\": <condition>, \"set\": { ...properties } }`.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "when",
+                  "set"
+                ],
+                "properties": {
+                  "when": {
+                    "$ref": "#/$defs/condition"
+                  },
+                  "set": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "vars": {
+              "type": "object",
+              "description": "Variables local to this component (they shadow global ones).",
+              "additionalProperties": {
+                "$ref": "#/$defs/varDecl"
+              }
+            },
+            "variants": {
+              "type": "object",
+              "description": "One entry per slot/variant; a `base` above applies to all of them, so put slot-specific properties here.",
+              "properties": {
+                "root": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.expandedPlayer_root"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_root"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_root"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_root"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_root"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_root"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_root"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_root"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "artwork": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.expandedPlayer_artwork"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_artwork"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_artwork"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_artwork"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_artwork"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_artwork"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_artwork"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_artwork"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "info": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.expandedPlayer_info"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_info"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_info"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_info"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_info"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_info"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_info"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_info"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "transport": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.expandedPlayer_transport"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_transport"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_transport"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_transport"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_transport"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_transport"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_transport"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_transport"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "lyrics": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.expandedPlayer_lyrics"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_lyrics"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_lyrics"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_lyrics"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_lyrics"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_lyrics"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_lyrics"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_lyrics"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "optionTile": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.expandedPlayer_optionTile"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_optionTile"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_optionTile"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_optionTile"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_optionTile"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_optionTile"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_optionTile"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.expandedPlayer_optionTile"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "featuredCarousel": {
+          "type": "object",
+          "description": "Theme of the `featuredCarousel` component.",
+          "properties": {
+            "base": {
+              "$ref": "#/$defs/props.app.featuredCarousel_null"
+            },
+            "states": {
+              "type": "object",
+              "description": "Properties per interaction state; they win over `base` in that state.",
+              "properties": {
+                "default": {
+                  "$ref": "#/$defs/props.app.featuredCarousel_null"
+                },
+                "hovered": {
+                  "$ref": "#/$defs/props.app.featuredCarousel_null"
+                },
+                "focused": {
+                  "$ref": "#/$defs/props.app.featuredCarousel_null"
+                },
+                "pressed": {
+                  "$ref": "#/$defs/props.app.featuredCarousel_null"
+                },
+                "disabled": {
+                  "$ref": "#/$defs/props.app.featuredCarousel_null"
+                },
+                "selected": {
+                  "$ref": "#/$defs/props.app.featuredCarousel_null"
+                },
+                "error": {
+                  "$ref": "#/$defs/props.app.featuredCarousel_null"
+                }
+              },
+              "additionalProperties": false
+            },
+            "rules": {
+              "type": "array",
+              "description": "Conditional overrides, applied last: `{ \"when\": <condition>, \"set\": { ...properties } }`.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "when",
+                  "set"
+                ],
+                "properties": {
+                  "when": {
+                    "$ref": "#/$defs/condition"
+                  },
+                  "set": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "vars": {
+              "type": "object",
+              "description": "Variables local to this component (they shadow global ones).",
+              "additionalProperties": {
+                "$ref": "#/$defs/varDecl"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "floatingPlayer": {
+          "type": "object",
+          "description": "Theme of the `floatingPlayer` component.",
+          "properties": {
+            "base": {
+              "$ref": "#/$defs/props.app.floatingPlayer_rootAll"
+            },
+            "states": {
+              "type": "object",
+              "description": "Properties per interaction state; they win over `base` in that state.",
+              "properties": {
+                "default": {
+                  "$ref": "#/$defs/props.app.floatingPlayer_rootAll"
+                },
+                "hovered": {
+                  "$ref": "#/$defs/props.app.floatingPlayer_rootAll"
+                },
+                "focused": {
+                  "$ref": "#/$defs/props.app.floatingPlayer_rootAll"
+                },
+                "pressed": {
+                  "$ref": "#/$defs/props.app.floatingPlayer_rootAll"
+                },
+                "disabled": {
+                  "$ref": "#/$defs/props.app.floatingPlayer_rootAll"
+                },
+                "selected": {
+                  "$ref": "#/$defs/props.app.floatingPlayer_rootAll"
+                },
+                "error": {
+                  "$ref": "#/$defs/props.app.floatingPlayer_rootAll"
+                }
+              },
+              "additionalProperties": false
+            },
+            "rules": {
+              "type": "array",
+              "description": "Conditional overrides, applied last: `{ \"when\": <condition>, \"set\": { ...properties } }`.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "when",
+                  "set"
+                ],
+                "properties": {
+                  "when": {
+                    "$ref": "#/$defs/condition"
+                  },
+                  "set": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "vars": {
+              "type": "object",
+              "description": "Variables local to this component (they shadow global ones).",
+              "additionalProperties": {
+                "$ref": "#/$defs/varDecl"
+              }
+            },
+            "variants": {
+              "type": "object",
+              "description": "One entry per slot/variant; a `base` above applies to all of them, so put slot-specific properties here.",
+              "properties": {
+                "root": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.floatingPlayer_root"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.floatingPlayer_root"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.floatingPlayer_root"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.floatingPlayer_root"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.floatingPlayer_root"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.floatingPlayer_root"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.floatingPlayer_root"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.floatingPlayer_root"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "artwork": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.floatingPlayer_artwork"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.floatingPlayer_artwork"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.floatingPlayer_artwork"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.floatingPlayer_artwork"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.floatingPlayer_artwork"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.floatingPlayer_artwork"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.floatingPlayer_artwork"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.floatingPlayer_artwork"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "info": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.floatingPlayer_info"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.floatingPlayer_info"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.floatingPlayer_info"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.floatingPlayer_info"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.floatingPlayer_info"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.floatingPlayer_info"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.floatingPlayer_info"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.floatingPlayer_info"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
             }
           },
           "additionalProperties": false
@@ -1622,6 +2651,226 @@
           },
           "additionalProperties": false
         },
+        "largePlayer": {
+          "type": "object",
+          "description": "Theme of the `largePlayer` component.",
+          "properties": {
+            "base": {
+              "$ref": "#/$defs/props.app.largePlayer_rootAll"
+            },
+            "states": {
+              "type": "object",
+              "description": "Properties per interaction state; they win over `base` in that state.",
+              "properties": {
+                "default": {
+                  "$ref": "#/$defs/props.app.largePlayer_rootAll"
+                },
+                "hovered": {
+                  "$ref": "#/$defs/props.app.largePlayer_rootAll"
+                },
+                "focused": {
+                  "$ref": "#/$defs/props.app.largePlayer_rootAll"
+                },
+                "pressed": {
+                  "$ref": "#/$defs/props.app.largePlayer_rootAll"
+                },
+                "disabled": {
+                  "$ref": "#/$defs/props.app.largePlayer_rootAll"
+                },
+                "selected": {
+                  "$ref": "#/$defs/props.app.largePlayer_rootAll"
+                },
+                "error": {
+                  "$ref": "#/$defs/props.app.largePlayer_rootAll"
+                }
+              },
+              "additionalProperties": false
+            },
+            "rules": {
+              "type": "array",
+              "description": "Conditional overrides, applied last: `{ \"when\": <condition>, \"set\": { ...properties } }`.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "when",
+                  "set"
+                ],
+                "properties": {
+                  "when": {
+                    "$ref": "#/$defs/condition"
+                  },
+                  "set": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "vars": {
+              "type": "object",
+              "description": "Variables local to this component (they shadow global ones).",
+              "additionalProperties": {
+                "$ref": "#/$defs/varDecl"
+              }
+            },
+            "variants": {
+              "type": "object",
+              "description": "One entry per slot/variant; a `base` above applies to all of them, so put slot-specific properties here.",
+              "properties": {
+                "root": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.largePlayer_root"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.largePlayer_root"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.largePlayer_root"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.largePlayer_root"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.largePlayer_root"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.largePlayer_root"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.largePlayer_root"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.largePlayer_root"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "artwork": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.largePlayer_artwork"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.largePlayer_artwork"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.largePlayer_artwork"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.largePlayer_artwork"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.largePlayer_artwork"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.largePlayer_artwork"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.largePlayer_artwork"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.largePlayer_artwork"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "info": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.largePlayer_info"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.largePlayer_info"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.largePlayer_info"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.largePlayer_info"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.largePlayer_info"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.largePlayer_info"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.largePlayer_info"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.largePlayer_info"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "transport": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.largePlayer_transport"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.largePlayer_transport"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.largePlayer_transport"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.largePlayer_transport"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.largePlayer_transport"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.largePlayer_transport"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.largePlayer_transport"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.largePlayer_transport"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
         "listTile": {
           "type": "object",
           "description": "Theme of the `listTile` component.",
@@ -1752,6 +3001,530 @@
           },
           "additionalProperties": false
         },
+        "loginRequired": {
+          "type": "object",
+          "description": "Theme of the `loginRequired` component.",
+          "properties": {
+            "base": {
+              "$ref": "#/$defs/props.app.loginRequired_null"
+            },
+            "states": {
+              "type": "object",
+              "description": "Properties per interaction state; they win over `base` in that state.",
+              "properties": {
+                "default": {
+                  "$ref": "#/$defs/props.app.loginRequired_null"
+                },
+                "hovered": {
+                  "$ref": "#/$defs/props.app.loginRequired_null"
+                },
+                "focused": {
+                  "$ref": "#/$defs/props.app.loginRequired_null"
+                },
+                "pressed": {
+                  "$ref": "#/$defs/props.app.loginRequired_null"
+                },
+                "disabled": {
+                  "$ref": "#/$defs/props.app.loginRequired_null"
+                },
+                "selected": {
+                  "$ref": "#/$defs/props.app.loginRequired_null"
+                },
+                "error": {
+                  "$ref": "#/$defs/props.app.loginRequired_null"
+                }
+              },
+              "additionalProperties": false
+            },
+            "rules": {
+              "type": "array",
+              "description": "Conditional overrides, applied last: `{ \"when\": <condition>, \"set\": { ...properties } }`.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "when",
+                  "set"
+                ],
+                "properties": {
+                  "when": {
+                    "$ref": "#/$defs/condition"
+                  },
+                  "set": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "vars": {
+              "type": "object",
+              "description": "Variables local to this component (they shadow global ones).",
+              "additionalProperties": {
+                "$ref": "#/$defs/varDecl"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "lyricsLine": {
+          "type": "object",
+          "description": "Theme of the `lyricsLine` component.",
+          "properties": {
+            "base": {
+              "$ref": "#/$defs/props.app.lyricsLine_rootAll"
+            },
+            "states": {
+              "type": "object",
+              "description": "Properties per interaction state; they win over `base` in that state.",
+              "properties": {
+                "default": {
+                  "$ref": "#/$defs/props.app.lyricsLine_rootAll"
+                },
+                "hovered": {
+                  "$ref": "#/$defs/props.app.lyricsLine_rootAll"
+                },
+                "focused": {
+                  "$ref": "#/$defs/props.app.lyricsLine_rootAll"
+                },
+                "pressed": {
+                  "$ref": "#/$defs/props.app.lyricsLine_rootAll"
+                },
+                "disabled": {
+                  "$ref": "#/$defs/props.app.lyricsLine_rootAll"
+                },
+                "selected": {
+                  "$ref": "#/$defs/props.app.lyricsLine_rootAll"
+                },
+                "error": {
+                  "$ref": "#/$defs/props.app.lyricsLine_rootAll"
+                }
+              },
+              "additionalProperties": false
+            },
+            "rules": {
+              "type": "array",
+              "description": "Conditional overrides, applied last: `{ \"when\": <condition>, \"set\": { ...properties } }`.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "when",
+                  "set"
+                ],
+                "properties": {
+                  "when": {
+                    "$ref": "#/$defs/condition"
+                  },
+                  "set": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "vars": {
+              "type": "object",
+              "description": "Variables local to this component (they shadow global ones).",
+              "additionalProperties": {
+                "$ref": "#/$defs/varDecl"
+              }
+            },
+            "variants": {
+              "type": "object",
+              "description": "One entry per slot/variant; a `base` above applies to all of them, so put slot-specific properties here.",
+              "properties": {
+                "root": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.lyricsLine_root"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.lyricsLine_root"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.lyricsLine_root"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.lyricsLine_root"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.lyricsLine_root"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.lyricsLine_root"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.lyricsLine_root"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.lyricsLine_root"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "immersive": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.lyricsLine_immersive"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.lyricsLine_immersive"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.lyricsLine_immersive"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.lyricsLine_immersive"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.lyricsLine_immersive"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.lyricsLine_immersive"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.lyricsLine_immersive"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.lyricsLine_immersive"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "mediaArtwork": {
+          "type": "object",
+          "description": "Theme of the `mediaArtwork` component.",
+          "properties": {
+            "base": {
+              "$ref": "#/$defs/props.app.mediaArtwork_null"
+            },
+            "states": {
+              "type": "object",
+              "description": "Properties per interaction state; they win over `base` in that state.",
+              "properties": {
+                "default": {
+                  "$ref": "#/$defs/props.app.mediaArtwork_null"
+                },
+                "hovered": {
+                  "$ref": "#/$defs/props.app.mediaArtwork_null"
+                },
+                "focused": {
+                  "$ref": "#/$defs/props.app.mediaArtwork_null"
+                },
+                "pressed": {
+                  "$ref": "#/$defs/props.app.mediaArtwork_null"
+                },
+                "disabled": {
+                  "$ref": "#/$defs/props.app.mediaArtwork_null"
+                },
+                "selected": {
+                  "$ref": "#/$defs/props.app.mediaArtwork_null"
+                },
+                "error": {
+                  "$ref": "#/$defs/props.app.mediaArtwork_null"
+                }
+              },
+              "additionalProperties": false
+            },
+            "rules": {
+              "type": "array",
+              "description": "Conditional overrides, applied last: `{ \"when\": <condition>, \"set\": { ...properties } }`.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "when",
+                  "set"
+                ],
+                "properties": {
+                  "when": {
+                    "$ref": "#/$defs/condition"
+                  },
+                  "set": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "vars": {
+              "type": "object",
+              "description": "Variables local to this component (they shadow global ones).",
+              "additionalProperties": {
+                "$ref": "#/$defs/varDecl"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "mediaCard": {
+          "type": "object",
+          "description": "Theme of the `mediaCard` component.",
+          "properties": {
+            "base": {
+              "$ref": "#/$defs/props.app.mediaCard_rootAll"
+            },
+            "states": {
+              "type": "object",
+              "description": "Properties per interaction state; they win over `base` in that state.",
+              "properties": {
+                "default": {
+                  "$ref": "#/$defs/props.app.mediaCard_rootAll"
+                },
+                "hovered": {
+                  "$ref": "#/$defs/props.app.mediaCard_rootAll"
+                },
+                "focused": {
+                  "$ref": "#/$defs/props.app.mediaCard_rootAll"
+                },
+                "pressed": {
+                  "$ref": "#/$defs/props.app.mediaCard_rootAll"
+                },
+                "disabled": {
+                  "$ref": "#/$defs/props.app.mediaCard_rootAll"
+                },
+                "selected": {
+                  "$ref": "#/$defs/props.app.mediaCard_rootAll"
+                },
+                "error": {
+                  "$ref": "#/$defs/props.app.mediaCard_rootAll"
+                }
+              },
+              "additionalProperties": false
+            },
+            "rules": {
+              "type": "array",
+              "description": "Conditional overrides, applied last: `{ \"when\": <condition>, \"set\": { ...properties } }`.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "when",
+                  "set"
+                ],
+                "properties": {
+                  "when": {
+                    "$ref": "#/$defs/condition"
+                  },
+                  "set": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "vars": {
+              "type": "object",
+              "description": "Variables local to this component (they shadow global ones).",
+              "additionalProperties": {
+                "$ref": "#/$defs/varDecl"
+              }
+            },
+            "variants": {
+              "type": "object",
+              "description": "One entry per slot/variant; a `base` above applies to all of them, so put slot-specific properties here.",
+              "properties": {
+                "root": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.mediaCard_root"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.mediaCard_root"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.mediaCard_root"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.mediaCard_root"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.mediaCard_root"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.mediaCard_root"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.mediaCard_root"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.mediaCard_root"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "artwork": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.mediaCard_artwork"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.mediaCard_artwork"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.mediaCard_artwork"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.mediaCard_artwork"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.mediaCard_artwork"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.mediaCard_artwork"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.mediaCard_artwork"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.mediaCard_artwork"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "info": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.mediaCard_info"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.mediaCard_info"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.mediaCard_info"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.mediaCard_info"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.mediaCard_info"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.mediaCard_info"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.mediaCard_info"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.mediaCard_info"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "mediaListTile": {
+          "type": "object",
+          "description": "Theme of the `mediaListTile` component.",
+          "properties": {
+            "base": {
+              "$ref": "#/$defs/props.app.mediaListTile_null"
+            },
+            "states": {
+              "type": "object",
+              "description": "Properties per interaction state; they win over `base` in that state.",
+              "properties": {
+                "default": {
+                  "$ref": "#/$defs/props.app.mediaListTile_null"
+                },
+                "hovered": {
+                  "$ref": "#/$defs/props.app.mediaListTile_null"
+                },
+                "focused": {
+                  "$ref": "#/$defs/props.app.mediaListTile_null"
+                },
+                "pressed": {
+                  "$ref": "#/$defs/props.app.mediaListTile_null"
+                },
+                "disabled": {
+                  "$ref": "#/$defs/props.app.mediaListTile_null"
+                },
+                "selected": {
+                  "$ref": "#/$defs/props.app.mediaListTile_null"
+                },
+                "error": {
+                  "$ref": "#/$defs/props.app.mediaListTile_null"
+                }
+              },
+              "additionalProperties": false
+            },
+            "rules": {
+              "type": "array",
+              "description": "Conditional overrides, applied last: `{ \"when\": <condition>, \"set\": { ...properties } }`.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "when",
+                  "set"
+                ],
+                "properties": {
+                  "when": {
+                    "$ref": "#/$defs/condition"
+                  },
+                  "set": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "vars": {
+              "type": "object",
+              "description": "Variables local to this component (they shadow global ones).",
+              "additionalProperties": {
+                "$ref": "#/$defs/varDecl"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
         "modalBottomSheet": {
           "type": "object",
           "description": "Theme of the `modalBottomSheet` component.",
@@ -1813,6 +3586,152 @@
               "additionalProperties": {
                 "$ref": "#/$defs/varDecl"
               }
+            }
+          },
+          "additionalProperties": false
+        },
+        "playerQueue": {
+          "type": "object",
+          "description": "Theme of the `playerQueue` component.",
+          "properties": {
+            "base": {
+              "$ref": "#/$defs/props.app.playerQueue_rootAll"
+            },
+            "states": {
+              "type": "object",
+              "description": "Properties per interaction state; they win over `base` in that state.",
+              "properties": {
+                "default": {
+                  "$ref": "#/$defs/props.app.playerQueue_rootAll"
+                },
+                "hovered": {
+                  "$ref": "#/$defs/props.app.playerQueue_rootAll"
+                },
+                "focused": {
+                  "$ref": "#/$defs/props.app.playerQueue_rootAll"
+                },
+                "pressed": {
+                  "$ref": "#/$defs/props.app.playerQueue_rootAll"
+                },
+                "disabled": {
+                  "$ref": "#/$defs/props.app.playerQueue_rootAll"
+                },
+                "selected": {
+                  "$ref": "#/$defs/props.app.playerQueue_rootAll"
+                },
+                "error": {
+                  "$ref": "#/$defs/props.app.playerQueue_rootAll"
+                }
+              },
+              "additionalProperties": false
+            },
+            "rules": {
+              "type": "array",
+              "description": "Conditional overrides, applied last: `{ \"when\": <condition>, \"set\": { ...properties } }`.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "when",
+                  "set"
+                ],
+                "properties": {
+                  "when": {
+                    "$ref": "#/$defs/condition"
+                  },
+                  "set": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "vars": {
+              "type": "object",
+              "description": "Variables local to this component (they shadow global ones).",
+              "additionalProperties": {
+                "$ref": "#/$defs/varDecl"
+              }
+            },
+            "variants": {
+              "type": "object",
+              "description": "One entry per slot/variant; a `base` above applies to all of them, so put slot-specific properties here.",
+              "properties": {
+                "root": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.playerQueue_root"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.playerQueue_root"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.playerQueue_root"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.playerQueue_root"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.playerQueue_root"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.playerQueue_root"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.playerQueue_root"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.playerQueue_root"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "row": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.playerQueue_row"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.playerQueue_row"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.playerQueue_row"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.playerQueue_row"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.playerQueue_row"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.playerQueue_row"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.playerQueue_row"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.playerQueue_row"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
             }
           },
           "additionalProperties": false
@@ -2021,6 +3940,115 @@
           },
           "additionalProperties": false
         },
+        "screen": {
+          "type": "object",
+          "description": "Theme of the `screen` component.",
+          "properties": {
+            "base": {
+              "$ref": "#/$defs/props.app.screen_root"
+            },
+            "states": {
+              "type": "object",
+              "description": "Properties per interaction state; they win over `base` in that state.",
+              "properties": {
+                "default": {
+                  "$ref": "#/$defs/props.app.screen_root"
+                },
+                "hovered": {
+                  "$ref": "#/$defs/props.app.screen_root"
+                },
+                "focused": {
+                  "$ref": "#/$defs/props.app.screen_root"
+                },
+                "pressed": {
+                  "$ref": "#/$defs/props.app.screen_root"
+                },
+                "disabled": {
+                  "$ref": "#/$defs/props.app.screen_root"
+                },
+                "selected": {
+                  "$ref": "#/$defs/props.app.screen_root"
+                },
+                "error": {
+                  "$ref": "#/$defs/props.app.screen_root"
+                }
+              },
+              "additionalProperties": false
+            },
+            "rules": {
+              "type": "array",
+              "description": "Conditional overrides, applied last: `{ \"when\": <condition>, \"set\": { ...properties } }`.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "when",
+                  "set"
+                ],
+                "properties": {
+                  "when": {
+                    "$ref": "#/$defs/condition"
+                  },
+                  "set": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "vars": {
+              "type": "object",
+              "description": "Variables local to this component (they shadow global ones).",
+              "additionalProperties": {
+                "$ref": "#/$defs/varDecl"
+              }
+            },
+            "variants": {
+              "type": "object",
+              "description": "One entry per slot/variant; a `base` above applies to all of them, so put slot-specific properties here.",
+              "properties": {
+                "root": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.screen_root"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.screen_root"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.screen_root"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.screen_root"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.screen_root"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.screen_root"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.screen_root"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.screen_root"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
         "scrollbar": {
           "type": "object",
           "description": "Theme of the `scrollbar` component.",
@@ -2082,6 +4110,115 @@
               "additionalProperties": {
                 "$ref": "#/$defs/varDecl"
               }
+            }
+          },
+          "additionalProperties": false
+        },
+        "section": {
+          "type": "object",
+          "description": "Theme of the `section` component.",
+          "properties": {
+            "base": {
+              "$ref": "#/$defs/props.app.section_header"
+            },
+            "states": {
+              "type": "object",
+              "description": "Properties per interaction state; they win over `base` in that state.",
+              "properties": {
+                "default": {
+                  "$ref": "#/$defs/props.app.section_header"
+                },
+                "hovered": {
+                  "$ref": "#/$defs/props.app.section_header"
+                },
+                "focused": {
+                  "$ref": "#/$defs/props.app.section_header"
+                },
+                "pressed": {
+                  "$ref": "#/$defs/props.app.section_header"
+                },
+                "disabled": {
+                  "$ref": "#/$defs/props.app.section_header"
+                },
+                "selected": {
+                  "$ref": "#/$defs/props.app.section_header"
+                },
+                "error": {
+                  "$ref": "#/$defs/props.app.section_header"
+                }
+              },
+              "additionalProperties": false
+            },
+            "rules": {
+              "type": "array",
+              "description": "Conditional overrides, applied last: `{ \"when\": <condition>, \"set\": { ...properties } }`.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "when",
+                  "set"
+                ],
+                "properties": {
+                  "when": {
+                    "$ref": "#/$defs/condition"
+                  },
+                  "set": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "vars": {
+              "type": "object",
+              "description": "Variables local to this component (they shadow global ones).",
+              "additionalProperties": {
+                "$ref": "#/$defs/varDecl"
+              }
+            },
+            "variants": {
+              "type": "object",
+              "description": "One entry per slot/variant; a `base` above applies to all of them, so put slot-specific properties here.",
+              "properties": {
+                "header": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.section_header"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.section_header"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.section_header"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.section_header"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.section_header"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.section_header"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.section_header"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.section_header"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
             }
           },
           "additionalProperties": false
@@ -2212,6 +4349,115 @@
               "additionalProperties": {
                 "$ref": "#/$defs/varDecl"
               }
+            }
+          },
+          "additionalProperties": false
+        },
+        "settingsRow": {
+          "type": "object",
+          "description": "Theme of the `settingsRow` component.",
+          "properties": {
+            "base": {
+              "$ref": "#/$defs/props.app.settingsRow_root"
+            },
+            "states": {
+              "type": "object",
+              "description": "Properties per interaction state; they win over `base` in that state.",
+              "properties": {
+                "default": {
+                  "$ref": "#/$defs/props.app.settingsRow_root"
+                },
+                "hovered": {
+                  "$ref": "#/$defs/props.app.settingsRow_root"
+                },
+                "focused": {
+                  "$ref": "#/$defs/props.app.settingsRow_root"
+                },
+                "pressed": {
+                  "$ref": "#/$defs/props.app.settingsRow_root"
+                },
+                "disabled": {
+                  "$ref": "#/$defs/props.app.settingsRow_root"
+                },
+                "selected": {
+                  "$ref": "#/$defs/props.app.settingsRow_root"
+                },
+                "error": {
+                  "$ref": "#/$defs/props.app.settingsRow_root"
+                }
+              },
+              "additionalProperties": false
+            },
+            "rules": {
+              "type": "array",
+              "description": "Conditional overrides, applied last: `{ \"when\": <condition>, \"set\": { ...properties } }`.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "when",
+                  "set"
+                ],
+                "properties": {
+                  "when": {
+                    "$ref": "#/$defs/condition"
+                  },
+                  "set": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "vars": {
+              "type": "object",
+              "description": "Variables local to this component (they shadow global ones).",
+              "additionalProperties": {
+                "$ref": "#/$defs/varDecl"
+              }
+            },
+            "variants": {
+              "type": "object",
+              "description": "One entry per slot/variant; a `base` above applies to all of them, so put slot-specific properties here.",
+              "properties": {
+                "root": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.settingsRow_root"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.settingsRow_root"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.settingsRow_root"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.settingsRow_root"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.settingsRow_root"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.settingsRow_root"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.settingsRow_root"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.settingsRow_root"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
             }
           },
           "additionalProperties": false
@@ -3048,6 +5294,217 @@
           },
           "additionalProperties": false
         },
+        "trackList": {
+          "type": "object",
+          "description": "Theme of the `trackList` component.",
+          "properties": {
+            "base": {
+              "$ref": "#/$defs/props.app.trackList_cardAll"
+            },
+            "states": {
+              "type": "object",
+              "description": "Properties per interaction state; they win over `base` in that state.",
+              "properties": {
+                "default": {
+                  "$ref": "#/$defs/props.app.trackList_cardAll"
+                },
+                "hovered": {
+                  "$ref": "#/$defs/props.app.trackList_cardAll"
+                },
+                "focused": {
+                  "$ref": "#/$defs/props.app.trackList_cardAll"
+                },
+                "pressed": {
+                  "$ref": "#/$defs/props.app.trackList_cardAll"
+                },
+                "disabled": {
+                  "$ref": "#/$defs/props.app.trackList_cardAll"
+                },
+                "selected": {
+                  "$ref": "#/$defs/props.app.trackList_cardAll"
+                },
+                "error": {
+                  "$ref": "#/$defs/props.app.trackList_cardAll"
+                }
+              },
+              "additionalProperties": false
+            },
+            "rules": {
+              "type": "array",
+              "description": "Conditional overrides, applied last: `{ \"when\": <condition>, \"set\": { ...properties } }`.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "when",
+                  "set"
+                ],
+                "properties": {
+                  "when": {
+                    "$ref": "#/$defs/condition"
+                  },
+                  "set": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "vars": {
+              "type": "object",
+              "description": "Variables local to this component (they shadow global ones).",
+              "additionalProperties": {
+                "$ref": "#/$defs/varDecl"
+              }
+            },
+            "variants": {
+              "type": "object",
+              "description": "One entry per slot/variant; a `base` above applies to all of them, so put slot-specific properties here.",
+              "properties": {
+                "card": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.trackList_card"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.trackList_card"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.trackList_card"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.trackList_card"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.trackList_card"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.trackList_card"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.trackList_card"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.trackList_card"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "row": {
+                  "type": "object",
+                  "properties": {
+                    "base": {
+                      "$ref": "#/$defs/props.app.trackList_row"
+                    },
+                    "states": {
+                      "type": "object",
+                      "description": "Properties per interaction state; they win over `base` in that state.",
+                      "properties": {
+                        "default": {
+                          "$ref": "#/$defs/props.app.trackList_row"
+                        },
+                        "hovered": {
+                          "$ref": "#/$defs/props.app.trackList_row"
+                        },
+                        "focused": {
+                          "$ref": "#/$defs/props.app.trackList_row"
+                        },
+                        "pressed": {
+                          "$ref": "#/$defs/props.app.trackList_row"
+                        },
+                        "disabled": {
+                          "$ref": "#/$defs/props.app.trackList_row"
+                        },
+                        "selected": {
+                          "$ref": "#/$defs/props.app.trackList_row"
+                        },
+                        "error": {
+                          "$ref": "#/$defs/props.app.trackList_row"
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "trackOptions": {
+          "type": "object",
+          "description": "Theme of the `trackOptions` component.",
+          "properties": {
+            "base": {
+              "$ref": "#/$defs/props.app.trackOptions_null"
+            },
+            "states": {
+              "type": "object",
+              "description": "Properties per interaction state; they win over `base` in that state.",
+              "properties": {
+                "default": {
+                  "$ref": "#/$defs/props.app.trackOptions_null"
+                },
+                "hovered": {
+                  "$ref": "#/$defs/props.app.trackOptions_null"
+                },
+                "focused": {
+                  "$ref": "#/$defs/props.app.trackOptions_null"
+                },
+                "pressed": {
+                  "$ref": "#/$defs/props.app.trackOptions_null"
+                },
+                "disabled": {
+                  "$ref": "#/$defs/props.app.trackOptions_null"
+                },
+                "selected": {
+                  "$ref": "#/$defs/props.app.trackOptions_null"
+                },
+                "error": {
+                  "$ref": "#/$defs/props.app.trackOptions_null"
+                }
+              },
+              "additionalProperties": false
+            },
+            "rules": {
+              "type": "array",
+              "description": "Conditional overrides, applied last: `{ \"when\": <condition>, \"set\": { ...properties } }`.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "when",
+                  "set"
+                ],
+                "properties": {
+                  "when": {
+                    "$ref": "#/$defs/condition"
+                  },
+                  "set": {
+                    "type": "object"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "vars": {
+              "type": "object",
+              "description": "Variables local to this component (they shadow global ones).",
+              "additionalProperties": {
+                "$ref": "#/$defs/varDecl"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
         "triStateCheckbox": {
           "type": "object",
           "description": "Theme of the `triStateCheckbox` component.",
@@ -3804,6 +6261,15 @@
       "type": "string",
       "description": "A single character or `U+XXXX`.",
       "pattern": "^(U\\+[0-9A-Fa-f]{4,6}|.)$"
+    },
+    "props.app.appShell_root": {
+      "type": "object",
+      "properties": {
+        "snackbarOffset": {
+          "$ref": "#/$defs/number"
+        }
+      },
+      "additionalProperties": false
     },
     "props.Autocomplete": {
       "type": "object",
@@ -4606,6 +7072,189 @@
       },
       "additionalProperties": false
     },
+    "props.app.collectionHeader_null": {
+      "type": "object",
+      "properties": {
+        "actionSeparatorHeight": {
+          "$ref": "#/$defs/number"
+        },
+        "artworkShape": {
+          "$ref": "#/$defs/shape"
+        },
+        "artworkSize": {
+          "$ref": "#/$defs/number"
+        },
+        "buttonSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "collapsedArtworkShape": {
+          "$ref": "#/$defs/shape"
+        },
+        "collapsedArtworkSize": {
+          "$ref": "#/$defs/number"
+        },
+        "collapsedPlaceholderStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "collapsedSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "collapsedTitleStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "compactArtworkSize": {
+          "$ref": "#/$defs/number"
+        },
+        "compactDescriptionStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "compactInfoSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "compactPadding": {
+          "$ref": "#/$defs/number"
+        },
+        "compactSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "compactTitleStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "descriptionStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "infoSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "outerPadding": {
+          "$ref": "#/$defs/number"
+        },
+        "ownerAvatarSize": {
+          "$ref": "#/$defs/number"
+        },
+        "ownerPlaceholderBackground": {
+          "$ref": "#/$defs/color"
+        },
+        "ownerPlaceholderTint": {
+          "$ref": "#/$defs/color"
+        },
+        "ownerSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "ownerStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "padding": {
+          "$ref": "#/$defs/number"
+        },
+        "placeholderStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "spacing": {
+          "$ref": "#/$defs/number"
+        },
+        "titleStyle": {
+          "$ref": "#/$defs/textStyle"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.connectBanner_rootAll": {
+      "type": "object",
+      "properties": {
+        "background": {
+          "$ref": "#/$defs/color"
+        },
+        "chevronSize": {
+          "$ref": "#/$defs/number"
+        },
+        "chevronTint": {
+          "$ref": "#/$defs/color"
+        },
+        "color": {
+          "$ref": "#/$defs/color"
+        },
+        "padding": {
+          "$ref": "#/$defs/padding"
+        },
+        "ringColor": {
+          "$ref": "#/$defs/color"
+        },
+        "ringWidth": {
+          "$ref": "#/$defs/number"
+        },
+        "shape": {
+          "$ref": "#/$defs/shape"
+        },
+        "size": {
+          "$ref": "#/$defs/number"
+        },
+        "spacing": {
+          "$ref": "#/$defs/number"
+        },
+        "textStyle": {
+          "$ref": "#/$defs/textStyle"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.connectBanner_root": {
+      "type": "object",
+      "properties": {
+        "padding": {
+          "$ref": "#/$defs/padding"
+        },
+        "spacing": {
+          "$ref": "#/$defs/number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.connectBanner_row": {
+      "type": "object",
+      "properties": {
+        "background": {
+          "$ref": "#/$defs/color"
+        },
+        "chevronSize": {
+          "$ref": "#/$defs/number"
+        },
+        "chevronTint": {
+          "$ref": "#/$defs/color"
+        },
+        "padding": {
+          "$ref": "#/$defs/padding"
+        },
+        "shape": {
+          "$ref": "#/$defs/shape"
+        },
+        "spacing": {
+          "$ref": "#/$defs/number"
+        },
+        "textStyle": {
+          "$ref": "#/$defs/textStyle"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.connectBanner_dot": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "$ref": "#/$defs/color"
+        },
+        "ringColor": {
+          "$ref": "#/$defs/color"
+        },
+        "ringWidth": {
+          "$ref": "#/$defs/number"
+        },
+        "size": {
+          "$ref": "#/$defs/number"
+        }
+      },
+      "additionalProperties": false
+    },
     "props.Dialog": {
       "type": "object",
       "properties": {
@@ -5188,6 +7837,492 @@
       },
       "additionalProperties": false
     },
+    "props.app.emptyState_null": {
+      "type": "object",
+      "properties": {
+        "descriptionStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "iconBoxBackground": {
+          "$ref": "#/$defs/brush"
+        },
+        "iconBoxBorderColor": {
+          "$ref": "#/$defs/color"
+        },
+        "iconBoxBorderWidth": {
+          "$ref": "#/$defs/number"
+        },
+        "iconBoxShape": {
+          "$ref": "#/$defs/shape"
+        },
+        "iconBoxSize": {
+          "$ref": "#/$defs/number"
+        },
+        "iconSize": {
+          "$ref": "#/$defs/number"
+        },
+        "iconTint": {
+          "$ref": "#/$defs/color"
+        },
+        "maxWidth": {
+          "$ref": "#/$defs/number"
+        },
+        "padding": {
+          "$ref": "#/$defs/number"
+        },
+        "spacing": {
+          "$ref": "#/$defs/number"
+        },
+        "titleStyle": {
+          "$ref": "#/$defs/textStyle"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.errorDisplay_null": {
+      "type": "object",
+      "properties": {
+        "descriptionStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "detailsActionSize": {
+          "$ref": "#/$defs/number"
+        },
+        "detailsHeaderPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "detailsHeaderStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "detailsIconSize": {
+          "$ref": "#/$defs/number"
+        },
+        "iconSize": {
+          "$ref": "#/$defs/number"
+        },
+        "iconTint": {
+          "$ref": "#/$defs/color"
+        },
+        "logMaxLines": {
+          "$ref": "#/$defs/number"
+        },
+        "logPadding": {
+          "$ref": "#/$defs/number"
+        },
+        "logStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "padding": {
+          "$ref": "#/$defs/number"
+        },
+        "retryHeight": {
+          "$ref": "#/$defs/number"
+        },
+        "retryIconSize": {
+          "$ref": "#/$defs/number"
+        },
+        "spacing": {
+          "$ref": "#/$defs/number"
+        },
+        "titleStyle": {
+          "$ref": "#/$defs/textStyle"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.expandedPlayer_rootAll": {
+      "type": "object",
+      "properties": {
+        "activeTint": {
+          "$ref": "#/$defs/color"
+        },
+        "artistStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "background": {
+          "$ref": "#/$defs/color"
+        },
+        "contentPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "contentSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "controlsPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "headerStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "iconSize": {
+          "$ref": "#/$defs/number"
+        },
+        "iconTint": {
+          "$ref": "#/$defs/color"
+        },
+        "inactiveTint": {
+          "$ref": "#/$defs/color"
+        },
+        "labelStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "outerPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "padding": {
+          "$ref": "#/$defs/padding"
+        },
+        "playIconSize": {
+          "$ref": "#/$defs/number"
+        },
+        "previewHeight": {
+          "$ref": "#/$defs/number"
+        },
+        "rowPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "seekPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "shadowElevation": {
+          "$ref": "#/$defs/number"
+        },
+        "shape": {
+          "$ref": "#/$defs/shape"
+        },
+        "spacing": {
+          "$ref": "#/$defs/number"
+        },
+        "timePadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "timeStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "titleStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "topSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "widthFraction": {
+          "$ref": "#/$defs/number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.expandedPlayer_root": {
+      "type": "object",
+      "properties": {
+        "contentPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "headerStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "topSpacing": {
+          "$ref": "#/$defs/number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.expandedPlayer_artwork": {
+      "type": "object",
+      "properties": {
+        "background": {
+          "$ref": "#/$defs/color"
+        },
+        "padding": {
+          "$ref": "#/$defs/padding"
+        },
+        "shape": {
+          "$ref": "#/$defs/shape"
+        },
+        "widthFraction": {
+          "$ref": "#/$defs/number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.expandedPlayer_info": {
+      "type": "object",
+      "properties": {
+        "artistStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "rowPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "titleStyle": {
+          "$ref": "#/$defs/textStyle"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.expandedPlayer_transport": {
+      "type": "object",
+      "properties": {
+        "activeTint": {
+          "$ref": "#/$defs/color"
+        },
+        "controlsPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "inactiveTint": {
+          "$ref": "#/$defs/color"
+        },
+        "playIconSize": {
+          "$ref": "#/$defs/number"
+        },
+        "seekPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "timePadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "timeStyle": {
+          "$ref": "#/$defs/textStyle"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.expandedPlayer_lyrics": {
+      "type": "object",
+      "properties": {
+        "contentPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "contentSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "iconTint": {
+          "$ref": "#/$defs/color"
+        },
+        "outerPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "previewHeight": {
+          "$ref": "#/$defs/number"
+        },
+        "shadowElevation": {
+          "$ref": "#/$defs/number"
+        },
+        "titleStyle": {
+          "$ref": "#/$defs/textStyle"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.expandedPlayer_optionTile": {
+      "type": "object",
+      "properties": {
+        "contentPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "iconSize": {
+          "$ref": "#/$defs/number"
+        },
+        "iconTint": {
+          "$ref": "#/$defs/color"
+        },
+        "labelStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "spacing": {
+          "$ref": "#/$defs/number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.featuredCarousel_null": {
+      "type": "object",
+      "properties": {
+        "buttonBlur": {
+          "$ref": "#/$defs/number"
+        },
+        "buttonGlassTint": {
+          "$ref": "#/$defs/color"
+        },
+        "buttonSize": {
+          "$ref": "#/$defs/number"
+        },
+        "buttonTint": {
+          "$ref": "#/$defs/color"
+        },
+        "cardShape": {
+          "$ref": "#/$defs/shape"
+        },
+        "compactHeight": {
+          "$ref": "#/$defs/number"
+        },
+        "contentPadding": {
+          "$ref": "#/$defs/number"
+        },
+        "dimAlpha": {
+          "$ref": "#/$defs/number"
+        },
+        "fadeMillis": {
+          "$ref": "#/$defs/number"
+        },
+        "height": {
+          "$ref": "#/$defs/number"
+        },
+        "itemAngle": {
+          "$ref": "#/$defs/number"
+        },
+        "itemOffset": {
+          "$ref": "#/$defs/number"
+        },
+        "itemShift": {
+          "$ref": "#/$defs/number"
+        },
+        "itemZoom": {
+          "$ref": "#/$defs/number"
+        },
+        "scrimColor": {
+          "$ref": "#/$defs/color"
+        },
+        "scrimHeight": {
+          "$ref": "#/$defs/number"
+        },
+        "subtitleStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "textSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "titleStyle": {
+          "$ref": "#/$defs/textStyle"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.floatingPlayer_rootAll": {
+      "type": "object",
+      "properties": {
+        "background": {
+          "$ref": "#/$defs/color"
+        },
+        "borderColor": {
+          "$ref": "#/$defs/color"
+        },
+        "borderWidth": {
+          "$ref": "#/$defs/number"
+        },
+        "contentPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "controlsSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "horizontalMargin": {
+          "$ref": "#/$defs/number"
+        },
+        "placeholderSize": {
+          "$ref": "#/$defs/number"
+        },
+        "placeholderTint": {
+          "$ref": "#/$defs/color"
+        },
+        "progressHeight": {
+          "$ref": "#/$defs/number"
+        },
+        "progressSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "shadowElevation": {
+          "$ref": "#/$defs/number"
+        },
+        "shape": {
+          "$ref": "#/$defs/shape"
+        },
+        "size": {
+          "$ref": "#/$defs/number"
+        },
+        "spacing": {
+          "$ref": "#/$defs/number"
+        },
+        "subtitleStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "titleStyle": {
+          "$ref": "#/$defs/textStyle"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.floatingPlayer_root": {
+      "type": "object",
+      "properties": {
+        "background": {
+          "$ref": "#/$defs/brush"
+        },
+        "borderColor": {
+          "$ref": "#/$defs/color"
+        },
+        "borderWidth": {
+          "$ref": "#/$defs/number"
+        },
+        "contentPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "controlsSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "horizontalMargin": {
+          "$ref": "#/$defs/number"
+        },
+        "progressHeight": {
+          "$ref": "#/$defs/number"
+        },
+        "progressSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "shadowElevation": {
+          "$ref": "#/$defs/number"
+        },
+        "shape": {
+          "$ref": "#/$defs/shape"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.floatingPlayer_artwork": {
+      "type": "object",
+      "properties": {
+        "background": {
+          "$ref": "#/$defs/color"
+        },
+        "placeholderSize": {
+          "$ref": "#/$defs/number"
+        },
+        "placeholderTint": {
+          "$ref": "#/$defs/color"
+        },
+        "shape": {
+          "$ref": "#/$defs/shape"
+        },
+        "size": {
+          "$ref": "#/$defs/number"
+        },
+        "spacing": {
+          "$ref": "#/$defs/number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.floatingPlayer_info": {
+      "type": "object",
+      "properties": {
+        "subtitleStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "titleStyle": {
+          "$ref": "#/$defs/textStyle"
+        }
+      },
+      "additionalProperties": false
+    },
     "props.Icon": {
       "type": "object",
       "properties": {
@@ -5377,6 +8512,120 @@
       },
       "additionalProperties": false
     },
+    "props.app.largePlayer_rootAll": {
+      "type": "object",
+      "properties": {
+        "activeTint": {
+          "$ref": "#/$defs/color"
+        },
+        "artistStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "background": {
+          "$ref": "#/$defs/color"
+        },
+        "blurRadius": {
+          "$ref": "#/$defs/number"
+        },
+        "contentPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "heartSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "inactiveTint": {
+          "$ref": "#/$defs/color"
+        },
+        "shape": {
+          "$ref": "#/$defs/shape"
+        },
+        "size": {
+          "$ref": "#/$defs/number"
+        },
+        "spacing": {
+          "$ref": "#/$defs/number"
+        },
+        "timeStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "tint": {
+          "$ref": "#/$defs/color"
+        },
+        "titleStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "volumeWidthFraction": {
+          "$ref": "#/$defs/number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.largePlayer_root": {
+      "type": "object",
+      "properties": {
+        "blurRadius": {
+          "$ref": "#/$defs/number"
+        },
+        "contentPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "tint": {
+          "$ref": "#/$defs/color"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.largePlayer_artwork": {
+      "type": "object",
+      "properties": {
+        "background": {
+          "$ref": "#/$defs/color"
+        },
+        "shape": {
+          "$ref": "#/$defs/shape"
+        },
+        "size": {
+          "$ref": "#/$defs/number"
+        },
+        "spacing": {
+          "$ref": "#/$defs/number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.largePlayer_info": {
+      "type": "object",
+      "properties": {
+        "artistStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "heartSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "titleStyle": {
+          "$ref": "#/$defs/textStyle"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.largePlayer_transport": {
+      "type": "object",
+      "properties": {
+        "activeTint": {
+          "$ref": "#/$defs/color"
+        },
+        "inactiveTint": {
+          "$ref": "#/$defs/color"
+        },
+        "timeStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "volumeWidthFraction": {
+          "$ref": "#/$defs/number"
+        }
+      },
+      "additionalProperties": false
+    },
     "props.ListTile": {
       "type": "object",
       "properties": {
@@ -5548,6 +8797,309 @@
       },
       "additionalProperties": false
     },
+    "props.app.loginRequired_null": {
+      "type": "object",
+      "properties": {
+        "badgeBackground": {
+          "$ref": "#/$defs/color"
+        },
+        "badgeShape": {
+          "$ref": "#/$defs/shape"
+        },
+        "badgeSize": {
+          "$ref": "#/$defs/number"
+        },
+        "buttonHeight": {
+          "$ref": "#/$defs/number"
+        },
+        "buttonIconSize": {
+          "$ref": "#/$defs/number"
+        },
+        "descriptionStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "iconSize": {
+          "$ref": "#/$defs/number"
+        },
+        "iconTint": {
+          "$ref": "#/$defs/color"
+        },
+        "padding": {
+          "$ref": "#/$defs/padding"
+        },
+        "spacing": {
+          "$ref": "#/$defs/number"
+        },
+        "titleStyle": {
+          "$ref": "#/$defs/textStyle"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.lyricsLine_rootAll": {
+      "type": "object",
+      "properties": {
+        "padding": {
+          "$ref": "#/$defs/padding"
+        },
+        "shape": {
+          "$ref": "#/$defs/shape"
+        },
+        "spacing": {
+          "$ref": "#/$defs/number"
+        },
+        "textStyle": {
+          "$ref": "#/$defs/textStyle"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.lyricsLine_root": {
+      "type": "object",
+      "properties": {
+        "padding": {
+          "$ref": "#/$defs/padding"
+        },
+        "spacing": {
+          "$ref": "#/$defs/number"
+        },
+        "textStyle": {
+          "$ref": "#/$defs/textStyle"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.lyricsLine_immersive": {
+      "type": "object",
+      "properties": {
+        "padding": {
+          "$ref": "#/$defs/padding"
+        },
+        "shape": {
+          "$ref": "#/$defs/shape"
+        },
+        "spacing": {
+          "$ref": "#/$defs/number"
+        },
+        "textStyle": {
+          "$ref": "#/$defs/textStyle"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.mediaArtwork_null": {
+      "type": "object",
+      "properties": {
+        "background": {
+          "$ref": "#/$defs/brush"
+        },
+        "borderColor": {
+          "$ref": "#/$defs/color"
+        },
+        "borderWidth": {
+          "$ref": "#/$defs/number"
+        },
+        "placeholderSize": {
+          "$ref": "#/$defs/number"
+        },
+        "placeholderTint": {
+          "$ref": "#/$defs/color"
+        },
+        "shape": {
+          "$ref": "#/$defs/shape"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.mediaCard_rootAll": {
+      "type": "object",
+      "properties": {
+        "actionPadding": {
+          "$ref": "#/$defs/number"
+        },
+        "actionSize": {
+          "$ref": "#/$defs/number"
+        },
+        "actionSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "background": {
+          "$ref": "#/$defs/brush"
+        },
+        "borderColor": {
+          "$ref": "#/$defs/color"
+        },
+        "borderWidth": {
+          "$ref": "#/$defs/number"
+        },
+        "highlightBackground": {
+          "$ref": "#/$defs/brush"
+        },
+        "innerGlowColor": {
+          "$ref": "#/$defs/color"
+        },
+        "padding": {
+          "$ref": "#/$defs/padding"
+        },
+        "scale": {
+          "$ref": "#/$defs/number"
+        },
+        "scaleMillis": {
+          "$ref": "#/$defs/number"
+        },
+        "shadowElevation": {
+          "$ref": "#/$defs/number"
+        },
+        "shape": {
+          "$ref": "#/$defs/shape"
+        },
+        "spacing": {
+          "$ref": "#/$defs/number"
+        },
+        "subtitleStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "titleStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "transitionMillis": {
+          "$ref": "#/$defs/number"
+        },
+        "width": {
+          "$ref": "#/$defs/number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.mediaCard_root": {
+      "type": "object",
+      "properties": {
+        "background": {
+          "$ref": "#/$defs/brush"
+        },
+        "borderColor": {
+          "$ref": "#/$defs/color"
+        },
+        "borderWidth": {
+          "$ref": "#/$defs/number"
+        },
+        "highlightBackground": {
+          "$ref": "#/$defs/brush"
+        },
+        "innerGlowColor": {
+          "$ref": "#/$defs/color"
+        },
+        "scale": {
+          "$ref": "#/$defs/number"
+        },
+        "scaleMillis": {
+          "$ref": "#/$defs/number"
+        },
+        "shadowElevation": {
+          "$ref": "#/$defs/number"
+        },
+        "shape": {
+          "$ref": "#/$defs/shape"
+        },
+        "transitionMillis": {
+          "$ref": "#/$defs/number"
+        },
+        "width": {
+          "$ref": "#/$defs/number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.mediaCard_artwork": {
+      "type": "object",
+      "properties": {
+        "actionPadding": {
+          "$ref": "#/$defs/number"
+        },
+        "actionSize": {
+          "$ref": "#/$defs/number"
+        },
+        "actionSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "shape": {
+          "$ref": "#/$defs/shape"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.mediaCard_info": {
+      "type": "object",
+      "properties": {
+        "padding": {
+          "$ref": "#/$defs/padding"
+        },
+        "spacing": {
+          "$ref": "#/$defs/number"
+        },
+        "subtitleStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "titleStyle": {
+          "$ref": "#/$defs/textStyle"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.mediaListTile_null": {
+      "type": "object",
+      "properties": {
+        "actionSize": {
+          "$ref": "#/$defs/number"
+        },
+        "actionSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "artworkSize": {
+          "$ref": "#/$defs/number"
+        },
+        "background": {
+          "$ref": "#/$defs/brush"
+        },
+        "borderColor": {
+          "$ref": "#/$defs/color"
+        },
+        "borderWidth": {
+          "$ref": "#/$defs/number"
+        },
+        "compactActionSize": {
+          "$ref": "#/$defs/number"
+        },
+        "compactArtworkSize": {
+          "$ref": "#/$defs/number"
+        },
+        "compactMinimumHeight": {
+          "$ref": "#/$defs/number"
+        },
+        "compactPadding": {
+          "$ref": "#/$defs/number"
+        },
+        "minimumHeight": {
+          "$ref": "#/$defs/number"
+        },
+        "padding": {
+          "$ref": "#/$defs/number"
+        },
+        "shape": {
+          "$ref": "#/$defs/shape"
+        },
+        "subtitleStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "titleForeground": {
+          "$ref": "#/$defs/color"
+        },
+        "titleStyle": {
+          "$ref": "#/$defs/textStyle"
+        }
+      },
+      "additionalProperties": false
+    },
     "props.ModalBottomSheet": {
       "type": "object",
       "properties": {
@@ -5622,6 +9174,141 @@
         },
         "textStyle": {
           "$ref": "#/$defs/textStyle"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.playerQueue_rootAll": {
+      "type": "object",
+      "properties": {
+        "contentPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "durationStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "emptyStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "filterSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "handleSize": {
+          "$ref": "#/$defs/number"
+        },
+        "handleTint": {
+          "$ref": "#/$defs/color"
+        },
+        "height": {
+          "$ref": "#/$defs/number"
+        },
+        "listPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "participantBackground": {
+          "$ref": "#/$defs/color"
+        },
+        "participantSize": {
+          "$ref": "#/$defs/number"
+        },
+        "participantStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "spacing": {
+          "$ref": "#/$defs/number"
+        },
+        "subtitleStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "thumbBackground": {
+          "$ref": "#/$defs/color"
+        },
+        "thumbIndexStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "thumbShape": {
+          "$ref": "#/$defs/shape"
+        },
+        "thumbSize": {
+          "$ref": "#/$defs/number"
+        },
+        "titleStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "trailingSpacing": {
+          "$ref": "#/$defs/number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.playerQueue_root": {
+      "type": "object",
+      "properties": {
+        "contentPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "emptyStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "filterSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "listPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "spacing": {
+          "$ref": "#/$defs/number"
+        },
+        "titleStyle": {
+          "$ref": "#/$defs/textStyle"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.playerQueue_row": {
+      "type": "object",
+      "properties": {
+        "durationStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "handleSize": {
+          "$ref": "#/$defs/number"
+        },
+        "handleTint": {
+          "$ref": "#/$defs/color"
+        },
+        "height": {
+          "$ref": "#/$defs/number"
+        },
+        "participantBackground": {
+          "$ref": "#/$defs/color"
+        },
+        "participantSize": {
+          "$ref": "#/$defs/number"
+        },
+        "participantStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "subtitleStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "thumbBackground": {
+          "$ref": "#/$defs/color"
+        },
+        "thumbIndexStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "thumbShape": {
+          "$ref": "#/$defs/shape"
+        },
+        "thumbSize": {
+          "$ref": "#/$defs/number"
+        },
+        "titleStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "trailingSpacing": {
+          "$ref": "#/$defs/number"
         }
       },
       "additionalProperties": false
@@ -5929,6 +9616,21 @@
       },
       "additionalProperties": false
     },
+    "props.app.screen_root": {
+      "type": "object",
+      "properties": {
+        "bottomPadding": {
+          "$ref": "#/$defs/number"
+        },
+        "sectionSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "topPadding": {
+          "$ref": "#/$defs/number"
+        }
+      },
+      "additionalProperties": false
+    },
     "props.Scrollbar": {
       "type": "object",
       "properties": {
@@ -5982,6 +9684,30 @@
         },
         "trackInnerGlowColor": {
           "$ref": "#/$defs/color"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.section_header": {
+      "type": "object",
+      "properties": {
+        "horizontalPadding": {
+          "$ref": "#/$defs/number"
+        },
+        "itemSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "spacing": {
+          "$ref": "#/$defs/number"
+        },
+        "subtitleStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "titleOffset": {
+          "$ref": "#/$defs/number"
+        },
+        "titleStyle": {
+          "$ref": "#/$defs/textStyle"
         }
       },
       "additionalProperties": false
@@ -6069,6 +9795,18 @@
         },
         "thickness": {
           "$ref": "#/$defs/number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.settingsRow_root": {
+      "type": "object",
+      "properties": {
+        "subtitleStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "titleStyle": {
+          "$ref": "#/$defs/textStyle"
         }
       },
       "additionalProperties": false
@@ -7439,6 +11177,228 @@
           "$ref": "#/$defs/textStyle"
         },
         "titleSubtitleSpacing": {
+          "$ref": "#/$defs/number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.trackList_cardAll": {
+      "type": "object",
+      "properties": {
+        "albumMaxWidth": {
+          "$ref": "#/$defs/number"
+        },
+        "albumStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "artistSeparatorStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "artistSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "artistStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "artworkOverlay": {
+          "$ref": "#/$defs/color"
+        },
+        "artworkShape": {
+          "$ref": "#/$defs/shape"
+        },
+        "artworkSize": {
+          "$ref": "#/$defs/number"
+        },
+        "background": {
+          "$ref": "#/$defs/brush"
+        },
+        "durationStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "durationWidth": {
+          "$ref": "#/$defs/number"
+        },
+        "errorColor": {
+          "$ref": "#/$defs/color"
+        },
+        "feedbackPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "feedbackStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "indexStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "indexWidth": {
+          "$ref": "#/$defs/number"
+        },
+        "innerPadding": {
+          "$ref": "#/$defs/number"
+        },
+        "leadingSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "outerPadding": {
+          "$ref": "#/$defs/number"
+        },
+        "overlayIconSize": {
+          "$ref": "#/$defs/number"
+        },
+        "overlayIconTint": {
+          "$ref": "#/$defs/color"
+        },
+        "selectedBackground": {
+          "$ref": "#/$defs/brush"
+        },
+        "separatorInset": {
+          "$ref": "#/$defs/number"
+        },
+        "titleStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "trailingSpacing": {
+          "$ref": "#/$defs/number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.trackList_card": {
+      "type": "object",
+      "properties": {
+        "errorColor": {
+          "$ref": "#/$defs/color"
+        },
+        "feedbackPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "feedbackStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "innerPadding": {
+          "$ref": "#/$defs/number"
+        },
+        "outerPadding": {
+          "$ref": "#/$defs/number"
+        },
+        "separatorInset": {
+          "$ref": "#/$defs/number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.trackList_row": {
+      "type": "object",
+      "properties": {
+        "albumMaxWidth": {
+          "$ref": "#/$defs/number"
+        },
+        "albumStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "artistSeparatorStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "artistSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "artistStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "artworkOverlay": {
+          "$ref": "#/$defs/color"
+        },
+        "artworkShape": {
+          "$ref": "#/$defs/shape"
+        },
+        "artworkSize": {
+          "$ref": "#/$defs/number"
+        },
+        "background": {
+          "$ref": "#/$defs/brush"
+        },
+        "durationStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "durationWidth": {
+          "$ref": "#/$defs/number"
+        },
+        "indexStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "indexWidth": {
+          "$ref": "#/$defs/number"
+        },
+        "leadingSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "overlayIconSize": {
+          "$ref": "#/$defs/number"
+        },
+        "overlayIconTint": {
+          "$ref": "#/$defs/color"
+        },
+        "selectedBackground": {
+          "$ref": "#/$defs/brush"
+        },
+        "titleStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "trailingSpacing": {
+          "$ref": "#/$defs/number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "props.app.trackOptions_null": {
+      "type": "object",
+      "properties": {
+        "disabledAlpha": {
+          "$ref": "#/$defs/number"
+        },
+        "headerAlbumStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "headerArtistStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "headerArtworkShape": {
+          "$ref": "#/$defs/shape"
+        },
+        "headerArtworkSize": {
+          "$ref": "#/$defs/number"
+        },
+        "headerPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "headerSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "headerTitleStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "iconSize": {
+          "$ref": "#/$defs/number"
+        },
+        "itemGap": {
+          "$ref": "#/$defs/number"
+        },
+        "itemPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "itemSpacing": {
+          "$ref": "#/$defs/number"
+        },
+        "labelStyle": {
+          "$ref": "#/$defs/textStyle"
+        },
+        "listPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "sheetPadding": {
+          "$ref": "#/$defs/padding"
+        },
+        "sheetSpacing": {
           "$ref": "#/$defs/number"
         }
       },
