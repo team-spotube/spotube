@@ -121,6 +121,7 @@ vlcj-natives = { module = "uk.co.caprica:vlcj-natives", version.ref = "vlcjNativ
 zipline-core = { module = "app.cash.zipline:zipline", version.ref = "ziplineVersion" }
 zipline-loader = { module = "app.cash.zipline:zipline-loader", version.ref = "ziplineVersion" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }

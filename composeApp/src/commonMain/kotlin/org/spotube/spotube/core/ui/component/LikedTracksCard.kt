@@ -18,6 +18,9 @@
 package org.spotube.spotube.core.ui.component
 
 
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppState
+import org.spotube.spotube.core.ui.theming.engine.AppSlots
 import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
@@ -122,9 +125,11 @@ fun LikedTracksCard(
 
     val sharedTransitionScope = LocalSharedTransitionScope.current
     val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
+    val artworkLook = AppComponents.slot(AppSlots.MediaCardArtwork)[AppState.Default]
+    val infoLook = AppComponents.slot(AppSlots.MediaCardInfo)[AppState.Default]
 
     MediaCardSurface(
-        modifier = modifier.width(160.dp),
+        modifier = modifier,
         onClick = { navigationCommands.navigateTo(Routes.SavedTracks) }
     ) { isHovered ->
         Column(modifier = Modifier.fillMaxWidth()) {
@@ -135,7 +140,7 @@ fun LikedTracksCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(1f)
-                        .clip(RoundedCornerShape(8.dp))
+                        .clip(artworkLook.shape)
                         .sharedElementOrNone(
                             key = "saved_tracks_art",
                             sharedTransitionScope = sharedTransitionScope,
@@ -145,7 +150,7 @@ fun LikedTracksCard(
                 )
 
                 Box(
-                    modifier = Modifier.fillMaxWidth().aspectRatio(1f).padding(8.dp),
+                    modifier = Modifier.fillMaxWidth().aspectRatio(1f).padding(artworkLook.actionPadding),
                     contentAlignment = Alignment.BottomEnd
                 ) {
                     if (isHovered || touchInput || isPlaying || playLoading || addToQueueLoading) {
@@ -165,7 +170,7 @@ fun LikedTracksCard(
                                     modifier = Modifier.size(16.dp)
                                 )
                             }
-                            Spacer(modifier = Modifier.height(8.dp))
+                            Spacer(modifier = Modifier.height(artworkLook.actionSpacing))
                             MillenniumIconButton(
                                 onClick = onPlay,
                                 loading = playLoading,
@@ -186,19 +191,18 @@ fun LikedTracksCard(
                 }
             }
             Column(
-                modifier = Modifier.fillMaxWidth().padding(12.dp)
+                modifier = Modifier.fillMaxWidth().padding(infoLook.padding)
             ) {
                 Text(
                     text = title,
-                    style = AppTheme.typography.titleSmall,
+                    style = infoLook.titleStyle,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(infoLook.spacing))
                 Text(
                     text = subtitle,
-                    style = AppTheme.typography.bodySmall,
-                    color = AppTheme.colors.onSurfaceVariant,
+                    style = infoLook.subtitleStyle,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )

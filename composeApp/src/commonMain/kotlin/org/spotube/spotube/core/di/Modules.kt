@@ -178,6 +178,8 @@ val sharedModules = module {
     // Updates
     single { AppUpdateService(get(), get()) } withOptions { createdAtStart() }
     single { PluginUpdateService(get(), get()) } withOptions { createdAtStart() }
+    // One GitHub theme client for discovery, release lists and update checks, so they share cache and rate-limit state.
+    single { org.spotube.spotube.modules.settings.ThemeGitHubRepository(get<HttpClientFactory>().json) }
     single { org.spotube.spotube.modules.update.ThemeUpdateService(get(), get(), get()) } withOptions { createdAtStart() }
 
     // Downloads
