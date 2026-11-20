@@ -41,6 +41,8 @@ data class QueueItemUi(
     val isCurrent: Boolean,
     val artwork: Any?,
     val originalIndex: Int,
+    /** Whether this item belongs to the user-managed priority queue. */
+    val isPriority: Boolean = false,
     /** Participant who added this item to the jam queue, if any. */
     val addedByParticipant: JamParticipant? = null)
 
@@ -67,12 +69,14 @@ class PlayerQueueContentViewModel(
     private val computedItems: StateFlow<List<QueueItemUi>> = combine(
         audioPlayerQueue.queueFlow,
         audioPlayerQueue.currentQueueEntryFlow,
-        jamRoomService.participants) { queue, currentEntry, participants ->
+        audioPlayerQueue.priorityQueueUrlsFlow,
+        jamRoomService.participants) { queue, currentEntry, priorityUrls, participants ->
         val currentIndex = if (currentEntry != null) {
             queue.indexOfFirst { it.matchesCurrent(currentEntry) }
         } else {
             -1
         }
+        val prioritySet = priorityUrls.toHashSet()
         queue.mapIndexed { index, entry ->
             val title: String
             val subtitle: String
@@ -93,15 +97,17 @@ class PlayerQueueContentViewModel(
             }
 
             val addedByParticipant = participants.firstOrNull { it.id == entry.addedBy }
+            val isCurrent = index == currentIndex
 
             QueueItemUi(
                 id = "${entry.url}@$index",
                 title = title,
                 subtitle = subtitle,
                 durationLabel = durationMs.toDurationLabel(),
-                isCurrent = index == currentIndex,
+                isCurrent = isCurrent,
                 artwork = entry.artworkModel,
                 originalIndex = index,
+                isPriority = !isCurrent && entry.url in prioritySet,
                 addedByParticipant = addedByParticipant)
         }
     }.stateIn(
@@ -172,6 +178,16 @@ class PlayerQueueContentViewModel(
         if (queueContentUiState.value.isReadOnly) return
         viewModelScope.launch {
             audioPlayerQueue.move(fromIndex, toIndex)
+        }
+    }
+
+    fun moveToPriorityQueue(index: Int) {
+        if (index < 0 || queueContentUiState.value.isReadOnly) return
+        viewModelScope.launch {
+            val currentQueue = audioPlayerQueue.queueFlow.value
+            if (index < currentQueue.size) {
+                audioPlayerQueue.moveToPriorityQueue(currentQueue[index])
+            }
         }
     }
 
