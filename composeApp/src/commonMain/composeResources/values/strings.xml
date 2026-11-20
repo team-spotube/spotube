@@ -33,9 +33,9 @@
     <string name="library_tab_artists">Artists</string>
     <string name="library_tab_local_tracks">Local Tracks</string>
     <string name="library_tab_downloads">Downloads</string>
-    <string name="library_filter_playlists">Search saved playlists…</string>
-    <string name="library_filter_albums">Search saved albums…</string>
-    <string name="library_filter_artists">Search saved artists…</string>
+    <string name="library_filter_playlists">Search playlists…</string>
+    <string name="library_filter_albums">Search albums…</string>
+    <string name="library_filter_artists">Search artists…</string>
     <string name="library_filter_local_tracks">Search folders or tracks…</string>
     <string name="library_action_search">Filter library</string>
     <string name="library_action_close_search">Close filter</string>
@@ -44,11 +44,21 @@
     <string name="library_action_grid_view">Switch to grid view</string>
     <string name="library_action_list_view">Switch to list view</string>
     <string name="library_playlists_empty">No saved playlists</string>
+    <string name="library_playlists_empty_local">No local playlists yet</string>
     <string name="library_playlists_no_results">No playlists match “%1$s”</string>
     <string name="library_albums_empty">No saved albums</string>
+    <string name="library_albums_empty_local">No local albums yet</string>
     <string name="library_albums_no_results">No albums match “%1$s”</string>
     <string name="library_artists_empty">No saved artists</string>
+    <string name="library_artists_empty_local">No local artists yet</string>
     <string name="library_artists_no_results">No artists match “%1$s”</string>
+    <string name="library_filter_source_content_description">Filter by source</string>
+    <string name="library_filter_source_all">All</string>
+    <string name="library_filter_source_online">Online</string>
+    <string name="library_filter_source_local">Local</string>
+    <string name="library_online_hint_playlists">Sign in to your music account to see your online playlists.</string>
+    <string name="library_online_hint_albums">Sign in to your music account to see your online albums.</string>
+    <string name="library_online_hint_artists">Sign in to your music account to see your online artists.</string>
 
     <!-- Local media -->
     <string name="library_local_folders">Folders</string>
@@ -73,6 +83,24 @@
     <string name="library_local_empty_tracks">No tracks in this folder</string>
     <string name="library_local_no_results">No matching folders or tracks</string>
     <string name="library_local_refresh_failed">Failed to refresh local media</string>
+
+    <!-- Local playlists (on-device collections) -->
+    <string name="local_playlist_empty">This playlist has no tracks yet.</string>
+    <string name="local_playlist_empty_hint">Add some from your device's local library.</string>
+    <string name="local_playlist_not_found">This playlist doesn't exist anymore.</string>
+    <string name="local_playlist_add_tracks_title">Add Local Tracks</string>
+    <string name="local_playlist_add_tracks_search_placeholder">Search local tracks…</string>
+    <string name="local_playlist_add_tracks_empty">No local tracks found</string>
+    <string name="local_playlist_add_tracks_selected_count">Selected %1$d</string>
+    <string name="local_playlist_remove_track">Remove from this playlist</string>
+    <string name="local_playlist_delete">Delete playlist</string>
+    <string name="local_playlist_delete_title">Delete playlist?</string>
+    <string name="local_playlist_delete_message">“%1$s” will be removed from this device. This can't be undone.</string>
+
+    <!-- Local albums & artists (grouped from local track metadata) -->
+    <string name="local_album_not_found">This album isn't in your local library anymore.</string>
+    <string name="local_artist_not_found">This artist isn't in your local library anymore.</string>
+    <string name="local_album_subtitle">%1$s • %2$s</string>
 
     <!-- Downloads -->
     <string name="downloads_summary">%1$d active • %2$d completed</string>
@@ -1091,6 +1119,11 @@
     <string name="library_playlist_form_no_image">No image</string>
     <string name="library_playlist_form_change_image">Change Image</string>
     <string name="library_playlist_form_pick_image">Pick Image</string>
+    <string name="library_playlist_form_source_label">Save to</string>
+    <string name="library_playlist_form_source_online">Online account</string>
+    <string name="library_playlist_form_source_online_description">Created through your signed-in music account.</string>
+    <string name="library_playlist_form_source_local">On this device</string>
+    <string name="library_playlist_form_source_local_description">Stays on this device with your local tracks.</string>
 
     <!-- Plugin install / errors -->
     <string name="plugin_action_install">Install</string>

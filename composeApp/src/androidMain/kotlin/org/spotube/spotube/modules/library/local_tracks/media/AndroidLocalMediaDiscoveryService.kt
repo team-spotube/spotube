@@ -25,8 +25,6 @@ import android.os.Build
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
-import android.graphics.BitmapFactory
-import android.graphics.Bitmap
 import android.provider.MediaStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -35,7 +33,6 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
-import java.io.ByteArrayOutputStream
 import java.util.concurrent.ConcurrentHashMap
 import org.spotube.spotube.core.di.injectLogger
 import org.koin.core.component.KoinComponent
@@ -333,33 +330,13 @@ class AndroidLocalMediaDiscoveryService(
                 artists = meta.artists,
                 album = meta.album,
                 durationMs = meta.durationMs,
-                cover = meta.coverBytes?.let(::thumbnail))
+                cover = meta.coverBytes?.let(::coverThumbnail))
         } catch (t: Throwable) {
             logger.d { "readTags: failed path=$path reason=${t.message}" }
             null
         }
         if (info != null) tagCache[key] = info
         return info
-    }
-
-    // Embedded covers can be several MB; the cache is serialised as JSON, so keep a small JPEG.
-    private fun thumbnail(bytes: ByteArray): ByteArray? {
-        if (bytes.isEmpty()) return null
-        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        BitmapFactory.decodeByteArray(bytes, 0, bytes.size, bounds)
-        if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
-        var sample = 1
-        while (bounds.outWidth / (sample * 2) >= THUMBNAIL_SIZE && bounds.outHeight / (sample * 2) >= THUMBNAIL_SIZE) sample *= 2
-        val decoded = BitmapFactory.decodeByteArray(
-            bytes, 0, bytes.size, BitmapFactory.Options().apply { inSampleSize = sample }) ?: return null
-        val scale = THUMBNAIL_SIZE.toFloat() / minOf(decoded.width, decoded.height)
-        val bitmap = if (scale < 1f) Bitmap.createScaledBitmap(
-            decoded, (decoded.width * scale).toInt().coerceAtLeast(1),
-            (decoded.height * scale).toInt().coerceAtLeast(1), true) else decoded
-        return ByteArrayOutputStream().use {
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, it)
-            it.toByteArray()
-        }
     }
 
     private fun resolveCandidateRoots(roots: List<String>): List<File> {
@@ -399,7 +376,6 @@ class AndroidLocalMediaDiscoveryService(
     }
 
     companion object {
-        private const val THUMBNAIL_SIZE = 160
         private val SUPPORTED_EXTENSIONS = setOf(
             "mp3",
             "m4a",

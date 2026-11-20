@@ -32,13 +32,16 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composeunstyled.Text
@@ -46,6 +49,7 @@ import com.composeunstyled.currentWindowWidthBreakpoint
 import org.spotube.spotube.getPlatform
 import org.spotube.spotube.isDesktop
 import org.spotube.spotube.core.ui.component.ApplicationMainBar
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.spotube.modules.downloads.DownloadsScreen
 import org.spotube.spotube.modules.library.album.LibraryAlbumsScreen
 import org.spotube.spotube.modules.library.artist.LibraryArtistsScreen
@@ -54,15 +58,20 @@ import org.spotube.spotube.modules.library.playlist.LibraryPlaylistsScreen
 import org.spotube.spotube.resources.iconsax.Iconsax
 import org.spotube.spotube.resources.iconsax.IconsaxAddSquare
 import org.spotube.spotube.resources.iconsax.IconsaxCloseSquare
+import org.spotube.spotube.resources.iconsax.IconsaxFilterSearch
+import org.spotube.spotube.resources.iconsax.IconsaxGlobe
+import org.spotube.spotube.resources.iconsax.IconsaxMusic
+import org.spotube.spotube.resources.iconsax.IconsaxMusicLibrary
 import org.spotube.spotube.resources.iconsax.IconsaxRefreshRight
 import org.spotube.spotube.resources.iconsax.IconsaxSearchBroken
 import org.jetbrains.compose.resources.StringResource
-import org.spotube.spotube.modules.plugin.guard.MetadataPluginGuard
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.spotube.millennium.adaptive.WindowBreakpoints
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.composables.MillenniumDropdownMenu
+import org.spotube.millennium.composables.MillenniumDropdownMenuItem
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumTextField
@@ -105,6 +114,7 @@ fun LibraryScreen(libraryState: LibraryState = koinInject()) {
                         libraryState.closeSearch()
                     },
                     onCreatePlaylist = libraryState::showCreatePlaylist,
+                    onFilterSource = { libraryState.setSourceFilter(state.currentTab, it) },
                     onRefresh = libraryState::refreshLocalTracks,
                     onToggleView = { libraryState.toggleViewMode(isCompact) },
                     viewMode = viewMode,
@@ -117,19 +127,15 @@ fun LibraryScreen(libraryState: LibraryState = koinInject()) {
         }
         Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
             when (state.currentTab) {
-                LibraryTab.Playlists -> MetadataPluginGuard(showTopBar = false, requireLogin = true) {
-                    LibraryPlaylistsScreen(
-                        showCreatePlaylist = state.showCreatePlaylist,
-                        viewMode = viewMode
-                    )
-                }
+                // Not guarded: on-device playlists/albums/artists work without a plugin; the
+                // screens show an inline sign-in hint when online content is unavailable.
+                LibraryTab.Playlists -> LibraryPlaylistsScreen(
+                    showCreatePlaylist = state.showCreatePlaylist,
+                    viewMode = viewMode
+                )
 
-                LibraryTab.Albums -> MetadataPluginGuard(showTopBar = false, requireLogin = true) {
-                    LibraryAlbumsScreen(viewMode = viewMode)
-                }
-                LibraryTab.Artists -> MetadataPluginGuard(showTopBar = false, requireLogin = true) {
-                    LibraryArtistsScreen(viewMode = viewMode)
-                }
+                LibraryTab.Albums -> LibraryAlbumsScreen(viewMode = viewMode)
+                LibraryTab.Artists -> LibraryArtistsScreen(viewMode = viewMode)
                 LibraryTab.LocalTracks -> LibraryLocalTracksScreen()
                 LibraryTab.Downloads -> DownloadsScreen()
             }
@@ -182,6 +188,7 @@ internal fun RowScope.LibraryToolbarActions(
     onCloseSearch: () -> Unit,
     onCreatePlaylist: () -> Unit,
     onRefresh: () -> Unit,
+    onFilterSource: (LibrarySourceFilter) -> Unit = {},
     onToggleView: () -> Unit = {},
     viewMode: LibraryViewMode = state.viewModeOverride ?: defaultLibraryViewMode(!expandedDesktop),
     compactDesktop: Boolean = false
@@ -213,6 +220,9 @@ internal fun RowScope.LibraryToolbarActions(
                 )
             }
         }
+        if (state.canFilterSource) {
+            LibrarySourceFilterMenu(state, onFilterSource, actionModifier, expandedDesktop)
+        }
         if (state.canCreatePlaylist) {
             MillenniumIconButton(
                 icon = Iconsax.IconsaxAddSquare,
@@ -239,6 +249,62 @@ internal fun RowScope.LibraryToolbarActions(
                 onClick = onToggleView,
                 modifier = actionModifier,
                 style = MillenniumIconButtonStyle.Quiet
+            )
+        }
+    }
+}
+
+@Composable
+private fun LibrarySourceFilterMenu(
+    state: LibraryToolbarUiState,
+    onFilterSource: (LibrarySourceFilter) -> Unit,
+    actionModifier: Modifier,
+    expandedDesktop: Boolean
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val active = state.sourceFilter != LibrarySourceFilter.All
+    MillenniumDropdownMenu(
+        expanded = expanded,
+        onExpandedChange = { expanded = it },
+        anchor = {
+            if (expandedDesktop) {
+                MillenniumButton(
+                    onClick = { expanded = true },
+                    modifier = Modifier.padding(vertical = 4.dp),
+                    minSize = DpSize(0.dp, 36.dp),
+                    padding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
+                    style = if (active) MillenniumButtonStyle.Primary else MillenniumButtonStyle.Secondary
+                ) {
+                    AppIcon(Iconsax.IconsaxFilterSearch, null, modifier = Modifier.size(16.dp))
+                    Text(stringResource(state.sourceFilter.labelResource))
+                }
+            } else {
+                MillenniumIconButton(
+                    icon = Iconsax.IconsaxFilterSearch,
+                    contentDescription = stringResource(Res.string.library_filter_source_content_description),
+                    onClick = { expanded = true },
+                    modifier = actionModifier,
+                    style = if (active) MillenniumIconButtonStyle.Primary else MillenniumIconButtonStyle.Quiet
+                )
+            }
+        }
+    ) {
+        LibrarySourceFilter.entries.forEach { filter ->
+            MillenniumDropdownMenuItem(
+                selected = state.sourceFilter == filter,
+                onClick = { onFilterSource(filter) },
+                leading = {
+                    AppIcon(
+                        when (filter) {
+                            LibrarySourceFilter.All -> Iconsax.IconsaxMusic
+                            LibrarySourceFilter.Online -> Iconsax.IconsaxGlobe
+                            LibrarySourceFilter.Local -> Iconsax.IconsaxMusicLibrary
+                        },
+                        contentDescription = null,
+                        modifier = Modifier.size(16.dp)
+                    )
+                },
+                label = { Text(stringResource(filter.labelResource)) }
             )
         }
     }
