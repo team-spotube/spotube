@@ -80,6 +80,17 @@ class LocalPlaylistRepositoryTest {
     }
 
     @Test
+    fun movingAFileUpdatesEveryPlaylistWithoutDuplicatingAliases() = runBlocking {
+        val (repository, _) = repository()
+        repository.create("First", trackPaths = listOf("a", "media-uri", "b", "document-uri"))
+        repository.create("Second", trackPaths = listOf("old-path", "c"))
+        repository.remapMovedTracks(listOf("media-uri", "document-uri", "old-path").associateWith { "new-path" })
+
+        assertEquals(listOf(listOf("a", "new-path", "b"), listOf("new-path", "c")),
+            repository.await().map { it.trackPaths })
+    }
+
+    @Test
     fun renameKeepsCoverWhenCoverArgumentIsNullAndRemovesItWhenBlank() = runBlocking {
         val (repository, _) = repository()
         val created = repository.create("Mix", coverBase64 = "aGk=")

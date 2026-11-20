@@ -97,8 +97,13 @@ class LocalMediaLibraryCoordinator(
         refreshMutex.withLock {
             logger.i { "Refreshing local media cache. reason=$reason" }
             runCatching {
-                discoveryService.discoverFolders(configuredRoots) + withContext(Dispatchers.IO) {
-                    foldersConfig.documentRoots().flatMap { (id, root) ->
+                val documentRoots = withContext(Dispatchers.IO) { foldersConfig.documentRoots() }
+                val documentIds = documentRoots.mapTo(hashSetOf()) { it.first.trim() }
+                // Document trees are scanned here with their booked access; scanning them again
+                // through a plain path would index every track twice.
+                val discovered = discoveryService.discoverFolders(configuredRoots.filterNot { it in documentIds })
+                val documents = withContext(Dispatchers.IO) {
+                    documentRoots.flatMap { (id, root) ->
                         try {
                             scanMusicTree(root, id)
                         } catch (e: CancellationException) {
@@ -109,6 +114,9 @@ class LocalMediaLibraryCoordinator(
                         }
                     }
                 }
+                // Prefer document-scanned folders: they carry the trail the browser needs when a
+                // provider folder is also reachable through the app-data/home scan.
+                (documents + discovered).distinctBy { it.path }
             }.onSuccess { folders ->
                 val cache = LocalMediaCache(
                     folders = folders,

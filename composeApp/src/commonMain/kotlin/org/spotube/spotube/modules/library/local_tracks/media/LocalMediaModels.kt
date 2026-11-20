@@ -28,7 +28,11 @@ data class LocalMediaTrack(
     val album: String? = null,
     val coverBytes: ByteArray? = null,
     /** Filesystem location for browsing and file actions, even if playback uses a MediaStore URI. */
-    val browserPath: String? = null)
+    val browserPath: String? = null,
+    /** Alternate references to the same file, populated by the collection projection. */
+    val aliases: Set<String> = emptySet()) {
+    internal val referencePaths: Set<String> get() = aliases + listOfNotNull(path, browserPath)
+}
 
 @Serializable
 data class LocalMediaDirectory(val path: String, val name: String)

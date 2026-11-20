@@ -83,6 +83,7 @@ internal fun AudioMetadata.toLocalTrackTags() = LocalTrackTags(title.orEmpty(), 
     durationMs, trackNumber?.toInt(), discNumber?.toInt(), coverBytes)
 
 internal expect fun readPlatformTrackTags(path: String): LocalTrackTags?
+internal expect fun encodeTrackCover(bytes: ByteArray): ByteArray?
 
 /** Use native tags where supported; preserve metadata for otherwise untaggable downloads. */
 internal suspend fun saveDownloadedTrackTags(folder: PlatformFile, file: PlatformFile, tags: LocalTrackTags) {

@@ -16,6 +16,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import io.github.vinceglb.filekit.delete
 import io.github.vinceglb.filekit.name
 import org.koin.core.context.GlobalContext
 import uniffi.compose_app.AudioTagException
@@ -26,6 +27,37 @@ import java.io.FileNotFoundException
 private sealed interface AndroidMusicWriteRequest : MusicWriteRequest {
     data class Media(val sender: IntentSender) : AndroidMusicWriteRequest
     data class Document(val uri: Uri) : AndroidMusicWriteRequest
+}
+
+internal actual suspend fun deleteMusicFile(file: MusicFile, requestPermission: MusicPermission?) {
+    val context = GlobalContext.get().get<Context>()
+    val resolver = context.contentResolver
+    val target = Uri.parse(file.playbackPath)
+    if (target.scheme == "content" && DocumentsContract.isDocumentUri(context, target)) {
+        check(DocumentsContract.deleteDocument(resolver, target)) { "Document provider refused deletion" }
+        return
+    }
+    if (target.scheme != "content" || target.authority != MediaStore.AUTHORITY) {
+        file.file.delete()
+        return
+    }
+    try {
+        check(resolver.delete(target, null, null) > 0) { "MediaStore did not delete the track" }
+    } catch (e: SecurityException) {
+        if (requestPermission == null) throw e
+        when {
+            Build.VERSION.SDK_INT >= 30 -> {
+                val request = MediaStore.createDeleteRequest(resolver, listOf(target))
+                // The system executes a delete request itself before returning RESULT_OK.
+                if (!requestPermission(AndroidMusicWriteRequest.Media(request.intentSender)).granted) throw e
+            }
+            Build.VERSION.SDK_INT >= 29 && e is RecoverableSecurityException -> {
+                if (!requestPermission(AndroidMusicWriteRequest.Media(e.userAction.actionIntent.intentSender)).granted) throw e
+                check(resolver.delete(target, null, null) > 0) { "MediaStore did not delete the track" }
+            }
+            else -> throw e
+        }
+    }
 }
 
 internal actual suspend fun saveMusicFileTags(file: MusicFile, tags: LocalTrackTags, documentUri: String?): MusicWriteRequest? {

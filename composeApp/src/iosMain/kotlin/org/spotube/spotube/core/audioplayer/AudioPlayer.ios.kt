@@ -30,6 +30,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import okio.Path.Companion.toPath
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.spotube.spotube.modules.settings.SettingsRepository
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -39,7 +43,7 @@ import kotlin.time.Duration.Companion.milliseconds
  * The engine plays a single URL, so the playlist, loop, shuffle and auto-advance live here.
  */
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
-actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface {
+actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface, KoinComponent {
 
     actual val context: Any = context
 
@@ -49,6 +53,7 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val lock = Mutex()
     private val mediaSession = IosMediaSession()
+    private val settings: SettingsRepository by inject()
 
     private var disposed = false
 
@@ -156,7 +161,22 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
         _position.tryEmit(startMs.milliseconds)
         _bufferingPosition.tryEmit(Duration.ZERO)
         _duration.tryEmit(item.duration)
-        engine.load(item.url, autoPlay, startMs)
+        val bookmark = folderBookmarkFor(item.url)
+        engine.load(item.url, autoPlay, startMs, folderBookmark = bookmark?.first, relativePath = bookmark?.second)
+    }
+
+    private fun folderBookmarkFor(url: String): Pair<String, String>? {
+        if (!url.startsWith('/')) return null
+        val path = url.toPath(normalize = true)
+        val segments = path.segments
+        return settings.userSettings.value.localMediaFolderBookmarks.entries
+            .mapNotNull { (rootPath, bookmark) ->
+                val root = rootPath.toPath(normalize = true)
+                val prefix = root.segments
+                if (!root.isAbsolute || segments.size <= prefix.size || segments.take(prefix.size) != prefix) null
+                else Triple(prefix.size, bookmark, segments.drop(prefix.size).joinToString("/"))
+            }
+            .maxByOrNull { it.first }?.let { it.second to it.third }
     }
 
     /** Switches to [index] and starts it. Caller holds [lock]. */

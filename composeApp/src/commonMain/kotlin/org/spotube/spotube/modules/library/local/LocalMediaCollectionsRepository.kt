@@ -26,6 +26,21 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import okio.Path.Companion.toPath
+
+internal fun distinctLocalFiles(tracks: List<LocalMediaTrack>): List<LocalMediaTrack> = tracks.groupBy { track ->
+    val identity = track.browserPath ?: track.path
+    if (identity.startsWith("content:")) identity else identity.toPath(normalize = true).toString()
+}.values.map { group ->
+    val preferred = group.first()
+    preferred.copy(aliases = group.flatMapTo(linkedSetOf()) { it.referencePaths })
+}
+
+internal fun List<LocalMediaTrack>.indexByReferencePath(): Map<String, LocalMediaTrack> = buildMap {
+    for (track in this@indexByReferencePath) {
+        for (reference in track.referencePaths) put(reference, track)
+    }
+}
 
 /**
  * Turns the raw local media index (folders of [LocalMediaTrack]s) into the derived collections
@@ -37,17 +52,17 @@ class LocalMediaCollectionsRepository(
 ) {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    /** Every indexed track, keyed by path for playlist resolution and pickers. */
+    /** Every physical track once; keep alternate URIs available for existing playlists. */
     val tracks: StateFlow<List<LocalMediaTrack>> = coordinator.cacheState
-        .map { cache -> cache.folders.flatMap { it.tracks } }
+        .map { cache -> distinctLocalFiles(cache.folders.flatMap { it.tracks }) }
         .stateIn(scope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
-    val albums: StateFlow<List<LocalMediaAlbum>> = coordinator.cacheState
-        .map { cache -> buildLocalAlbums(cache.folders.flatMap { it.tracks }) }
+    val albums: StateFlow<List<LocalMediaAlbum>> = tracks
+        .map(::buildLocalAlbums)
         .stateIn(scope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
-    val artists: StateFlow<List<LocalMediaArtist>> = coordinator.cacheState
-        .map { cache -> buildLocalArtists(cache.folders.flatMap { it.tracks }) }
+    val artists: StateFlow<List<LocalMediaArtist>> = tracks
+        .map(::buildLocalArtists)
         .stateIn(scope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     fun findAlbum(key: String): LocalMediaAlbum? =

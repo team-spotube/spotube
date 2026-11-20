@@ -22,6 +22,7 @@ pub enum AudioTagError {
     FileNotFound,
     AccessDenied,
     UnsupportedFormat,
+    UnsupportedCover,
     ReadError { reason: String },
     WriteError { reason: String },
 }
@@ -32,6 +33,7 @@ impl std::fmt::Display for AudioTagError {
             AudioTagError::FileNotFound => write!(f, "File not found"),
             AudioTagError::AccessDenied => write!(f, "Cannot write to the file"),
             AudioTagError::UnsupportedFormat => write!(f, "Unsupported audio tag format"),
+            AudioTagError::UnsupportedCover => write!(f, "Unsupported cover image"),
             AudioTagError::ReadError { reason } => write!(f, "Read error: {}", reason),
             AudioTagError::WriteError { reason } => write!(f, "Write error: {}", reason),
         }
@@ -117,7 +119,7 @@ pub fn write_audio_metadata(
         .read()
         .map_err(|e| tag_format_error(e, false))?;
 
-    let tag = updated_audio_tag(tagged_file, title, artists, album, track_number, disc_number, cover_bytes);
+    let tag = updated_audio_tag(tagged_file, title, artists, album, track_number, disc_number, cover_bytes)?;
     tag.save_to_path(path, WriteOptions::default())
         .map_err(|e| tag_format_error(e, true))
 }
@@ -155,7 +157,7 @@ pub fn write_audio_metadata_to_descriptor(
         use std::io::Seek;
         let mut file = duplicate_audio_descriptor(descriptor)?;
         let info = read_descriptor_tags(&mut file, &display_name)?;
-        let tag = updated_audio_tag(info, title, artists, album, track_number, disc_number, cover_bytes);
+        let tag = updated_audio_tag(info, title, artists, album, track_number, disc_number, cover_bytes)?;
         file.rewind().map_err(|e| AudioTagError::WriteError { reason: e.to_string() })?;
         tag.save_to(&mut file, WriteOptions::default())
             .map_err(|e| tag_format_error(e, true))
@@ -212,7 +214,7 @@ fn updated_audio_tag(
     track_number: Option<i32>,
     disc_number: Option<i32>,
     cover_bytes: Option<Vec<u8>>,
-) -> Tag {
+) -> Result<Tag, AudioTagError> {
     // An old MP3 can have only ID3v1. Updating that tag truncates titles and cannot save art.
     // Always use the container's primary format, carrying over the existing mapped fields.
     let tag_type = tagged_file.primary_tag_type();
@@ -244,16 +246,15 @@ fn updated_audio_tag(
     }
 
     if let Some(bytes) = cover_bytes {
-        if let Ok(mut picture) = Picture::from_reader(&mut bytes.as_slice()) {
-            picture.set_pic_type(PictureType::CoverFront);
-            while !tag.pictures().is_empty() {
-                tag.remove_picture(0);
-            }
-            tag.push_picture(picture);
+        let mut picture = Picture::from_reader(&mut bytes.as_slice()).map_err(|_| AudioTagError::UnsupportedCover)?;
+        picture.set_pic_type(PictureType::CoverFront);
+        while !tag.pictures().is_empty() {
+            tag.remove_picture(0);
         }
+        tag.push_picture(picture);
     }
 
-    tag
+    Ok(tag)
 }
 
 #[cfg(all(test, unix))]
@@ -290,7 +291,7 @@ mod tests {
         use lofty::tag::TagType;
         let file = TaggedFile::new(FileType::Mpeg, FileProperties::default(), vec![Tag::new(TagType::Id3v1)]);
         let title = "This is a full-length title that does not fit in ID3v1";
-        let tag = updated_audio_tag(file, title.into(), "Artist".into(), Some("Album".into()), Some(2), Some(1), None);
+        let tag = updated_audio_tag(file, title.into(), "Artist".into(), Some("Album".into()), Some(2), Some(1), None).unwrap();
         assert_eq!(tag.tag_type(), TagType::Id3v2);
         assert_eq!(tag.title().as_deref(), Some(title));
         assert_eq!(tag.disk(), Some(1));

@@ -12,6 +12,7 @@ import java.nio.file.Files
 import kotlin.io.path.createDirectory
 import kotlin.io.path.writeText
 import kotlin.test.*
+import kotlin.io.encoding.Base64
 import uniffi.compose_app.AudioTagException
 import uniffi.compose_app.readAudioMetadata
 
@@ -28,7 +29,10 @@ class MusicFileBrowserTest {
             }
             val sidecar = root.resolve(".track.wav.spotube-tags.json").apply { writeText("""{"title":"Old shadow title"}""") }
             val track = MusicFile(location, PlatformFile(audio.path), LocalTrackTags("Old shadow title"))
-            val edits = LocalTrackTags("Saved in the audio file", "Artist", "Album", track = 2, disc = 1)
+            // This small WebP used to bypass resizing and then be silently discarded by Lofty.
+            val webp = Base64.decode("UklGRjgAAABXRUJQVlA4ICwAAACQAQCdASoEAAQAAgA0JaACdLoAA5gA/vmTb/+QH/+QH/+QH/8gP+IXeyAwAA==")
+            val cover = assertNotNull(encodeTrackCover(webp))
+            val edits = LocalTrackTags("Saved in the audio file", "Artist", "Album", track = 2, disc = 1, cover = cover)
             track.saveEmbeddedTags(edits)
             val embedded = readAudioMetadata(audio.path)
             assertEquals(edits.title, embedded.title)
@@ -36,6 +40,7 @@ class MusicFileBrowserTest {
             assertEquals("Album", embedded.album)
             assertEquals(2u, embedded.trackNumber)
             assertEquals(1u, embedded.discNumber)
+            assertContentEquals(cover, embedded.coverBytes)
             assertFalse(sidecar.exists())
 
             val unsupported = root.resolve("unknown.wma").apply { writeText("unsupported sample") }

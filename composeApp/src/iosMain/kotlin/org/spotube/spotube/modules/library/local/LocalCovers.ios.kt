@@ -18,9 +18,9 @@
 package org.spotube.spotube.modules.library.local
 
 /**
- * The local media index is a stub on iOS today, so there's no shared image pipeline to reuse.
- * Keep already-reasonable images as-is and refuse oversized ones instead of silently bloating
- * the persisted JSON store (see #3193).
+ * Playlist covers are persisted in the preferences JSON, so keep already-reasonable images as-is
+ * and refuse oversized ones instead of bloating that store (see #3193). Embedded track covers go
+ * through [encodeTrackCover], which always re-encodes to a JPEG Lofty can write.
  */
 actual fun encodeLocalCoverThumbnail(bytes: ByteArray): ByteArray? =
     if (bytes.size <= MAX_PASSTHROUGH_COVER_BYTES) bytes else null

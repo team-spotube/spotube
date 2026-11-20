@@ -44,6 +44,7 @@ final class VlcPlayerEngine: NSObject, NativePlayerEngine, VLCMediaPlayerDelegat
     private var volumePercent: Int32 = 100
     private var lastReportedDurationMs: Int64 = 0
     private var lastReportedState: NativePlayerState?
+    private var scopedFolder: URL?
 
     override init() {
         super.init()
@@ -56,14 +57,50 @@ final class VlcPlayerEngine: NSObject, NativePlayerEngine, VLCMediaPlayerDelegat
         onMain { self.listener = listener }
     }
 
-    func load(url: String, autoPlay: Bool, startPositionMs: Int64) {
+    func load(url: String, autoPlay: Bool, startPositionMs: Int64, folderBookmark: String?, relativePath: String?) {
         onMain {
             guard !self.released else { return }
-            guard let mediaUrl = URL(string: url) else {
+            let mediaUrl: URL
+            var nextScope: URL?
+            if let folderBookmark, let relativePath {
+                guard let data = Data(base64Encoded: folderBookmark) else {
+                    self.listener?.onError(message: "Invalid music folder bookmark")
+                    return
+                }
+                let components = relativePath.split(separator: "/")
+                guard !components.isEmpty, !components.contains(".."), !components.contains(".") else {
+                    self.listener?.onError(message: "Invalid path inside the selected music folder")
+                    return
+                }
+                do {
+                    var isStale = false
+                    let folder = try URL(resolvingBookmarkData: data, options: [], relativeTo: nil, bookmarkDataIsStale: &isStale)
+                    mediaUrl = components.reduce(folder) { $0.appendingPathComponent(String($1)) }
+                    if folder.startAccessingSecurityScopedResource() {
+                        nextScope = folder
+                    } else if !FileManager.default.isReadableFile(atPath: mediaUrl.path) {
+                        self.listener?.onError(message: "Access to the selected music folder has expired")
+                        return
+                    }
+                } catch {
+                    self.listener?.onError(message: "Could not open the selected music folder: \(error.localizedDescription)")
+                    return
+                }
+            } else if url.hasPrefix("/") {
+                mediaUrl = URL(fileURLWithPath: url)
+            } else if let parsed = URL(string: url) {
+                mediaUrl = parsed
+            } else {
                 self.listener?.onError(message: "Invalid URL: \(url)")
                 return
             }
 
+            if self.scopedFolder != nil {
+                self.player.stop()
+                self.player.media = nil
+                self.releaseFolderAccess()
+            }
+            self.scopedFolder = nextScope
             let media = VLCMedia(url: mediaUrl)
             if startPositionMs > 0 {
                 media.addOption(":start-time=\(Double(startPositionMs) / 1000.0)")
@@ -94,6 +131,8 @@ final class VlcPlayerEngine: NSObject, NativePlayerEngine, VLCMediaPlayerDelegat
         onMain {
             guard !self.released else { return }
             self.player.stop()
+            self.player.media = nil
+            self.releaseFolderAccess()
         }
     }
 
@@ -125,6 +164,7 @@ final class VlcPlayerEngine: NSObject, NativePlayerEngine, VLCMediaPlayerDelegat
             self.player.delegate = nil
             self.player.stop()
             self.player.media = nil
+            self.releaseFolderAccess()
             do {
                 try self.audioSession.setActive(false, options: .notifyOthersOnDeactivation)
             } catch {
@@ -150,16 +190,23 @@ final class VlcPlayerEngine: NSObject, NativePlayerEngine, VLCMediaPlayerDelegat
             case .paused:
                 self.report(.paused)
             case .ended:
+                self.releaseFolderAccess()
                 self.report(.ended)
             case .stopped:
                 self.report(.idle)
             case .error:
+                self.releaseFolderAccess()
                 self.listener?.onError(message: "VLC could not play this media")
                 self.report(.idle)
             default:
                 break
             }
         }
+    }
+
+    private func releaseFolderAccess() {
+        scopedFolder?.stopAccessingSecurityScopedResource()
+        scopedFolder = nil
     }
 
     func mediaPlayerTimeChanged(_ aNotification: Notification) {

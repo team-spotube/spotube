@@ -65,6 +65,11 @@ class JvmLocalMediaDiscoveryService : LocalMediaDiscoveryService {
                             val trackPath = filePath.toAbsolutePath().toString()
 
                             val metadata = readLocalTrackTags(PlatformFile(parent), PlatformFile(trackPath))
+                            // Ambiguous containers can be video-only; only keep them when the tags
+                            // (or a download sidecar) prove the file is readable as audio.
+                            if (metadata == null && filePath.extension.lowercase(Locale.getDefault()) in mixedMusicExtensions) {
+                                return@forEach
+                            }
 
                             val track = LocalMediaTrack(
                                 path = trackPath,
@@ -152,7 +157,7 @@ class JvmLocalMediaDiscoveryService : LocalMediaDiscoveryService {
     }
 
     private fun isSupportedAudioExtension(extension: String): Boolean {
-        return extension.lowercase(Locale.getDefault()) in SUPPORTED_EXTENSIONS
+        return extension.lowercase(Locale.getDefault()) in playableMusicExtensions
     }
 
     private fun resolveRoots(roots: List<String>): List<Path> {
@@ -181,15 +186,6 @@ class JvmLocalMediaDiscoveryService : LocalMediaDiscoveryService {
     companion object {
         private const val WATCH_DEBOUNCE_MS = 2_500L
         private const val MAX_FILES_PER_SCAN = 100_000L
-        private val SUPPORTED_EXTENSIONS = setOf(
-            "mp3",
-            "m4a",
-            "aac",
-            "flac",
-            "wav",
-            "ogg",
-            "opus",
-            "wma", "webm", "mka")
     }
 }
 
@@ -197,10 +193,10 @@ class JvmLocalMediaDiscoveryService : LocalMediaDiscoveryService {
  * Embedded covers can be several MB each and the index is serialised to JSON, so keep a small
  * JPEG like Android does (#3193). Returns null for unreadable art.
  */
-internal fun coverThumbnail(bytes: ByteArray, size: Int = COVER_THUMBNAIL_SIZE): ByteArray? = runCatching {
+internal fun coverThumbnail(bytes: ByteArray, size: Int = COVER_THUMBNAIL_SIZE, keepOriginal: Boolean = true): ByteArray? = runCatching {
     Image.makeFromEncoded(bytes).use { source ->
         val scale = size.toFloat() / minOf(source.width, source.height)
-        if (scale >= 1f && bytes.size <= MAX_SMALL_COVER_BYTES) return@runCatching bytes
+        if (keepOriginal && scale >= 1f && bytes.size <= MAX_SMALL_COVER_BYTES) return@runCatching bytes
         val width = (source.width * scale.coerceAtMost(1f)).toInt().coerceAtLeast(1)
         val height = (source.height * scale.coerceAtMost(1f)).toInt().coerceAtLeast(1)
         Surface.makeRasterN32Premul(width, height).use { surface ->

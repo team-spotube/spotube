@@ -8,8 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.vinceglb.filekit.*
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.*
@@ -26,9 +28,12 @@ import org.spotube.spotube.core.audioplayer.QueueEntry
 import org.spotube.spotube.core.paths.Paths
 import org.spotube.spotube.modules.library.LibraryState
 import org.spotube.spotube.modules.library.LibraryTab
-import org.spotube.spotube.modules.library.local.encodeLocalCoverThumbnail
+import org.spotube.spotube.modules.library.local.LocalPlaylistRepository
+import org.spotube.spotube.modules.library.local.distinctLocalFiles
+import org.spotube.spotube.modules.library.local.indexByReferencePath
 import org.spotube.spotube.modules.library.local_tracks.media.*
 import org.spotube.spotube.modules.settings.SettingsRepository
+import org.spotube.spotube.modules.settings.normalizeMediaFolderPath
 import spotube.composeapp.generated.resources.*
 import uniffi.compose_app.AudioTagException
 import kotlin.io.encoding.Base64
@@ -108,7 +113,8 @@ class LibraryLocalTracksViewModel(
     private val libraryState: LibraryState,
     private val settings: SettingsRepository,
     private val paths: Paths,
-    private val queue: AudioPlayerQueue
+    private val queue: AudioPlayerQueue,
+    private val playlists: LocalPlaylistRepository
 ) : ViewModel() {
     private val model = MutableStateFlow(MusicBrowserState())
     private var trail = emptyList<Pair<MusicLocation, BrowserFolder>>()
@@ -120,6 +126,7 @@ class LibraryLocalTracksViewModel(
     private var listing: Job? = null
     private var browserIndex = MusicBrowserIndex()
     private var pendingMetadataSave: MetadataSave? = null
+    private var pendingFilePermission: CompletableDeferred<MusicWriteDecision>? = null
     private val writeAccessRequests = Channel<MusicWriteRequest>(Channel.BUFFERED)
     internal val writePermissionRequests = writeAccessRequests.receiveAsFlow()
 
@@ -188,7 +195,25 @@ class LibraryLocalTracksViewModel(
         loadListing()
     }
 
-    private fun refresh() = coordinator.scheduleRefresh("music_browser_refresh")
+    private var refreshing = false
+
+    private fun refresh() {
+        if (refreshing) return
+        refreshing = true
+        libraryState.setLocalRefreshing(true)
+        viewModelScope.launch {
+            try {
+                coordinator.refreshNow("music_browser_refresh")
+            } catch (e: CancellationException) {
+                throw e
+            } catch (_: Exception) {
+                // The coordinator already logs scan failures; the toolbar just stops spinning.
+            } finally {
+                refreshing = false
+                libraryState.setLocalRefreshing(false)
+            }
+        }
+    }
 
     private fun loadListing() {
         if (model.value.busy) return
@@ -240,7 +265,7 @@ class LibraryLocalTracksViewModel(
     }
 
     internal fun addFolder(folder: PlatformFile) = operate(Res.string.library_browser_add_failed) {
-        val path = folder.path
+        val path = normalizeMediaFolderPath(folder.path)
         val prefs = settings.getCurrentSettings()
         if (musicRoots(paths, prefs).any { it.path == path }) return@operate Res.string.library_browser_already_available
         val bookmark = Base64.encode(folder.bookmarkData().bytes)
@@ -318,7 +343,7 @@ class LibraryLocalTracksViewModel(
         when (action) {
             TrackAction.Copy, TrackAction.Move, TrackAction.Delete -> batchAction(listOf(file), action)
             TrackAction.Edit -> {
-                operate(Res.string.library_browser_open_failed) {
+                operate(Res.string.library_browser_edit_failed) {
                     val latest = file.location.root.withBrowserAccess { readLocalTrackTags(file.location.folder, file.file) }
                     val tags = latest?.copy(title = latest.title.ifBlank { file.tags.title }) ?: file.tags
                     pendingTrack = file.copy(tags = tags)
@@ -349,7 +374,21 @@ class LibraryLocalTracksViewModel(
         val location = trail.lastOrNull()?.first ?: return
         val move = model.value.transfer?.move ?: return
         operate(Res.string.library_browser_transfer_failed, changesMedia = true) {
-            val result = runFileBatch(sources) { it.copyTo(location, move) }
+            val references = if (move) distinctLocalFiles(coordinator.cacheState.value.folders.flatMap { it.tracks })
+                .indexByReferencePath() else emptyMap()
+            val destinations = linkedMapOf<String, String>()
+            val result = try {
+                runFileBatch(sources) { file ->
+                    val destination = file.copyTo(location, move, ::requestFilePermission)
+                    if (move) {
+                        val aliases = (references[file.path] ?: references[file.playbackPath])?.referencePaths.orEmpty()
+                        for (source in aliases + file.path + file.playbackPath) destinations[source] = destination
+                    }
+                }
+            } finally {
+                // Persist the completed subset even when the remaining batch is cancelled.
+                withContext(NonCancellable) { playlists.remapMovedTracks(destinations) }
+            }
             transferSources = result.conflicts + result.errors
             model.update { it.copy(
                 transfer = transferSources.takeIf { it.isNotEmpty() }?.let { remaining -> TrackTransfer(remaining.size, move) },
@@ -379,7 +418,7 @@ class LibraryLocalTracksViewModel(
     internal fun delete() {
         val files = pendingDeletes.takeIf { it.isNotEmpty() } ?: return
         operate(Res.string.library_browser_delete_failed, changesMedia = true) {
-            val result = runFileBatch(files) { it.delete() }
+            val result = runFileBatch(files) { it.delete(::requestFilePermission) }
             closeAction()
             model.update { it.copy(isSelecting = result.errors.isNotEmpty(), selected = result.errors.map { file -> file.path }.toSet(),
                 report = result.report.takeIf { files.size > 1 }) }
@@ -426,7 +465,7 @@ class LibraryLocalTracksViewModel(
                         file.source().buffered().use { source ->
                             // Only buffer a bounded amount, including for document providers with unknown sizes.
                             require(!source.request(20L * 1024 * 1024 + 1))
-                            requireNotNull(encodeLocalCoverThumbnail(source.readByteArray()))
+                            requireNotNull(encodeTrackCover(source.readByteArray()))
                         }
                     }
                 }
@@ -462,12 +501,29 @@ class LibraryLocalTracksViewModel(
     }
 
     internal fun onWritePermissionResult(decision: MusicWriteDecision) {
+        pendingFilePermission?.let {
+            it.complete(decision)
+            return
+        }
         val save = pendingMetadataSave ?: return
         pendingMetadataSave = null
         model.update { it.copy(awaitingWriteAccess = false) }
         if (decision.granted) saveMetadata(save, decision)
         else model.update { it.copy(message = Res.string.library_browser_write_access_not_granted) }
     }
+
+    private suspend fun requestFilePermission(request: MusicWriteRequest): MusicWriteDecision =
+        withContext(Dispatchers.Main.immediate) {
+            val response = CompletableDeferred<MusicWriteDecision>()
+            check(pendingFilePermission == null)
+            pendingFilePermission = response
+            try {
+                writeAccessRequests.send(request)
+                response.await()
+            } finally {
+                pendingFilePermission = null
+            }
+        }
 
     private fun saveMetadata(save: MetadataSave, decision: MusicWriteDecision? = null) {
         model.update { it.copy(busy = true, message = null, report = null) }
@@ -495,6 +551,8 @@ class LibraryLocalTracksViewModel(
                 model.update { it.copy(message = Res.string.library_browser_wrong_write_file) }
             } catch (_: AudioTagException.UnsupportedFormat) {
                 model.update { it.copy(message = Res.string.library_browser_unsupported_embedded_tags) }
+            } catch (_: AudioTagException.UnsupportedCover) {
+                model.update { it.copy(message = Res.string.library_browser_cover_failed) }
             } catch (_: AudioTagException.AccessDenied) {
                 model.update { it.copy(message = Res.string.library_browser_write_access_not_granted) }
             } catch (_: Exception) {

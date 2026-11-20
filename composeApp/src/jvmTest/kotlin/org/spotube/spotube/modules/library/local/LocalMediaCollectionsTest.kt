@@ -113,4 +113,17 @@ class LocalMediaCollectionsTest {
             listOf(track("a", name = "a", album = "Album", coverBytes = ByteArray(0))))
         assertNull(albums[0].coverBytes)
     }
+
+    @Test
+    fun mediaStoreAndDocumentUrisResolveToOneTrackWithoutLosingPlaylistReferences() {
+        val media = track("content://media/external/audio/media/9", artists = listOf("Artist"), album = "Album")
+            .copy(browserPath = "/storage/emulated/0/Music/song.m4a")
+        val picked = media.copy(path = "content://com.android.externalstorage.documents/document/primary%3AMusic%2Fsong.m4a")
+        val tracks = distinctLocalFiles(listOf(media, picked))
+        val lookup = tracks.indexByReferencePath()
+        assertEquals(1, buildLocalAlbums(tracks).single().trackCount)
+        assertEquals(1, buildLocalArtists(tracks).single().trackCount)
+        assertEquals(media.path, lookup[picked.path]?.path)
+        assertEquals(media.path, lookup[media.browserPath]?.path)
+    }
 }

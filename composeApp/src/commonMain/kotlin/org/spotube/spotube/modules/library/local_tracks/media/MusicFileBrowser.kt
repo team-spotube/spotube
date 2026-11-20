@@ -35,6 +35,7 @@ import spotube.composeapp.generated.resources.*
 internal data class MusicRoot(val path: String, val label: StringResource? = null, val displayName: String? = null)
 
 internal expect fun platformMusicRoots(): List<MusicRoot>
+internal expect fun musicDocumentFilePath(uri: String): String?
 
 internal fun musicRoots(paths: Paths, settings: UserSettings): List<MusicRoot> = (
     platformMusicRoots() + listOf(
@@ -80,7 +81,9 @@ internal suspend fun scanMusicTree(root: PlatformFile, rootId: String = root.pat
             if (tracks.isNotEmpty()) result += LocalMediaFolder(
                 location.folder.path, trail.last().name,
                 tracks.map { track ->
-                    track.tags.toTrack(track.path).let { it.copy(coverBytes = it.coverBytes?.let(::encodeLocalCoverThumbnail)) }
+                    track.tags.toTrack(track.path).let {
+                        it.copy(coverBytes = it.coverBytes?.let(::encodeLocalCoverThumbnail), browserPath = musicDocumentFilePath(track.path))
+                    }
                 }, documentTrail = trail
             )
             children.forEach { child ->
@@ -134,6 +137,11 @@ internal data class MusicFileAccess(val read: Boolean?, val write: Boolean?, val
 
 internal expect fun musicFileAccess(path: String): MusicFileAccess
 
+internal typealias MusicPermission = suspend (MusicWriteRequest) -> MusicWriteDecision
+
+/** Platform deletion must throw if the audio file wasn't removed. */
+internal expect suspend fun deleteMusicFile(file: MusicFile, requestPermission: MusicPermission?)
+
 internal data class MusicFileDetails(
     val title: String,
     val fileName: String,
@@ -163,7 +171,7 @@ internal suspend fun MusicLocation.createFolder(name: String): PlatformFile = ro
     folder.list().firstOrNull { it.name == name && it.isDirectory() } ?: child
 }
 
-internal suspend fun MusicFile.copyTo(location: MusicLocation, move: Boolean) {
+internal suspend fun MusicFile.copyTo(location: MusicLocation, move: Boolean, requestPermission: MusicPermission? = null): String =
     this.location.root.withBrowserAccess {
         location.root.withBrowserAccess {
             val destination = PlatformFile(location.folder, file.name)
@@ -178,15 +186,32 @@ internal suspend fun MusicFile.copyTo(location: MusicLocation, move: Boolean) {
                 cleanupCopy(destination)
                 throw e
             }
-            // Never remove the original until the destination and its metadata are written.
-            if (move) delete()
+            // Providers can assign opaque IDs when creating documents. Keep the actual URI.
+            val saved = PlatformFile(location.folder, file.name)
+            if (move) {
+                try {
+                    delete(requestPermission)
+                } catch (e: CancellationException) {
+                    // The system may already have deleted the source; never discard the only copy.
+                    throw e
+                } catch (e: Exception) {
+                    if (runCatching { file.exists() }.getOrNull() == true) {
+                        cleanupCopy(destinationTags)
+                        cleanupCopy(saved)
+                    }
+                    throw e
+                }
+            }
+            saved.path
         }
     }
-}
 
-internal suspend fun MusicFile.delete() = location.root.withBrowserAccess {
-    file.delete()
-    trackTagFile(location.folder, file.name).delete(mustExist = false)
+internal suspend fun MusicFile.delete(requestPermission: MusicPermission? = null) = location.root.withBrowserAccess {
+    val sidecar = trackTagFile(location.folder, file.name)
+    deleteMusicFile(this, requestPermission)
+    // A denied sidecar cleanup must not turn a successful deletion into a failed move.
+    runCatching { sidecar.delete(mustExist = false) }
+    Unit
 }
 
 private suspend fun cleanupCopy(file: PlatformFile) {

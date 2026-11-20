@@ -254,7 +254,7 @@ class AndroidLocalMediaDiscoveryService(
         if (mimeType.startsWith("audio/", ignoreCase = true)) return true
         val extension = displayName.substringAfterLast('.', missingDelimiterValue = "")
             .lowercase(Locale.getDefault())
-        return extension in SUPPORTED_EXTENSIONS
+        return extension in playableMusicExtensions
     }
 
     private fun discoverFileSystemFallback(
@@ -272,7 +272,7 @@ class AndroidLocalMediaDiscoveryService(
 
         candidateRoots.forEach { root ->
             scanDirectory(root) { file ->
-                if (file.extension.lowercase(Locale.getDefault()) !in SUPPORTED_EXTENSIONS) return@scanDirectory
+                if (file.extension.lowercase(Locale.getDefault()) !in playableMusicExtensions) return@scanDirectory
                 val absolute = file.absolutePath
                 if (absolute in knownFilePaths || !seen.add(absolute)) return@scanDirectory
 
@@ -300,16 +300,20 @@ class AndroidLocalMediaDiscoveryService(
             pending.map { item ->
                 async(Dispatchers.IO) {
                     val tag = permits.withPermit { readTags(item) }
+                    // Ambiguous containers can be video-only; keep them only when the tag reader
+                    // proved the file has an audio stream (or a download sidecar supplied tags).
+                    val extension = item.filePath?.substringAfterLast('.', "")?.lowercase(Locale.getDefault())
+                    if (tag == null && extension in mixedMusicExtensions) return@async null
                     item.folderPath to LocalMediaTrack(
                         path = item.uri,
                         name = tag?.title?.takeIf { it.isNotBlank() } ?: item.fallbackName,
                         artists = tag?.artists?.takeIf { it.isNotEmpty() } ?: item.mediaStoreArtists,
                         durationMs = tag?.durationMs?.takeIf { it > 0 } ?: item.mediaStoreDurationMs,
                         album = tag?.album?.takeIf { it.isNotBlank() } ?: item.mediaStoreAlbum,
-                         coverBytes = tag?.cover,
-                         browserPath = item.filePath)
+                        coverBytes = tag?.cover,
+                        browserPath = item.filePath)
                 }
-            }.awaitAll()
+            }.awaitAll().filterNotNull()
         }
         return tracks.groupBy({ it.first }, { it.second })
             .map { (path, list) ->
@@ -381,17 +385,5 @@ class AndroidLocalMediaDiscoveryService(
                 }
             }
         }
-    }
-
-    companion object {
-        private val SUPPORTED_EXTENSIONS = setOf(
-            "mp3",
-            "m4a",
-            "aac",
-            "flac",
-            "wav",
-            "ogg",
-            "opus",
-            "wma", "webm", "mka")
     }
 }

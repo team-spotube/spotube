@@ -153,6 +153,7 @@
     <string name="library_browser_copy_to">Copy “%1$s”: open a destination folder.</string>
     <string name="library_browser_paste">Paste here</string>
     <string name="library_browser_open_failed">Could not open this folder.</string>
+    <string name="library_browser_edit_failed">Could not read this track’s metadata.</string>
     <string name="library_browser_add_failed">Could not add this folder. Check that Spotube has access.</string>
     <string name="library_browser_already_available">This folder is already available in the browser.</string>
     <string name="library_browser_folder_added">Folder added.</string>

@@ -183,11 +183,11 @@ val sharedModules = module {
     viewModelOf(::ThemeStoreViewModel)
     viewModel {
         val repository = get<SettingsRepository>()
-        LocalMediaFoldersViewModel(repository.userSettings) { folders ->
+        LocalMediaFoldersViewModel(repository.userSettings) { folders, bookmarks ->
             val current = repository.getCurrentSettings()
             repository.updateSettings(current.copy(
                 localMediaFolders = folders,
-                localMediaFolderBookmarks = current.localMediaFolderBookmarks.filterKeys { it in folders }
+                localMediaFolderBookmarks = bookmarks.filterKeys { it in folders }
             ))
         }
     }

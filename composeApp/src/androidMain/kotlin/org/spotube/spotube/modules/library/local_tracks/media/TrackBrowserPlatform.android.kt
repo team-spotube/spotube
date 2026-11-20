@@ -16,11 +16,35 @@ import androidx.core.content.getSystemService
 import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.name
 import org.koin.core.context.GlobalContext
+import org.spotube.spotube.modules.library.local.encodeLocalCoverThumbnail
 import spotube.composeapp.generated.resources.*
 import uniffi.compose_app.readAudioMetadataFromDescriptor
 import java.io.File
 
 private fun appContext() = GlobalContext.get().get<Context>()
+
+internal actual fun encodeTrackCover(bytes: ByteArray): ByteArray? = encodeLocalCoverThumbnail(bytes)
+
+internal actual fun musicDocumentFilePath(uri: String): String? {
+    val document = Uri.parse(uri)
+    if (document.scheme != "content") return null
+    val id = runCatching { DocumentsContract.getDocumentId(document) }.getOrNull() ?: return null
+    return when (document.authority) {
+        "com.android.externalstorage.documents" -> {
+            val volume = id.substringBefore(':')
+            val relative = id.substringAfter(':', "")
+            if (relative.split('/').any { it == ".." }) return null
+            val root = when {
+                volume.equals("primary", ignoreCase = true) -> Environment.getExternalStorageDirectory()
+                volume.matches(Regex("[0-9a-fA-F-]+")) -> File("/storage", volume)
+                else -> return null
+            }
+            File(root, relative).absolutePath
+        }
+        "com.android.providers.downloads.documents" -> id.removePrefix("raw:").takeIf { id.startsWith("raw:/") }
+        else -> null
+    }
+}
 
 internal actual fun platformMusicRoots(): List<MusicRoot> {
     val context = appContext()
