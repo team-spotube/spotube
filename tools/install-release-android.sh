@@ -1,14 +1,19 @@
 #!/usr/bin/env bash
-# Builds the signed release APK and installs it on your OPPO phone over adb.
+# Builds the signed release APK and installs it on a connected phone over adb.
 #
 #   tools/install-release-android.sh [options]
 #
-#   --device SERIAL   install on this device instead of finding the OPPO (or set DEVICE=SERIAL)
+#   --device SERIAL   install on this device (or set DEVICE=SERIAL); needed for an emulator, or to
+#                     choose when several phones are connected
 #   --nightly         build the nightly flavor (app id org.spotube.spotube.nightly) instead of stable
 #   --launch          open the app after installing (off by default, so it doesn't interrupt you)
 #   --no-install      build and verify the APK only
 #   --dry-run         run the checks (Rust, signing key, device) and stop before building
 #   -h, --help        show this help
+#
+# With no options it uses the one connected phone, of any brand. An emulator is never picked on its
+# own. If several phones are connected, choose with --device or narrow with MANUFACTURER=samsung
+# (the brand adb reports, any case).
 #
 # Needs: the phone connected with USB debugging on and authorised, the Android SDK (adb,
 # build-tools), and a release signing key in composeApp/local.properties (release.signing.*).
@@ -23,7 +28,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
 DEVICE="${DEVICE:-}"
-MANUFACTURER="${MANUFACTURER:-oppo}" # matched case-insensitively against ro.product.manufacturer
+MANUFACTURER="${MANUFACTURER:-}" # optional: only consider phones of this brand (any case)
 FLAVOR="stable"
 LAUNCH=0
 INSTALL=1
@@ -95,29 +100,55 @@ FREE_KB="$(df -k "$ROOT" | awk 'NR==2 {print $4}')"
 (( FREE_KB > 3 * 1024 * 1024 )) || warn "only $(( FREE_KB / 1024 / 1024 )) GB free; the build may run out of space"
 
 # --- Device -------------------------------------------------------------------------------------
+# Prints the serial of the phone to install on and returns 0. Returns 1 when there is none and 2 when
+# there are several (listing them on stderr). Emulators are skipped unless chosen with --device.
+lower() { printf '%s' "$1" | tr '[:upper:]' '[:lower:]'; }
+
 pick_device() {
   if [[ -n "$DEVICE" ]]; then
     printf '%s\n' "$DEVICE"
     return 0
   fi
-  local serial state manufacturer
+  local serial state manufacturer model
+  local -a found=() labels=()
   while read -r serial state _; do
     [[ "$state" == "device" ]] || continue
-    manufacturer="$("$ADB" -s "$serial" shell getprop ro.product.manufacturer 2>/dev/null | tr -d '\r' | tr '[:upper:]' '[:lower:]')"
-    if [[ "$manufacturer" == "$MANUFACTURER" ]]; then
-      printf '%s\n' "$serial"
-      return 0
+    [[ "$serial" == emulator-* ]] && continue
+    manufacturer="$("$ADB" -s "$serial" shell getprop ro.product.manufacturer 2>/dev/null | tr -d '\r')"
+    if [[ -n "$MANUFACTURER" && "$(lower "$manufacturer")" != "$(lower "$MANUFACTURER")" ]]; then
+      continue
     fi
+    model="$("$ADB" -s "$serial" shell getprop ro.product.model 2>/dev/null | tr -d '\r')"
+    found+=("$serial")
+    labels+=("$manufacturer $model ($serial)")
   done < <("$ADB" devices | tail -n +2)
-  return 1
+  case ${#found[@]} in
+    1) printf '%s\n' "${found[0]}" ;;
+    0) return 1 ;;
+    *)
+      printf 'several phones are connected:\n' >&2
+      printf '  %s\n' "${labels[@]}" >&2
+      return 2
+      ;;
+  esac
 }
 
 SERIAL=""
 if (( INSTALL )); then
-  SERIAL="$(pick_device)" || {
-    "$ADB" devices >&2
-    die "no '$MANUFACTURER' phone is connected and authorised. Plug it in, allow USB debugging, or pass --device SERIAL."
-  }
+  rc=0
+  SERIAL="$(pick_device)" || rc=$?
+  case $rc in
+    0) ;;
+    1)
+      "$ADB" devices >&2
+      die "no phone is connected and authorised${MANUFACTURER:+ (brand: $MANUFACTURER)}. Plug it in, turn on USB debugging and accept the prompt on the phone. For an emulator or a specific device, pass --device SERIAL."
+      ;;
+    *)
+      hint=""
+      [[ -z "$MANUFACTURER" ]] && hint=" or narrow it with MANUFACTURER=<brand>"
+      die "choose one with --device SERIAL$hint."
+      ;;
+  esac
   MODEL="$("$ADB" -s "$SERIAL" shell getprop ro.product.model | tr -d '\r')"
   log "Device: $MODEL ($SERIAL)"
 fi
