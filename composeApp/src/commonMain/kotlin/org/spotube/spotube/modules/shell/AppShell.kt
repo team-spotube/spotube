@@ -478,6 +478,8 @@ internal fun CompactPlayerOverlay(
                         floatingPlayer(
                             Modifier
                                 .zeroSizeUnless(floatingPlayerVisible)
+                                // Tapping the bar opens the full player, like swiping it up (#3235)
+                                .clickable { scope.launch { sheetState.animateTo(SheetDetent.FullyExpanded) } }
                                 .graphicsLayer {
                                     alpha = viewModel.floatingPlayerAlpha(progress)
                                 })
