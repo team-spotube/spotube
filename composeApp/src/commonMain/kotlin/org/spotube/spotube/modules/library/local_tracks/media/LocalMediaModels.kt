@@ -26,13 +26,20 @@ data class LocalMediaTrack(
     val artists: List<String>,
     val durationMs: Long,
     val album: String? = null,
-    val coverBytes: ByteArray? = null)
+    val coverBytes: ByteArray? = null,
+    /** Filesystem location for browsing and file actions, even if playback uses a MediaStore URI. */
+    val browserPath: String? = null)
+
+@Serializable
+data class LocalMediaDirectory(val path: String, val name: String)
 
 @Serializable
 data class LocalMediaFolder(
     val path: String,
     val name: String,
-    val tracks: List<LocalMediaTrack>) {
+    val tracks: List<LocalMediaTrack>,
+    /** Document providers may use opaque IDs, so keep their hierarchy explicitly. */
+    val documentTrail: List<LocalMediaDirectory> = emptyList()) {
     val trackCount: Int
         get() = tracks.size
 }

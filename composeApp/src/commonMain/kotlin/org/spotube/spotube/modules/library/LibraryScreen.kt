@@ -41,6 +41,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -54,6 +55,9 @@ import org.spotube.spotube.modules.downloads.DownloadsScreen
 import org.spotube.spotube.modules.library.album.LibraryAlbumsScreen
 import org.spotube.spotube.modules.library.artist.LibraryArtistsScreen
 import org.spotube.spotube.modules.library.local_tracks.LibraryLocalTracksScreen
+import org.spotube.spotube.modules.library.local_tracks.LibraryLocalTracksViewModel
+import org.spotube.spotube.modules.library.local_tracks.BrowserFileActionButtons
+import org.spotube.spotube.modules.library.local_tracks.BrowserFileActionLabel
 import org.spotube.spotube.modules.library.playlist.LibraryPlaylistsScreen
 import org.spotube.spotube.resources.iconsax.Iconsax
 import org.spotube.spotube.resources.iconsax.IconsaxAddSquare
@@ -67,6 +71,7 @@ import org.spotube.spotube.resources.iconsax.IconsaxSearchBroken
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 import org.spotube.millennium.adaptive.WindowBreakpoints
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
@@ -99,11 +104,25 @@ fun LibraryScreen(libraryState: LibraryState = koinInject()) {
         return
     }
 
+    val localTracksViewModel = if (state.currentTab == LibraryTab.LocalTracks) koinViewModel<LibraryLocalTracksViewModel>() else null
+    val fileActionsInAppBar = !isCompact && localTracksViewModel != null
+    val contextualFileActions = if (fileActionsInAppBar) {
+        val localState by requireNotNull(localTracksViewModel).state.collectAsStateWithLifecycle()
+        localState.takeIf { it.hasFileActions }
+    } else null
+
     Column(Modifier.fillMaxSize()) {
         ApplicationMainBar(
             backButton = false,
-            title = { LibraryToolbarTitle(state, expandedDesktop, compactDesktop) },
+            title = {
+                if (contextualFileActions != null && (expandedDesktop || !state.searchMode)) {
+                    BrowserFileActionLabel(contextualFileActions)
+                } else LibraryToolbarTitle(state, expandedDesktop, compactDesktop)
+            },
             actions = {
+                if (contextualFileActions != null) {
+                    BrowserFileActionButtons(contextualFileActions, requireNotNull(localTracksViewModel), inAppBar = true)
+                }
                 LibraryToolbarActions(
                     state = state,
                     expandedDesktop = expandedDesktop,
@@ -118,7 +137,8 @@ fun LibraryScreen(libraryState: LibraryState = koinInject()) {
                     onRefresh = libraryState::refreshLocalTracks,
                     onToggleView = { libraryState.toggleViewMode(isCompact) },
                     viewMode = viewMode,
-                    compactDesktop = compactDesktop
+                    compactDesktop = compactDesktop,
+                    expandedSearchWidth = if (contextualFileActions == null) 300.dp else 160.dp
                 )
             }
         )
@@ -136,7 +156,9 @@ fun LibraryScreen(libraryState: LibraryState = koinInject()) {
 
                 LibraryTab.Albums -> LibraryAlbumsScreen(viewMode = viewMode)
                 LibraryTab.Artists -> LibraryArtistsScreen(viewMode = viewMode)
-                LibraryTab.LocalTracks -> LibraryLocalTracksScreen()
+                LibraryTab.LocalTracks -> LibraryLocalTracksScreen(
+                    viewModel = requireNotNull(localTracksViewModel), fileActionsInAppBar = fileActionsInAppBar
+                )
                 LibraryTab.Downloads -> DownloadsScreen()
             }
         }
@@ -191,7 +213,8 @@ internal fun RowScope.LibraryToolbarActions(
     onFilterSource: (LibrarySourceFilter) -> Unit = {},
     onToggleView: () -> Unit = {},
     viewMode: LibraryViewMode = state.viewModeOverride ?: defaultLibraryViewMode(!expandedDesktop),
-    compactDesktop: Boolean = false
+    compactDesktop: Boolean = false,
+    expandedSearchWidth: Dp = 300.dp
 ) {
     val actionModifier = Modifier.size(if (compactDesktop) 32.dp else 40.dp)
     if (!expandedDesktop && state.searchMode) {
@@ -208,7 +231,7 @@ internal fun RowScope.LibraryToolbarActions(
                 LibraryFilterField(
                     state.searchState,
                     state.currentTab.filterPlaceholder,
-                    Modifier.width(300.dp)
+                    Modifier.width(expandedSearchWidth)
                 )
             } else {
                 MillenniumIconButton(

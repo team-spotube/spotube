@@ -26,6 +26,7 @@ import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
+import io.github.vinceglb.filekit.PlatformFile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.async
@@ -70,8 +71,10 @@ class AndroidLocalMediaDiscoveryService(
     private suspend fun discoverFoldersBlocking(roots: List<String>): List<LocalMediaFolder> {
         logger.i { "discoverFolders: start roots=${roots.size}" }
         if (!hasReadPermission()) {
-            logger.w { "discoverFolders: missing media permission, returning empty result" }
-            return emptyList()
+            logger.w { "discoverFolders: missing media permission; scanning configured filesystem roots only" }
+            val pending = mutableListOf<PendingTrack>()
+            discoverFileSystemFallback(roots, emptySet(), pending)
+            return buildFolders(pending)
         }
 
         val pending = mutableListOf<PendingTrack>()
@@ -303,7 +306,8 @@ class AndroidLocalMediaDiscoveryService(
                         artists = tag?.artists?.takeIf { it.isNotEmpty() } ?: item.mediaStoreArtists,
                         durationMs = tag?.durationMs?.takeIf { it > 0 } ?: item.mediaStoreDurationMs,
                         album = tag?.album?.takeIf { it.isNotBlank() } ?: item.mediaStoreAlbum,
-                        coverBytes = tag?.cover)
+                         coverBytes = tag?.cover,
+                         browserPath = item.filePath)
                 }
             }.awaitAll()
         }
@@ -317,21 +321,25 @@ class AndroidLocalMediaDiscoveryService(
             .sortedBy { it.name.lowercase(Locale.getDefault()) }
     }
 
-    private fun readTags(item: PendingTrack): TagInfo? {
+    private suspend fun readTags(item: PendingTrack): TagInfo? {
         val path = item.filePath ?: return null
-        val key = "$path:${item.modifiedAt}"
-        tagCache[key]?.let { return it }
         val file = File(path)
         if (!file.isFile || !file.canRead()) return null
+        val parent = file.parentFile ?: return null
+        val folder = PlatformFile(parent)
+        val sidecar = File(parent, ".${file.name}.spotube-tags.json")
+        val key = "$path:${file.lastModified()}:${sidecar.lastModified()}"
+        tagCache[key]?.let { return it }
         val info = try {
-            val meta = uniffi.compose_app.readAudioMetadata(path)
+            val meta = readLocalTrackTags(folder, PlatformFile(file)) ?: return null
             TagInfo(
                 title = meta.title,
-                artists = meta.artists,
+                artists = meta.toTrack(path).artists,
                 album = meta.album,
                 durationMs = meta.durationMs,
-                cover = meta.coverBytes?.let(::coverThumbnail))
-        } catch (t: Throwable) {
+                cover = meta.cover?.let(::coverThumbnail))
+        } catch (t: Exception) {
+            if (t is kotlinx.coroutines.CancellationException) throw t
             logger.d { "readTags: failed path=$path reason=${t.message}" }
             null
         }
@@ -384,6 +392,6 @@ class AndroidLocalMediaDiscoveryService(
             "wav",
             "ogg",
             "opus",
-            "wma")
+            "wma", "webm", "mka")
     }
 }

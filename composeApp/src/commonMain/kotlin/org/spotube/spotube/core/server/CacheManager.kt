@@ -84,9 +84,9 @@ class CacheManager(
     private fun getCacheIndexPath(): Path = resolveCacheDir() / cacheIndexFileName
 
     fun readCacheIndex(): CacheIndex {
-        val indexPath = getCacheIndexPath()
-        if (!fileSystem.exists(indexPath)) return CacheIndex()
         return runCatching {
+            val indexPath = getCacheIndexPath()
+            if (!fileSystem.exists(indexPath)) return CacheIndex()
             fileSystem.source(indexPath).buffer().use { source ->
                 json.decodeFromString<CacheIndex>(source.readUtf8())
             }
@@ -102,10 +102,15 @@ class CacheManager(
     }
 
     fun findCachedEntry(trackId: String): Pair<Path, CacheEntry>? {
-        val index = readCacheIndex()
-        val entry = index.entries.firstOrNull { it.trackId == trackId } ?: return null
-        val filePath = resolveCacheDir() / entry.filename.toPath()
-        return if (fileSystem.exists(filePath)) filePath to entry else null
+        return runCatching {
+            val index = readCacheIndex()
+            val entry = index.entries.firstOrNull { it.trackId == trackId } ?: return null
+            val filePath = resolveCacheDir() / entry.filename.toPath()
+            if (!fileSystem.exists(filePath)) return null
+            // A stale SAF grant or a read-only custom folder must not prevent upstream playback.
+            fileSystem.source(filePath).close()
+            filePath to entry
+        }.getOrNull()
     }
 
     suspend fun invalidateCacheEntry(trackId: String) {

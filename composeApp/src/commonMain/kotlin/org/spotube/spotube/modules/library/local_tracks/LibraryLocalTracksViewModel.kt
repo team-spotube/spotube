@@ -17,26 +17,8 @@
 
 package org.spotube.spotube.modules.library.local_tracks
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import org.spotube.spotube.modules.library.LibraryState
-import org.spotube.spotube.modules.library.LibraryTab
 import org.spotube.spotube.modules.library.local_tracks.media.LocalMediaFolder
-import org.spotube.spotube.modules.library.local_tracks.media.LocalMediaLibraryCoordinator
 import org.spotube.spotube.modules.library.local_tracks.media.LocalMediaTrack
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import kotlin.coroutines.cancellation.CancellationException
-import org.spotube.spotube.PlatformType
-import org.spotube.spotube.getPlatform
-import org.spotube.spotube.core.i18n.getString
-import spotube.composeapp.generated.resources.Res
-import spotube.composeapp.generated.resources.library_local_refresh_failed
 
 data class LocalFolderUi(
     val path: String,
@@ -116,84 +98,3 @@ private fun localTrackMatches(track: LocalMediaTrack, query: String): Boolean = 
     query,
     true
 ) == true || track.artists.any { it.contains(query, true) }
-
-class LibraryLocalTracksViewModel(
-    private val coordinator: LocalMediaLibraryCoordinator,
-    private val libraryState: LibraryState
-) : ViewModel() {
-    private val requiresPermission = getPlatform().type == PlatformType.Android
-    private val _state =
-        MutableStateFlow(LibraryLocalTracksState(canAccessMedia = !requiresPermission))
-    val state: StateFlow<LibraryLocalTracksState> = combine(
-        _state, libraryState.queryFlow(LibraryTab.LocalTracks)
-    ) { state, query -> localTracksUiState(state, query) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), _state.value)
-
-    init {
-        viewModelScope.launch {
-            libraryState.localRefreshRequests.collect { refresh() }
-        }
-        viewModelScope.launch {
-            coordinator.cacheState
-                .collect { cache ->
-                    _state.update {
-                        it.copy(
-                            folders = cache.folders,
-                            error = null
-                        )
-                    }
-                }
-        }
-
-        refreshIfEmpty()
-        refreshIfStale()
-    }
-
-    fun onQueryChange(query: String) {
-        libraryState.setQuery(LibraryTab.LocalTracks, query)
-    }
-
-    fun onPermissionChanged(granted: Boolean) {
-        val accessible = !requiresPermission || granted
-        val wasAccessible = _state.value.canAccessMedia
-        _state.update { it.copy(canAccessMedia = accessible) }
-        if (accessible && !wasAccessible) refresh()
-    }
-
-    fun refresh() {
-        if (!_state.value.canAccessMedia || _state.value.isRefreshing) return
-        _state.update { it.copy(isRefreshing = true, error = null) }
-        libraryState.setLocalRefreshing(true)
-        viewModelScope.launch {
-            try {
-                runCatching {
-                    coordinator.refreshNow("manual")
-                }.onFailure { throwable ->
-                    if (throwable is CancellationException) throw throwable
-                    val message =
-                        throwable.message ?: getString(Res.string.library_local_refresh_failed)
-                    _state.update {
-                        it.copy(error = message)
-                    }
-                }
-            } finally {
-                _state.update { it.copy(isRefreshing = false) }
-                libraryState.setLocalRefreshing(false)
-            }
-        }
-    }
-
-    private fun refreshIfEmpty() {
-        if (_state.value.folders.isNotEmpty()) return
-        refresh()
-    }
-
-    private fun refreshIfStale() {
-        if (!_state.value.canAccessMedia) return
-        viewModelScope.launch {
-            runCatching {
-                coordinator.refreshIfStale()
-            }
-        }
-    }
-}

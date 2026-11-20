@@ -3,6 +3,9 @@
  */
 package org.spotube.spotube.core.ui.component.cards
 
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.ui.geometry.Offset
+
 import org.spotube.spotube.core.ui.theming.engine.AppComponents
 import org.spotube.spotube.core.ui.theming.engine.AppSlots
 import org.spotube.spotube.core.ui.theming.engine.AppState
@@ -68,16 +71,21 @@ fun PlayableListTile(
     artwork: (@Composable () -> Unit)? = null,
     trailingContent: (@Composable () -> Unit)? = null,
     isBlacklisted: Boolean = false,
-    compact: Boolean = false
+    compact: Boolean = false,
+    isSelected: Boolean = false,
+    onLongClick: (() -> Unit)? = null,
+    onRightClick: ((Offset) -> Unit)? = null
 ) {
     val slot = AppComponents.slot(ContentSlots.MediaListTile)
     // Background follows "playing"; border and title colour also follow "blacklisted".
     val look = slot[if (isPlaying) AppState.Selected else AppState.Default]
     val tone = slot[if (isBlacklisted) AppState.Error else if (isPlaying) AppState.Selected else AppState.Default]
+    val click = onClick ?: onPlay
     MillenniumListTile(
-        modifier = modifier,
-        onClick = onClick ?: onPlay,
-        selected = isPlaying,
+        modifier = if (onLongClick == null) modifier else modifier.combinedClickable(onClick = { click?.invoke() }, onLongClick = onLongClick),
+        onClick = click.takeIf { onLongClick == null },
+        onRightClick = onRightClick,
+        selected = isPlaying || isSelected,
         background = look.background,
         shape = look.shape,
         borderColor = tone.borderColor,

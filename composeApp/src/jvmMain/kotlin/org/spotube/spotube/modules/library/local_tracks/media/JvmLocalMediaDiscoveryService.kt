@@ -17,6 +17,8 @@
 
 package org.spotube.spotube.modules.library.local_tracks.media
 
+import io.github.vinceglb.filekit.PlatformFile
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.skia.EncodedImageFormat
@@ -62,11 +64,7 @@ class JvmLocalMediaDiscoveryService : LocalMediaDiscoveryService {
                             val parent = filePath.parent?.absolutePathString() ?: return@forEach
                             val trackPath = filePath.toAbsolutePath().toString()
 
-                            val metadata = try {
-                                uniffi.compose_app.readAudioMetadata(trackPath)
-                            } catch (_: Exception) {
-                                null
-                            }
+                            val metadata = readLocalTrackTags(PlatformFile(parent), PlatformFile(trackPath))
 
                             val track = LocalMediaTrack(
                                 path = trackPath,
@@ -74,10 +72,10 @@ class JvmLocalMediaDiscoveryService : LocalMediaDiscoveryService {
                                     ?: filePath.nameWithoutExtension.ifBlank {
                                         filePath.fileName.toString()
                                     },
-                                artists = metadata?.artists?.takeIf { it.isNotEmpty() } ?: emptyList(),
+                                artists = metadata?.toTrack(trackPath)?.artists.orEmpty(),
                                 durationMs = metadata?.durationMs ?: 0L,
-                                album = metadata?.album,
-                                coverBytes = metadata?.coverBytes?.let(::coverThumbnail))
+                                album = metadata?.album?.takeIf(String::isNotBlank),
+                                coverBytes = metadata?.cover?.let(::coverThumbnail))
                             folders.getOrPut(parent) { mutableListOf() }.add(track)
                         }
                 }
@@ -191,7 +189,7 @@ class JvmLocalMediaDiscoveryService : LocalMediaDiscoveryService {
             "wav",
             "ogg",
             "opus",
-            "wma")
+            "wma", "webm", "mka")
     }
 }
 
@@ -220,4 +218,3 @@ internal fun coverThumbnail(bytes: ByteArray, size: Int = COVER_THUMBNAIL_SIZE):
 
 private const val COVER_THUMBNAIL_SIZE = 160
 private const val MAX_SMALL_COVER_BYTES = 64 * 1024
-

@@ -185,7 +185,10 @@ val sharedModules = module {
         val repository = get<SettingsRepository>()
         LocalMediaFoldersViewModel(repository.userSettings) { folders ->
             val current = repository.getCurrentSettings()
-            repository.updateSettings(current.copy(localMediaFolders = folders))
+            repository.updateSettings(current.copy(
+                localMediaFolders = folders,
+                localMediaFolderBookmarks = current.localMediaFolderBookmarks.filterKeys { it in folders }
+            ))
         }
     }
 

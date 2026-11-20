@@ -94,6 +94,7 @@ import org.spotube.spotube.core.jam.JamRole
 import org.spotube.spotube.core.jam.JamRoomService
 import org.spotube.spotube.core.navigation.NavigationCommands
 import org.spotube.spotube.core.navigation.Routes
+import org.spotube.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import org.spotube.spotube.modules.downloads.DownloadProgressIcon
 import org.spotube.spotube.modules.downloads.DownloadStatus
 import org.spotube.spotube.modules.downloads.DownloadsViewModel
@@ -131,13 +132,17 @@ import org.spotube.spotube.core.i18n.getString
 import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.downloads_status_cancelled
+import spotube.composeapp.generated.resources.downloads_status_downloading
 import spotube.composeapp.generated.resources.downloads_status_failed
+import spotube.composeapp.generated.resources.downloads_status_failed_error
 import spotube.composeapp.generated.resources.downloads_status_queued
 import spotube.composeapp.generated.resources.player_alternative_source
 import spotube.composeapp.generated.resources.player_collapse_content_description
 import spotube.composeapp.generated.resources.player_disable_shuffle_content_description
 import spotube.composeapp.generated.resources.player_download
 import spotube.composeapp.generated.resources.player_download_already_downloaded
+import spotube.composeapp.generated.resources.player_download_completed
+import spotube.composeapp.generated.resources.player_download_in_progress
 import spotube.composeapp.generated.resources.player_download_retrying
 import spotube.composeapp.generated.resources.player_download_started
 import spotube.composeapp.generated.resources.player_download_status_downloaded
@@ -209,10 +214,13 @@ fun AppExpandedPlayer(
     val downloads by downloadsViewModel.downloads.collectAsStateWithLifecycle()
     val currentDownload = remember(currentTrack, downloads) {
         currentTrack?.let { t ->
-            downloads.lastOrNull { it.track?.id == t.id }
+            downloads.firstOrNull { it.track?.id == t.id }
         }
     }
     val snackbarHostState = remember { MillenniumSnackbarHostState() }
+    var previousDownloadStatus by remember(currentTrack?.id) {
+        mutableStateOf(currentDownload?.status)
+    }
     val albumArtModifier =
         rememberSharedAlbumArtModifier(sharedTransitionScope, animatedVisibilityScope)
     val coverModel = playerUiState.coverModel
@@ -285,6 +293,21 @@ fun AppExpandedPlayer(
         }
     }
 
+    LaunchedEffect(currentTrack?.id, currentDownload?.status) {
+        val status = currentDownload?.status ?: return@LaunchedEffect
+        if (status == previousDownloadStatus) return@LaunchedEffect
+        previousDownloadStatus = status
+        when (status) {
+            DownloadStatus.Completed -> snackbarHostState.showSnackbar(
+                getString(Res.string.player_download_completed, currentTrack?.title.orEmpty())
+            )
+            is DownloadStatus.Failed -> snackbarHostState.showSnackbar(
+                getString(Res.string.downloads_status_failed_error, currentDownload.errorMessage ?: status.error)
+            )
+            else -> Unit
+        }
+    }
+
     Box(modifier = modifier.fillMaxSize().appBackground()) {
         if (playerOptionsUiState.isMoreOptionsSheetOpen) {
             MillenniumModalBottomSheet(
@@ -314,107 +337,53 @@ fun AppExpandedPlayer(
                         val status = download?.status
                         val statusLabel = when (status) {
                             is DownloadStatus.Completed -> stringResource(Res.string.player_download_status_downloaded)
-                            is DownloadStatus.Failed -> stringResource(Res.string.downloads_status_failed)
+                            is DownloadStatus.Failed -> if (download.errorMessage != null) {
+                                stringResource(Res.string.downloads_status_failed_error, download.errorMessage)
+                            } else stringResource(Res.string.downloads_status_failed)
                             is DownloadStatus.Cancelled -> stringResource(Res.string.downloads_status_cancelled)
                             is DownloadStatus.Queued -> stringResource(Res.string.downloads_status_queued)
-                            is DownloadStatus.Downloading -> stringResource(Res.string.player_download_status_downloading)
+                            is DownloadStatus.Downloading -> stringResource(
+                                Res.string.downloads_status_downloading,
+                                (download.progress.coerceIn(0f, 1f) * 100).toInt()
+                            )
                             null -> stringResource(Res.string.player_download)
                         }
-                        val statusColor = when (status) {
-                            is DownloadStatus.Completed -> AppTheme.colors.primary
-                            is DownloadStatus.Failed -> AppTheme.colors.error
-                            else -> AppTheme.colors.onSurfaceVariant
-                        }
+                        DownloadOptionTile(
+                            track = currentTrack,
+                            status = status,
+                            statusLabel = statusLabel,
+                            onClick = {
+                                when (status) {
+                                    DownloadStatus.Completed -> scope.launch {
+                                        snackbarHostState.showSnackbar(getString(Res.string.player_download_already_downloaded))
+                                    }
 
-                        Box(
-                            modifier = Modifier
-                                .aspectRatio(1f)
-                                .millenniumSurface(
-                                    background = millenniumPanelBrush(MillenniumTheme.colors),
-                                    shape = RoundedCornerShape(14.dp),
-                                    borderColor = MillenniumTheme.colors.border,
-                                    borderWidth = 1.dp,
-                                    shadowElevation = 2.dp
-                                )
-                                .clickable {
-                                    playerOptionsViewModel.dismissMoreOptionsSheet()
-                                    when (status) {
-                                        is DownloadStatus.Completed -> {
+                                    is DownloadStatus.Failed, DownloadStatus.Cancelled -> {
+                                        downloadsViewModel.retry(download.id)
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar(getString(Res.string.player_download_retrying))
+                                        }
+                                    }
+
+                                    is DownloadStatus.Downloading, DownloadStatus.Queued -> scope.launch {
+                                        snackbarHostState.showSnackbar(getString(Res.string.player_download_in_progress))
+                                    }
+
+                                    null -> {
+                                        val track = currentTrack
+                                        if (track != null) {
+                                            downloadsViewModel.downloadTrack(track)
                                             scope.launch {
-                                                snackbarHostState.showSnackbar(getString(Res.string.player_download_already_downloaded))
-                                            }
-                                        }
-
-                                        is DownloadStatus.Failed, is DownloadStatus.Cancelled -> {
-                                            download?.let { downloadsViewModel.retry(it.id) }
-                                            scope.launch {
-                                                snackbarHostState.showSnackbar(getString(Res.string.player_download_retrying))
-                                            }
-                                        }
-
-                                        is DownloadStatus.Downloading, is DownloadStatus.Queued -> {
-                                            // already in progress
-                                        }
-
-                                        null -> {
-                                            val track = currentTrack
-                                            if (track != null) {
-                                                downloadsViewModel.downloadTrack(track)
-                                                scope.launch {
-                                                    snackbarHostState.showSnackbar(
-                                                        message = getString(Res.string.player_download_started, track.title)
-                                                    )
-                                                }
+                                                snackbarHostState.showSnackbar(
+                                                    message = getString(Res.string.player_download_started, track.title)
+                                                )
                                             }
                                         }
                                     }
-                                    onDownloadTrack()
-                                }) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(12.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                if (status is DownloadStatus.Downloading) {
-                                    DownloadProgressIcon(
-                                        track = currentTrack,
-                                        icon = Iconsax.IconsaxDirectboxReceive,
-                                        contentDescription = stringResource(Res.string.player_download),
-                                        modifier = Modifier.size(28.dp),
-                                        tint = AppTheme.colors.onSurface
-                                    )
-                                } else {
-                                    val icon = when (status) {
-                                        is DownloadStatus.Completed -> Iconsax.IconsaxCheckCircle
-                                        is DownloadStatus.Failed -> Iconsax.IconsaxCloseSquare
-                                        is DownloadStatus.Cancelled -> Iconsax.IconsaxRefreshRight
-                                        is DownloadStatus.Queued -> Iconsax.InconsaxClock
-                                        null -> Iconsax.IconsaxDirectboxReceive
-                                    }
-                                    AppIcon(
-                                        imageVector = icon,
-                                        contentDescription = statusLabel,
-                                        modifier = Modifier.size(28.dp),
-                                        tint = when (status) {
-                                            is DownloadStatus.Completed -> AppTheme.colors.primary
-                                            is DownloadStatus.Failed -> AppTheme.colors.error
-                                            else -> AppTheme.colors.onSurface
-                                        }
-                                    )
                                 }
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Text(
-                                    text = statusLabel,
-                                    style = AppTheme.typography.labelSmall,
-                                    textAlign = TextAlign.Center,
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis,
-                                    color = statusColor
-                                )
+                                onDownloadTrack()
                             }
-                        }
+                        )
                     }
                     item {
                         OptionTile(
@@ -765,6 +734,68 @@ private fun OptionTile(
                     textAlign = TextAlign.Center,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DownloadOptionTile(
+    track: MetadataTrack?,
+    status: DownloadStatus?,
+    statusLabel: String,
+    onClick: () -> Unit
+) {
+    val tile = AppComponents.slot(PlayersSlots.ExpandedPlayerOptionTile)[AppState.Default]
+    val icon = when (status) {
+        DownloadStatus.Completed -> Iconsax.IconsaxCheckCircle
+        is DownloadStatus.Failed -> Iconsax.IconsaxCloseSquare
+        DownloadStatus.Cancelled -> Iconsax.IconsaxRefreshRight
+        DownloadStatus.Queued -> Iconsax.InconsaxClock
+        DownloadStatus.Downloading, null -> Iconsax.IconsaxDirectboxReceive
+    }
+    val statusTint = when (status) {
+        DownloadStatus.Completed -> AppTheme.colors.primary
+        is DownloadStatus.Failed -> AppTheme.colors.error
+        else -> tile.iconTint
+    }
+
+    MillenniumCard(
+        modifier = Modifier.aspectRatio(1f).clickable(onClick = onClick),
+        contentPadding = tile.contentPadding
+    ) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                if (status is DownloadStatus.Downloading) {
+                    DownloadProgressIcon(
+                        track = track,
+                        icon = icon,
+                        contentDescription = statusLabel,
+                        modifier = Modifier.size(tile.iconSize),
+                        size = tile.iconSize,
+                        tint = statusTint,
+                        progressTint = AppTheme.colors.primary
+                    )
+                } else {
+                    AppIcon(
+                        imageVector = icon,
+                        contentDescription = statusLabel,
+                        modifier = Modifier.size(tile.iconSize),
+                        tint = statusTint
+                    )
+                }
+                Spacer(modifier = Modifier.height(tile.spacing))
+                Text(
+                    text = statusLabel,
+                    style = tile.labelStyle,
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    color = if (status is DownloadStatus.Failed) AppTheme.colors.error else AppTheme.colors.onSurface
                 )
             }
         }

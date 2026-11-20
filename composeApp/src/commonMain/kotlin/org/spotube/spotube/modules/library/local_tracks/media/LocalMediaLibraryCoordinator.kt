@@ -18,6 +18,7 @@
 package org.spotube.spotube.modules.library.local_tracks.media
 
 import org.spotube.spotube.core.di.injectLogger
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -27,6 +28,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.time.Clock
@@ -95,7 +97,18 @@ class LocalMediaLibraryCoordinator(
         refreshMutex.withLock {
             logger.i { "Refreshing local media cache. reason=$reason" }
             runCatching {
-                discoveryService.discoverFolders(configuredRoots)
+                discoveryService.discoverFolders(configuredRoots) + withContext(Dispatchers.IO) {
+                    foldersConfig.documentRoots().flatMap { (id, root) ->
+                        try {
+                            scanMusicTree(root, id)
+                        } catch (e: CancellationException) {
+                            throw e
+                        } catch (e: Exception) {
+                            logger.w(e) { "Could not index a selected music folder" }
+                            emptyList()
+                        }
+                    }
+                }
             }.onSuccess { folders ->
                 val cache = LocalMediaCache(
                     folders = folders,

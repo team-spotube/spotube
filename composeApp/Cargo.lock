@@ -145,6 +145,7 @@ name = "compose-app"
 version = "0.1.0"
 dependencies = [
  "discord-rich-presence",
+ "libc",
  "lofty",
  "log",
  "parking_lot",
