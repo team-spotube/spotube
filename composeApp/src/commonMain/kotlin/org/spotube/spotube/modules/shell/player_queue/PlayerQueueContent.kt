@@ -65,6 +65,7 @@ import org.spotube.spotube.resources.iconsax.Iconsax
 import org.spotube.spotube.resources.iconsax.Iconsax3DotsMore
 import org.spotube.spotube.resources.iconsax.IconsaxCloseSquare
 import org.spotube.spotube.resources.iconsax.IconsaxDragHandle
+import org.spotube.spotube.resources.iconsax.IconsaxMusicFilter
 import org.spotube.spotube.resources.iconsax.IconsaxMusicSquareRemove
 import org.spotube.spotube.resources.iconsax.IconsaxTrash
 import org.spotube.spotube.resources.iconsax.IconsaxUserRemove
@@ -83,6 +84,7 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.queue_clear_queue
 import spotube.composeapp.generated.resources.queue_filter_queue
+import spotube.composeapp.generated.resources.queue_move_to_priority
 import spotube.composeapp.generated.resources.queue_no_queue_entries
 import spotube.composeapp.generated.resources.queue_title
 import spotube.composeapp.generated.resources.jam_participants_ban
@@ -178,6 +180,7 @@ fun PlayerQueueContent(
                                 reorderScope = if (isFiltered || isReadOnly) null else this,
                                 onPlayClick = { viewModel.playQueueItem(item.originalIndex) },
                                 onRemoveClick = { viewModel.removeQueueItem(item.originalIndex) },
+                                onMoveToPriorityClick = { viewModel.moveToPriorityQueue(item.originalIndex) },
                                 onDragStarted = { viewModel.onDragStart() },
                                 onDragStopped = { viewModel.onDragStop() },
                                 showOptions = !isReadOnly,
@@ -309,6 +312,7 @@ private fun QueueItemRow(
     reorderScope: sh.calvin.reorderable.ReorderableCollectionItemScope?,
     onPlayClick: () -> Unit,
     onRemoveClick: () -> Unit,
+    onMoveToPriorityClick: () -> Unit = {},
     onDragStarted: () -> Unit,
     onDragStopped: () -> Unit,
     showOptions: Boolean = true,
@@ -426,6 +430,15 @@ private fun QueueItemRow(
                             )
                         }
                     }) {
+                    if (!item.isCurrent && !item.isPriority) {
+                        MillenniumDropdownMenuItem(
+                            label = stringResource(Res.string.queue_move_to_priority),
+                            icon = Iconsax.IconsaxMusicFilter,
+                            onClick = {
+                                onMoveToPriorityClick()
+                                showMenu = false
+                            })
+                    }
                     MillenniumDropdownMenuItem(
                         label = stringResource(Res.string.queue_remove_from_queue),
                         icon = Iconsax.IconsaxMusicSquareRemove,
