@@ -14,6 +14,7 @@
 - Use Gradle wrapper (`./gradlew` or `./gradlew.bat`) only.
 - Run desktop: `:composeApp:run`
 - Build Android debug: `:composeApp:assembleStableDebug` (or `assembleNightlyDebug`). Android has `stable`/`nightly` product flavors (nightly = beta channel: `.nightly` applicationId suffix, own icons/name in `composeApp/src/nightly/res`). Desktop icons come from `composeApp/icons/{stable,nightly}`, chosen with `-Pnightly=true`.
+- Install a signed release build on a phone: `tools/install-release-android.sh` (finds the connected OPPO, or `--device SERIAL`; `--dry-run` only checks). It needs `release.signing.*` in `composeApp/local.properties` and, because Gobley 0.3.7 breaks on Cargo 1.100+, a pinned Rust (`rustup override set 1.99.1`). It never uninstalls an existing copy.
 - Module checks: `:composeApp:check`, `:plugin_interfaces:check`, `:js_plugin_example:check`
 - Focused tests: `:composeApp:jvmTest`, `:composeApp:iosSimulatorArm64Test`, `:plugin_interfaces:jvmTest`, `:plugin_interfaces:jsTest`, `:js_plugin_example:jsTest`
 - No lint/typecheck/formatter tasks are configured; `:composeApp:check` is the only aggregated check.
