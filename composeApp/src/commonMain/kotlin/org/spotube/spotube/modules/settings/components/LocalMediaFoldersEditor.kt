@@ -22,7 +22,6 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.spotube.spotube.modules.settings.LocalMediaFoldersViewModel
 import io.github.vinceglb.filekit.dialogs.compose.rememberDirectoryPickerLauncher
-import io.github.vinceglb.filekit.path
 import org.spotube.millennium.composables.MillenniumDialog
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -268,7 +267,7 @@ private fun LocalMediaFolderEditorRow(
 fun LocalMediaFoldersDialogHost(viewModel: LocalMediaFoldersViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val pickerLauncher =
-        rememberDirectoryPickerLauncher { directory -> viewModel.addFolder(directory?.path) }
+        rememberDirectoryPickerLauncher { directory -> viewModel.addPickedFolder(directory) }
     if (state.isOpen) {
         MillenniumDialog(
             visible = true,

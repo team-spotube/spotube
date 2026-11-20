@@ -12,6 +12,9 @@ parking_lot = "0.12"
 log = "0.4"
 tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros"] }
 
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
 [lib]
 crate-type = ["cdylib", "staticlib"]
 path = "src/commonMain/rust/lib.rs"

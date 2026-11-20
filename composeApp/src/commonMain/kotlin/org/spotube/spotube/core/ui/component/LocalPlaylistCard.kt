@@ -29,6 +29,7 @@ import org.spotube.spotube.core.navigation.NavigationCommands
 import org.spotube.spotube.core.navigation.Routes
 import org.spotube.spotube.core.ui.component.cards.PlayableCard
 import org.spotube.spotube.modules.library.local.LocalMediaCollectionsRepository
+import org.spotube.spotube.modules.library.local.indexByReferencePath
 import org.spotube.spotube.modules.library.local.LocalPlaylist
 import org.spotube.spotube.modules.library.local.decodeLocalCoverBase64
 import kotlinx.coroutines.launch
@@ -57,7 +58,7 @@ fun LocalPlaylistCard(
 
     // Resolved on demand from the current index snapshot; missing paths are skipped.
     fun resolveEntries(): List<QueueEntry> {
-        val tracksByPath = collectionsRepository.tracks.value.associateBy { it.path }
+        val tracksByPath = collectionsRepository.tracks.value.indexByReferencePath()
         return playlist.trackPaths.mapNotNull { path ->
             tracksByPath[path]?.let { track ->
                 QueueEntry.LocalTrack(

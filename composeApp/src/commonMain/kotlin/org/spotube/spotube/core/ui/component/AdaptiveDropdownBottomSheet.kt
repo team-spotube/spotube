@@ -117,22 +117,41 @@ fun AdaptiveDropdownBottomSheet(
     headerDisplayMode: HeaderDisplayMode = HeaderDisplayMode.Always,
     filter: ((AdaptiveMenuItem, String) -> Boolean)? = null) {
     var expanded by remember { mutableStateOf(false) }
+    AdaptiveDropdownBottomSheet(
+        expanded = expanded, onExpandedChange = { expanded = it }, items = items, trigger = trigger,
+        modifier = modifier, menuMinWidth = menuMinWidth, header = header, headerDisplayMode = headerDisplayMode, filter = filter
+    )
+}
+
+/** Controlled variant for surfaces with more than one way to open the same menu. */
+@Composable
+fun AdaptiveDropdownBottomSheet(
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    items: List<AdaptiveMenuItem>,
+    trigger: @Composable (onClick: () -> Unit) -> Unit,
+    modifier: Modifier = Modifier,
+    menuMinWidth: Dp = 200.dp,
+    header: @Composable (() -> Unit)? = null,
+    headerDisplayMode: HeaderDisplayMode = HeaderDisplayMode.Always,
+    filter: ((AdaptiveMenuItem, String) -> Boolean)? = null
+) {
     val isLargeScreen = currentWindowWidthBreakpoint() isAtLeast WindowBreakpoints.Medium
 
     Box(modifier = modifier) {
         if (isLargeScreen) {
             DesktopDropdownMenu(
                 expanded = expanded,
-                onExpandedChange = { expanded = it },
+                onExpandedChange = onExpandedChange,
                 items = items,
                 menuMinWidth = menuMinWidth,
                 filter = filter,
-                trigger = { trigger { expanded = true } })
+                trigger = { trigger { onExpandedChange(true) } })
         } else {
-            trigger { expanded = true }
+            trigger { onExpandedChange(true) }
             if (expanded) {
                 AdaptiveBottomSheetContent(
-                    onDismiss = { expanded = false },
+                    onDismiss = { onExpandedChange(false) },
                     items = items,
                     header = if (header != null && (headerDisplayMode == HeaderDisplayMode.Always || headerDisplayMode == HeaderDisplayMode.OnlyInBottomSheet)) {
                         header

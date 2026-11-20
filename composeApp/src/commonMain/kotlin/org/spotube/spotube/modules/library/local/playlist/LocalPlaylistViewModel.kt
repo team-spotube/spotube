@@ -37,6 +37,7 @@ import org.spotube.spotube.core.di.injectLogger
 import org.spotube.spotube.core.i18n.getString
 import org.spotube.spotube.core.navigation.NavigationCommands
 import org.spotube.spotube.modules.library.local.LocalMediaCollectionsRepository
+import org.spotube.spotube.modules.library.local.indexByReferencePath
 import org.spotube.spotube.modules.library.local.LocalCollectionTrack
 import org.spotube.spotube.modules.library.local.LocalPlaylist
 import org.spotube.spotube.modules.library.local.LocalPlaylistRepository
@@ -92,7 +93,7 @@ sealed interface LocalPlaylistUiState {
 }
 
 /** Shared row mapping: artists joined " • " with the album appended, falling back to an unknown-artist label. */
-private suspend fun localPlaylistTrackUi(track: LocalMediaTrack): LocalPlaylistTrackUi {
+private suspend fun localPlaylistTrackUi(track: LocalMediaTrack, referencePath: String = track.path): LocalPlaylistTrackUi {
     val artistLine = track.artists.filter { it.isNotBlank() }.joinToString(" • ")
         .ifBlank { getString(Res.string.media_unknown_artist) }
     val subtitle = listOfNotNull(
@@ -101,7 +102,7 @@ private suspend fun localPlaylistTrackUi(track: LocalMediaTrack): LocalPlaylistT
     ).joinToString(" • ").takeIf { it.isNotBlank() }
     val seconds = track.durationMs / 1000
     return LocalPlaylistTrackUi(
-        path = track.path,
+        path = referencePath,
         title = track.name,
         subtitle = subtitle,
         durationLabel = if (seconds > 0) "${seconds / 60}:${
@@ -153,12 +154,10 @@ class LocalPlaylistViewModel(
     ) { playlists, mediaTracks, playback, formState, t ->
         val playlist = playlists.firstOrNull { it.id == playlistId }
             ?: return@combine LocalPlaylistUiState.NotFound
-        val tracksByPath = HashMap<String, LocalMediaTrack>(mediaTracks.size)
-        mediaTracks.forEach { tracksByPath[it.path] = it }
+        val tracksByPath = mediaTracks.indexByReferencePath()
         LocalPlaylistUiState.Loaded(
             playlist = playlist,
-            tracks = playlist.trackPaths.mapNotNull { tracksByPath[it] }
-                .map { localPlaylistTrackUi(it) },
+            tracks = playlist.trackPaths.mapNotNull { path -> tracksByPath[path]?.let { localPlaylistTrackUi(it, path) } },
             isPlaying = (playback.first as? QueueCollectionEntry.Playlist)?.id == playlistId && playback.second == PlayerState.PLAYING,
             showEditForm = formState.isVisible,
             showAddTracks = t.addTracks.visible,
@@ -169,7 +168,7 @@ class LocalPlaylistViewModel(
                 val query = t.addTracks.query.trim()
                 // Only tracks that can actually be added; the picker list is rebuilt while open.
                 val candidates = mediaTracks
-                    .filterNot { it.path in inPlaylist }
+                    .filterNot { track -> track.referencePaths.any { it in inPlaylist } }
                     .map { pickerTrackUi(it) }
                 t.addTracks.copy(
                     allTracks = if (query.isBlank()) candidates else candidates.filter {
@@ -185,7 +184,7 @@ class LocalPlaylistViewModel(
 
     /** The playlist's tracks in user order, resolved from the current index snapshot. */
     private fun resolveTracks(playlist: LocalPlaylist): List<LocalMediaTrack> {
-        val tracksByPath = collectionsRepository.tracks.value.associateBy { it.path }
+        val tracksByPath = collectionsRepository.tracks.value.indexByReferencePath()
         return playlist.trackPaths.mapNotNull { tracksByPath[it] }
     }
 
@@ -226,7 +225,7 @@ class LocalPlaylistViewModel(
     fun playFrom(trackPath: String) {
         val state = uiState.value as? LocalPlaylistUiState.Loaded ?: return
         val tracks = resolveTracks(state.playlist)
-        val index = tracks.indexOfFirst { it.path == trackPath }
+        val index = tracks.indexOfFirst { trackPath in it.referencePaths }
         if (index >= 0) playTracks(tracks, index)
     }
 

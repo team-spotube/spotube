@@ -33,7 +33,7 @@ interface NativePlayerEngine {
     fun setListener(listener: NativePlayerListener?)
 
     /** Replaces the current media. Starts playing right away when [autoPlay] is set. */
-    fun load(url: String, autoPlay: Boolean, startPositionMs: Long)
+    fun load(url: String, autoPlay: Boolean, startPositionMs: Long, folderBookmark: String?, relativePath: String?)
     fun play()
     fun pause()
     fun stop()

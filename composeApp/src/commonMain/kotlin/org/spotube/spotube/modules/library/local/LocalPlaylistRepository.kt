@@ -112,6 +112,16 @@ class LocalPlaylistRepository(private val store: DataStore<Preferences>) {
         }
     }
 
+    /** Rewrite references after physical file moves, without changing playlist order. */
+    suspend fun remapMovedTracks(destinations: Map<String, String>) {
+        if (destinations.isEmpty()) return
+        mutate { playlists ->
+            playlists.map { playlist ->
+                playlist.copy(trackPaths = playlist.trackPaths.map { destinations[it] ?: it }.distinct())
+            }
+        }
+    }
+
     suspend fun moveTrack(id: String, fromIndex: Int, toIndex: Int) {
         update(id) { playlist ->
             val paths = playlist.trackPaths.toMutableList()

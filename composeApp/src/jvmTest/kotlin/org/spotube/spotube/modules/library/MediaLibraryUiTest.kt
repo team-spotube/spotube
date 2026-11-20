@@ -38,6 +38,15 @@ import org.spotube.spotube.modules.downloads.DownloadsToolbarSummary
 import org.spotube.spotube.modules.downloads.DownloadsToolbarActions
 import org.spotube.spotube.modules.downloads.downloadsUiState
 import org.spotube.spotube.modules.library.local_tracks.LibraryLocalTracksState
+import org.spotube.spotube.modules.library.local_tracks.BrowserTrack
+import org.spotube.spotube.modules.library.local_tracks.BrowserTrackRow
+import org.spotube.spotube.modules.library.local_tracks.BrowserFileActionButtons
+import org.spotube.spotube.modules.library.local_tracks.BrowserFileActionLabel
+import org.spotube.spotube.modules.library.local_tracks.MusicBrowserState
+import org.spotube.spotube.modules.library.local_tracks.TrackAction
+import org.spotube.spotube.modules.library.local_tracks.TrackTransfer
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
 import org.spotube.spotube.modules.library.local_tracks.LocalTracksContent
 import org.spotube.spotube.modules.library.local_tracks.LocalTracksBreadcrumb
 import org.spotube.spotube.modules.library.local_tracks.localTracksUiState
@@ -374,6 +383,90 @@ class MediaLibraryUiTest {
             scene.render().close()
             assertEquals(1, plays)
             assertEquals(0, navigations)
+        }
+    }
+
+    @Test
+    fun localTrackMenuOpensFromLongPressButtonAndDesktopRightClick() {
+        for (trigger in listOf("long press", "button", "right click")) {
+            var selected: TrackAction? = null
+            var played = false
+            val width = if (trigger == "long press") 380 else 1000
+            ImageComposeScene(width, 720) {
+                SpotubeTheme(UserSettings(theme = Theme.DARK)) {
+                    BrowserTrackRow(BrowserTrack("track", "Explorer test", "Album", null),
+                        selected = false, selecting = false, actionsEnabled = true,
+                        onClick = { played = true }, onPlay = { played = true }, onToggleSelection = {},
+                        onAction = { selected = it })
+                }
+            }.use { scene ->
+                repeat(6) { scene.render(it * 16_000_000L).close() }
+                val nodes = allNodes(scene)
+                when (trigger) {
+                    "long press" -> assertNotNull(nodes.firstNotNullOfOrNull {
+                        it.config.getOrNull(SemanticsActions.OnLongClick)?.action
+                    }).invoke()
+                    "button" -> nodes.first {
+                        it.config.getOrNull(SemanticsProperties.ContentDescription)?.contains("Track actions for Explorer test") == true &&
+                            it.config.getOrNull(SemanticsActions.OnClick) != null
+                    }.config[SemanticsActions.OnClick].action?.invoke()
+                    else -> {
+                        val point = Offset(160f, 20f)
+                        scene.sendPointerEvent(PointerEventType.Press, point, timeMillis = 100,
+                            buttons = PointerButtons(isSecondaryPressed = true), button = PointerButton.Secondary)
+                        scene.sendPointerEvent(PointerEventType.Release, point, timeMillis = 110,
+                            buttons = PointerButtons(), button = PointerButton.Secondary)
+                    }
+                }
+                repeat(18) { scene.render((it + 8) * 16_000_000L).close() }
+                val details = allNodes(scene).firstOrNull {
+                    it.config.getOrNull(SemanticsProperties.Text)?.any { text -> text.text == "File details" } == true &&
+                        it.config.getOrNull(SemanticsActions.OnClick) != null
+                }
+                assertNotNull(details, "No file details action after $trigger").config[SemanticsActions.OnClick].action?.invoke()
+                assertEquals(TrackAction.Details, selected)
+                assertFalse(played)
+            }
+        }
+    }
+
+    @Test
+    fun localFileSelectionAndPasteControlsFitInTheDesktopToolbar() {
+        for (transferring in listOf(false, true)) {
+            var handled = false
+            val browser = if (transferring) MusicBrowserState(transfer = TrackTransfer(2, move = true), canPaste = true)
+            else MusicBrowserState(isSelecting = true, selected = setOf("a", "b"))
+            ImageComposeScene(620, 160) {
+                SpotubeTheme(UserSettings(theme = Theme.DARK)) {
+                    MillenniumTopAppBar(
+                        title = { BrowserFileActionLabel(browser) },
+                        actions = {
+                            BrowserFileActionButtons(browser, inAppBar = true, onSelectAll = {},
+                                onSelectionAction = { handled = it == TrackAction.Copy }, onClearSelection = {},
+                                onCancelTransfer = {}, onPaste = { handled = true })
+                            LibraryToolbarActions(
+                                state = LibraryToolbarUiState(currentTab = LibraryTab.LocalTracks, canRefresh = true,
+                                    canCreatePlaylist = false, canChangeView = false),
+                                expandedDesktop = true, onOpenSearch = {}, onCloseSearch = {}, onCreatePlaylist = {},
+                                onRefresh = {}, expandedSearchWidth = 160.dp
+                            )
+                            Spacer(Modifier.width(132.dp)) // Room reserved by the desktop window controls.
+                        }
+                    )
+                }
+            }.use { scene ->
+                repeat(6) { scene.render(it * 16_000_000L).close() }
+                val labels = allNodes(scene).flatMap { it.config.getOrNull(SemanticsProperties.Text).orEmpty() }.map { it.text }
+                assertTrue((if (transferring) "Moving 2 tracks" else "2 tracks selected") in labels)
+                val target = if (transferring) "Paste here" else "Copy selected tracks"
+                val action = allNodes(scene).first {
+                    it.config.getOrNull(SemanticsProperties.ContentDescription)?.contains(target) == true &&
+                        it.config.getOrNull(SemanticsActions.OnClick) != null
+                }
+                assertTrue(action.boundsInRoot.width > 0 && action.boundsInRoot.right < 488)
+                action.config[SemanticsActions.OnClick].action?.invoke()
+                assertTrue(handled)
+            }
         }
     }
 

@@ -30,6 +30,9 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.DpSize
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigationevent.NavigationEventInfo
+import androidx.navigationevent.compose.NavigationBackHandler
+import androidx.navigationevent.compose.rememberNavigationEventState
 import com.composeunstyled.Text
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.ChevronRight
@@ -38,8 +41,7 @@ import org.spotube.spotube.core.ui.component.cards.MediaEmptyState
 import org.spotube.spotube.core.ui.component.cards.PlayableListTile
 import org.spotube.spotube.core.ui.theming.AppTheme
 import org.spotube.spotube.modules.library.local_tracks.media.rememberLocalMediaPermissionState
-import org.spotube.spotube.modules.settings.LocalMediaFoldersViewModel
-import org.spotube.spotube.modules.settings.components.LocalMediaFoldersDialogHost
+import org.spotube.spotube.modules.library.local_tracks.media.rememberMusicWriteLauncher
 import org.spotube.spotube.resources.iconsax.IconsaxFolderAdd
 import org.spotube.spotube.modules.shell.LocalAppShellBottomInset
 import org.spotube.spotube.resources.iconsax.Iconsax
@@ -47,10 +49,7 @@ import org.spotube.spotube.resources.iconsax.IconsaxFolderOpen
 import org.spotube.spotube.resources.iconsax.IconsaxPlay
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.pluralStringResource
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
-import org.spotube.spotube.core.navigation.NavigationCommands
-import org.spotube.spotube.core.navigation.Routes
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.spotube.core.ui.theming.AppIcon
@@ -59,28 +58,25 @@ import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumListTile
 import org.spotube.millennium.theme.MillenniumTheme
 import org.spotube.millennium.theme.millenniumPanelBrush
-import org.spotube.millennium.theme.millenniumSurface
 import spotube.composeapp.generated.resources.*
 
 @Composable
 fun LibraryLocalTracksScreen(
     modifier: Modifier = Modifier,
     viewModel: LibraryLocalTracksViewModel = koinViewModel(),
-    foldersViewModel: LocalMediaFoldersViewModel = koinViewModel(),
-    navigationCommands: NavigationCommands = koinInject()
+    fileActionsInAppBar: Boolean = false
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val permission = rememberLocalMediaPermissionState()
-    // Platform permission events only; the ViewModel decides whether/when to index media.
+    val requestWriteAccess = rememberMusicWriteLauncher(viewModel::onWritePermissionResult)
     LaunchedEffect(permission.isGranted) { viewModel.onPermissionChanged(permission.isGranted) }
-    LocalTracksContent(
-        state,
-        onOpenFolder = { navigationCommands.navigateTo(Routes.LocalFolder(it)) },
-        onPlayTrack = {}, onNavigateUp = {}, onPlayFolder = {},
-        onRequestPermission = permission.requestPermission, modifier = modifier,
-        onManageFolders = foldersViewModel::open
+    LaunchedEffect(viewModel) { viewModel.writePermissionRequests.collect { requestWriteAccess(it) } }
+    NavigationBackHandler(
+        state = rememberNavigationEventState(currentInfo = NavigationEventInfo.None),
+        isBackEnabled = state.canNavigateBack,
+        onBackCompleted = viewModel::back
     )
-    LocalMediaFoldersDialogHost(foldersViewModel)
+    MusicBrowserContent(state, viewModel, permission.requestPermission, modifier, fileActionsInAppBar)
 }
 
 @Composable
