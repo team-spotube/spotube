@@ -20,6 +20,8 @@
     <string name="queue_clear_queue">Clear Queue</string>
     <string name="queue_filter_queue">Filter queue...</string>
     <string name="queue_no_queue_entries">No queue entries</string>
+    <string name="queue_move_to_priority">Add to Priority Queue</string>
+    <string name="queue_priority_badge">Queued</string>
 
     <string name="search_placeholder">Search songs, artists, albums...</string>
     <string name="search_clear_history">Clear all history</string>
