@@ -24,6 +24,8 @@ interface AudioPlayerQueue {
 	val currentQueueEntryFlow: StateFlow<QueueEntry?>
 	val currentCollectionEntryFlow: StateFlow<QueueCollectionEntry?>
 	val collectionHistoryFlow: StateFlow<List<QueueCollectionEntry>>
+	val priorityQueueUrlsFlow: StateFlow<List<String>>
+		get() = kotlinx.coroutines.flow.MutableStateFlow(emptyList())
 
 	suspend fun load(
 		entries: List<QueueEntry>,
@@ -33,6 +35,8 @@ interface AudioPlayerQueue {
 	suspend fun addToQueue(entry: QueueEntry)
 	suspend fun addAllToQueue(entries: List<QueueEntry>, collectionEntry: QueueCollectionEntry? = null)
 	suspend fun addAllAfterCurrent(entries: List<QueueEntry>)
+	suspend fun moveToPriorityQueue(entry: QueueEntry) = Unit
+	suspend fun clearPriorityQueue() = Unit
 	suspend fun removeFromQueue(entry: QueueEntry)
 	suspend fun removeFromQueueByMediaUrl(mediaUrl: String)
 	suspend fun move(fromIndex: Int, toIndex: Int)
