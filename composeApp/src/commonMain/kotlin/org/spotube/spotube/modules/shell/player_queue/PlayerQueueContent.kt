@@ -58,6 +58,9 @@ import com.composeunstyled.Text
 import org.spotube.spotube.core.jam.JamParticipant
 import org.spotube.spotube.core.ui.component.AdaptiveDialogBottomSheet
 import org.spotube.spotube.core.ui.theming.AppTheme
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppState
+import org.spotube.spotube.core.ui.theming.engine.PlayersSlots
 import org.spotube.spotube.resources.iconsax.Iconsax
 import org.spotube.spotube.resources.iconsax.Iconsax3DotsMore
 import org.spotube.spotube.resources.iconsax.IconsaxCloseSquare
@@ -104,6 +107,7 @@ fun PlayerQueueContent(
     val filterQuery = state.filterQuery
     val isFiltered = state.isFiltered
     val isReadOnly = state.isReadOnly
+    val queueTheme = AppComponents.slot(PlayersSlots.PlayerQueueRoot)[AppState.Default]
     var selectedParticipant by remember { mutableStateOf<JamParticipant?>(null) }
 
     val lazyListState = rememberLazyListState()
@@ -118,16 +122,16 @@ fun PlayerQueueContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 8.dp, vertical = 4.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+                .padding(queueTheme.contentPadding),
+            verticalArrangement = Arrangement.spacedBy(queueTheme.spacing)
         ) {
             Text(
                 text = stringResource(Res.string.queue_title),
-                style = AppTheme.typography.titleLarge
+                style = queueTheme.titleStyle
             )
 
             Row(
-                horizontalArrangement = Arrangement.spacedBy(5.dp),
+                horizontalArrangement = Arrangement.spacedBy(queueTheme.filterSpacing),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 val filterState = rememberTextFieldState(filterQuery)
@@ -158,15 +162,14 @@ fun PlayerQueueContent(
             if (displayItems.isEmpty()) {
                 Text(
                     text = stringResource(Res.string.queue_no_queue_entries),
-                    style = AppTheme.typography.bodyMedium,
-                    color = AppTheme.colors.onSurfaceVariant
+                    style = queueTheme.emptyStyle
                 )
             } else {
 
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     state = lazyListState,
-                    contentPadding = PaddingValues(bottom = 8.dp)
+                    contentPadding = queueTheme.listPadding
                 ) {
                     items(displayItems, key = { it.id }) { item ->
                         ReorderableItem(reorderableLazyListState, key = item.id) { isDragging ->
@@ -313,6 +316,7 @@ private fun QueueItemRow(
     onParticipantClick: (JamParticipant) -> Unit = {}
 ) {
     var showMenu by remember { mutableStateOf(false) }
+    val row = AppComponents.slot(PlayersSlots.PlayerQueueRow)[if (item.isCurrent) AppState.Selected else AppState.Default]
 
     MillenniumListTile(
         onClick = onPlayClick,
@@ -322,14 +326,14 @@ private fun QueueItemRow(
         leading = {
             Row(
                 modifier = Modifier
-                    .height(56.dp),
+                    .height(row.height),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 AppIcon(
                     Iconsax.IconsaxDragHandle,
                     contentDescription = if (reorderScope != null) stringResource(Res.string.queue_reorder_content_description) else null,
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(row.handleSize)
                         .then(
                             if (reorderScope != null) {
                                 with(reorderScope) {
@@ -341,13 +345,13 @@ private fun QueueItemRow(
                             } else {
                                 Modifier
                             }),
-                    tint = AppTheme.colors.onSurfaceVariant)
+                    tint = row.handleTint)
 
                 Box(
                     modifier = Modifier
-                        .size(40.dp)
-                        .clip(AppTheme.shapes.small)
-                        .background(AppTheme.colors.surfaceVariant),
+                        .size(row.thumbSize)
+                        .clip(row.thumbShape)
+                        .background(row.thumbBackground),
                     contentAlignment = Alignment.Center
                 ) {
                     if (item.artwork != null) {
@@ -360,8 +364,7 @@ private fun QueueItemRow(
                     } else {
                         Text(
                             text = "${item.originalIndex + 1}",
-                            style = AppTheme.typography.labelMedium,
-                            color = AppTheme.colors.onSurfaceVariant
+                            style = row.thumbIndexStyle
                         )
                     }
                 }
@@ -370,21 +373,15 @@ private fun QueueItemRow(
         title = {
             Text(
                 text = item.title,
-                style = AppTheme.typography.bodyLarge,
+                style = row.titleStyle,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                color = if (item.isCurrent) {
-                    AppTheme.colors.onSecondaryContainer
-                } else {
-                    AppTheme.colors.onSurface
-                }
+                overflow = TextOverflow.Ellipsis
             )
         },
         subtitle = {
             Text(
                 text = item.addedByParticipant?.let { stringResource(Res.string.queue_item_subtitle_added_by, item.subtitle, it.displayName) } ?: item.subtitle,
-                style = AppTheme.typography.bodySmall,
-                color = AppTheme.colors.onSurfaceVariant,
+                style = row.subtitleStyle,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -392,28 +389,26 @@ private fun QueueItemRow(
         trailing = {
             Text(
                 text = item.durationLabel,
-                style = AppTheme.typography.bodySmall,
-                color = AppTheme.colors.onSurfaceVariant
+                style = row.durationStyle
             )
 
-            Spacer(modifier = Modifier.width(4.dp))
+            Spacer(modifier = Modifier.width(row.trailingSpacing))
 
             item.addedByParticipant?.let { participant ->
                 Box(
                     modifier = Modifier
-                        .size(28.dp)
+                        .size(row.participantSize)
                         .clip(CircleShape)
-                        .background(AppTheme.colors.surfaceVariant)
+                        .background(row.participantBackground)
                         .clickable { onParticipantClick(participant) },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = participant.displayName.firstOrNull()?.uppercase()?.take(1) ?: "?",
-                        style = AppTheme.typography.labelSmall,
-                        color = AppTheme.colors.onSurfaceVariant
+                        style = row.participantStyle
                     )
                 }
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(row.trailingSpacing))
             }
 
             if (showOptions) {

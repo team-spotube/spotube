@@ -162,6 +162,8 @@ data class ThemeDiscoverUi(
     val repos: List<ThemeRepoUi> = emptyList(),
     val loading: Boolean = false,
     val failed: Boolean = false,
+    /** GitHub is limiting requests (and nothing is cached): the failure is temporary and says so. */
+    val rateLimited: Boolean = false,
     val canLoadMore: Boolean = false,
     /** The repository whose releases are being browsed, if any. */
     val repo: ThemeRepoUi? = null,
@@ -199,17 +201,16 @@ internal fun normalizeSelectedThemeId(selected: String?, installedIds: List<Stri
 /** The accent swatch of [palette] (its light-mode accent), as `#RRGGBB`. */
 internal fun MillenniumPalette.accentHex(): String {
     val c = MillenniumColorSchemes().resolve(this, dark = false).accent
-    return "#" + (c.toArgb() and 0xFFFFFF).toString(16).padStart(6, '0').uppercase()
+    return "#${(c.toArgb() and 0xFFFFFF).toString(16).uppercase().padStart(6, '0')}"
 }
 
 /** Lists, selects, installs and removes themes (built-in Millennium looks plus installed packages). */
 class ThemeStoreViewModel(
     private val settings: SettingsRepository,
     private val themes: ThemePackageRepository,
-    httpClientFactory: HttpClientFactory,
+    private val github: ThemeGitHubRepository,
     private val updateService: ThemeUpdateService,
 ) : ViewModel() {
-    private val github = ThemeGitHubRepository(httpClientFactory.json)
     private val discover = MutableStateFlow(ThemeDiscoverUi(loading = true))
     private var discoverPage = 1
     private val prepared = MutableStateFlow<PreparedTheme?>(null)
@@ -355,25 +356,25 @@ class ThemeStoreViewModel(
     // ---- discover on GitHub ---------------------------------------------------------------------------------------
 
     /** Loads the first page of theme repositories (once; [retryDiscover] reloads). */
-    fun loadDiscover() {
+    fun loadDiscover(force: Boolean = false) {
         if (discover.value.repos.isNotEmpty() && !discover.value.failed) return
         discoverPage = 1
-        discover.update { it.copy(loading = true, failed = false) }
+        discover.update { it.copy(loading = true, failed = false, rateLimited = false) }
         viewModelScope.launch {
-            runCatching { github.searchThemes(page = 1) }
+            runCatching { github.searchThemes(page = 1, force = force) }
                 .onSuccess { r ->
                     discover.update { it.copy(repos = r.items.map(::toRepoUi), loading = false, canLoadMore = r.items.size < r.totalCount) }
                 }
                 .onFailure { e ->
                     if (e is CancellationException) throw e
-                    discover.update { it.copy(loading = false, failed = true) }
+                    discover.update { it.copy(loading = false, failed = true, rateLimited = e is GitHubRateLimitedException) }
                 }
         }
     }
 
     fun retryDiscover() {
-        discover.update { it.copy(repos = emptyList(), failed = false) }
-        loadDiscover()
+        discover.update { it.copy(repos = emptyList(), failed = false, rateLimited = false) }
+        loadDiscover(force = true)
     }
 
     fun loadMoreDiscover() {

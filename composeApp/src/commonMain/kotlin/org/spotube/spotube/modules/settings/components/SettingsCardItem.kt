@@ -17,6 +17,10 @@
 
 package org.spotube.spotube.modules.settings.components
 
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppSlots
+import org.spotube.spotube.core.ui.theming.engine.AppState
+import org.spotube.spotube.core.ui.theming.engine.ScreensSlots
 import org.spotube.spotube.core.ui.theming.AppTheme
 import com.composeunstyled.Text
 import org.spotube.millennium.composables.MillenniumListTile
@@ -37,6 +41,7 @@ fun SettingCardItem(
     onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    val row = AppComponents.slot(ScreensSlots.SettingsRow)[AppState.Default]
     MillenniumListTile(
         selected = false,
         enabled = enabled,
@@ -46,16 +51,14 @@ fun SettingCardItem(
         title = {
             Text(
                 title,
-                style = AppTheme.typography.labelLarge,
-                color = AppTheme.colors.onSurface
+                style = row.titleStyle
             )
         },
         subtitle = subtitle?.let {
             {
                 Text(
                     it,
-                    style = AppTheme.typography.bodySmall,
-                    color = AppTheme.colors.onSurfaceVariant
+                    style = row.subtitleStyle
                 )
             }
         },

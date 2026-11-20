@@ -56,6 +56,7 @@ import org.spotube.millennium.composables.LocalMillenniumIconResolver
 import org.spotube.millennium.theme.LocalMillenniumInteractionStyle
 import org.spotube.millennium.theme.LocalMillenniumSurfaceStyle
 import org.spotube.spotube.core.ui.theming.engine.CompiledTheme
+import org.spotube.spotube.core.ui.theming.engine.LocalAppComponents
 import org.spotube.spotube.core.ui.theming.engine.PrecompiledTheme
 import org.spotube.spotube.core.ui.theming.engine.ThemeIcon
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -326,6 +327,7 @@ private fun InstallCompiledTheme(
             LocalAppColors provides appColors,
             LocalAppTypography provides compiled.typography,
             LocalAppShapes provides compiled.shapes,
+            LocalAppComponents provides compiled.appComponents,
             LocalThemeIcons provides compiled.icons,
             LocalMillenniumInteractionStyle provides compiled.interaction,
             LocalMillenniumSurfaceStyle provides compiled.surface,

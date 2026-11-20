@@ -17,6 +17,10 @@
 
 package org.spotube.spotube.modules.lyrics
 
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppSlots
+import org.spotube.spotube.core.ui.theming.engine.AppState
+import org.spotube.spotube.core.ui.theming.engine.ScreensSlots
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Arrangement
@@ -73,7 +77,8 @@ fun SyncedLyricsList(
     onLineClick: ((LyricsLine) -> Unit)? = null
 ) {
     val listState = rememberLazyListState()
-    val colors = MillenniumTheme.colors
+    val lineSlot = AppComponents.slot(ScreensSlots.LyricsLine)
+    val immersiveSlot = AppComponents.slot(ScreensSlots.LyricsImmersiveLine)
 
     BoxWithConstraints(modifier = modifier) {
         // Half-viewport padding lets the first/last lines reach the center too.
@@ -94,18 +99,21 @@ fun SyncedLyricsList(
                 if (onLineClick != null) Modifier.fadingEdges(maxHeight * 0.18f) else Modifier
             ),
             contentPadding = PaddingValues(vertical = edgePadding),
-            verticalArrangement = Arrangement.spacedBy(if (onLineClick != null) 4.dp else 2.dp)
+            verticalArrangement = Arrangement.spacedBy(
+                if (onLineClick != null) immersiveSlot[AppState.Default].spacing else lineSlot[AppState.Default].spacing
+            )
         ) {
             itemsIndexed(lines, key = { index, line -> "$index-${line.time}" }) { index, line ->
                 val isCurrent = index == currentIndex
                 val text = line.text.ifBlank { LYRICS_BLANK_LINE }
-                val color by animateColorAsState(
+                val lineProps = lineSlot[
                     when {
-                        isCurrent -> colors.accent
-                        index < currentIndex -> colors.muted.copy(alpha = 0.55f)
-                        else -> colors.muted
+                        isCurrent -> AppState.Selected
+                        index < currentIndex -> AppState.Disabled
+                        else -> AppState.Default
                     }
-                )
+                ]
+                val color by animateColorAsState(lineProps.textStyle.color)
                 if (onLineClick != null) {
                     ImmersiveLyricLine(
                         text = text,
@@ -118,11 +126,8 @@ fun SyncedLyricsList(
                         text = text,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 8.dp, vertical = 2.dp),
-                        style = AppTheme.typography.bodyMedium.copy(
-                            fontWeight = if (isCurrent) FontWeight.Bold else FontWeight.Normal,
-                            color = color
-                        ),
+                            .padding(lineProps.padding),
+                        style = lineProps.textStyle.copy(color = color),
                         textAlign = TextAlign.Center,
                         maxLines = 2
                     )
@@ -140,6 +145,7 @@ private fun ImmersiveLyricLine(
     onClick: () -> Unit
 ) {
     val colors = MillenniumTheme.colors
+    val line = AppComponents.slot(ScreensSlots.LyricsImmersiveLine)[if (isCurrent) AppState.Selected else AppState.Default]
     val interaction = remember { MutableInteractionSource() }
     val hovered by interaction.collectIsHoveredAsState()
     val targetAlpha = when (distance) {
@@ -150,7 +156,7 @@ private fun ImmersiveLyricLine(
     }
     val alpha by animateFloatAsState(targetAlpha, tween(300))
     val scale by animateFloatAsState(if (isCurrent) 1f else 0.9f, tween(300))
-    val color by animateColorAsState(if (isCurrent) colors.accent else colors.text, tween(300))
+    val color by animateColorAsState(line.textStyle.color, tween(300))
     val hoverBackground by animateColorAsState(
         if (hovered && !isCurrent) colors.accent.copy(alpha = 0.10f) else Color.Transparent
     )
@@ -164,16 +170,13 @@ private fun ImmersiveLyricLine(
                 scaleY = scale
                 this.alpha = if (hovered) maxOf(alpha, 0.85f) else alpha
             }
-            .clip(RoundedCornerShape(14.dp))
+            .clip(line.shape)
             .background(hoverBackground)
             .hoverable(interaction)
             .pointerHoverIcon(PointerIcon.Hand)
             .clickable(interactionSource = interaction, indication = null, onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 10.dp),
-        style = AppTheme.typography.headlineSmall.copy(
-            fontWeight = FontWeight.Bold,
-            color = color
-        ),
+            .padding(line.padding),
+        style = line.textStyle.copy(color = color),
         textAlign = TextAlign.Center
     )
 }

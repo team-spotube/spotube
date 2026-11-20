@@ -17,6 +17,9 @@
 
 package org.spotube.spotube.core.ui.component.cards
 
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppSlots
+import org.spotube.spotube.core.ui.theming.engine.AppState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -54,7 +57,8 @@ fun AvatarCard(
         return
     }
 
-    MediaCardSurface(modifier.width(160.dp), onClick, isBlacklisted = isBlacklisted) {
+    val infoLook = AppComponents.slot(AppSlots.MediaCardInfo)[AppState.Default]
+    MediaCardSurface(modifier, onClick, isBlacklisted = isBlacklisted) {
         Column(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -80,21 +84,20 @@ fun AvatarCard(
                 )
             }
             Column(
-                modifier = Modifier.fillMaxWidth().padding(12.dp)
+                modifier = Modifier.fillMaxWidth().padding(infoLook.padding)
             ) {
                 TextWithShimmer(
                     text = title,
-                    style = AppTheme.typography.titleSmall,
+                    style = infoLook.titleStyle,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.fillMaxWidth()
                 )
                 subtitle?.let {
-                    Spacer(Modifier.height(4.dp))
+                    Spacer(Modifier.height(infoLook.spacing))
                     TextWithShimmer(
                         text = subtitle,
-                        style = AppTheme.typography.bodySmall,
-                        color = AppTheme.colors.onSurfaceVariant,
+                        style = infoLook.subtitleStyle,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.fillMaxWidth()

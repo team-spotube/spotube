@@ -68,7 +68,9 @@ import org.spotube.spotube.core.jam.JamRole
 import org.spotube.spotube.core.jam.JamRoomService
 import org.spotube.spotube.core.navigation.NavigationCommands
 import org.spotube.spotube.core.navigation.Routes
-import org.spotube.spotube.core.ui.theming.AppTheme
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppState
+import org.spotube.spotube.core.ui.theming.engine.PlayersSlots
 import org.spotube.spotube.modules.downloads.DownloadProgressIcon
 import org.spotube.spotube.modules.downloads.DownloadsViewModel
 import org.spotube.spotube.modules.saved_tracks.SAVED_TRACKS_COLLECTION_ID
@@ -225,7 +227,11 @@ fun AppLargePlayer(
 
     // A translucent tint (not near-opaque) so the blurred art behind still reads through, and
     // the material's watery caustics sit on top of it.
-    val surfaceTint = AppTheme.colors.surface.copy(alpha = 0.6f)
+    val root = AppComponents.slot(PlayersSlots.LargePlayerRoot)[AppState.Default]
+    val art = AppComponents.slot(PlayersSlots.LargePlayerArtwork)[AppState.Default]
+    val info = AppComponents.slot(PlayersSlots.LargePlayerInfo)[AppState.Default]
+    val transport = AppComponents.slot(PlayersSlots.LargePlayerTransport)[AppState.Default]
+    val surfaceTint = root.tint
 
     Column(
         modifier = modifier
@@ -237,7 +243,7 @@ fun AppLargePlayer(
                 .fillMaxWidth()
                 .hazeEffect(state = hazeState) {
                     blurEffect {
-                        blurRadius = 20.dp
+                        blurRadius = root.blurRadius
                         colorEffects = listOf(
                             HazeColorEffect.tint(surfaceTint)
                         )
@@ -247,7 +253,7 @@ fun AppLargePlayer(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 10.dp),
+                    .padding(root.contentPadding),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -257,9 +263,9 @@ fun AppLargePlayer(
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(52.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(AppTheme.colors.surfaceContainerHighest)
+                            .size(art.size)
+                            .clip(art.shape)
+                            .background(art.background)
                     ) {
                         AsyncImage(
                             model = coverModel,
@@ -271,11 +277,11 @@ fun AppLargePlayer(
                     Column(
                         modifier = Modifier
                             .weight(1f, fill = false)
-                            .padding(start = 12.dp)
+                            .padding(start = art.spacing)
                     ) {
                         Text(
                             text = playerUiState.title,
-                            style = AppTheme.typography.bodyLarge,
+                            style = info.titleStyle,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -284,11 +290,11 @@ fun AppLargePlayer(
                             onArtistClick = { artistId ->
                                 navigationCommands.navigateTo(Routes.Artist(artistId))
                             },
-                            style = AppTheme.typography.bodySmall,
-                            color = AppTheme.colors.onSurfaceVariant
+                            style = info.artistStyle,
+                            color = info.artistStyle.color
                         )
                     }
-                    Spacer(modifier = Modifier.width(10.dp))
+                    Spacer(modifier = Modifier.width(info.heartSpacing))
                     PlayerHeartButton(
                         audioPlayerQueue = audioPlayerQueue,
                         savedTracksViewModel = savedTracksViewModel
@@ -320,13 +326,11 @@ fun AppLargePlayer(
                     ) {
                         Text(
                             text = formatPlayerTime(playerUiState.position),
-                            style = AppTheme.typography.labelSmall,
-                            color = AppTheme.colors.onSurfaceVariant
+                            style = transport.timeStyle
                         )
                         Text(
                             text = formatPlayerTime(playerUiState.displayDuration),
-                            style = AppTheme.typography.labelSmall,
-                            color = AppTheme.colors.onSurfaceVariant
+                            style = transport.timeStyle
                         )
                     }
                     Row(
@@ -342,11 +346,7 @@ fun AppLargePlayer(
                             AppIcon(
                                 Iconsax.IconsaxShuffle,
                                 contentDescription = stringResource(if (playerUiState.isShuffling) Res.string.player_disable_shuffle_content_description else Res.string.player_enable_shuffle_content_description),
-                                tint = if (playerUiState.isShuffling) {
-                                    AppTheme.colors.primary
-                                } else {
-                                    AppTheme.colors.onSurfaceVariant
-                                }
+                                tint = if (playerUiState.isShuffling) transport.activeTint else transport.inactiveTint
                             )
                         }
                         MillenniumIconButton(
@@ -385,11 +385,7 @@ fun AppLargePlayer(
                                     LoopState.ALL -> Iconsax.IconsaxRepeatMusic
                                 },
                                 contentDescription = stringResource(when (playerUiState.loopState) { LoopState.NONE -> Res.string.player_loop_mode_none; LoopState.ONE -> Res.string.player_loop_mode_one; LoopState.ALL -> Res.string.player_loop_mode_all }),
-                                tint = if (playerUiState.loopState == LoopState.NONE) {
-                                    AppTheme.colors.onSurfaceVariant
-                                } else {
-                                    AppTheme.colors.primary
-                                }
+                                tint = if (playerUiState.loopState == LoopState.NONE) transport.inactiveTint else transport.activeTint
                             )
                         }
                     }
@@ -513,7 +509,7 @@ fun AppLargePlayer(
                                 }
                             },
                             label = stringResource(Res.string.player_volume_label),
-                            modifier = Modifier.fillMaxWidth(0.62f)
+                            modifier = Modifier.fillMaxWidth(transport.volumeWidthFraction)
                         )
                     }
                 }

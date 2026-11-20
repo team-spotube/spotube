@@ -18,6 +18,10 @@
 package org.spotube.spotube.core.ui.component
 
 
+import androidx.compose.ui.graphics.Color
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppState
+import org.spotube.spotube.core.ui.theming.engine.ContentSlots
 import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
@@ -145,18 +149,19 @@ fun TrackOptionsBottomSheet(
             onDismiss()
         }
     }
+    val look = AppComponents.slot(ContentSlots.TrackOptions)[AppState.Default]
     MillenniumModalBottomSheet(
         state = sheetState,
-        contentPadding = PaddingValues(top = 10.dp, bottom = 8.dp),
-        contentSpacing = 4.dp) {
+        contentPadding = look.sheetPadding,
+        contentSpacing = look.sheetSpacing) {
         Column(modifier = Modifier.fillMaxWidth()) {
             TrackOptionsSheetHeader(track = track)
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    .padding(look.listPadding),
+                verticalArrangement = Arrangement.spacedBy(look.itemSpacing)) {
                 buildTrackMenuItems(
                     track = track,
                     state = state,
@@ -176,27 +181,27 @@ fun TrackOptionsBottomSheet(
                             .clickable(
                                 enabled = item.enabled,
                                 onClick = item.onClick)
-                            .padding(horizontal = 12.dp, vertical = 14.dp),
+                            .padding(look.itemPadding),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        horizontalArrangement = Arrangement.spacedBy(look.itemGap)) {
                         item.icon?.let { icon ->
                             AppIcon(
                                 imageVector = icon,
                                 contentDescription = null,
-                                modifier = Modifier.size(22.dp),
+                                modifier = Modifier.size(look.iconSize),
                                 tint = if (item.enabled) {
-                                    AppTheme.colors.onSurface
+                                    look.labelStyle.color
                                 } else {
-                                    AppTheme.colors.onSurface.copy(alpha = 0.38f)
+                                    look.labelStyle.color.copy(alpha = look.disabledAlpha)
                                 })
-                        } ?: Spacer(modifier = Modifier.size(22.dp))
+                        } ?: Spacer(modifier = Modifier.size(look.iconSize))
                         Text(
                             text = item.label,
-                            style = AppTheme.typography.bodyLarge,
+                            style = look.labelStyle,
                             color = if (item.enabled) {
-                                AppTheme.colors.onSurface
+                                Color.Unspecified
                             } else {
-                                AppTheme.colors.onSurface.copy(alpha = 0.38f)
+                                look.labelStyle.color.copy(alpha = look.disabledAlpha)
                             })
                     }
                 }
@@ -207,37 +212,36 @@ fun TrackOptionsBottomSheet(
 
 @Composable
 fun TrackOptionsSheetHeader(track: MetadataTrack) {
+    val look = AppComponents.slot(ContentSlots.TrackOptions)[AppState.Default]
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+            .padding(look.headerPadding),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        horizontalArrangement = Arrangement.spacedBy(look.headerSpacing)) {
         AsyncImage(
             model = (track.album?.thumbnails ?: track.thumbnails)?.firstOrNull()?.url,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .size(56.dp)
-                .clip(AppTheme.shapes.small))
+                .size(look.headerArtworkSize)
+                .clip(look.headerArtworkShape))
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = track.title,
-                style = AppTheme.typography.titleMedium,
+                style = look.headerTitleStyle,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis)
             Text(
                 text = track.artists.joinToString(", ") { it.name },
-                style = AppTheme.typography.bodyMedium,
-                color = AppTheme.colors.onSurfaceVariant,
+                style = look.headerArtistStyle,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis)
             track.album?.let { album ->
                 Text(
                     text = album.title,
-                    style = AppTheme.typography.bodySmall,
-                    color = AppTheme.colors.onSurfaceVariant,
+                    style = look.headerAlbumStyle,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis)
             }

@@ -77,6 +77,8 @@ data class CompiledTheme(
     val components: MillenniumThemeComponents,
     val shapes: AppShapes,
     val typography: AppTypography,
+    /** Props of the app's own components (cards, players...), every state precompiled. See `AppComponents.kt`. */
+    val appComponents: AppComponentThemes = AppComponentThemes.defaults(DefaultAppThemeBase),
     /** App icons the theme replaces, by icon name. */
     val icons: Map<String, ThemeIcon> = emptyMap(),
     /** The hover/press lighting for controls without a lighting property of their own. */
@@ -106,7 +108,7 @@ fun compileTheme(
     parseProblems: Set<String> = emptySet(),
 ): CompiledTheme {
     if (doc == null) {
-        return CompiledTheme(baseColors, baseComponents, AppDefaultShapes, AppDefaultTypography, problems = parseProblems.toList())
+        return CompiledTheme(baseColors, baseComponents, AppDefaultShapes, AppDefaultTypography, appComponents = stockAppComponents(baseColors), problems = parseProblems.toList())
     }
     val compiler = ThemeCompiler(doc, assets, parameters, env, baseColors, baseComponents, parseProblems)
     return try {
@@ -114,9 +116,12 @@ fun compileTheme(
     } catch (e: ThemeBudgetExceeded) {
         // A hostile or accidental exponential theme: fall back to the stock look, never hang.
         val problems = compiler.problems + "Theme is too complex to evaluate and was ignored"
-        CompiledTheme(baseColors, baseComponents, AppDefaultShapes, AppDefaultTypography, problems = problems.toList())
+        CompiledTheme(baseColors, baseComponents, AppDefaultShapes, AppDefaultTypography, appComponents = stockAppComponents(baseColors), problems = problems.toList())
     }
 }
+
+private fun stockAppComponents(colors: MillenniumColors) =
+    AppComponentThemes.defaults(AppThemeBase(colors, AppDefaultTypography, AppDefaultShapes))
 
 private val STATES = listOf("default", "hovered", "focused", "pressed", "disabled", "selected", "error")
 
@@ -153,11 +158,14 @@ internal class ThemeCompiler(
     fun compile(): CompiledTheme {
         val colors = compileColors()
         val components = compileAllComponents(baseComponents)
+        val shapes = compileShapes()
+        val typography = compileTypography()
         return CompiledTheme(
             colors = colors,
             components = components,
-            shapes = compileShapes(),
-            typography = compileTypography(),
+            shapes = shapes,
+            typography = typography,
+            appComponents = compileAppComponents(AppThemeBase(colors, typography, shapes)),
             icons = assets.icons,
             interaction = compileInteraction(),
             surface = compileSurface(),
@@ -281,12 +289,12 @@ internal class ThemeCompiler(
      * Cascade for one component/variant/state, later wins:
      * `defaults` < `base` < `states.<state>` < `variants.<v>.base` < `variants.<v>.states.<state>` < matching `rules`.
      */
-    fun mergedProps(name: String, variant: String?, state: String): MergedProps {
+    fun mergedProps(name: String, variant: String?, state: String, useDefaults: Boolean = true): MergedProps {
         val comp = componentJson(name)
         val scope = scopeFor(comp)
         ev.component = mapOf("state" to state, "variant" to variant)
         val layers = ArrayList<JsonElement?>()
-        layers += doc.defaults
+        if (useDefaults) layers += doc.defaults
         layers += comp?.get("base")
         layers += (comp?.get("states") as? JsonObject)?.get(state)
         val v = variant?.let { (comp?.get("variants") as? JsonObject)?.get(it) as? JsonObject }
@@ -303,13 +311,13 @@ internal class ThemeCompiler(
             val obj = layer as? JsonObject ?: continue
             val m = ev.eval(obj, scope) as? Map<String, Any?> ?: continue
             out = deepMerge(out, m)
-            if (index > 0) explicit += m.keys // `defaults` may name props a component lacks; everything else must exist
+            if (layer !== doc.defaults) explicit += m.keys // `defaults` may name props a component lacks; everything else must exist
         }
         return MergedProps(out, explicit)
     }
 
     /** Warns about properties a theme sets that the component does not have (almost always a typo). */
-    private fun reportUnknown(where: String, reader: PropReader, merged: MergedProps) {
+    internal fun reportUnknown(where: String, reader: PropReader, merged: MergedProps) {
         for (key in reader.unreadKeys(merged.explicit)) problems += "$where: unknown property \"$key\""
     }
 

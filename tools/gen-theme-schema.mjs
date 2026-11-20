@@ -1,6 +1,9 @@
 // Generates the JSON Schema of theme.json from the generated property tables.
 //
-// usage: node tools/gen-theme-schema.mjs <GeneratedThemeProps.kt> <ThemeDocument.kt> <out.json>
+// usage: node tools/gen-theme-schema.mjs <GeneratedThemeProps.kt> <ThemeDocument.kt> <out.json> [AppSlots*.kt ...]
+//
+// The optional trailing files are the app's own component slots (core/ui/theming/engine/AppSlots*.kt): every
+// `AppSlot(component = "x", variant = "y", ...)` becomes `components.x.variants.y` with the properties its `apply` reads.
 //
 // The component part (every component, its slots and each property with its kind) comes from GeneratedThemeProps.kt,
 // so it can never drift from what the compiler accepts; the document part (metadata, tokens, parameters, assets) is
@@ -9,7 +12,7 @@
 
 import { readFileSync, writeFileSync } from 'node:fs';
 
-const [propsFile, docFile, out] = process.argv.slice(2);
+const [propsFile, docFile, out, ...slotFiles] = process.argv.slice(2);
 if (!propsFile || !docFile || !out) {
   console.error('usage: gen-theme-schema.mjs <GeneratedThemeProps.kt> <ThemeDocument.kt> <out.json>');
   process.exit(2);
@@ -41,6 +44,22 @@ for (const line of props.split('\n')) {
   const single = line.match(/singleProp\("(\w+)",.*::(apply\w+),/);
   if (single) comps.set(single[1], [{ variant: null, fn: single[2], single: true }]);
 }
+// In-house slots: scan each `AppSlot(` block for the `r.<kind>("key"` reads of its apply lambda.
+let appSlotCount = 0;
+for (const file of slotFiles) {
+  const text = readFileSync(file, 'utf8');
+  const heads = [...text.matchAll(/component\s*=\s*"(\w+)",\s*variant\s*=\s*(null|"\w+")/g)];
+  heads.forEach((m, i) => {
+    const segment = text.slice(m.index, heads[i + 1]?.index ?? text.length);
+    const variant = m[2] === 'null' ? null : m[2].slice(1, -1);
+    const fn = `slot:${m[1]}.${variant}`;
+    fnFields.set(fn, [...segment.matchAll(/\br\.(\w+)\("(\w+)"/g)].map((f) => ({ name: f[2], kind: f[1] })));
+    const list = comps.get(m[1]) ?? [];
+    list.push({ variant, fn });
+    comps.set(m[1], list);
+    appSlotCount++;
+  });
+}
 if (comps.size < 20) throw new Error(`only found ${comps.size} components; the generated file format changed`);
 
 // ---- value kinds ----------------------------------------------------------------------------------------------------
@@ -65,7 +84,8 @@ const STATES = ['default', 'hovered', 'focused', 'pressed', 'disabled', 'selecte
 // One property set per slot (and one merged set per multi-slot component), defined once in $defs and referenced.
 const bagDefs = {};
 const propBag = (fns) => {
-  const key = fns.length === 1 ? fns[0].replace(/^apply|ThemeProperties$|Properties$/g, '') : `${fns[0].replace(/^apply|ThemeProperties$|Properties$/g, '')}All`;
+  const clean = (f) => f.replace(/^apply|ThemeProperties$|Properties$/g, '').replace(/^slot:/, 'app.').replace(/\./g, '_').replace('app_', 'app.');
+  const key = fns.length === 1 ? clean(fns[0]) : `${clean(fns[0])}All`;
   bagDefs[`props.${key}`] ??= { type: 'object', properties: propsOf(fns), additionalProperties: false };
   return { $ref: `#/$defs/props.${key}` };
 };
@@ -249,4 +269,4 @@ const schema = {
 };
 
 writeFileSync(out, `${JSON.stringify(schema, null, 2)}\n`);
-console.log(`theme schema ${version}: ${comps.size} components, ${[...fnFields.values()].reduce((a, f) => a + f.length, 0)} properties -> ${out}`);
+console.log(`theme schema ${version}: ${comps.size} components (${appSlotCount} app slots), ${[...fnFields.values()].reduce((a, f) => a + f.length, 0)} properties -> ${out}`);

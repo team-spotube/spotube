@@ -18,6 +18,10 @@
 package org.spotube.spotube.modules.home
 
 
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppSlots
+import org.spotube.spotube.core.ui.theming.engine.AppState
+import org.spotube.spotube.core.ui.theming.engine.ScreensSlots
 import org.spotube.spotube.core.ui.theming.appBackground
 import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
@@ -239,15 +243,16 @@ private fun HomeContent(
     onGenreSelected: (String) -> Unit
 ) {
     val shellBottomInset = LocalAppShellBottomInset.current
-    val contentPadding = remember(shellBottomInset) {
-        PaddingValues(top = 16.dp, bottom = 16.dp + shellBottomInset)
+    val screen = AppComponents.slot(ScreensSlots.ScreenRoot)[AppState.Default]
+    val contentPadding = remember(shellBottomInset, screen) {
+        PaddingValues(top = screen.topPadding, bottom = screen.bottomPadding + shellBottomInset)
     }
 
     LazyColumn(
         state = listState,
         modifier = Modifier.fillMaxSize(),
         contentPadding = contentPadding,
-        verticalArrangement = Arrangement.spacedBy(24.dp)
+        verticalArrangement = Arrangement.spacedBy(screen.sectionSpacing)
     ) {
         when (state) {
             is HomeScreenState.Loading -> {
@@ -396,31 +401,28 @@ private fun HomeSection(
     modifier: Modifier = Modifier
 ) {
     val rowState = rememberLazyListState()
+    val header = AppComponents.slot(ScreensSlots.SectionHeader)[AppState.Default]
 
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(header.spacing)
     ) {
         if (!subtitle.isNullOrEmpty()) Text(
             text = subtitle,
-            style = AppTheme.typography.labelMedium.copy(
-                color = AppTheme.colors.secondary,
-                fontWeight = FontWeight.Medium
-            ),
-            modifier = Modifier.padding(horizontal = 16.dp)
+            style = header.subtitleStyle,
+            modifier = Modifier.padding(horizontal = header.horizontalPadding)
         )
         Text(
             text = title,
-            style = AppTheme.typography.titleLarge,
-            fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(horizontal = 16.dp).offset(y = (-12).dp)
+            style = header.titleStyle,
+            modifier = Modifier.padding(horizontal = header.horizontalPadding).offset(y = header.titleOffset)
         )
 
         LazyRow(
             state = rowState,
             modifier = Modifier.dragScrollable(rowState),
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(horizontal = header.horizontalPadding),
+            horizontalArrangement = Arrangement.spacedBy(header.itemSpacing),
             verticalAlignment = Alignment.Top
         ) {
             items(items) { browseItem ->

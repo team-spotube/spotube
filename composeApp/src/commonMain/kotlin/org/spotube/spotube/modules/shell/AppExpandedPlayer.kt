@@ -48,6 +48,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 
 import org.spotube.spotube.core.ui.theming.AppTheme
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppState
+import org.spotube.spotube.core.ui.theming.engine.PlayersSlots
 import org.spotube.millennium.composables.MillenniumSnackbarHost
 import org.spotube.millennium.composables.MillenniumSnackbarHostState
 import org.spotube.millennium.composables.MillenniumIconButton
@@ -450,15 +453,19 @@ fun AppExpandedPlayer(
             }
         }
 
+        val root = AppComponents.slot(PlayersSlots.ExpandedPlayerRoot)[AppState.Default]
+        val art = AppComponents.slot(PlayersSlots.ExpandedPlayerArtwork)[AppState.Default]
+        val info = AppComponents.slot(PlayersSlots.ExpandedPlayerInfo)[AppState.Default]
+        val transport = AppComponents.slot(PlayersSlots.ExpandedPlayerTransport)[AppState.Default]
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .windowInsetsPadding(WindowInsets.safeDrawing)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp),
+                .padding(root.contentPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(root.topSpacing))
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -475,7 +482,7 @@ fun AppExpandedPlayer(
                 }
                 Text(
                     text = stringResource(Res.string.player_now_playing),
-                    style = AppTheme.typography.titleMedium,
+                    style = root.headerStyle,
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center,
                     maxLines = 1
@@ -491,16 +498,16 @@ fun AppExpandedPlayer(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 20.dp, bottom = 24.dp),
+                    .padding(art.padding),
                 contentAlignment = Alignment.Center
             ) {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth(0.84f)
+                        .fillMaxWidth(art.widthFraction)
                         .aspectRatio(1f)
                         .then(albumArtModifier)
-                        .clip(RoundedCornerShape(22.dp))
-                        .background(AppTheme.colors.surfaceContainerHighest)
+                        .clip(art.shape)
+                        .background(art.background)
                 ) {
                     AsyncImage(
                         model = coverModel,
@@ -514,7 +521,7 @@ fun AppExpandedPlayer(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 2.dp),
+                    .padding(info.rowPadding),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -528,7 +535,7 @@ fun AppExpandedPlayer(
                 ) {
                     Text(
                         text = playerUiState.title,
-                        style = AppTheme.typography.headlineSmall,
+                        style = info.titleStyle,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         textAlign = TextAlign.Center
@@ -540,8 +547,8 @@ fun AppExpandedPlayer(
                             // The page opens beneath the player, so get out of the way
                             onCollapse()
                         },
-                        style = AppTheme.typography.bodyLarge,
-                        color = AppTheme.colors.onSurfaceVariant,
+                        style = info.artistStyle,
+                        color = info.artistStyle.color,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -553,7 +560,7 @@ fun AppExpandedPlayer(
                 }
             }
 
-            Column(modifier = Modifier.padding(top = 20.dp)) {
+            Column(modifier = Modifier.padding(transport.seekPadding)) {
                 MillenniumSlider(
                     value = seekProgress,
                     onValueChange = {
@@ -571,25 +578,23 @@ fun AppExpandedPlayer(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 2.dp),
+                        .padding(transport.timePadding),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = formatPlayerTime(playerUiState.position),
-                        style = AppTheme.typography.labelSmall,
-                        color = AppTheme.colors.onSurfaceVariant
+                        style = transport.timeStyle
                     )
                     Text(
                         text = formatPlayerTime(playerUiState.displayDuration),
-                        style = AppTheme.typography.labelSmall,
-                        color = AppTheme.colors.onSurfaceVariant
+                        style = transport.timeStyle
                     )
                 }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp, bottom = 12.dp),
+                        .padding(transport.controlsPadding),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -601,11 +606,7 @@ fun AppExpandedPlayer(
                         AppIcon(
                             Iconsax.IconsaxShuffle,
                             contentDescription = stringResource(if (playerUiState.isShuffling) Res.string.player_disable_shuffle_content_description else Res.string.player_enable_shuffle_content_description),
-                            tint = if (playerUiState.isShuffling) {
-                                AppTheme.colors.primary
-                            } else {
-                                AppTheme.colors.onSurfaceVariant
-                            }
+                            tint = if (playerUiState.isShuffling) transport.activeTint else transport.inactiveTint
                         )
                     }
                     MillenniumIconButton(
@@ -622,7 +623,7 @@ fun AppExpandedPlayer(
                         AppIcon(
                             if (playerUiState.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                             contentDescription = stringResource(if (playerUiState.isPlaying) Res.string.player_pause_content_description else Res.string.player_play_content_description),
-                            modifier = Modifier.size(30.dp),
+                            modifier = Modifier.size(transport.playIconSize),
                             tint = LocalTextStyle.current.color
                         )
                     }
@@ -645,11 +646,7 @@ fun AppExpandedPlayer(
                                 LoopState.ALL -> Iconsax.IconsaxRepeatMusic
                             },
                             contentDescription = stringResource(when (playerUiState.loopState) { LoopState.NONE -> Res.string.player_loop_mode_none; LoopState.ONE -> Res.string.player_loop_mode_one; LoopState.ALL -> Res.string.player_loop_mode_all }),
-                            tint = if (playerUiState.loopState == LoopState.NONE) {
-                                AppTheme.colors.onSurfaceVariant
-                            } else {
-                                AppTheme.colors.primary
-                            }
+                            tint = if (playerUiState.loopState == LoopState.NONE) transport.inactiveTint else transport.activeTint
                         )
                     }
                 }
@@ -658,7 +655,7 @@ fun AppExpandedPlayer(
             LyricsPreviewCard(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                    .padding(AppComponents.slot(PlayersSlots.ExpandedPlayerLyrics)[AppState.Default].outerPadding),
                 onExpand = onExpandLyrics
             )
         }
@@ -697,11 +694,12 @@ private fun LyricsPreviewCard(
     val isLoading = uiState.isLoading
     if (syncedLyrics.isEmpty() || isLoading) return
 
+    val lyrics = AppComponents.slot(PlayersSlots.ExpandedPlayerLyrics)[AppState.Default]
     MillenniumCard(
         modifier = modifier.clickable(onClick = onExpand),
-        contentPadding = PaddingValues(12.dp),
-        contentSpacing = 8.dp,
-        shadowElevation = 2.dp
+        contentPadding = lyrics.contentPadding,
+        contentSpacing = lyrics.contentSpacing,
+        shadowElevation = lyrics.shadowElevation
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -710,8 +708,7 @@ private fun LyricsPreviewCard(
         ) {
             Text(
                 text = stringResource(Res.string.player_lyrics),
-                style = AppTheme.typography.labelMedium,
-                color = MillenniumTheme.colors.muted
+                style = lyrics.titleStyle
             )
             MillenniumIconButton(
                 onClick = onExpand,
@@ -720,7 +717,7 @@ private fun LyricsPreviewCard(
                 AppIcon(
                     Iconsax.IconsaxArrowSquareUp,
                     contentDescription = stringResource(Res.string.player_expand_lyrics_content_description),
-                    tint = MillenniumTheme.colors.muted
+                    tint = lyrics.iconTint
                 )
             }
         }
@@ -731,7 +728,7 @@ private fun LyricsPreviewCard(
             currentIndex = uiState.currentIndex,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(120.dp)
+                .height(lyrics.previewHeight)
         )
     }
 }
@@ -743,11 +740,12 @@ private fun OptionTile(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val tile = AppComponents.slot(PlayersSlots.ExpandedPlayerOptionTile)[AppState.Default]
     MillenniumCard(
         modifier = modifier
             .aspectRatio(1f)
             .clickable(onClick = onClick),
-        contentPadding = PaddingValues(12.dp)
+        contentPadding = tile.contentPadding
     ) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Column(
@@ -757,17 +755,16 @@ private fun OptionTile(
                 AppIcon(
                     imageVector = icon,
                     contentDescription = label,
-                    modifier = Modifier.size(28.dp),
-                    tint = AppTheme.colors.onSurface
+                    modifier = Modifier.size(tile.iconSize),
+                    tint = tile.iconTint
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(tile.spacing))
                 Text(
                     text = label,
-                    style = AppTheme.typography.labelSmall,
+                    style = tile.labelStyle,
                     textAlign = TextAlign.Center,
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    color = AppTheme.colors.onSurfaceVariant
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }

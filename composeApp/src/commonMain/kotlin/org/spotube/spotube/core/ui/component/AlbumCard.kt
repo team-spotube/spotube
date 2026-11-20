@@ -72,7 +72,7 @@ fun AlbumCard(
                 album.title
             )
         },
-        modifier = if (listMode) modifier else modifier.width(160.dp),
+        modifier = modifier,
         sharedElementKey = "album_art_${album.id}",
         listMode = listMode,
         playLoading = CollectionPlaybackKey(RemoteCollectionType.Album, album.id, PlaybackDestinationAction.Play) in busyCollections,

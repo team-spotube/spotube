@@ -48,4 +48,14 @@ class ThemeSchemaTest {
         assertTrue(components.containsAll(used), "components missing from the schema: ${used - components}")
         assertTrue(components.size >= 33)
     }
+
+    @Test
+    fun everyInHouseSlotIsInTheSchema() {
+        val components = schema["properties"]!!.jsonObject["components"]!!.jsonObject["properties"]!!.jsonObject
+        for (slot in org.spotube.spotube.core.ui.theming.engine.AppSlots.all) {
+            val comp = components[slot.component]?.jsonObject ?: error("component ${slot.component} missing from the schema; regenerate it")
+            val variants = comp["properties"]!!.jsonObject["variants"]?.jsonObject?.get("properties")?.jsonObject
+            assertTrue(slot.variant == null || variants?.containsKey(slot.variant) == true, "slot ${slot.path} missing from the schema")
+        }
+    }
 }

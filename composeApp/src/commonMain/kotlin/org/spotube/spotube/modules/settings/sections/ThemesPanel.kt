@@ -159,7 +159,6 @@ internal fun ThemesPanel() {
                 ThemeRow(
                     card = card,
                     onOpen = { detailsId = card.id },
-                    onSelect = { viewModel.select(card.id) },
                     onUpdate = { viewModel.updateTheme(card.id) },
                 )
             }
@@ -212,11 +211,12 @@ internal fun ThemeCardList(content: @Composable () -> Unit) {
  * theme (a bare `clickable` draws nothing: Millennium turns Compose's default indication off).
  */
 @Composable
-internal fun ThemeRow(card: ThemeCardUi, onOpen: () -> Unit, onSelect: () -> Unit, onUpdate: () -> Unit = {}) {
+internal fun ThemeRow(card: ThemeCardUi, onOpen: () -> Unit, onUpdate: () -> Unit = {}) {
     MillenniumListTile(
         modifier = Modifier.fillMaxWidth(),
         selected = card.selected,
-        onClick = onSelect,
+        // Opening the details is the row's action; selecting happens from the dialog's Select button.
+        onClick = onOpen,
         leading = { PluginIconWell(size = 40.dp) { ThemeLogo(card) } },
         title = {
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -255,14 +255,6 @@ internal fun ThemeRow(card: ThemeCardUi, onOpen: () -> Unit, onSelect: () -> Uni
                         Text(stringResource(Res.string.settings_theme_update_available, version))
                     }
                 }
-                MillenniumIconButton(
-                    icon = Iconsax.IconsaxInformation,
-                    contentDescription = stringResource(Res.string.settings_theme_details),
-                    onClick = onOpen,
-                    style = MillenniumIconButtonStyle.Quiet,
-                    // Follow the row's text colour so the icon stays readable on a selected (filled) row.
-                    foreground = LocalTextStyle.current.color.takeIf { it != Color.Unspecified },
-                )
             }
         },
     )

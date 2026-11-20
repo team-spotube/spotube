@@ -1,5 +1,8 @@
 name: Release
 
+# Gobley 0.3.7 expects Cargo's pre-1.100 build-script output layout. Keep the toolchain pinned
+# until Gobley supports Cargo 1.100+'s new layout.
+
 on:
   workflow_dispatch:
     inputs:
@@ -159,7 +162,7 @@ jobs:
         uses: android-actions/setup-android@v4
 
       - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@1.99.1
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
@@ -208,7 +211,7 @@ jobs:
           java-version: 21
 
       - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@1.99.1
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
@@ -291,7 +294,7 @@ jobs:
           java-version: 21
 
       - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@1.99.1
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
@@ -412,7 +415,7 @@ jobs:
           java-version: 21
 
       - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@1.99.1
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
@@ -518,7 +521,7 @@ jobs:
           java-version: 21
 
       - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@1.99.1
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
@@ -593,7 +596,7 @@ jobs:
           java-version: 21
 
       - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@1.99.1
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
@@ -662,7 +665,7 @@ jobs:
           java-version: 21
 
       - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@1.99.1
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
