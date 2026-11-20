@@ -69,7 +69,12 @@ final class CarPlaySceneDelegate: UIResponder, @preconcurrency CPTemplateApplica
                 completion()
             }
         }
-        if let urlString = item.imageUrl { loadImage(urlString, into: row) }
+        if let urlString = item.imageUrl {
+            loadImage(urlString, into: row)
+        } else if item.kind == CarPlayItemKind.savedtracks {
+            // The row that starts your music wears the player's play button.
+            row.setImage(PlayOrbImage.make(size: CPListItem.maximumImageSize))
+        }
         return row
     }
 

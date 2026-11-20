@@ -93,16 +93,9 @@ object NowPlayingWidget : KoinComponent {
     private const val HOLE_FRACTION = 0.14f // of the disc radius, a CD's 15mm hole in its 120mm
     private const val HUB_FRACTION = 0.32f // the clear plastic ring round the hole
     private const val DISC_DEGREES_PER_SECOND = 36f // one turn in 10 seconds, as res/anim/widget_disc_spin
-    private const val DEFAULT_ACCENT = 0xFF1976B9.toInt()
-    private const val DEFAULT_ORB_TOP = 0xFF1976B9.toInt() // dark Blue palette accentTop
-    private const val DEFAULT_ORB_BOTTOM = 0xFF002D74.toInt() // dark Blue palette accentBottom
     private const val GLASS_ALPHA = 184 // 72%, matches android:alpha on widget_glass
     private const val GLASS_TEXT = 0xFFF2F6FC.toInt() // the artist line, the dimmest text on the card
     private const val MIN_TEXT_CONTRAST = 4.5
-    private const val ORB_STRENGTH = 0.48f // MillenniumIconButton's default orbStrength
-    private const val ORB_BORDER_FRACTION = 1f / 46f // its 1dp border on the 46dp button
-    private const val MIN_ACCENT_SATURATION = 0.18f
-    private const val BUTTON_BITMAP_PX = 192
 
     const val ACTION_PAUSE = "org.spotube.spotube.widget.PAUSE"
     const val ACTION_NEXT = "org.spotube.spotube.widget.NEXT"
@@ -372,8 +365,8 @@ object NowPlayingWidget : KoinComponent {
         val remote = state.remoteDevice != null
         setViewVisibility(R.id.widget_caption, if (remote) View.VISIBLE else View.GONE)
         if (texts.caption != null) setTextViewText(R.id.widget_caption, texts.caption)
-        setImageViewBitmap(R.id.widget_play_bg, accentButton(artwork?.accent ?: DEFAULT_ACCENT))
-        setInt(R.id.widget_glass, "setColorFilter", glassTint(artwork?.accent ?: DEFAULT_ACCENT))
+        setImageViewBitmap(R.id.widget_play_bg, PlayOrb.draw(artwork?.accent ?: PlayOrb.DEFAULT_ACCENT))
+        setInt(R.id.widget_glass, "setColorFilter", glassTint(artwork?.accent ?: PlayOrb.DEFAULT_ACCENT))
         setTextViewText(R.id.widget_title, texts.title)
         setTextViewText(R.id.widget_artist, texts.subtitle)
         val disc = artwork?.disc ?: appLogo(context) // no cover: the logo, which turns like a cover
@@ -462,112 +455,6 @@ object NowPlayingWidget : KoinComponent {
     private class Artwork(val disc: Bitmap, val accent: Int)
 
     /**
-     * The Play/Pause orb: a port of the app's own Primary icon button (Millennium's
-     * `MillenniumIconButton`, `millenniumIconOrb` and `millenniumIconOrbStops`), so the widget's
-     * button is the player's button. RemoteViews can't draw Compose or tint a gradient per
-     * instance, so it is drawn here, once per cover, at the library's default strength.
-     *
-     * The colours come from the cover instead of the palette: [orbPair] gives the bright and deep
-     * accent for the cover's hue, which for the default blue is exactly the dark theme's accent.
-     */
-    private fun accentButton(accent: Int): Bitmap {
-        val (top, bottom) = orbPair(accent)
-        val size = BUTTON_BITMAP_PX
-        val s = size.toFloat()
-        val half = s / 2f
-        val strength = ORB_STRENGTH
-        fun alpha(color: Int, factor: Float) = ColorUtils.setAlphaComponent(color, (255 * factor).roundToInt())
-
-        val out = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(out)
-        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-
-        // Body: dark jewel glass, brightest only at the lower lip (millenniumIconOrbStops).
-        val body = ColorUtils.blendARGB(bottom, Color.BLACK, 0.52f)
-        paint.shader = LinearGradient(
-            0f, 0f, 0f, s,
-            intArrayOf(ColorUtils.blendARGB(bottom, body, 0.65f), body, body, ColorUtils.blendARGB(body, top, 0.40f), top),
-            floatArrayOf(0f, 0.28f, 0.60f, 0.82f, 1f),
-            Shader.TileMode.CLAMP)
-        canvas.drawRect(0f, 0f, s, s, paint)
-
-        // A light pool under the sphere.
-        val glow = if (Color.blue(top) > Color.red(top) && Color.blue(top) > Color.green(top)) {
-            ColorUtils.blendARGB(top, 0xFF65E8FF.toInt(), 0.65f)
-        } else {
-            ColorUtils.blendARGB(top, Color.WHITE, 0.25f)
-        }
-        paint.shader = RadialGradient(
-            half, s * 1.12f, s * 0.66f,
-            intArrayOf(alpha(glow, strength * 0.95f), alpha(glow, strength * 0.65f), alpha(glow, strength * 0.10f), Color.TRANSPARENT),
-            floatArrayOf(0f, 0.40f, 0.78f, 1f),
-            Shader.TileMode.CLAMP)
-        canvas.drawRect(0f, 0f, s, s, paint)
-
-        // The curved glass dome on the upper half.
-        val dome = Path().apply {
-            moveTo(s * 0.08f, s * 0.37f)
-            cubicTo(s * 0.12f, -s * 0.04f, s * 0.88f, -s * 0.04f, s * 0.92f, s * 0.37f)
-            cubicTo(s * 0.94f, s * 0.49f, s * 0.81f, s * 0.39f, s * 0.70f, s * 0.38f)
-            cubicTo(s * 0.48f, s * 0.32f, s * 0.28f, s * 0.43f, s * 0.12f, s * 0.44f)
-            cubicTo(s * 0.08f, s * 0.45f, s * 0.07f, s * 0.41f, s * 0.08f, s * 0.37f)
-            close()
-        }
-        paint.shader = RadialGradient(
-            s * 0.46f, s * 0.04f, s * 0.63f,
-            intArrayOf(alpha(Color.WHITE, strength), alpha(Color.WHITE, strength * 0.42f), alpha(Color.WHITE, strength * 0.03f)),
-            floatArrayOf(0f, 0.50f, 1f),
-            Shader.TileMode.CLAMP)
-        canvas.drawPath(dome, paint)
-
-        // Metallic rim, then the thin inner rim lit from above and below.
-        val rim = maxOf(s * ORB_BORDER_FRACTION, s * 0.025f)
-        paint.style = Paint.Style.STROKE
-        paint.shader = LinearGradient(
-            0f, 0f, s * 0.65f, s,
-            intArrayOf(0xFF26364F.toInt(), 0xFF66748A.toInt(), 0xFFC6D4DA.toInt(), 0xFF89949D.toInt()),
-            floatArrayOf(0f, 0.28f, 0.62f, 1f),
-            Shader.TileMode.CLAMP)
-        paint.strokeWidth = rim * 2f
-        canvas.drawCircle(half, half, half, paint)
-
-        val inset = rim * 1.7f
-        paint.shader = LinearGradient(
-            0f, inset, 0f, s - inset,
-            intArrayOf(alpha(Color.WHITE, strength * 0.70f), Color.TRANSPARENT, Color.TRANSPARENT, alpha(glow, strength * 0.75f)),
-            floatArrayOf(0f, 0.35f, 0.75f, 1f),
-            Shader.TileMode.CLAMP)
-        paint.strokeWidth = s * 0.018f
-        canvas.drawCircle(half, half, half - inset, paint)
-
-        // Everything above is square; clear what lies outside the circle, with an anti-aliased edge.
-        // (A DST_IN circle would not do: it only touches the area the circle covers.)
-        paint.shader = null
-        paint.style = Paint.Style.FILL
-        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
-        canvas.drawPath(
-            Path().apply {
-                addCircle(half, half, half, Path.Direction.CW)
-                fillType = Path.FillType.INVERSE_WINDING
-            },
-            paint)
-        return out
-    }
-
-    /**
-     * The bright and deep accent for a cover's hue. The pair keeps the proportions of the app's dark
-     * blue accent (#1976B9 over #002D74), so a blue cover gives exactly the player's orb. A cover
-     * with no colour of its own (grey, near white) keeps the app's blue.
-     */
-    private fun orbPair(accent: Int): Pair<Int, Int> {
-        val hsv = FloatArray(3)
-        Color.colorToHSV(accent, hsv)
-        if (hsv[1] < MIN_ACCENT_SATURATION) return DEFAULT_ORB_TOP to DEFAULT_ORB_BOTTOM
-        val hue = hsv[0]
-        return Color.HSVToColor(floatArrayOf(hue, 0.86f, 0.73f)) to Color.HSVToColor(floatArrayOf(hue, 1f, 0.45f))
-    }
-
-    /**
      * The colour of the glass card for a cover: the cover's deep jewel tone, the same hue as the
      * Play/Pause orb. Darkened until the text keeps 4.5:1 on the lightest case, a white wallpaper
      * behind the card at its 72% opacity with the finish's light top edge, so a pale or yellow cover
@@ -575,7 +462,7 @@ object NowPlayingWidget : KoinComponent {
      */
     private fun glassTint(accent: Int): Int {
         val hsv = FloatArray(3)
-        Color.colorToHSV(orbPair(accent).first, hsv)
+        Color.colorToHSV(PlayOrb.pair(accent).first, hsv)
         fun tint(value: Float) = Color.HSVToColor(floatArrayOf(hsv[0], hsv[1], value))
         fun textContrast(tint: Int): Double {
             val onWhite = ColorUtils.compositeColors(ColorUtils.setAlphaComponent(tint, GLASS_ALPHA), Color.WHITE)

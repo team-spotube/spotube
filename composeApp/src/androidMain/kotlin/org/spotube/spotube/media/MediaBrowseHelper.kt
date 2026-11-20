@@ -18,10 +18,13 @@
 package org.spotube.spotube.media
 
 import android.net.Uri
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
+import java.io.ByteArrayOutputStream
+import org.spotube.spotube.widget.PlayOrb
 import org.spotube.plugin_interfaces.plugin_apis.metadata.album.MetadataAlbum
 import org.spotube.plugin_interfaces.plugin_apis.metadata.artist.MetadataArtist
 import org.spotube.plugin_interfaces.plugin_apis.metadata.browse.MetadataBrowseItem
@@ -87,6 +90,14 @@ class MediaBrowseHelper(
         private const val CONTENT_STYLE_BROWSABLE = "android.media.browse.CONTENT_STYLE_BROWSABLE_HINT"
         private const val CONTENT_STYLE_GRID = 2
         private const val CONTENT_STYLE_GROUP_TITLE = "android.media.browse.CONTENT_STYLE_GROUP_TITLE_HINT"
+    }
+
+    /**
+     * The player's glass Play orb, as the icon of the entry that starts your music. Android Auto draws its
+     * own transport buttons and can't restyle them, but a list icon is just an image. Drawn once.
+     */
+    private val playOrbIcon: ByteArray by lazy {
+        ByteArrayOutputStream().also { PlayOrb.withPlayGlyph().compress(Bitmap.CompressFormat.PNG, 100, it) }.toByteArray()
     }
 
     fun buildRootItem(): MediaItem {
@@ -412,6 +423,7 @@ class MediaBrowseHelper(
                 .setMediaMetadata(
                     MediaMetadata.Builder()
                         .setTitle(getString(Res.string.media_browser_saved_tracks))
+                        .setArtworkData(playOrbIcon, MediaMetadata.PICTURE_TYPE_OTHER)
                         .setIsPlayable(false)
                         .setIsBrowsable(true)
                         .build()
