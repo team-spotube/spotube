@@ -106,9 +106,10 @@ import spotube.composeapp.generated.resources.update_action_update
 
 /**
  * 0.1.0: WebView plugins must declare `cookieDomains`, and cookie reads and scripts are limited to
- * them. Nothing else changed, so 0.0.x plugins without the WebView capability still work.
+ * them.
+ * 0.2.0: Plugins may request the host-provided NewPipe extraction API with the `newpipe` capability.
  */
-const val PLUGIN_API_VERSION = "0.1.0"
+const val PLUGIN_API_VERSION = "0.2.0"
 
 interface PluginProvider {
     val selectedMetadataPlugin: StateFlow<PluginService?>

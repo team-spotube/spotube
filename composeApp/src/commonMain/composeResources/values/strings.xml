@@ -417,6 +417,8 @@
     <string name="plugin_permissions_capability_network_desc">Send and receive data over the internet</string>
     <string name="plugin_permissions_capability_webview_title">WebView</string>
     <string name="plugin_permissions_capability_webview_desc">Display web content inside the app</string>
+    <string name="plugin_permissions_capability_newpipe_title">NewPipe</string>
+    <string name="plugin_permissions_capability_newpipe_desc">Search YouTube and retrieve video and audio streams through NewPipe</string>
     <string name="plugin_permissions_cookie_domains_title">Can read cookies from</string>
     <string name="plugin_permissions_cookie_domains_none">No cookie access</string>
     <string name="plugin_permissions_cookie_domain_subdomains">Any subdomain of %1$s</string>

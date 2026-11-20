@@ -37,7 +37,9 @@ enum class PluginCapability {
     @SerialName("network_requests")
     NETWORK_REQUESTS,
     @SerialName("webview")
-    WEBVIEW
+    WEBVIEW,
+    @SerialName("newpipe")
+    NEWPIPE
 }
 
 //Set naming strategy to snake_case for better interoperability with JavaScript plugins

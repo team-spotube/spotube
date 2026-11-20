@@ -2,7 +2,7 @@
   "name": "js_plugin_example",
   "version": "1.0.0",
   "description": "A simple JavaScript plugin example.",
-  "apiVersion": "0.1.0",
+  "apiVersion": "0.2.0",
   "author": "Kingkor Roy Tirtho",
   "capabilities": [
     "PERSISTENT_STORAGE",

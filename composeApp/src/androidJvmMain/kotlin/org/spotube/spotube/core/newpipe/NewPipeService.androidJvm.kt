@@ -41,8 +41,8 @@ actual class NewPipeService {
                 query,
                 mutableListOf(
                     when (kind) {
-                        SearchKind.Songs -> YoutubeSearchQueryHandlerFactory.MUSIC_SONGS
-                        SearchKind.Videos -> YoutubeSearchQueryHandlerFactory.VIDEOS
+                        SearchKind.SONGS -> YoutubeSearchQueryHandlerFactory.MUSIC_SONGS
+                        SearchKind.VIDEOS -> YoutubeSearchQueryHandlerFactory.VIDEOS
                     }),
                 ""
             )

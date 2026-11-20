@@ -31,6 +31,8 @@ import org.spotube.plugin_interfaces.host_apis.HttpClientAPI
 import org.spotube.plugin_interfaces.host_apis.HttpClientAPI_SERVICE_NAME
 import org.spotube.plugin_interfaces.host_apis.PersistedStorageAPI
 import org.spotube.plugin_interfaces.host_apis.PersistedStorageAPI_SERVICE_NAME
+import org.spotube.plugin_interfaces.host_apis.NewPipeAPI
+import org.spotube.plugin_interfaces.host_apis.NewPipeAPI_SERVICE_NAME
 import org.spotube.plugin_interfaces.host_apis.SystemInformationAPI
 import org.spotube.plugin_interfaces.host_apis.SystemInformationAPI_SERVICE_NAME
 import org.spotube.plugin_interfaces.host_apis.WebViewAPI
@@ -62,6 +64,7 @@ import org.spotube.spotube.core.webview.WebViewController
 import org.spotube.spotube.core.zipline.host_apis.RealCryptoAPI
 import org.spotube.spotube.core.zipline.host_apis.RealHttpClientAPI
 import org.spotube.spotube.core.zipline.host_apis.RealPersistedStorageAPI
+import org.spotube.spotube.core.zipline.host_apis.RealNewPipeAPI
 import org.spotube.spotube.core.zipline.host_apis.RealSystemInformationAPI
 import org.spotube.spotube.core.zipline.host_apis.RealWebViewAPI
 import org.spotube.spotube.core.zipline.permissions.CookieDomainPolicy
@@ -151,6 +154,7 @@ open class ZiplinePluginService(
         cookiePolicy = { CookieDomainPolicy(pluginInfo.cookieDomains, publicSuffixes.get()) })
 
     private val persistedStorageAPI = RealPersistedStorageAPI(pluginInfo)
+    private val realNewPipeAPI = RealNewPipeAPI()
     private val cryptoAPI = RealCryptoAPI(scope.coroutineContext)
     private val systemInformationAPI = RealSystemInformationAPI()
 
@@ -183,6 +187,9 @@ open class ZiplinePluginService(
                     PersistedStorageAPI_SERVICE_NAME,
                     persistedStorageAPI
                 )
+            }
+            if (PluginCapability.NEWPIPE in pluginInfo.capabilities) {
+                zipline.bind<NewPipeAPI>(NewPipeAPI_SERVICE_NAME, realNewPipeAPI)
             }
         } catch (e: Exception) {
             logger.e(e) { "[$applicationName] Failed to bind host APIs: ${e.message}" }
