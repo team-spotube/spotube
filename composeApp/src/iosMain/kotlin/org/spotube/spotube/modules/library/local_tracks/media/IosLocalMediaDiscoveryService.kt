@@ -19,6 +19,7 @@ package org.spotube.spotube.modules.library.local_tracks.media
 
 import io.github.vinceglb.filekit.PlatformFile
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 import org.spotube.spotube.core.paths.Paths
 

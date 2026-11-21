@@ -3,6 +3,7 @@
  */
 package org.spotube.spotube.modules.library.local_tracks.media
 
+import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.useContents
@@ -10,6 +11,7 @@ import kotlinx.cinterop.usePinned
 import platform.CoreGraphics.CGRectMake
 import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSData
+import platform.Foundation.create
 import platform.UIKit.UIGraphicsBeginImageContextWithOptions
 import platform.UIKit.UIGraphicsEndImageContext
 import platform.UIKit.UIGraphicsGetImageFromCurrentImageContext
@@ -24,11 +26,11 @@ private const val TRACK_COVER_QUALITY = 0.85
  * Images written into audio files must be PNG or JPEG (Lofty rejects anything else), so iOS
  * re-encodes every picked cover to a small JPEG instead of passing the original bytes through.
  */
-@OptIn(ExperimentalForeignApi::class)
+@OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
 internal actual fun encodeTrackCover(bytes: ByteArray): ByteArray? = runCatching {
     if (bytes.isEmpty()) return null
     val data = bytes.usePinned { pinned ->
-        NSData.dataWithBytes(pinned.addressOf(0), bytes.size.toULong())
+        NSData.create(bytes = pinned.addressOf(0), length = bytes.size.toULong())
     }
     val image = UIImage(data = data) ?: return null
     val (width, height) = image.size.useContents { width to height }
