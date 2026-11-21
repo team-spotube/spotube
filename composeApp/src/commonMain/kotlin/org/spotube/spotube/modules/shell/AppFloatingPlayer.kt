@@ -61,11 +61,15 @@ import org.spotube.spotube.resources.iconsax.Iconsax
 import org.spotube.spotube.resources.iconsax.IconsaxPause
 import org.spotube.spotube.resources.iconsax.IconsaxPlay
 import org.spotube.spotube.resources.iconsax.IconsaxMusic
+import org.spotube.spotube.resources.iconsax.IconsaxNext
+import org.spotube.spotube.resources.iconsax.IconsaxPrevious
 import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.player_play_content_description
 import spotube.composeapp.generated.resources.player_pause_content_description
 import spotube.composeapp.generated.resources.player_nothing_playing
+import spotube.composeapp.generated.resources.player_next_content_description
+import spotube.composeapp.generated.resources.player_previous_content_description
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -111,11 +115,21 @@ fun AppFloatingPlayer(
         }
     }
 
+    fun onSkipPrevious() {
+        scope.launch { audioPlayer.skipToPrevious() }
+    }
+
+    fun onSkipNext() {
+        scope.launch { audioPlayer.skipToNext() }
+    }
+
     FloatingPlayerContent(
         playerUiState = playerUiState,
         modifier = modifier,
         albumArtModifier = albumArtModifier,
         onPlayPause = ::onPlayPause,
+        onSkipPrevious = ::onSkipPrevious,
+        onSkipNext = ::onSkipNext,
         heartButton = {
             PlayerHeartButton(
                 audioPlayerQueue = audioPlayerQueue,
@@ -131,6 +145,8 @@ internal fun FloatingPlayerContent(
     modifier: Modifier = Modifier,
     albumArtModifier: Modifier = Modifier,
     onPlayPause: () -> Unit,
+    onSkipPrevious: () -> Unit = {},
+    onSkipNext: () -> Unit = {},
     heartButton: @Composable () -> Unit
 ) {
     val coverModel = playerUiState.coverModel
@@ -211,9 +227,21 @@ internal fun FloatingPlayerContent(
                     }
                 }
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(root.controlsSpacing)
+                ) {
                     heartButton()
-                    Spacer(modifier = Modifier.size(root.controlsSpacing))
+                    MillenniumIconButton(
+                        onClick = onSkipPrevious,
+                        enabled = playerUiState.queue.isNotEmpty(),
+                        style = MillenniumIconButtonStyle.Quiet
+                    ) {
+                        AppIcon(
+                            Iconsax.IconsaxPrevious,
+                            contentDescription = stringResource(Res.string.player_previous_content_description)
+                        )
+                    }
                     MillenniumIconButton(
                         onClick = onPlayPause,
                         enabled = playerUiState.queue.isNotEmpty(),
@@ -222,6 +250,16 @@ internal fun FloatingPlayerContent(
                         AppIcon(
                             if (playerUiState.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                             contentDescription = stringResource(if (playerUiState.isPlaying) Res.string.player_pause_content_description else Res.string.player_play_content_description)
+                        )
+                    }
+                    MillenniumIconButton(
+                        onClick = onSkipNext,
+                        enabled = playerUiState.queue.isNotEmpty(),
+                        style = MillenniumIconButtonStyle.Quiet
+                    ) {
+                        AppIcon(
+                            Iconsax.IconsaxNext,
+                            contentDescription = stringResource(Res.string.player_next_content_description)
                         )
                     }
                 }
