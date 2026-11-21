@@ -33,6 +33,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -78,7 +83,13 @@ fun WelcomeScreen(viewModel: WelcomeViewModel) {
     WelcomeTheme {
         Box(Modifier.fillMaxSize()) {
             WelcomeBackground()
-            Column(modifier = Modifier.fillMaxSize()) {
+            // The background bleeds under the system bars; the content stays out of them. The top is
+            // the main bar's own status-bar inset, so only the sides (display cutouts in landscape)
+            // are handled here and the bottom below.
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))) {
                 ApplicationMainBar(
                     title = {
                         WelcomeWordmark(
@@ -101,7 +112,8 @@ fun WelcomeScreen(viewModel: WelcomeViewModel) {
                 BoxWithConstraints(
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom)),
                     contentAlignment = Alignment.Center) {
                     // Phones get tighter margins so the four step tabs keep whole words.
                     val compact = maxWidth < WelcomeCompactWidth

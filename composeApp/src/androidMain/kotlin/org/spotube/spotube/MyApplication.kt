@@ -20,6 +20,7 @@ package org.spotube.spotube
 import android.app.Application
 import org.spotube.spotube.core.di.initKoin
 import org.spotube.spotube.core.paths.Paths
+import org.spotube.spotube.widget.NowPlayingWidget
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -36,6 +37,7 @@ class MyApplication : Application(), KoinComponent {
         initKoin {
             androidContext(this@MyApplication)
         }
+        NowPlayingWidget.startIfPlaced(this)
     }
 
     override fun onTerminate() {

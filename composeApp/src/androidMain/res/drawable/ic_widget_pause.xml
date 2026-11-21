@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Two-tone like the player's pause: a bright bar and a dimmer one. -->
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M6,19h4V5H6v14z" />
+    <path
+        android:fillColor="#80FFFFFF"
+        android:pathData="M14,5v14h4V5h-4z" />
+</vector>

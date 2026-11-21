@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Runs inside the launcher, at the display's refresh rate, for as long as the spinning child of the
+     widget's ViewFlipper is the one shown. The app only starts and stops it. One turn in 10 seconds;
+     keep DISC_DEGREES_PER_SECOND in NowPlayingWidget in step with the duration. -->
+<rotate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="10000"
+    android:fromDegrees="0"
+    android:interpolator="@android:anim/linear_interpolator"
+    android:pivotX="50%"
+    android:pivotY="50%"
+    android:repeatCount="infinite"
+    android:toDegrees="360" />
