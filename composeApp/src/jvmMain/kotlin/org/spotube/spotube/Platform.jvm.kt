@@ -47,6 +47,12 @@ actual fun openUrlInBrowser(url: String) {
 }
 
 private fun openWithSystemOpener(url: String): Boolean {
+    // Only allow http(s) URLs to reach the OS opener. Anything else (a leading '-' parsed
+    // as an option, file:// / UNC paths, or custom protocol handlers) could make the opener
+    // launch arbitrary local resources or executables instead of just browsing a web page.
+    val scheme = runCatching { URI(url).scheme }.getOrNull()?.lowercase()
+    if (scheme != "http" && scheme != "https") return false
+
     val osName = System.getProperty("os.name").lowercase()
     val command = when {
         osName.contains("win") -> listOf("rundll32", "url.dll,FileProtocolHandler", url)
