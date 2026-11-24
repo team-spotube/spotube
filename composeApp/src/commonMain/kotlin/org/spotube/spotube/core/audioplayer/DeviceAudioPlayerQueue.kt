@@ -137,6 +137,7 @@ class DeviceAudioPlayerQueue(
         val mediaItems = resolved.map { it.first }
         if (mediaItems.isEmpty()) {
             logger.w { "load: no valid media items after filtering blanks" }
+            return
         }
         val normalizedStartPosition =
             if (mediaItems.isEmpty()) 0 else startPosition.coerceIn(0, mediaItems.lastIndex)
