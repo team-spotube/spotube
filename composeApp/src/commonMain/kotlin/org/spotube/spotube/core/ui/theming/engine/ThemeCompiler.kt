@@ -87,6 +87,10 @@ data class CompiledTheme(
     val surface: MillenniumSurfaceStyle = MillenniumSurfaceStyle(),
     /** The brush behind the whole app (`tokens.app.background`); null paints the palette background colour. */
     val appBackground: Brush? = null,
+    /** Fill of the app's own panels and rows (`tokens.app.panel`, see `appPanelBrush`); null = derived from colours. */
+    val appPanel: Brush? = null,
+    /** Fill of chips, icon boxes and placeholders (`tokens.app.bevel`, see `appBevelBrush`); null = derived. */
+    val appBevel: Brush? = null,
     /** Everything the theme author should fix; the rest of the theme still applies. */
     val problems: List<String>,
 )
@@ -160,16 +164,23 @@ internal class ThemeCompiler(
         val components = compileAllComponents(baseComponents)
         val shapes = compileShapes()
         val typography = compileTypography()
+        val surface = compileSurface()
+        val app = PropReader(tokenGroup("app"), problems, "tokens.app", fontContext)
+        val flat = !surface.glow
+        val panel = appPanelBrush(colors, flat, app.brush("panel", null))
+        val bevel = appBevelBrush(colors, flat, app.brush("bevel", null))
         return CompiledTheme(
             colors = colors,
             components = components,
             shapes = shapes,
             typography = typography,
-            appComponents = compileAppComponents(AppThemeBase(colors, typography, shapes)),
+            appComponents = compileAppComponents(AppThemeBase(colors, typography, shapes, flat, panel, bevel)),
             icons = assets.icons,
             interaction = compileInteraction(),
-            surface = compileSurface(),
-            appBackground = compileAppBackground(),
+            surface = surface,
+            appBackground = app.brush("background", null),
+            appPanel = panel,
+            appBevel = bevel,
             problems = problems.toList(),
         )
     }
@@ -231,10 +242,6 @@ internal class ThemeCompiler(
         val r = PropReader(tokenGroup("surface"), problems, "tokens.surface", fontContext)
         return MillenniumSurfaceStyle(shadows = r.bool("shadows", true), glow = r.bool("glow", true))
     }
-
-    /** `tokens.app.background`: any brush (gradient, solid) painted behind every screen instead of the flat background. */
-    fun compileAppBackground(): Brush? =
-        PropReader(tokenGroup("app"), problems, "tokens.app", fontContext).brush("background", null)
 
     fun compileShapes(): AppShapes {
         val r = PropReader(tokenGroup("shape"), problems, "tokens.shape", fontContext)

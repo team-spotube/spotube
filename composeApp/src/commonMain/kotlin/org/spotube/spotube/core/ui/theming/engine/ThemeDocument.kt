@@ -37,12 +37,12 @@ import kotlinx.serialization.json.intOrNull
  *   the theme is newer.
  * - **patch**: clarifications and fixes, never visible to themes.
  *
- * History: 1.0.0 first release; 1.1.0 `assets.iconPack.images` (PNG icon packs from any icon library); 1.2.0 `updates` (GitHub release based update checks); 1.3.0 in-house component slots (`mediaCard`, `floatingPlayer`, players, lists, screens: `components.<name>.variants.<slot>`).
+ * History: 1.0.0 first release; 1.1.0 `assets.iconPack.images` (PNG icon packs from any icon library); 1.2.0 `updates` (GitHub release based update checks); 1.3.0 in-house component slots (`mediaCard`, `floatingPlayer`, players, lists, screens: `components.<name>.variants.<slot>`); 1.4.0 `tokens.app.panel` / `tokens.app.bevel` (fills of app-built panels, rows and chips).
  *
  * Keep in sync with `themes/schema/theme.schema.json` (`ThemeSchemaTest` checks it) and bump it with every
  * change to the theme format.
  */
-const val THEME_SCHEMA_VERSION = "1.3.0"
+const val THEME_SCHEMA_VERSION = "1.4.0"
 
 /** A parsed `MAJOR.MINOR.PATCH`. */
 data class SchemaVersion(val major: Int, val minor: Int, val patch: Int) {

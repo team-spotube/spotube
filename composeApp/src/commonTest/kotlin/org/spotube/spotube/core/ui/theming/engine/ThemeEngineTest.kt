@@ -19,6 +19,7 @@ package org.spotube.spotube.core.ui.theming.engine
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import org.spotube.millennium.theme.MillenniumColorSchemes
 import org.spotube.millennium.theme.MillenniumDarkThemeComponents
@@ -325,6 +326,27 @@ class ThemeEngineTest {
         val t = compile("""{"tokens":{"app":{"background":["linear",180,"#112233","#445566"]}}}""")
         assertNotNull(t.appBackground)
         assertEquals(emptyList(), t.problems)
+    }
+
+    @Test
+    fun appPanelAndBevelFollowTheTheme() {
+        // A glossy theme keeps Millennium's gradients; the slot defaults use the very same fill.
+        val glossy = compile("{}")
+        assertTrue(glossy.appPanel !is SolidColor)
+        assertTrue(glossy.appComponents[ContentSlots.MediaListTile][AppState.Default].background !is SolidColor)
+
+        // A flat theme that never mentions panels gets flat fills everywhere, list tiles included.
+        val flat = compile("""{"tokens":{"surface":{"glow":false},"color":{"surface":"#102030","raised":"#405060"}}}""")
+        assertEquals(SolidColor(Color(0xFF102030)), flat.appPanel)
+        assertEquals(SolidColor(Color(0xFF405060)), flat.appBevel)
+        assertEquals(flat.appPanel, flat.appComponents[ContentSlots.MediaListTile][AppState.Default].background)
+        assertEquals(flat.appBevel, flat.appComponents[ContentSlots.MediaArtwork][AppState.Default].background)
+
+        // Explicit tokens win over both.
+        val custom = compile("""{"tokens":{"surface":{"glow":false},"app":{"panel":"#abcdef","bevel":["linear",180,"#000000","#ffffff"]}}}""")
+        assertEquals(SolidColor(Color(0xFFABCDEF)), custom.appPanel)
+        assertTrue(custom.appBevel !is SolidColor)
+        assertEquals(emptyList(), custom.problems)
     }
 
     @Test

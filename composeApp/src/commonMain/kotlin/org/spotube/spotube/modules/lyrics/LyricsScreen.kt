@@ -18,6 +18,7 @@
 package org.spotube.spotube.modules.lyrics
 
 
+import org.spotube.spotube.core.ui.theming.appPanelBrush
 import org.spotube.millennium.composables.MillenniumBarsLoader
 import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
@@ -40,7 +41,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import coil3.compose.AsyncImage
-import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -206,7 +206,7 @@ private fun CoverArt(url: String, size: Dp, radius: Dp, elevation: Dp, modifier:
         modifier = modifier
             .size(size)
             .millenniumSurface(
-                background = millenniumPanelBrush(colors),
+                background = appPanelBrush(),
                 shape = RoundedCornerShape(radius),
                 borderColor = colors.border,
                 borderWidth = 1.dp,

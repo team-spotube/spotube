@@ -18,10 +18,10 @@
 package org.spotube.spotube.modules.settings.sections
 
 
+import org.spotube.spotube.core.ui.theming.appPanelBrush
 import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumSeparator
 import org.spotube.millennium.theme.MillenniumTheme
-import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -225,7 +225,7 @@ internal fun LazyListScope.settingsSectionCard(
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp, vertical = 4.dp)
                 .millenniumSurface(
-                    background = millenniumPanelBrush(MillenniumTheme.colors),
+                    background = appPanelBrush(),
                     shape = AppTheme.shapes.medium,
                     borderColor = MillenniumTheme.colors.border,
                     borderWidth = 1.dp,

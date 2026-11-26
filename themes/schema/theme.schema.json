@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://docs.spotube.cc/schemas/theme/1.3.0.json",
+  "$id": "https://docs.spotube.cc/schemas/theme/1.4.0.json",
   "title": "Spotube theme (theme.json)",
-  "description": "Theme format 1.3.0. Semver: a theme of the same major always loads; a newer minor loads with its newer parts ignored. Latest 1.x: https://docs.spotube.cc/schemas/theme/1.json",
-  "x-schemaVersion": "1.3.0",
+  "description": "Theme format 1.4.0. Semver: a theme of the same major always loads; a newer minor loads with its newer parts ignored. Latest 1.x: https://docs.spotube.cc/schemas/theme/1.json",
+  "x-schemaVersion": "1.4.0",
   "type": "object",
   "required": [
     "schema",
@@ -20,7 +20,7 @@
     "schema": {
       "type": "string",
       "pattern": "^(0|[1-9][0-9]{0,5})\\.(0|[1-9][0-9]{0,5})\\.(0|[1-9][0-9]{0,5})$",
-      "description": "The theme schema version this theme is written for (semver), for example \"1.3.0\"."
+      "description": "The theme schema version this theme is written for (semver), for example \"1.4.0\"."
     },
     "id": {
       "type": "string",
@@ -368,10 +368,18 @@
         },
         "app": {
           "type": "object",
-          "description": "The backdrop behind every screen.",
+          "description": "App-wide fills: the backdrop behind every screen, panels/rows and small raised pieces.",
           "properties": {
             "background": {
               "$ref": "#/$defs/brush"
+            },
+            "panel": {
+              "$ref": "#/$defs/brush",
+              "description": "Fill of the app's own panels, cards and rows (settings groups, plugin lists, media list tiles...). Unset: the glossy panel gradient, or the flat surface colour when `tokens.surface.glow` is false. (1.4.0)"
+            },
+            "bevel": {
+              "$ref": "#/$defs/brush",
+              "description": "Fill of chips, icon boxes and artwork placeholders. Unset: the neutral bevel, or the flat raised colour when `tokens.surface.glow` is false. (1.4.0)"
             }
           },
           "additionalProperties": false

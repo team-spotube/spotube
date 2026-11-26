@@ -17,6 +17,8 @@
 
 package org.spotube.spotube.modules.jam
 
+import org.spotube.spotube.core.ui.theming.appBevelBrush
+import org.spotube.spotube.core.ui.theming.appPanelBrush
 import org.spotube.spotube.core.ui.theming.appBackground
 import org.spotube.millennium.composables.MillenniumDropdownMenuItem
 import org.spotube.spotube.resources.iconsax.IconsaxUserRemove
@@ -81,8 +83,6 @@ import org.spotube.millennium.composables.MillenniumSeparator
 import org.spotube.millennium.composables.MillenniumTextField
 import org.spotube.millennium.composables.MillenniumTooltip
 import org.spotube.millennium.theme.MillenniumTheme
-import org.spotube.millennium.theme.millenniumBevelBrush
-import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
 import spotube.composeapp.generated.resources.*
 
@@ -160,7 +160,7 @@ fun JamScreen(navigationCommands: NavigationCommands) {
 private fun JamPanel(content: @Composable ColumnScope.() -> Unit) {
     Column(
         Modifier.fillMaxWidth().millenniumSurface(
-            background = millenniumPanelBrush(MillenniumTheme.colors),
+            background = appPanelBrush(),
             shape = RoundedCornerShape(10.dp),
             borderColor = MillenniumTheme.colors.border,
             borderWidth = 1.dp,
@@ -413,7 +413,7 @@ internal fun SessionPanel(
                 ) {
                     Box(
                         Modifier.size(32.dp).millenniumSurface(
-                            background = millenniumBevelBrush(MillenniumTheme.colors),
+                            background = appBevelBrush(),
                             shape = CircleShape,
                             borderColor = MillenniumTheme.colors.border,
                             borderWidth = 1.dp

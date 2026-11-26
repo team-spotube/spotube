@@ -17,6 +17,7 @@
 
 package org.spotube.spotube.modules.plugin.components
 
+import org.spotube.spotube.core.ui.theming.appPanelBrush
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -46,7 +47,6 @@ import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.theme.MillenniumTheme
-import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
 import org.spotube.spotube.core.ui.theming.AppTheme
 import org.spotube.spotube.modules.plugin.GitHubRepo
@@ -82,7 +82,7 @@ internal fun DiscoverPluginCard(
     Column(
         modifier = modifier
             .millenniumSurface(
-                background = millenniumPanelBrush(MillenniumTheme.colors),
+                background = appPanelBrush(),
                 shape = AppTheme.shapes.medium,
                 borderColor = MillenniumTheme.colors.border,
                 borderWidth = 1.dp,

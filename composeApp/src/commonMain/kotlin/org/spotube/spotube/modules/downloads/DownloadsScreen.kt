@@ -3,6 +3,7 @@
  */
 package org.spotube.spotube.modules.downloads
 
+import org.spotube.spotube.core.ui.theming.appPanelBrush
 import org.spotube.millennium.composables.MillenniumStripedProgress
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,7 +45,6 @@ import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.theme.MillenniumTheme
-import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
 import spotube.composeapp.generated.resources.*
 
@@ -186,7 +186,7 @@ internal fun DownloadListRow(
     val colors = MillenniumTheme.colors
     Row(
         Modifier.fillMaxWidth().millenniumSurface(
-            background = millenniumPanelBrush(colors),
+            background = appPanelBrush(),
             shape = RoundedCornerShape(8.dp),
             borderColor = colors.border,
             borderWidth = 1.dp,

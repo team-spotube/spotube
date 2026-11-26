@@ -3,6 +3,7 @@
  */
 package org.spotube.spotube.modules.settings.components
 
+import org.spotube.spotube.core.ui.theming.appBevelBrush
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,7 +52,6 @@ import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumSeparator
 import org.spotube.millennium.composables.MillenniumTooltip
 import org.spotube.millennium.theme.MillenniumTheme
-import org.spotube.millennium.theme.millenniumBevelBrush
 import org.spotube.millennium.theme.millenniumSurface
 import spotube.composeapp.generated.resources.*
 
@@ -207,7 +207,7 @@ private fun LocalMediaFolderEditorRow(
     ) {
         Box(
             Modifier.size(36.dp).millenniumSurface(
-                background = millenniumBevelBrush(MillenniumTheme.colors),
+                background = appBevelBrush(),
                 shape = RoundedCornerShape(6.dp),
                 borderColor = MillenniumTheme.colors.border,
                 borderWidth = 1.dp

@@ -59,7 +59,6 @@ import org.spotube.millennium.composables.MillenniumModalBottomSheet
 import org.spotube.millennium.composables.MillenniumCard
 import org.spotube.millennium.composables.MillenniumSlider
 import org.spotube.millennium.theme.MillenniumTheme
-import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
 import com.composeunstyled.SheetDetent
 import com.composeunstyled.rememberModalBottomSheetState

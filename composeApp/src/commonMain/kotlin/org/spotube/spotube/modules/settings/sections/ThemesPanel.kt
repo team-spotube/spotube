@@ -17,6 +17,7 @@
 
 package org.spotube.spotube.modules.settings.sections
 
+import org.spotube.spotube.core.ui.theming.appPanelBrush
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
@@ -80,7 +81,6 @@ import org.spotube.millennium.composables.MillenniumDialogTitle
 import org.spotube.millennium.composables.MillenniumSeparator
 import org.spotube.millennium.theme.MillenniumColorSchemes
 import org.spotube.millennium.theme.MillenniumTheme
-import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
 import org.spotube.millennium.theme.resolve
 import org.spotube.spotube.core.ui.theming.AppIcon
@@ -196,7 +196,7 @@ internal fun ThemeCardList(content: @Composable () -> Unit) {
             .fillMaxWidth()
             .padding(horizontal = 8.dp, vertical = 4.dp)
             .millenniumSurface(
-                background = millenniumPanelBrush(MillenniumTheme.colors),
+                background = appPanelBrush(),
                 shape = AppTheme.shapes.medium,
                 borderColor = MillenniumTheme.colors.border,
                 borderWidth = 1.dp,

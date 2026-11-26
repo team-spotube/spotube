@@ -3,6 +3,7 @@
  */
 package org.spotube.spotube.modules.library.local_tracks
 
+import org.spotube.spotube.core.ui.theming.appPanelBrush
 import org.spotube.millennium.composables.MillenniumCircularProgress
 import org.spotube.millennium.composables.MillenniumSpokeSpinner
 import androidx.compose.foundation.layout.Arrangement
@@ -57,7 +58,6 @@ import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumListTile
 import org.spotube.millennium.theme.MillenniumTheme
-import org.spotube.millennium.theme.millenniumPanelBrush
 import spotube.composeapp.generated.resources.*
 
 @Composable
@@ -296,7 +296,7 @@ internal fun LocalTracksBreadcrumb(
 internal fun LocalFolderRow(folder: LocalFolderUi, onClick: () -> Unit) {
     MillenniumListTile(
         onClick = onClick,
-        background = millenniumPanelBrush(MillenniumTheme.colors),
+        background = appPanelBrush(),
         shape = RoundedCornerShape(8.dp),
         borderColor = MillenniumTheme.colors.border,
         borderWidth = 1.dp,

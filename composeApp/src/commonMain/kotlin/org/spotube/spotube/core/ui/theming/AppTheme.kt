@@ -30,6 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.SolidColor
+import org.spotube.millennium.theme.millenniumSelectedGelBrush
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -56,6 +58,8 @@ import org.spotube.millennium.composables.LocalMillenniumIconResolver
 import org.spotube.millennium.theme.LocalMillenniumInteractionStyle
 import org.spotube.millennium.theme.LocalMillenniumSurfaceStyle
 import org.spotube.spotube.core.ui.theming.engine.CompiledTheme
+import org.spotube.spotube.core.ui.theming.engine.appBevelBrush
+import org.spotube.spotube.core.ui.theming.engine.appPanelBrush
 import org.spotube.spotube.core.ui.theming.engine.LocalAppComponents
 import org.spotube.spotube.core.ui.theming.engine.PrecompiledTheme
 import org.spotube.spotube.core.ui.theming.engine.ThemeIcon
@@ -215,6 +219,41 @@ fun Modifier.appBackground(): Modifier {
     val brush = LocalAppBackground.current
     return if (brush != null) background(brush) else background(MillenniumTheme.colors.background)
 }
+/** The theme's `tokens.app.panel` / `tokens.app.bevel` fills, or null to derive them from the palette. */
+@Immutable
+data class AppFills(val panel: Brush? = null, val bevel: Brush? = null)
+
+val LocalAppFills = staticCompositionLocalOf { AppFills() }
+
+/**
+ * Fill for the app's own panels, cards and rows. Use it instead of Millennium's `millenniumPanelBrush`, which a theme
+ * cannot reach.
+ */
+@Composable
+fun appPanelBrush(): Brush = appPanelBrush(
+    MillenniumTheme.colors, !LocalMillenniumSurfaceStyle.current.glow, LocalAppFills.current.panel,
+)
+
+/** Fill for chips, icon boxes and placeholders. Use it instead of Millennium's `millenniumBevelBrush(colors)`. */
+@Composable
+fun appBevelBrush(): Brush = appBevelBrush(
+    MillenniumTheme.colors, !LocalMillenniumSurfaceStyle.current.glow, LocalAppFills.current.bevel,
+)
+
+/**
+ * Hover/press wash for rows the app draws itself, [amount] being the animated 0..0.24 level. Follows
+ * `tokens.interaction`: the theme's hover/press brush when set, a flat neutral tint when lighting is off, otherwise
+ * Millennium's accent gel. Null draws nothing.
+ */
+@Composable
+fun appRowWash(amount: Float, pressed: Boolean): Brush? {
+    if (amount <= 0f) return null
+    val style = LocalMillenniumInteractionStyle.current
+    (if (pressed) style.pressBrush else style.hoverBrush)?.let { return it }
+    val colors = MillenniumTheme.colors
+    return if (style.enabled) millenniumSelectedGelBrush(colors, amount) else SolidColor(colors.text.copy(alpha = amount * 0.5f))
+}
+
 val LocalAppShapes = staticCompositionLocalOf { AppDefaultShapes }
 
 /** Reads the active app theme tokens, all backed by Millennium. */
@@ -323,6 +362,7 @@ private fun InstallCompiledTheme(
         val iconResolver = remember(compiled.icons) {
             { vector: ImageVector -> (compiled.icons[vector.name] as? ThemeIcon.Vector)?.image ?: vector }
         }
+        val fills = remember(compiled.appPanel, compiled.appBevel) { AppFills(compiled.appPanel, compiled.appBevel) }
         CompositionLocalProvider(
             LocalAppColors provides appColors,
             LocalAppTypography provides compiled.typography,
@@ -332,6 +372,7 @@ private fun InstallCompiledTheme(
             LocalMillenniumInteractionStyle provides compiled.interaction,
             LocalMillenniumSurfaceStyle provides compiled.surface,
             LocalAppBackground provides compiled.appBackground,
+            LocalAppFills provides fills,
             // Icons drawn inside Millennium components (sidebar, icon buttons, ticks) go through this.
             LocalMillenniumIconResolver provides iconResolver,
             LocalMillenniumIconContent provides iconContent,

@@ -17,6 +17,7 @@
 
 package org.spotube.spotube.modules.settings.sections
 
+import org.spotube.spotube.core.ui.theming.appPanelBrush
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -51,7 +52,6 @@ import org.spotube.millennium.composables.MillenniumDialogTitle
 import org.spotube.millennium.composables.MillenniumListTile
 import org.spotube.millennium.composables.MillenniumSeparator
 import org.spotube.millennium.theme.MillenniumTheme
-import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
 import org.spotube.spotube.core.ui.theming.AppTheme
 import org.spotube.spotube.resources.iconsax.Iconsax
@@ -200,7 +200,7 @@ internal fun ThemeReleasesDialog(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .millenniumSurface(
-                                        background = millenniumPanelBrush(MillenniumTheme.colors),
+                                        background = appPanelBrush(),
                                         shape = AppTheme.shapes.medium,
                                         borderColor = MillenniumTheme.colors.border,
                                         borderWidth = 1.dp,

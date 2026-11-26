@@ -257,7 +257,7 @@ const schema = {
         type: { type: 'object', properties: { family: { type: 'string' }, scale: { $ref: '#/$defs/number' }, styles: { type: 'object', properties: Object.fromEntries(typeStyles.map((s) => [s, { $ref: '#/$defs/textStyle' }])), additionalProperties: false } }, additionalProperties: false },
         interaction: { type: 'object', description: 'Hover/press lighting of rows and tabs.', properties: { lighting: { $ref: '#/$defs/bool' }, hover: { $ref: '#/$defs/brush' }, press: { $ref: '#/$defs/brush' } }, additionalProperties: false },
         surface: { type: 'object', description: 'Flatten every Millennium surface.', properties: { shadows: { $ref: '#/$defs/bool' }, glow: { $ref: '#/$defs/bool' } }, additionalProperties: false },
-        app: { type: 'object', description: 'The backdrop behind every screen.', properties: { background: { $ref: '#/$defs/brush' } }, additionalProperties: false },
+        app: { type: 'object', description: 'App-wide fills: the backdrop behind every screen, panels/rows and small raised pieces.', properties: { background: { $ref: '#/$defs/brush' }, panel: { $ref: '#/$defs/brush', description: 'Fill of the app\'s own panels, cards and rows (settings groups, plugin lists, media list tiles...). Unset: the glossy panel gradient, or the flat surface colour when `tokens.surface.glow` is false. (1.4.0)' }, bevel: { $ref: '#/$defs/brush', description: 'Fill of chips, icon boxes and artwork placeholders. Unset: the neutral bevel, or the flat raised colour when `tokens.surface.glow` is false. (1.4.0)' } }, additionalProperties: false },
       },
       additionalProperties: false,
     },

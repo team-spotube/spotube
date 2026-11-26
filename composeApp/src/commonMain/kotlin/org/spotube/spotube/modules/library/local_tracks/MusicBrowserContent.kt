@@ -3,6 +3,7 @@
  */
 package org.spotube.spotube.modules.library.local_tracks
 
+import org.spotube.spotube.core.ui.theming.appPanelBrush
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -33,7 +34,6 @@ import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.pluralStringResource
 import org.spotube.millennium.composables.*
 import org.spotube.millennium.theme.MillenniumTheme
-import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
 import org.spotube.spotube.core.ui.component.AdaptiveDialogBottomSheet
 import org.spotube.spotube.core.ui.component.AdaptiveDropdownBottomSheet
@@ -256,7 +256,7 @@ private fun BrowserIconButton(icon: ImageVector, label: String, enabled: Boolean
 @Composable
 private fun BrowserFileActions(state: MusicBrowserState, viewModel: LibraryLocalTracksViewModel, modifier: Modifier) {
     val colors = MillenniumTheme.colors
-    Column(modifier.millenniumSurface(background = millenniumPanelBrush(colors), shape = RoundedCornerShape(14.dp),
+    Column(modifier.millenniumSurface(background = appPanelBrush(), shape = RoundedCornerShape(14.dp),
         shadowElevation = 6.dp, borderWidth = 1.dp, borderColor = colors.border).padding(horizontal = 10.dp, vertical = 6.dp),
         horizontalAlignment = Alignment.End) {
         BrowserFileActionLabel(state, Modifier.padding(horizontal = 6.dp))

@@ -20,7 +20,11 @@ package org.spotube.spotube.core.ui.theming.engine
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.SolidColor
 import org.spotube.millennium.theme.MillenniumColors
+import org.spotube.millennium.theme.millenniumBevelBrush
+import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.MillenniumLightColors
 import org.spotube.spotube.core.ui.theming.AppDefaultShapes
 import org.spotube.spotube.core.ui.theming.AppDefaultTypography
@@ -53,9 +57,34 @@ enum class AppState {
     val key: String = name.lowercase()
 }
 
-/** What slot defaults may depend on: the theme's effective colours, type scale and corner shapes. */
+/**
+ * What slot defaults may depend on: the theme's effective colours, type scale and corner shapes, plus the app-wide
+ * fills ([panel], [bevel]) and whether the theme is [flat] (`tokens.surface.glow: false`). Slot defaults use these
+ * instead of calling Millennium's glossy brushes, so a theme that never mentions a slot still gets a matching fill.
+ */
 @Immutable
-class AppThemeBase(val colors: MillenniumColors, val typography: AppTypography, val shapes: AppShapes)
+class AppThemeBase(
+    val colors: MillenniumColors,
+    val typography: AppTypography,
+    val shapes: AppShapes,
+    val flat: Boolean = false,
+    val panel: Brush = appPanelBrush(colors, flat, null),
+    val bevel: Brush = appBevelBrush(colors, flat, null),
+)
+
+/**
+ * Fill of the app's own panels, cards and rows (`tokens.app.panel`). Unset, it is Millennium's glossy panel gradient,
+ * or the flat surface colour when the theme turned surface glow off.
+ */
+fun appPanelBrush(colors: MillenniumColors, flat: Boolean, override: Brush?): Brush =
+    override ?: if (flat) SolidColor(colors.surface) else millenniumPanelBrush(colors)
+
+/**
+ * Fill of small raised pieces: chips, icon boxes, artwork placeholders (`tokens.app.bevel`). Unset, it is Millennium's
+ * neutral bevel, or the flat raised colour when the theme turned surface glow off.
+ */
+fun appBevelBrush(colors: MillenniumColors, flat: Boolean, override: Brush?): Brush =
+    override ?: if (flat) SolidColor(colors.raised) else millenniumBevelBrush(colors)
 
 /**
  * One styled part of an in-house component, addressed in JSON as `components.[component]` (with

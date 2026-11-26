@@ -27,7 +27,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import org.spotube.millennium.theme.millenniumPanelBrush
 
 /*
  * The registry of themable in-house components. To make another component themable:
@@ -126,7 +125,11 @@ object AppSlots {
             MediaCardRootProps(
                 width = 160.dp,
                 background = if (st == AppState.Error) SolidColor(c.danger.copy(alpha = 0.12f)) else null,
-                highlightBackground = if (lit) Brush.verticalGradient(listOf(c.raised, c.surface)) else null,
+                highlightBackground = when {
+                    !lit -> null
+                    b.flat -> SolidColor(c.raised)
+                    else -> Brush.verticalGradient(listOf(c.raised, c.surface))
+                },
                 shape = RoundedCornerShape(10.dp),
                 borderColor = when {
                     st == AppState.Focused -> c.accent
@@ -197,7 +200,7 @@ object AppSlots {
         component = "floatingPlayer", variant = "root",
         defaults = { b, _ ->
             FloatingPlayerRootProps(
-                background = millenniumPanelBrush(b.colors),
+                background = b.panel,
                 shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
                 borderColor = b.colors.border,
                 borderWidth = 1.dp,

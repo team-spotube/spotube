@@ -29,8 +29,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import org.spotube.millennium.theme.millenniumBevelBrush
-import org.spotube.millennium.theme.millenniumPanelBrush
 
 /** Slots for the app's content components: list tiles, track list, collection header, carousel, error states. */
 
@@ -251,7 +249,7 @@ object ContentSlots {
         defaults = { b, st ->
             val c = b.colors
             MediaListTileProps(
-                background = if (st == AppState.Selected) null else millenniumPanelBrush(c),
+                background = if (st == AppState.Selected) null else b.panel,
                 shape = RoundedCornerShape(8.dp),
                 borderColor = when (st) {
                     AppState.Error -> c.danger.copy(alpha = 0.5f)
@@ -295,7 +293,7 @@ object ContentSlots {
         component = "mediaArtwork", variant = null,
         defaults = { b, _ ->
             MediaArtworkProps(
-                background = millenniumBevelBrush(b.colors),
+                background = b.bevel,
                 shape = RoundedCornerShape(6.dp),
                 borderColor = b.colors.border,
                 borderWidth = 1.dp,
@@ -322,7 +320,7 @@ object ContentSlots {
                 padding = 24.dp, maxWidth = 360.dp, spacing = 12.dp,
                 iconBoxSize = 64.dp,
                 iconBoxShape = RoundedCornerShape(14.dp),
-                iconBoxBackground = millenniumBevelBrush(b.colors),
+                iconBoxBackground = b.bevel,
                 iconBoxBorderColor = b.colors.border,
                 iconBoxBorderWidth = 1.dp,
                 iconSize = 30.dp,

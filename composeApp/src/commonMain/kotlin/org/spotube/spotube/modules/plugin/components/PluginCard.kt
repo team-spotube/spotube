@@ -17,6 +17,7 @@
 
 package org.spotube.spotube.modules.plugin.components
 
+import org.spotube.spotube.core.ui.theming.appRowWash
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -31,7 +32,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.semantics.Role
 import org.spotube.millennium.theme.MillenniumTheme
 import org.spotube.millennium.theme.millenniumActionPointer
-import org.spotube.millennium.theme.millenniumSelectedGelBrush
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -97,7 +97,7 @@ internal fun PluginCard(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .then(if (wash > 0f) Modifier.background(millenniumSelectedGelBrush(colors, wash)) else Modifier)
+            .then(appRowWash(wash, pressed)?.let { Modifier.background(it) } ?: Modifier)
             .hoverable(interaction)
             .millenniumActionPointer()
             .clickable(

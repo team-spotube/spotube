@@ -17,6 +17,7 @@
 
 package org.spotube.spotube.modules.library
 
+import org.spotube.spotube.core.ui.theming.appPanelBrush
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.composeunstyled.Text
 import org.spotube.millennium.theme.MillenniumTheme
-import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
 import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.spotube.core.ui.theming.AppTheme
@@ -49,7 +49,7 @@ fun LibraryOnlineHint(
         modifier
             .fillMaxWidth()
             .millenniumSurface(
-                background = millenniumPanelBrush(MillenniumTheme.colors),
+                background = appPanelBrush(),
                 shape = RoundedCornerShape(10.dp),
                 borderColor = MillenniumTheme.colors.border,
                 borderWidth = 1.dp

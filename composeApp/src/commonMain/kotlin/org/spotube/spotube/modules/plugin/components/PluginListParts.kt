@@ -17,6 +17,8 @@
 
 package org.spotube.spotube.modules.plugin.components
 
+import org.spotube.spotube.core.ui.theming.appBevelBrush
+import org.spotube.spotube.core.ui.theming.appPanelBrush
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -47,8 +49,6 @@ import org.spotube.millennium.composables.MillenniumSeparator
 import org.spotube.millennium.composables.MillenniumTooltip
 import org.spotube.millennium.theme.MillenniumTheme
 import org.spotube.millennium.theme.gelBrush
-import org.spotube.millennium.theme.millenniumBevelBrush
-import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
 import org.spotube.spotube.core.ui.theming.AppTheme
 import org.spotube.spotube.modules.plugin.PluginAbility
@@ -116,7 +116,7 @@ internal fun PluginListPanel(
         modifier = modifier
             .fillMaxWidth()
             .millenniumSurface(
-                background = millenniumPanelBrush(MillenniumTheme.colors),
+                background = appPanelBrush(),
                 shape = AppTheme.shapes.medium,
                 borderColor = MillenniumTheme.colors.border,
                 borderWidth = 1.dp,
@@ -141,7 +141,7 @@ internal fun PluginIconWell(
         modifier = Modifier
             .size(size)
             .millenniumSurface(
-                background = millenniumBevelBrush(colors),
+                background = appBevelBrush(),
                 shape = shape,
                 borderColor = colors.border,
                 borderWidth = 1.dp,
