@@ -17,6 +17,8 @@
 
 package org.spotube.spotube.modules.library.local_tracks.media
 
+import io.github.vinceglb.filekit.PlatformFile
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.skia.EncodedImageFormat
@@ -62,10 +64,11 @@ class JvmLocalMediaDiscoveryService : LocalMediaDiscoveryService {
                             val parent = filePath.parent?.absolutePathString() ?: return@forEach
                             val trackPath = filePath.toAbsolutePath().toString()
 
-                            val metadata = try {
-                                uniffi.compose_app.readAudioMetadata(trackPath)
-                            } catch (_: Exception) {
-                                null
+                            val metadata = readLocalTrackTags(PlatformFile(parent), PlatformFile(trackPath))
+                            // Ambiguous containers can be video-only; only keep them when the tags
+                            // (or a download sidecar) prove the file is readable as audio.
+                            if (metadata == null && filePath.extension.lowercase(Locale.getDefault()) in mixedMusicExtensions) {
+                                return@forEach
                             }
 
                             val track = LocalMediaTrack(
@@ -74,10 +77,10 @@ class JvmLocalMediaDiscoveryService : LocalMediaDiscoveryService {
                                     ?: filePath.nameWithoutExtension.ifBlank {
                                         filePath.fileName.toString()
                                     },
-                                artists = metadata?.artists?.takeIf { it.isNotEmpty() } ?: emptyList(),
+                                artists = metadata?.toTrack(trackPath)?.artists.orEmpty(),
                                 durationMs = metadata?.durationMs ?: 0L,
-                                album = metadata?.album,
-                                coverBytes = metadata?.coverBytes?.let(::coverThumbnail))
+                                album = metadata?.album?.takeIf(String::isNotBlank),
+                                coverBytes = metadata?.cover?.let(::coverThumbnail))
                             folders.getOrPut(parent) { mutableListOf() }.add(track)
                         }
                 }
@@ -154,7 +157,7 @@ class JvmLocalMediaDiscoveryService : LocalMediaDiscoveryService {
     }
 
     private fun isSupportedAudioExtension(extension: String): Boolean {
-        return extension.lowercase(Locale.getDefault()) in SUPPORTED_EXTENSIONS
+        return extension.lowercase(Locale.getDefault()) in playableMusicExtensions
     }
 
     private fun resolveRoots(roots: List<String>): List<Path> {
@@ -183,15 +186,6 @@ class JvmLocalMediaDiscoveryService : LocalMediaDiscoveryService {
     companion object {
         private const val WATCH_DEBOUNCE_MS = 2_500L
         private const val MAX_FILES_PER_SCAN = 100_000L
-        private val SUPPORTED_EXTENSIONS = setOf(
-            "mp3",
-            "m4a",
-            "aac",
-            "flac",
-            "wav",
-            "ogg",
-            "opus",
-            "wma")
     }
 }
 
@@ -199,10 +193,10 @@ class JvmLocalMediaDiscoveryService : LocalMediaDiscoveryService {
  * Embedded covers can be several MB each and the index is serialised to JSON, so keep a small
  * JPEG like Android does (#3193). Returns null for unreadable art.
  */
-internal fun coverThumbnail(bytes: ByteArray, size: Int = COVER_THUMBNAIL_SIZE): ByteArray? = runCatching {
+internal fun coverThumbnail(bytes: ByteArray, size: Int = COVER_THUMBNAIL_SIZE, keepOriginal: Boolean = true): ByteArray? = runCatching {
     Image.makeFromEncoded(bytes).use { source ->
         val scale = size.toFloat() / minOf(source.width, source.height)
-        if (scale >= 1f && bytes.size <= MAX_SMALL_COVER_BYTES) return@runCatching bytes
+        if (keepOriginal && scale >= 1f && bytes.size <= MAX_SMALL_COVER_BYTES) return@runCatching bytes
         val width = (source.width * scale.coerceAtMost(1f)).toInt().coerceAtLeast(1)
         val height = (source.height * scale.coerceAtMost(1f)).toInt().coerceAtLeast(1)
         Surface.makeRasterN32Premul(width, height).use { surface ->
@@ -220,4 +214,3 @@ internal fun coverThumbnail(bytes: ByteArray, size: Int = COVER_THUMBNAIL_SIZE):
 
 private const val COVER_THUMBNAIL_SIZE = 160
 private const val MAX_SMALL_COVER_BYTES = 64 * 1024
-

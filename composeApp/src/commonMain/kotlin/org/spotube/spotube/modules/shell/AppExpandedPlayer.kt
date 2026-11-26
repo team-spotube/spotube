@@ -18,7 +18,8 @@
 package org.spotube.spotube.modules.shell
 
 
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.appBackground
+import org.spotube.spotube.core.ui.theming.AppIcon
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
@@ -47,6 +48,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 
 import org.spotube.spotube.core.ui.theming.AppTheme
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppState
+import org.spotube.spotube.core.ui.theming.engine.PlayersSlots
 import org.spotube.millennium.composables.MillenniumSnackbarHost
 import org.spotube.millennium.composables.MillenniumSnackbarHostState
 import org.spotube.millennium.composables.MillenniumIconButton
@@ -55,7 +59,6 @@ import org.spotube.millennium.composables.MillenniumModalBottomSheet
 import org.spotube.millennium.composables.MillenniumCard
 import org.spotube.millennium.composables.MillenniumSlider
 import org.spotube.millennium.theme.MillenniumTheme
-import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
 import com.composeunstyled.SheetDetent
 import com.composeunstyled.rememberModalBottomSheetState
@@ -90,6 +93,7 @@ import org.spotube.spotube.core.jam.JamRole
 import org.spotube.spotube.core.jam.JamRoomService
 import org.spotube.spotube.core.navigation.NavigationCommands
 import org.spotube.spotube.core.navigation.Routes
+import org.spotube.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import org.spotube.spotube.modules.downloads.DownloadProgressIcon
 import org.spotube.spotube.modules.downloads.DownloadStatus
 import org.spotube.spotube.modules.downloads.DownloadsViewModel
@@ -127,13 +131,17 @@ import org.spotube.spotube.core.i18n.getString
 import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.downloads_status_cancelled
+import spotube.composeapp.generated.resources.downloads_status_downloading
 import spotube.composeapp.generated.resources.downloads_status_failed
+import spotube.composeapp.generated.resources.downloads_status_failed_error
 import spotube.composeapp.generated.resources.downloads_status_queued
 import spotube.composeapp.generated.resources.player_alternative_source
 import spotube.composeapp.generated.resources.player_collapse_content_description
 import spotube.composeapp.generated.resources.player_disable_shuffle_content_description
 import spotube.composeapp.generated.resources.player_download
 import spotube.composeapp.generated.resources.player_download_already_downloaded
+import spotube.composeapp.generated.resources.player_download_completed
+import spotube.composeapp.generated.resources.player_download_in_progress
 import spotube.composeapp.generated.resources.player_download_retrying
 import spotube.composeapp.generated.resources.player_download_started
 import spotube.composeapp.generated.resources.player_download_status_downloaded
@@ -205,10 +213,13 @@ fun AppExpandedPlayer(
     val downloads by downloadsViewModel.downloads.collectAsStateWithLifecycle()
     val currentDownload = remember(currentTrack, downloads) {
         currentTrack?.let { t ->
-            downloads.lastOrNull { it.track?.id == t.id }
+            downloads.firstOrNull { it.track?.id == t.id }
         }
     }
     val snackbarHostState = remember { MillenniumSnackbarHostState() }
+    var previousDownloadStatus by remember(currentTrack?.id) {
+        mutableStateOf(currentDownload?.status)
+    }
     val albumArtModifier =
         rememberSharedAlbumArtModifier(sharedTransitionScope, animatedVisibilityScope)
     val coverModel = playerUiState.coverModel
@@ -281,7 +292,22 @@ fun AppExpandedPlayer(
         }
     }
 
-    Box(modifier = modifier.fillMaxSize().background(AppTheme.colors.background)) {
+    LaunchedEffect(currentTrack?.id, currentDownload?.status) {
+        val status = currentDownload?.status ?: return@LaunchedEffect
+        if (status == previousDownloadStatus) return@LaunchedEffect
+        previousDownloadStatus = status
+        when (status) {
+            DownloadStatus.Completed -> snackbarHostState.showSnackbar(
+                getString(Res.string.player_download_completed, currentTrack?.title.orEmpty())
+            )
+            is DownloadStatus.Failed -> snackbarHostState.showSnackbar(
+                getString(Res.string.downloads_status_failed_error, currentDownload.errorMessage ?: status.error)
+            )
+            else -> Unit
+        }
+    }
+
+    Box(modifier = modifier.fillMaxSize().appBackground()) {
         if (playerOptionsUiState.isMoreOptionsSheetOpen) {
             MillenniumModalBottomSheet(
                 state = moreOptionsSheetState,
@@ -310,107 +336,53 @@ fun AppExpandedPlayer(
                         val status = download?.status
                         val statusLabel = when (status) {
                             is DownloadStatus.Completed -> stringResource(Res.string.player_download_status_downloaded)
-                            is DownloadStatus.Failed -> stringResource(Res.string.downloads_status_failed)
+                            is DownloadStatus.Failed -> if (download.errorMessage != null) {
+                                stringResource(Res.string.downloads_status_failed_error, download.errorMessage)
+                            } else stringResource(Res.string.downloads_status_failed)
                             is DownloadStatus.Cancelled -> stringResource(Res.string.downloads_status_cancelled)
                             is DownloadStatus.Queued -> stringResource(Res.string.downloads_status_queued)
-                            is DownloadStatus.Downloading -> stringResource(Res.string.player_download_status_downloading)
+                            is DownloadStatus.Downloading -> stringResource(
+                                Res.string.downloads_status_downloading,
+                                (download.progress.coerceIn(0f, 1f) * 100).toInt()
+                            )
                             null -> stringResource(Res.string.player_download)
                         }
-                        val statusColor = when (status) {
-                            is DownloadStatus.Completed -> AppTheme.colors.primary
-                            is DownloadStatus.Failed -> AppTheme.colors.error
-                            else -> AppTheme.colors.onSurfaceVariant
-                        }
+                        DownloadOptionTile(
+                            track = currentTrack,
+                            status = status,
+                            statusLabel = statusLabel,
+                            onClick = {
+                                when (status) {
+                                    DownloadStatus.Completed -> scope.launch {
+                                        snackbarHostState.showSnackbar(getString(Res.string.player_download_already_downloaded))
+                                    }
 
-                        Box(
-                            modifier = Modifier
-                                .aspectRatio(1f)
-                                .millenniumSurface(
-                                    background = millenniumPanelBrush(MillenniumTheme.colors),
-                                    shape = RoundedCornerShape(14.dp),
-                                    borderColor = MillenniumTheme.colors.border,
-                                    borderWidth = 1.dp,
-                                    shadowElevation = 2.dp
-                                )
-                                .clickable {
-                                    playerOptionsViewModel.dismissMoreOptionsSheet()
-                                    when (status) {
-                                        is DownloadStatus.Completed -> {
+                                    is DownloadStatus.Failed, DownloadStatus.Cancelled -> {
+                                        downloadsViewModel.retry(download.id)
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar(getString(Res.string.player_download_retrying))
+                                        }
+                                    }
+
+                                    is DownloadStatus.Downloading, DownloadStatus.Queued -> scope.launch {
+                                        snackbarHostState.showSnackbar(getString(Res.string.player_download_in_progress))
+                                    }
+
+                                    null -> {
+                                        val track = currentTrack
+                                        if (track != null) {
+                                            downloadsViewModel.downloadTrack(track)
                                             scope.launch {
-                                                snackbarHostState.showSnackbar(getString(Res.string.player_download_already_downloaded))
-                                            }
-                                        }
-
-                                        is DownloadStatus.Failed, is DownloadStatus.Cancelled -> {
-                                            download?.let { downloadsViewModel.retry(it.id) }
-                                            scope.launch {
-                                                snackbarHostState.showSnackbar(getString(Res.string.player_download_retrying))
-                                            }
-                                        }
-
-                                        is DownloadStatus.Downloading, is DownloadStatus.Queued -> {
-                                            // already in progress
-                                        }
-
-                                        null -> {
-                                            val track = currentTrack
-                                            if (track != null) {
-                                                downloadsViewModel.downloadTrack(track)
-                                                scope.launch {
-                                                    snackbarHostState.showSnackbar(
-                                                        message = getString(Res.string.player_download_started, track.title)
-                                                    )
-                                                }
+                                                snackbarHostState.showSnackbar(
+                                                    message = getString(Res.string.player_download_started, track.title)
+                                                )
                                             }
                                         }
                                     }
-                                    onDownloadTrack()
-                                }) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(12.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                if (status is DownloadStatus.Downloading) {
-                                    DownloadProgressIcon(
-                                        track = currentTrack,
-                                        icon = Iconsax.IconsaxDirectboxReceive,
-                                        contentDescription = stringResource(Res.string.player_download),
-                                        modifier = Modifier.size(28.dp),
-                                        tint = AppTheme.colors.onSurface
-                                    )
-                                } else {
-                                    val icon = when (status) {
-                                        is DownloadStatus.Completed -> Iconsax.IconsaxCheckCircle
-                                        is DownloadStatus.Failed -> Iconsax.IconsaxCloseSquare
-                                        is DownloadStatus.Cancelled -> Iconsax.IconsaxRefreshRight
-                                        is DownloadStatus.Queued -> Iconsax.InconsaxClock
-                                        null -> Iconsax.IconsaxDirectboxReceive
-                                    }
-                                    MillenniumIcon(
-                                        imageVector = icon,
-                                        contentDescription = statusLabel,
-                                        modifier = Modifier.size(28.dp),
-                                        tint = when (status) {
-                                            is DownloadStatus.Completed -> AppTheme.colors.primary
-                                            is DownloadStatus.Failed -> AppTheme.colors.error
-                                            else -> AppTheme.colors.onSurface
-                                        }
-                                    )
                                 }
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Text(
-                                    text = statusLabel,
-                                    style = AppTheme.typography.labelSmall,
-                                    textAlign = TextAlign.Center,
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis,
-                                    color = statusColor
-                                )
+                                onDownloadTrack()
                             }
-                        }
+                        )
                     }
                     item {
                         OptionTile(
@@ -449,15 +421,19 @@ fun AppExpandedPlayer(
             }
         }
 
+        val root = AppComponents.slot(PlayersSlots.ExpandedPlayerRoot)[AppState.Default]
+        val art = AppComponents.slot(PlayersSlots.ExpandedPlayerArtwork)[AppState.Default]
+        val info = AppComponents.slot(PlayersSlots.ExpandedPlayerInfo)[AppState.Default]
+        val transport = AppComponents.slot(PlayersSlots.ExpandedPlayerTransport)[AppState.Default]
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .windowInsetsPadding(WindowInsets.safeDrawing)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp),
+                .padding(root.contentPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(root.topSpacing))
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -467,14 +443,14 @@ fun AppExpandedPlayer(
                     onClick = onCollapse,
                     style = MillenniumIconButtonStyle.Quiet
                 ) {
-                    MillenniumIcon(
+                    AppIcon(
                         Iconsax.IconsaxArrowDown4,
                         contentDescription = stringResource(Res.string.player_collapse_content_description)
                     )
                 }
                 Text(
                     text = stringResource(Res.string.player_now_playing),
-                    style = AppTheme.typography.titleMedium,
+                    style = root.headerStyle,
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center,
                     maxLines = 1
@@ -483,23 +459,23 @@ fun AppExpandedPlayer(
                     onClick = playerOptionsViewModel::showMoreOptionsSheet,
                     style = MillenniumIconButtonStyle.Quiet
                 ) {
-                    MillenniumIcon(Iconsax.Iconsax3DotsMore, contentDescription = stringResource(Res.string.player_options_content_description))
+                    AppIcon(Iconsax.Iconsax3DotsMore, contentDescription = stringResource(Res.string.player_options_content_description))
                 }
             }
 
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 20.dp, bottom = 24.dp),
+                    .padding(art.padding),
                 contentAlignment = Alignment.Center
             ) {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth(0.84f)
+                        .fillMaxWidth(art.widthFraction)
                         .aspectRatio(1f)
                         .then(albumArtModifier)
-                        .clip(RoundedCornerShape(22.dp))
-                        .background(AppTheme.colors.surfaceContainerHighest)
+                        .clip(art.shape)
+                        .background(art.background)
                 ) {
                     AsyncImage(
                         model = coverModel,
@@ -513,7 +489,7 @@ fun AppExpandedPlayer(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 2.dp),
+                    .padding(info.rowPadding),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -527,7 +503,7 @@ fun AppExpandedPlayer(
                 ) {
                     Text(
                         text = playerUiState.title,
-                        style = AppTheme.typography.headlineSmall,
+                        style = info.titleStyle,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         textAlign = TextAlign.Center
@@ -539,8 +515,8 @@ fun AppExpandedPlayer(
                             // The page opens beneath the player, so get out of the way
                             onCollapse()
                         },
-                        style = AppTheme.typography.bodyLarge,
-                        color = AppTheme.colors.onSurfaceVariant,
+                        style = info.artistStyle,
+                        color = info.artistStyle.color,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -548,11 +524,11 @@ fun AppExpandedPlayer(
                     onClick = onQueue,
                     style = MillenniumIconButtonStyle.Secondary
                 ) {
-                    MillenniumIcon(Iconsax.IconsaxMusicFilter, contentDescription = stringResource(Res.string.queue_title))
+                    AppIcon(Iconsax.IconsaxMusicFilter, contentDescription = stringResource(Res.string.queue_title))
                 }
             }
 
-            Column(modifier = Modifier.padding(top = 20.dp)) {
+            Column(modifier = Modifier.padding(transport.seekPadding)) {
                 MillenniumSlider(
                     value = seekProgress,
                     onValueChange = {
@@ -570,25 +546,23 @@ fun AppExpandedPlayer(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 2.dp),
+                        .padding(transport.timePadding),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = formatPlayerTime(playerUiState.position),
-                        style = AppTheme.typography.labelSmall,
-                        color = AppTheme.colors.onSurfaceVariant
+                        style = transport.timeStyle
                     )
                     Text(
                         text = formatPlayerTime(playerUiState.displayDuration),
-                        style = AppTheme.typography.labelSmall,
-                        color = AppTheme.colors.onSurfaceVariant
+                        style = transport.timeStyle
                     )
                 }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp, bottom = 12.dp),
+                        .padding(transport.controlsPadding),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -597,14 +571,10 @@ fun AppExpandedPlayer(
                         enabled = !isJamGuest,
                         style = MillenniumIconButtonStyle.Quiet
                     ) {
-                        MillenniumIcon(
+                        AppIcon(
                             Iconsax.IconsaxShuffle,
                             contentDescription = stringResource(if (playerUiState.isShuffling) Res.string.player_disable_shuffle_content_description else Res.string.player_enable_shuffle_content_description),
-                            tint = if (playerUiState.isShuffling) {
-                                AppTheme.colors.primary
-                            } else {
-                                AppTheme.colors.onSurfaceVariant
-                            }
+                            tint = if (playerUiState.isShuffling) transport.activeTint else transport.inactiveTint
                         )
                     }
                     MillenniumIconButton(
@@ -612,16 +582,16 @@ fun AppExpandedPlayer(
                         enabled = !isJamGuest,
                         style = MillenniumIconButtonStyle.Quiet
                     ) {
-                        MillenniumIcon(Iconsax.IconsaxPrevious, contentDescription = stringResource(Res.string.player_previous_content_description))
+                        AppIcon(Iconsax.IconsaxPrevious, contentDescription = stringResource(Res.string.player_previous_content_description))
                     }
                     MillenniumIconButton(
                         onClick = ::onPlayPause,
                         style = MillenniumIconButtonStyle.Primary
                     ) {
-                        MillenniumIcon(
+                        AppIcon(
                             if (playerUiState.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                             contentDescription = stringResource(if (playerUiState.isPlaying) Res.string.player_pause_content_description else Res.string.player_play_content_description),
-                            modifier = Modifier.size(30.dp),
+                            modifier = Modifier.size(transport.playIconSize),
                             tint = LocalTextStyle.current.color
                         )
                     }
@@ -630,25 +600,21 @@ fun AppExpandedPlayer(
                         enabled = !isJamGuest,
                         style = MillenniumIconButtonStyle.Quiet
                     ) {
-                        MillenniumIcon(Iconsax.IconsaxNext, contentDescription = stringResource(Res.string.player_next_content_description))
+                        AppIcon(Iconsax.IconsaxNext, contentDescription = stringResource(Res.string.player_next_content_description))
                     }
                     MillenniumIconButton(
                         onClick = ::onLoopToggle,
                         enabled = !isJamGuest,
                         style = MillenniumIconButtonStyle.Quiet
                     ) {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = when (playerUiState.loopState) {
                                 LoopState.NONE -> Iconsax.IconsaxRepeateMusic
                                 LoopState.ONE -> Iconsax.IconsaxRepeateOne
                                 LoopState.ALL -> Iconsax.IconsaxRepeatMusic
                             },
                             contentDescription = stringResource(when (playerUiState.loopState) { LoopState.NONE -> Res.string.player_loop_mode_none; LoopState.ONE -> Res.string.player_loop_mode_one; LoopState.ALL -> Res.string.player_loop_mode_all }),
-                            tint = if (playerUiState.loopState == LoopState.NONE) {
-                                AppTheme.colors.onSurfaceVariant
-                            } else {
-                                AppTheme.colors.primary
-                            }
+                            tint = if (playerUiState.loopState == LoopState.NONE) transport.inactiveTint else transport.activeTint
                         )
                     }
                 }
@@ -657,7 +623,7 @@ fun AppExpandedPlayer(
             LyricsPreviewCard(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                    .padding(AppComponents.slot(PlayersSlots.ExpandedPlayerLyrics)[AppState.Default].outerPadding),
                 onExpand = onExpandLyrics
             )
         }
@@ -696,11 +662,12 @@ private fun LyricsPreviewCard(
     val isLoading = uiState.isLoading
     if (syncedLyrics.isEmpty() || isLoading) return
 
+    val lyrics = AppComponents.slot(PlayersSlots.ExpandedPlayerLyrics)[AppState.Default]
     MillenniumCard(
         modifier = modifier.clickable(onClick = onExpand),
-        contentPadding = PaddingValues(12.dp),
-        contentSpacing = 8.dp,
-        shadowElevation = 2.dp
+        contentPadding = lyrics.contentPadding,
+        contentSpacing = lyrics.contentSpacing,
+        shadowElevation = lyrics.shadowElevation
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -709,17 +676,16 @@ private fun LyricsPreviewCard(
         ) {
             Text(
                 text = stringResource(Res.string.player_lyrics),
-                style = AppTheme.typography.labelMedium,
-                color = MillenniumTheme.colors.muted
+                style = lyrics.titleStyle
             )
             MillenniumIconButton(
                 onClick = onExpand,
                 style = MillenniumIconButtonStyle.Quiet
             ) {
-                MillenniumIcon(
+                AppIcon(
                     Iconsax.IconsaxArrowSquareUp,
                     contentDescription = stringResource(Res.string.player_expand_lyrics_content_description),
-                    tint = MillenniumTheme.colors.muted
+                    tint = lyrics.iconTint
                 )
             }
         }
@@ -730,7 +696,7 @@ private fun LyricsPreviewCard(
             currentIndex = uiState.currentIndex,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(120.dp)
+                .height(lyrics.previewHeight)
         )
     }
 }
@@ -742,31 +708,93 @@ private fun OptionTile(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val tile = AppComponents.slot(PlayersSlots.ExpandedPlayerOptionTile)[AppState.Default]
     MillenniumCard(
         modifier = modifier
             .aspectRatio(1f)
             .clickable(onClick = onClick),
-        contentPadding = PaddingValues(12.dp)
+        contentPadding = tile.contentPadding
     ) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                MillenniumIcon(
+                AppIcon(
                     imageVector = icon,
                     contentDescription = label,
-                    modifier = Modifier.size(28.dp),
-                    tint = AppTheme.colors.onSurface
+                    modifier = Modifier.size(tile.iconSize),
+                    tint = tile.iconTint
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(tile.spacing))
                 Text(
                     text = label,
-                    style = AppTheme.typography.labelSmall,
+                    style = tile.labelStyle,
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DownloadOptionTile(
+    track: MetadataTrack?,
+    status: DownloadStatus?,
+    statusLabel: String,
+    onClick: () -> Unit
+) {
+    val tile = AppComponents.slot(PlayersSlots.ExpandedPlayerOptionTile)[AppState.Default]
+    val icon = when (status) {
+        DownloadStatus.Completed -> Iconsax.IconsaxCheckCircle
+        is DownloadStatus.Failed -> Iconsax.IconsaxCloseSquare
+        DownloadStatus.Cancelled -> Iconsax.IconsaxRefreshRight
+        DownloadStatus.Queued -> Iconsax.InconsaxClock
+        DownloadStatus.Downloading, null -> Iconsax.IconsaxDirectboxReceive
+    }
+    val statusTint = when (status) {
+        DownloadStatus.Completed -> AppTheme.colors.primary
+        is DownloadStatus.Failed -> AppTheme.colors.error
+        else -> tile.iconTint
+    }
+
+    MillenniumCard(
+        modifier = Modifier.aspectRatio(1f).clickable(onClick = onClick),
+        contentPadding = tile.contentPadding
+    ) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                if (status is DownloadStatus.Downloading) {
+                    DownloadProgressIcon(
+                        track = track,
+                        icon = icon,
+                        contentDescription = statusLabel,
+                        modifier = Modifier.size(tile.iconSize),
+                        size = tile.iconSize,
+                        tint = statusTint,
+                        progressTint = AppTheme.colors.primary
+                    )
+                } else {
+                    AppIcon(
+                        imageVector = icon,
+                        contentDescription = statusLabel,
+                        modifier = Modifier.size(tile.iconSize),
+                        tint = statusTint
+                    )
+                }
+                Spacer(modifier = Modifier.height(tile.spacing))
+                Text(
+                    text = statusLabel,
+                    style = tile.labelStyle,
                     textAlign = TextAlign.Center,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    color = AppTheme.colors.onSurfaceVariant
+                    color = if (status is DownloadStatus.Failed) AppTheme.colors.error else AppTheme.colors.onSurface
                 )
             }
         }

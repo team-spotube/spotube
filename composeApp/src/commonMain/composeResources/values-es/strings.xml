@@ -505,7 +505,7 @@
     <string name="devices_connecting">Conectando...</string>
     <string name="devices_searching">Buscando dispositivos en la red...</string>
     <string name="devices_empty">No se encontraron dispositivos</string>
-    <string name="devices_empty_hint">Asegúrate de que el otro dispositivo tenga activado \"Permitir control remoto\" en los ajustes.</string>
+    <string name="devices_empty_hint">Asegúrate de que el otro dispositivo tenga activado "Permitir control remoto" en los ajustes.</string>
     <string name="devices_unknown_device">Dispositivo desconocido</string>
     <string name="devices_resolving">Resolviendo...</string>
 
@@ -540,7 +540,7 @@
 
     <!-- Remote control: connection request dialog -->
     <string name="remote_request_title">Solicitud de control remoto</string>
-    <string name="remote_request_message">\"%1$s\" quiere controlar la reproducción en este dispositivo.</string>
+    <string name="remote_request_message">"%1$s" quiere controlar la reproducción en este dispositivo.</string>
     <string name="remote_request_deny">Denegar</string>
     <string name="remote_request_allow">Permitir</string>
     <string name="remote_request_allow_always">Permitir siempre</string>

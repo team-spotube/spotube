@@ -18,12 +18,11 @@
 package org.spotube.spotube.modules.shell
 
 
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumProgress
 import org.spotube.millennium.theme.millenniumSurface
-import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.MillenniumTheme
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
@@ -41,7 +40,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 
-import org.spotube.spotube.core.ui.theming.AppTheme
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppSlots
+import org.spotube.spotube.core.ui.theming.engine.AppState
 import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -132,16 +133,21 @@ internal fun FloatingPlayerContent(
     heartButton: @Composable () -> Unit
 ) {
     val coverModel = playerUiState.coverModel
+    val root = AppComponents.slot(AppSlots.FloatingPlayerRoot)[AppState.Default]
+    val art = AppComponents.slot(AppSlots.FloatingPlayerArtwork)[AppState.Default]
+    val info = AppComponents.slot(AppSlots.FloatingPlayerInfo)[AppState.Default]
 
     Box(
         modifier = modifier
             .fillMaxWidth()
             .height(FloatingPlayerContentHeight + FloatingPlayerBottomBleed)
+            .padding(horizontal = root.horizontalMargin)
             .millenniumSurface(
-                background = millenniumPanelBrush(MillenniumTheme.colors),
-                shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
-                borderColor = MillenniumTheme.colors.border,
-                borderWidth = 1.dp,
+                background = root.background,
+                shape = root.shape,
+                borderColor = root.borderColor,
+                borderWidth = root.borderWidth,
+                shadowElevation = root.shadowElevation,
             )
     ) {
         Column(
@@ -154,13 +160,13 @@ internal fun FloatingPlayerContent(
                 progress = playerUiState.progress,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(2.dp)
+                    .height(root.progressHeight)
             )
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(root.progressSpacing))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 12.dp),
+                    .padding(root.contentPadding),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -170,10 +176,10 @@ internal fun FloatingPlayerContent(
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(42.dp)
+                            .size(art.size)
                             .then(albumArtModifier)
-                            .clip(RoundedCornerShape(6.dp))
-                            .background(AppTheme.colors.onSurface.copy(alpha = 0.12f)),
+                            .clip(art.shape)
+                            .background(art.background),
                         contentAlignment = Alignment.Center
                     ) {
                         if (coverModel != null) AsyncImage(
@@ -183,23 +189,21 @@ internal fun FloatingPlayerContent(
                                 .fillMaxSize(),
                             contentScale = ContentScale.Crop
                         )
-                        else MillenniumIcon(
+                        else AppIcon(
                             Iconsax.IconsaxMusic, contentDescription = null,
-                            tint = AppTheme.colors.onSurfaceVariant, modifier = Modifier.size(22.dp)
+                            tint = art.placeholderTint, modifier = Modifier.size(art.placeholderSize)
                         )
                     }
-                    Column(modifier = Modifier.padding(start = 10.dp)) {
+                    Column(modifier = Modifier.padding(start = art.spacing)) {
                         Text(
                             text = if (playerUiState.queue.isEmpty()) stringResource(Res.string.player_nothing_playing) else playerUiState.title,
-                            style = AppTheme.typography.bodyMedium,
-                            color = AppTheme.colors.onSurface,
+                            style = info.titleStyle,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
                         if (playerUiState.queue.isNotEmpty()) Text(
                             text = playerUiState.artists,
-                            style = AppTheme.typography.bodySmall,
-                            color = AppTheme.colors.onSurfaceVariant,
+                            style = info.subtitleStyle,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -208,13 +212,13 @@ internal fun FloatingPlayerContent(
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     heartButton()
-                    Spacer(modifier = Modifier.size(8.dp))
+                    Spacer(modifier = Modifier.size(root.controlsSpacing))
                     MillenniumIconButton(
                         onClick = onPlayPause,
                         enabled = playerUiState.queue.isNotEmpty(),
                         style = MillenniumIconButtonStyle.Secondary
                     ) {
-                        MillenniumIcon(
+                        AppIcon(
                             if (playerUiState.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                             contentDescription = stringResource(if (playerUiState.isPlaying) Res.string.player_pause_content_description else Res.string.player_play_content_description)
                         )

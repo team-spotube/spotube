@@ -58,7 +58,7 @@ class LocalMediaFoldersEditorTest {
 
     private fun model(
         source: MutableStateFlow<UserSettings>,
-        persist: suspend (List<String>) -> Unit = {}
+        persist: suspend (List<String>, Map<String, String>) -> Unit = { _, _ -> }
     ) =
         LocalMediaFoldersViewModel(source, persist).also { models.add(it) }
 
@@ -66,7 +66,7 @@ class LocalMediaFoldersEditorTest {
     fun addingFoldersDeduplicatesPathsAndCancelDiscardsTheDraft() = runTest {
         val source = MutableStateFlow(UserSettings(localMediaFolders = listOf("/home/user/Music")))
         var writes = 0
-        val editor = model(source) { writes++ }
+        val editor = model(source) { _, _ -> writes++ }
         editor.open()
         editor.addFolder(" /home/user/Music/// ")
         editor.addFolder("  ")
@@ -102,7 +102,7 @@ class LocalMediaFoldersEditorTest {
         val source = MutableStateFlow(UserSettings(localMediaFolders = listOf("/music")))
         val gate = CompletableDeferred<Unit>()
         var writes = 0
-        val editor = model(source) { paths ->
+        val editor = model(source) { paths, _ ->
             writes++
             gate.await()
             source.value = source.value.copy(localMediaFolders = paths)
@@ -126,9 +126,26 @@ class LocalMediaFoldersEditorTest {
     }
 
     @Test
+    fun savingKeepsBookmarksAndNormalizesTheirKeys() = runTest {
+        val source = MutableStateFlow(
+            UserSettings(
+                localMediaFolders = listOf("/music/"),
+                localMediaFolderBookmarks = mapOf("/music/" to "existing-bookmark")
+            )
+        )
+        var saved: Map<String, String>? = null
+        val editor = model(source) { _, bookmarks -> saved = bookmarks }
+        editor.open()
+        editor.addFolder("/new-music")
+        editor.save()
+        runCurrent()
+        assertEquals(mapOf("/music" to "existing-bookmark"), saved)
+    }
+
+    @Test
     fun failedSaveKeepsChangesForRetry() = runTest {
         val source = MutableStateFlow(UserSettings())
-        val editor = model(source) { throw IllegalStateException("Test storage failure") }
+        val editor = model(source) { _, _ -> throw IllegalStateException("Test storage failure") }
         editor.open()
         editor.addFolder("/music")
         editor.save()

@@ -21,16 +21,23 @@ import org.spotube.spotube.core.network.HttpClientFactory
 import co.touchlab.kermit.Logger
 import org.spotube.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import org.spotube.spotube.core.paths.Paths
+import org.spotube.spotube.modules.library.local_tracks.media.LocalMediaLibraryCoordinator
+import org.spotube.spotube.modules.library.local_tracks.media.LocalTrackTags
+import org.spotube.spotube.modules.library.local_tracks.media.saveDownloadedTrackTags
+import io.github.vinceglb.filekit.PlatformFile
 import org.spotube.spotube.core.server.StreamInfo
 import org.spotube.spotube.core.server.StreamRequest
 import org.spotube.spotube.core.server.StreamingUrlRepository
 import org.spotube.spotube.core.server.urlSummary
 import org.spotube.plugin_interfaces.plugin_apis.audio.StreamProtocol
 import org.spotube.spotube.modules.settings.SettingsRepository
+import org.spotube.spotube.modules.settings.DownloadFolderLocation
+import org.spotube.spotube.modules.settings.downloadFolderPath
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.request.get
 import io.ktor.client.request.head
 import io.ktor.client.request.headers
+import io.ktor.client.request.prepareGet
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
@@ -89,7 +96,8 @@ class DownloadManager(
     private val settingsRepository: SettingsRepository,
     private val paths: Paths,
     private val streamingUrlRepository: StreamingUrlRepository,
-    private val httpClientFactory: HttpClientFactory
+    private val httpClientFactory: HttpClientFactory,
+    private val localMediaLibraryCoordinator: LocalMediaLibraryCoordinator
 ) {
     companion object {
         const val MAX_CONCURRENT_DOWNLOADS = 4
@@ -116,22 +124,12 @@ class DownloadManager(
         .map { map -> map.values.sortedByDescending { it.id } }
         .stateIn(scope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    private val cachedDownloadFolder = MutableStateFlow<String?>(null)
-
-    /** Where downloads are saved right now: the user's override, else the platform default. */
-    val downloadFolder: StateFlow<String> = cachedDownloadFolder
-        .map { it?.takeIf(String::isNotBlank) ?: paths.getUserDownloadsDirPath() }
+    /** Where downloads are saved right now, including private app storage when selected. */
+    val downloadFolder: StateFlow<String> = settingsRepository.userSettings
+        .map { it.downloadFolderPath(paths) }
         .stateIn(scope, SharingStarted.Eagerly, paths.getUserDownloadsDirPath())
 
     private val activeJobs = mutableMapOf<String, Job>()
-
-    init {
-        scope.launch {
-            settingsRepository.userSettings.collect { settings ->
-                cachedDownloadFolder.value = settings.overloadedDownloadFolder
-            }
-        }
-    }
 
     fun enqueue(track: MetadataTrack) {
         val timestamp = Clock.System.now().toEpochMilliseconds()
@@ -256,7 +254,7 @@ class DownloadManager(
 
             val filename = buildFilename(item, streamInfo)
 
-            val downloadDir = resolveDownloadDir()
+            val downloadDir = settings.downloadFolderPath(paths).toPath()
             fileSystem.createDirectories(downloadDir)
 
             val tempDir = FileSystem.SYSTEM_TEMPORARY_DIRECTORY / "spotube_downloads".toPath()
@@ -280,9 +278,16 @@ class DownloadManager(
             }
 
             applyMetadata(item, filename, downloadDir)
-            // Without this Android music players and the Files app's Audio view don't see the
-            // file until the next full media scan.
-            addToMediaLibrary((downloadDir / filename.toPath()).toString())
+            // Publish public/custom downloads to Android's media library. App-private downloads
+            // are indexed by Spotube's own local media scanner and should stay out of public media.
+            val appPrivateDownload = settings.overloadedDownloadFolder.isNullOrBlank() &&
+                (settings.downloadFolderLocation == DownloadFolderLocation.APP_DATA ||
+                    settings.downloadFolderLocation == DownloadFolderLocation.APP_CACHE)
+            if (appPrivateDownload) {
+                localMediaLibraryCoordinator.scheduleRefresh(reason = "private_download_completed")
+            } else {
+                addToMediaLibrary((downloadDir / filename.toPath()).toString())
+            }
             logger.i { "[Download ${item.id}] completed '${item.title}'" }
 
             downloadsMap.update { map ->
@@ -503,37 +508,39 @@ class DownloadManager(
         val track = item.track ?: return
 
         val coverBytes = try {
-            val thumbnail = track.thumbnails?.maxByOrNull { it.width * it.height }
+            val thumbnail = (track.thumbnails.orEmpty().ifEmpty { track.album?.thumbnails.orEmpty() })
+                .maxByOrNull { it.width.toLong() * it.height }
             if (thumbnail != null) {
-                val response = httpClient.get(thumbnail.url)
-                val channel = response.bodyAsChannel()
-                val packet = channel.readRemaining()
-                val bytes = packet.readByteArray()
-                packet.close()
-                bytes
+                httpClient.prepareGet(thumbnail.url).execute { response ->
+                    if (!response.status.isSuccess()) return@execute null
+                    val maxCoverBytes = 8L * 1024 * 1024
+                    val packet = response.bodyAsChannel().readRemaining(maxCoverBytes + 1)
+                    try {
+                        packet.readByteArray().takeIf { it.size <= maxCoverBytes }
+                    } finally {
+                        packet.close()
+                    }
+                }
             } else {
                 null
             }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             logger.w(e) { "Failed to download cover art for ${item.title}" }
             null
         }
 
         try {
-            uniffi.compose_app.writeAudioMetadata(
-                filePath = filePath.toString(),
-                title = item.title,
-                artists = item.artists,
-                album = item.album,
-                trackNumber = track.trackNumber,
-                discNumber = track.discNumber,
-                coverBytes = coverBytes)
+            saveDownloadedTrackTags(PlatformFile(downloadDir.toString()), PlatformFile(filePath.toString()),
+                LocalTrackTags(item.title, track.artists.joinToString("; ") { it.name },
+                    item.album.orEmpty(), track.durationMs, track.trackNumber, track.discNumber, coverBytes))
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             logger.w(e) { "[Download ${item.id}] failed to write audio metadata for ${item.title}" }
         }
     }
-
-    private fun resolveDownloadDir(): Path = downloadFolder.value.toPath()
 
     private fun cleanupTempFiles(id: String) {
         try {

@@ -17,6 +17,7 @@
 
 package org.spotube.spotube.modules.plugin.components
 
+import org.spotube.spotube.core.ui.theming.appRowWash
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -31,7 +32,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.semantics.Role
 import org.spotube.millennium.theme.MillenniumTheme
 import org.spotube.millennium.theme.millenniumActionPointer
-import org.spotube.millennium.theme.millenniumSelectedGelBrush
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,7 +41,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.ChevronRight
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumSpokeSpinner
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -97,7 +97,7 @@ internal fun PluginCard(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .then(if (wash > 0f) Modifier.background(millenniumSelectedGelBrush(colors, wash)) else Modifier)
+            .then(appRowWash(wash, pressed)?.let { Modifier.background(it) } ?: Modifier)
             .hoverable(interaction)
             .millenniumActionPointer()
             .clickable(
@@ -136,14 +136,14 @@ internal fun PluginCard(
                 MillenniumIconButton(
                     onClick = onRemove,
                     style = MillenniumIconButtonStyle.Quiet) {
-                    MillenniumIcon(
+                    AppIcon(
                         Iconsax.IconsaxTrash,
                         contentDescription = stringResource(Res.string.plugin_action_remove),
                         modifier = Modifier.size(16.dp),
                         tint = AppTheme.colors.error)
                 }
             }
-            MillenniumIcon(
+            AppIcon(
                 FeatherIcons.ChevronRight,
                 contentDescription = null,
                 modifier = Modifier.size(16.dp),
@@ -163,7 +163,7 @@ private fun PluginRowMeta(item: PluginListItem) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(3.dp)) {
-                MillenniumIcon(
+                AppIcon(
                     ability.abilityIcon(),
                     contentDescription = null,
                     modifier = Modifier.size(12.dp),

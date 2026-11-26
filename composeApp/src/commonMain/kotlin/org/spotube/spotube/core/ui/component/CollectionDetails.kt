@@ -18,12 +18,15 @@
 package org.spotube.spotube.core.ui.component
 
 
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppState
+import org.spotube.spotube.core.ui.theming.engine.ContentSlots
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.height
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumCard
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumSeparator
@@ -95,9 +98,16 @@ fun CollectionDetails(
     onFollowClick: () -> Unit = { },
     showFollowButton: Boolean = true,
     onEdit: (() -> Unit)? = null,
-    sharedElementKey: String? = null) {
+    sharedElementKey: String? = null,
+    /** Coil model for on-device artwork; an embedded ByteArray takes priority over [imageURL]. */
+    imageModel: Any? = null,
+    showOwner: Boolean = true,
+    extraActions: (@Composable () -> Unit)? = null,
+    artworkShape: androidx.compose.ui.graphics.Shape? = null,
+    placeholderIcon: androidx.compose.ui.graphics.vector.ImageVector? = null) {
     Box(modifier = modifier.fillMaxWidth()) {
         val isCompact = currentWindowWidthBreakpoint() isBelow WindowBreakpoints.Medium
+        val look = AppComponents.slot(ContentSlots.CollectionHeader)[AppState.Default]
 
         val sharedTransitionScope = LocalSharedTransitionScope.current
         val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
@@ -107,11 +117,11 @@ fun CollectionDetails(
                 if (onAddToJam != null) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        horizontalArrangement = Arrangement.spacedBy(look.buttonSpacing)) {
                         MillenniumButton(
                             modifier = if (isCompact) Modifier.weight(1f) else Modifier,
                             onClick = onAddToJam!!) {
-                            MillenniumIcon(
+                            AppIcon(
                                 imageVector = Iconsax.IconsaxAddSquare,
                                 contentDescription = stringResource(Res.string.track_options_add_to_jam))
                             TextWithShimmer(text = stringResource(Res.string.track_options_add_to_jam))
@@ -121,7 +131,7 @@ fun CollectionDetails(
             } else {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    horizontalArrangement = Arrangement.spacedBy(look.buttonSpacing)) {
                     val modifier = if (isCompact) {
                         Modifier.weight(1f)
                     } else {
@@ -132,7 +142,7 @@ fun CollectionDetails(
                         modifier = modifier,
                         onClick = onPlay,
                         loading = isPlayLoading) {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = if (isPlaying) Iconsax.IconsaxPauseCircle else Iconsax.IconsaxPlayCircle2,
                             contentDescription = if (isPlaying) stringResource(Res.string.player_pause_content_description) else stringResource(Res.string.player_play_content_description))
                         TextWithShimmer(text = if (isPlaying) stringResource(Res.string.player_pause_content_description) else stringResource(Res.string.player_play_content_description))
@@ -143,7 +153,7 @@ fun CollectionDetails(
                         loading = isShuffleLoading,
                         style = MillenniumButtonStyle.Secondary
                     ) {
-                        MillenniumIcon(imageVector = Iconsax.IconsaxShuffle, contentDescription = stringResource(Res.string.collection_details_shuffle_play))
+                        AppIcon(imageVector = Iconsax.IconsaxShuffle, contentDescription = stringResource(Res.string.collection_details_shuffle_play))
                         TextWithShimmer(text = stringResource(Res.string.collection_details_shuffle))
                     }
                 }
@@ -156,19 +166,21 @@ fun CollectionDetails(
                     onClick = onAddToQueue,
                     loading = isAddToQueueLoading,
                     style = MillenniumIconButtonStyle.Quiet) {
-                    MillenniumIcon(
+                    AppIcon(
                         imageVector = Iconsax.IconsaxAddSquare,
                         contentDescription = stringResource(Res.string.player_add_to_queue_content_description)
                     )
                 }
-                MillenniumSeparator(modifier = Modifier.height(24.dp), vertical = true)
+                if (showFollowButton || onEdit != null || extraActions != null) {
+                    MillenniumSeparator(modifier = Modifier.height(look.actionSeparatorHeight), vertical = true)
+                }
                 if (showFollowButton) {
                     if (isFollowing) {
                         MillenniumIconButton(
                             onClick = onFollowClick,
                             loading = isFollowLoading,
                             style = MillenniumIconButtonStyle.Quiet) {
-                            MillenniumIcon(
+                            AppIcon(
                                 imageVector = Iconsax.IconsaxHeart2,
                                 contentDescription = stringResource(Res.string.collection_details_unfollow))
                         }
@@ -177,7 +189,7 @@ fun CollectionDetails(
                             onClick = onFollowClick,
                             loading = isFollowLoading,
                             style = MillenniumIconButtonStyle.Quiet) {
-                            MillenniumIcon(
+                            AppIcon(
                                 imageVector = Iconsax.IconsaxHeart,
                                 contentDescription = stringResource(Res.string.collection_details_follow),
                                 tint = AppTheme.colors.onSurfaceVariant)
@@ -185,65 +197,65 @@ fun CollectionDetails(
                     }
                 }
                 if (onEdit != null) {
-                    MillenniumSeparator(modifier = Modifier.height(24.dp), vertical = true)
+                    if (showFollowButton) MillenniumSeparator(modifier = Modifier.height(look.actionSeparatorHeight), vertical = true)
                     MillenniumIconButton(
                         onClick = onEdit,
                         style = MillenniumIconButtonStyle.Quiet) {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = Iconsax.IconsaxEdit,
                             contentDescription = stringResource(Res.string.collection_details_edit_playlist))
                     }
                 }
+                extraActions?.invoke()
             }
         }
         val ownerInfo = @Composable {
             Row(
                 modifier = Modifier.clickable(onClick = onOwnerClick),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                horizontalArrangement = Arrangement.spacedBy(look.ownerSpacing)) {
                 if (ownerImageURL != null) {
                     AsyncImage(
                         model = ownerImageURL,
                         contentDescription = ownerName,
                         modifier = Modifier
-                            .size(16.dp)
+                            .size(look.ownerAvatarSize)
                             .clip(CircleShape)
                             .shimmerApply(),
                         contentScale = ContentScale.Crop)
                 } else {
-                    MillenniumIcon(
+                    AppIcon(
                         imageVector = Iconsax.User,
                         contentDescription = ownerName,
                         modifier = Modifier
-                            .size(16.dp)
+                            .size(look.ownerAvatarSize)
                             .background(
-                                AppTheme.colors.primaryContainer,
+                                look.ownerPlaceholderBackground,
                                 CircleShape
                             )
                             .padding(6.dp),
-                        tint = AppTheme.colors.onPrimaryContainer)
+                        tint = look.ownerPlaceholderTint)
                 }
                 TextWithShimmer(
                     text = stringResource(Res.string.collection_details_by_owner, ownerName),
-                    style = AppTheme.typography.labelSmall,
-                    color = AppTheme.colors.onSurfaceVariant)
+                    style = look.ownerStyle)
             }
         }
 
         val artwork = @Composable {
             Box(
                 modifier = Modifier
-                    .size(if (isCompact) 100.dp else 200.dp)
-                    .clip(RoundedCornerShape(12.dp))
+                    .size(if (isCompact) look.compactArtworkSize else look.artworkSize)
+                    .clip(artworkShape ?: look.artworkShape)
                     .sharedElementOrNone(
                         key = sharedElementKey,
                         sharedTransitionScope = sharedTransitionScope,
                         animatedVisibilityScope = animatedVisibilityScope)
                     .shimmerApply(),
                 contentAlignment = Alignment.Center) {
-                if (imageURL.isNotBlank()) {
+                if (imageModel != null || imageURL.isNotBlank()) {
                     AsyncImage(
-                        model = imageURL,
+                        model = imageModel ?: imageURL,
                         contentDescription = title,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop)
@@ -253,11 +265,16 @@ fun CollectionDetails(
                         contentDescription = title,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop)
+                } else if (placeholderIcon != null) {
+                    AppIcon(
+                        imageVector = placeholderIcon,
+                        contentDescription = null,
+                        modifier = Modifier.size(if (isCompact) 40.dp else 56.dp),
+                        tint = AppTheme.colors.onSurfaceVariant)
                 } else {
                     Text(
                         text = title.take(1).ifBlank { "?" }.uppercase(),
-                        style = AppTheme.typography.displaySmall,
-                        color = AppTheme.colors.onSurfaceVariant)
+                        style = look.placeholderStyle)
                 }
             }
         }
@@ -266,15 +283,14 @@ fun CollectionDetails(
             Column {
                 TextWithShimmer(
                     text = title,
-                    style = if (isCompact) AppTheme.typography.bodyLarge else AppTheme.typography.headlineLarge,
+                    style = if (isCompact) look.compactTitleStyle else look.titleStyle,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis)
 
                 if (description.isNotBlank()) {
                     TextWithShimmer(
                         text = description,
-                        style = if (isCompact) AppTheme.typography.labelSmall else AppTheme.typography.bodyMedium,
-                        color = AppTheme.colors.onSurfaceVariant,
+                        style = if (isCompact) look.compactDescriptionStyle else look.descriptionStyle,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis)
                 }
@@ -284,24 +300,24 @@ fun CollectionDetails(
         MillenniumCard(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                .padding(vertical = look.outerPadding),
             contentPadding = PaddingValues(0.dp)) {
             if (isCompact) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(14.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        .padding(look.compactPadding),
+                    verticalArrangement = Arrangement.spacedBy(look.compactSpacing)) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(look.compactSpacing),
                         verticalAlignment = Alignment.CenterVertically) {
                         artwork()
                         Column(
                             modifier = Modifier.weight(1f),
-                            verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            verticalArrangement = Arrangement.spacedBy(look.compactInfoSpacing)) {
                             metadata()
-                            ownerInfo()
+                            if (showOwner) ownerInfo()
                             actions()
                         }
                     }
@@ -311,16 +327,16 @@ fun CollectionDetails(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        .padding(look.padding),
+                    horizontalArrangement = Arrangement.spacedBy(look.spacing),
                     verticalAlignment = Alignment.Top) {
                     artwork()
 
                     Column(
                         modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        verticalArrangement = Arrangement.spacedBy(look.infoSpacing)) {
                         metadata()
-                        ownerInfo()
+                        if (showOwner) ownerInfo()
                         actions()
                         playPauseButton()
                     }

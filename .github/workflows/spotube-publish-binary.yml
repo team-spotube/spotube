@@ -11,6 +11,7 @@ name: Publish
 #   WINGET_TOKEN         classic PAT (public_repo) that can push to team-spotube/winget-pkgs and open PRs
 #   CHOCO_API_KEY        chocolatey.org API key
 #   HOMEBREW_TOKEN       PAT with push access to team-spotube/homebrew-apps
+# :composeApp uses Gobley 0.3.7, which is not compatible with Cargo 1.100+'s build-dir layout yet.
 
 on:
   workflow_dispatch:
@@ -81,7 +82,7 @@ jobs:
 
       # Configuring :composeApp runs cargo (Gobley)
       - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: dtolnay/rust-toolchain@1.99.1
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
@@ -95,7 +96,7 @@ jobs:
         run: |
           gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --dir release-assets \
             --pattern 'spotube-linux-*.tar.xz' --pattern 'Spotube-windows-x86_64-setup.exe' \
-            --pattern 'Spotube-macos-apple-silicon.dmg'
+            --pattern 'Spotube-macos-apple-silicon.dmg' --pattern 'Spotube-macos-intel.dmg'
 
       - name: Render packages
         env:

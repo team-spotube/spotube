@@ -78,7 +78,7 @@ import org.spotube.millennium.composables.MillenniumDropdownMenuItem
 import org.spotube.millennium.composables.MillenniumDropdownMenuItemIcon
 import org.spotube.millennium.composables.MillenniumDropdownMenuSeparator
 import com.composeunstyled.Text
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumListTile
@@ -117,22 +117,41 @@ fun AdaptiveDropdownBottomSheet(
     headerDisplayMode: HeaderDisplayMode = HeaderDisplayMode.Always,
     filter: ((AdaptiveMenuItem, String) -> Boolean)? = null) {
     var expanded by remember { mutableStateOf(false) }
+    AdaptiveDropdownBottomSheet(
+        expanded = expanded, onExpandedChange = { expanded = it }, items = items, trigger = trigger,
+        modifier = modifier, menuMinWidth = menuMinWidth, header = header, headerDisplayMode = headerDisplayMode, filter = filter
+    )
+}
+
+/** Controlled variant for surfaces with more than one way to open the same menu. */
+@Composable
+fun AdaptiveDropdownBottomSheet(
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    items: List<AdaptiveMenuItem>,
+    trigger: @Composable (onClick: () -> Unit) -> Unit,
+    modifier: Modifier = Modifier,
+    menuMinWidth: Dp = 200.dp,
+    header: @Composable (() -> Unit)? = null,
+    headerDisplayMode: HeaderDisplayMode = HeaderDisplayMode.Always,
+    filter: ((AdaptiveMenuItem, String) -> Boolean)? = null
+) {
     val isLargeScreen = currentWindowWidthBreakpoint() isAtLeast WindowBreakpoints.Medium
 
     Box(modifier = modifier) {
         if (isLargeScreen) {
             DesktopDropdownMenu(
                 expanded = expanded,
-                onExpandedChange = { expanded = it },
+                onExpandedChange = onExpandedChange,
                 items = items,
                 menuMinWidth = menuMinWidth,
                 filter = filter,
-                trigger = { trigger { expanded = true } })
+                trigger = { trigger { onExpandedChange(true) } })
         } else {
-            trigger { expanded = true }
+            trigger { onExpandedChange(true) }
             if (expanded) {
                 AdaptiveBottomSheetContent(
-                    onDismiss = { expanded = false },
+                    onDismiss = { onExpandedChange(false) },
                     items = items,
                     header = if (header != null && (headerDisplayMode == HeaderDisplayMode.Always || headerDisplayMode == HeaderDisplayMode.OnlyInBottomSheet)) {
                         header
@@ -242,7 +261,7 @@ private fun AdaptiveMenuTile(
             item.leadingContent != null -> item.leadingContent
             item.icon != null -> {
                 {
-                    MillenniumIcon(
+                    AppIcon(
                         imageVector = item.icon,
                         contentDescription = null,
                         modifier = Modifier.size(22.dp),
@@ -251,7 +270,7 @@ private fun AdaptiveMenuTile(
             }
             item.selected -> {
                 {
-                    MillenniumIcon(
+                    AppIcon(
                         imageVector = FeatherIcons.Check,
                         contentDescription = stringResource(Res.string.accessibility_selected),
                         modifier = Modifier.size(22.dp))
@@ -262,7 +281,7 @@ private fun AdaptiveMenuTile(
         },
         trailing = if (item.selected && (item.icon != null || item.leadingContent != null)) {
             {
-                MillenniumIcon(
+                AppIcon(
                     imageVector = FeatherIcons.Check,
                     contentDescription = stringResource(Res.string.accessibility_selected),
                     modifier = Modifier.size(22.dp))
@@ -360,7 +379,7 @@ private fun AdaptiveDropdownBottomSheetPreview() {
                             shape = CircleShape)
                         .clip(CircleShape),
                     style = MillenniumIconButtonStyle.Quiet) {
-                    MillenniumIcon(
+                    AppIcon(
                         imageVector = Iconsax.Iconsax3DotsMore,
                         contentDescription = null,
                         tint = AppTheme.colors.primary)

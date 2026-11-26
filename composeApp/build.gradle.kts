@@ -72,7 +72,7 @@ val isProductionBuild = providers.gradleProperty("production").map { it.toBoolea
     }
 )
 val targetName = "Spotube"
-val homePageUrl = "https://spotube.cc"
+val homePageUrl = "https://spotube.org"
 val repositoryUrl = "https://github.com/team-spotube/spotube"
 val appVersionName = if (betaNumber != null) "$version-beta.$betaNumber" else version
 val appBuildNumber = if (isNightly) nightlyBuildNumber else buildNumber
@@ -109,6 +109,7 @@ listOf("linux", "aur", "flatpak", "winget", "chocolatey", "homebrew").forEach { 
                 "linuxAarch64" to "spotube-linux-$packagingVersion-aarch64.tar.xz",
                 "windowsX64" to "Spotube-windows-x86_64-setup.exe",
                 "macosArm64" to "Spotube-macos-apple-silicon.dmg",
+                "macosX64" to "Spotube-macos-intel.dmg",
             )
         )
         artifactsDir.set(packagingArtifactsDir)
@@ -254,6 +255,7 @@ kotlin {
 
                 // icons
                 implementation(libs.feather.icons)
+                implementation(libs.lucide.icons)
 
                 // androidx-datastore
                 implementation(libs.androidx.datastore)
@@ -299,6 +301,7 @@ kotlin {
             }
         }
         commonTest.dependencies {
+            implementation(libs.ktor.client.mock)
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutines.test)
         }
@@ -689,4 +692,14 @@ tasks.matching { it.name == "prepareAppResources" || it.name == "copyGraalvmAppR
     (this as? org.gradle.api.tasks.AbstractCopyTask)?.filesMatching("**/webkit2gtk-4.1/WebKit*Process") {
         permissions { unix("rwxr-xr-x") }
     }
+}
+
+// Theme packages under <repo>/themes are test inputs (ThemeGalleryTest packs and renders them).
+tasks.withType<Test>().configureEach {
+    inputs.files(fileTree(rootProject.file("themes")) { include("*/**") }).withPropertyName("themeFolders")
+    // Optional: THEMES_DIR=<path to a folder of theme folders> makes ThemeFolderValidationTest check and render them
+    // too (used for the separate themes repository).
+    val external = providers.environmentVariable("THEMES_DIR")
+    inputs.property("externalThemesDir", external.orElse(""))
+    external.orNull?.let { inputs.files(fileTree(it)).withPropertyName("externalThemeFiles") }
 }

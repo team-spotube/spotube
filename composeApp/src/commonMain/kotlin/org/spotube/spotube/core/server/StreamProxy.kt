@@ -464,45 +464,86 @@ internal class StreamProxy(
             }
 
             private suspend fun writeBody(channel: io.ktor.utils.io.ByteWriteChannel) {
-                if (cacheFilename != null) {
-                    val cacheDir = cacheManager.resolveCacheDir()
-                    val cacheFile = cacheDir / cacheFilename.toPath()
-                    fileSystem.createDirectories(cacheDir)
-                    var completed = false
-                    var totalBytes = 0L
-                    try {
-                        val source = upstream.bodyAsChannel()
-                        val buffer = ByteArray(64 * 1024)
-                        fileSystem.sink(cacheFile).buffer().use { sink ->
-                            while (true) {
-                                val read = source.readAvailable(buffer, 0, buffer.size)
-                                if (read < 0) break
-                                if (read == 0) continue
-                                channel.writeFully(buffer, 0, read)
-                                channel.flush()
-                                sink.write(buffer, 0, read)
-                                totalBytes += read
+                if (cacheFilename == null) {
+                    upstream.bodyAsChannel().copyTo(channel)
+                    return
+                }
+
+                val cacheDirAndFile = runCatching {
+                    val dir = cacheManager.resolveCacheDir()
+                    fileSystem.createDirectories(dir)
+                    dir to (dir / cacheFilename.toPath())
+                }.onFailure { error ->
+                    logger.w(error) { "Audio cache is unavailable; streaming without caching track $trackId" }
+                }.getOrNull()
+                val cacheFile = cacheDirAndFile?.second
+                val cacheSink = cacheFile?.let { path ->
+                    runCatching { fileSystem.sink(path).buffer() }
+                        .onFailure { error ->
+                            logger.w(error) { "Could not open audio cache; streaming without caching track $trackId" }
+                        }
+                        .getOrNull()
+                }
+
+                var cacheWritable = cacheSink != null
+                var streamComplete = false
+                var totalBytes = 0L
+                var cacheCommitted = false
+                try {
+                    val source = upstream.bodyAsChannel()
+                    val buffer = ByteArray(64 * 1024)
+                    while (true) {
+                        val read = source.readAvailable(buffer, 0, buffer.size)
+                        if (read < 0) {
+                            streamComplete = true
+                            break
+                        }
+                        if (read == 0) continue
+                        channel.writeFully(buffer, 0, read)
+                        channel.flush()
+                        if (cacheWritable) {
+                            try {
+                                cacheSink!!.write(buffer, 0, read)
+                            } catch (error: Exception) {
+                                cacheWritable = false
+                                logger.w(error) { "Audio cache write failed; continuing playback for track $trackId" }
                             }
                         }
-                        completed = expectedLength == null || expectedLength == totalBytes
-                        if (completed) {
+                        totalBytes += read
+                    }
+                } finally {
+                    try {
+                        cacheSink?.close()
+                    } catch (error: Exception) {
+                        cacheWritable = false
+                        logger.w(error) { "Audio cache close failed for track $trackId" }
+                    }
+
+                    if (streamComplete && cacheWritable &&
+                        (expectedLength == null || expectedLength == totalBytes)
+                    ) {
+                        try {
                             cacheManager.commitCacheEntry(
                                 trackId = trackIdForCache,
                                 filename = cacheFilename,
                                 sizeBytes = totalBytes,
                                 contentType = cacheContentType)
+                            cacheCommitted = true
                             scope.launch {
-                                cacheManager.evictIfNeeded()
+                                runCatching { cacheManager.evictIfNeeded() }
+                                    .onFailure { error -> logger.w(error) { "Audio cache eviction failed" } }
                             }
-                        }
-                    } finally {
-                        // Player disconnected or stream was incomplete: drop the partial file
-                        if (!completed && fileSystem.exists(cacheFile)) {
-                            fileSystem.delete(cacheFile)
+                        } catch (error: Exception) {
+                            logger.w(error) { "Could not index cached audio for track $trackId" }
                         }
                     }
-                } else {
-                    upstream.bodyAsChannel().copyTo(channel)
+
+                    // Cache storage is optional: discard partial/unindexed files without failing playback.
+                    if (!cacheCommitted && cacheFile != null) {
+                        runCatching {
+                            if (fileSystem.exists(cacheFile)) fileSystem.delete(cacheFile)
+                        }.onFailure { error -> logger.w(error) { "Could not remove partial cache for track $trackId" } }
+                    }
                 }
             }
         })

@@ -3,6 +3,7 @@
  */
 package org.spotube.spotube.modules.library.local_tracks
 
+import org.spotube.spotube.core.ui.theming.appPanelBrush
 import org.spotube.millennium.composables.MillenniumCircularProgress
 import org.spotube.millennium.composables.MillenniumSpokeSpinner
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +31,9 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.DpSize
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigationevent.NavigationEventInfo
+import androidx.navigationevent.compose.NavigationBackHandler
+import androidx.navigationevent.compose.rememberNavigationEventState
 import com.composeunstyled.Text
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.ChevronRight
@@ -38,8 +42,7 @@ import org.spotube.spotube.core.ui.component.cards.MediaEmptyState
 import org.spotube.spotube.core.ui.component.cards.PlayableListTile
 import org.spotube.spotube.core.ui.theming.AppTheme
 import org.spotube.spotube.modules.library.local_tracks.media.rememberLocalMediaPermissionState
-import org.spotube.spotube.modules.settings.LocalMediaFoldersViewModel
-import org.spotube.spotube.modules.settings.components.LocalMediaFoldersDialogHost
+import org.spotube.spotube.modules.library.local_tracks.media.rememberMusicWriteLauncher
 import org.spotube.spotube.resources.iconsax.IconsaxFolderAdd
 import org.spotube.spotube.modules.shell.LocalAppShellBottomInset
 import org.spotube.spotube.resources.iconsax.Iconsax
@@ -47,40 +50,33 @@ import org.spotube.spotube.resources.iconsax.IconsaxFolderOpen
 import org.spotube.spotube.resources.iconsax.IconsaxPlay
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.pluralStringResource
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
-import org.spotube.spotube.core.navigation.NavigationCommands
-import org.spotube.spotube.core.navigation.Routes
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumListTile
 import org.spotube.millennium.theme.MillenniumTheme
-import org.spotube.millennium.theme.millenniumPanelBrush
-import org.spotube.millennium.theme.millenniumSurface
 import spotube.composeapp.generated.resources.*
 
 @Composable
 fun LibraryLocalTracksScreen(
     modifier: Modifier = Modifier,
     viewModel: LibraryLocalTracksViewModel = koinViewModel(),
-    foldersViewModel: LocalMediaFoldersViewModel = koinViewModel(),
-    navigationCommands: NavigationCommands = koinInject()
+    fileActionsInAppBar: Boolean = false
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val permission = rememberLocalMediaPermissionState()
-    // Platform permission events only; the ViewModel decides whether/when to index media.
+    val requestWriteAccess = rememberMusicWriteLauncher(viewModel::onWritePermissionResult)
     LaunchedEffect(permission.isGranted) { viewModel.onPermissionChanged(permission.isGranted) }
-    LocalTracksContent(
-        state,
-        onOpenFolder = { navigationCommands.navigateTo(Routes.LocalFolder(it)) },
-        onPlayTrack = {}, onNavigateUp = {}, onPlayFolder = {},
-        onRequestPermission = permission.requestPermission, modifier = modifier,
-        onManageFolders = foldersViewModel::open
+    LaunchedEffect(viewModel) { viewModel.writePermissionRequests.collect { requestWriteAccess(it) } }
+    NavigationBackHandler(
+        state = rememberNavigationEventState(currentInfo = NavigationEventInfo.None),
+        isBackEnabled = state.canNavigateBack,
+        onBackCompleted = viewModel::back
     )
-    LocalMediaFoldersDialogHost(foldersViewModel)
+    MusicBrowserContent(state, viewModel, permission.requestPermission, modifier, fileActionsInAppBar)
 }
 
 @Composable
@@ -177,7 +173,7 @@ internal fun LocalTracksContent(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
-                                    MillenniumIcon(
+                                    AppIcon(
                                         Iconsax.IconsaxFolderAdd, null,
                                         modifier = Modifier.size(18.dp)
                                     )
@@ -210,7 +206,7 @@ internal fun LocalTracksBreadcrumb(
             Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            MillenniumIcon(
+            AppIcon(
                 Iconsax.IconsaxFolderOpen,
                 null,
                 modifier = Modifier.size(14.dp),
@@ -231,7 +227,7 @@ internal fun LocalTracksBreadcrumb(
                         style = AppTheme.typography.labelSmall
                     )
                 }
-                MillenniumIcon(
+                AppIcon(
                     FeatherIcons.ChevronRight,
                     null,
                     modifier = Modifier.size(12.dp),
@@ -277,7 +273,7 @@ internal fun LocalTracksBreadcrumb(
             onClick = onManageFolders,
             modifier = Modifier.size(40.dp), style = MillenniumIconButtonStyle.Quiet
         ) {
-            MillenniumIcon(
+            AppIcon(
                 Iconsax.IconsaxFolderAdd,
                 stringResource(Res.string.library_local_add_folder),
                 modifier = Modifier.size(22.dp)
@@ -287,7 +283,7 @@ internal fun LocalTracksBreadcrumb(
             onClick = onPlayFolder, enabled = state.canPlayFolder,
             modifier = Modifier.size(40.dp), style = MillenniumIconButtonStyle.Quiet
         ) {
-            MillenniumIcon(
+            AppIcon(
                 Iconsax.IconsaxPlay,
                 stringResource(Res.string.library_local_play_folder),
                 modifier = Modifier.size(22.dp)
@@ -300,7 +296,7 @@ internal fun LocalTracksBreadcrumb(
 internal fun LocalFolderRow(folder: LocalFolderUi, onClick: () -> Unit) {
     MillenniumListTile(
         onClick = onClick,
-        background = millenniumPanelBrush(MillenniumTheme.colors),
+        background = appPanelBrush(),
         shape = RoundedCornerShape(8.dp),
         borderColor = MillenniumTheme.colors.border,
         borderWidth = 1.dp,
@@ -332,7 +328,7 @@ internal fun LocalFolderRow(folder: LocalFolderUi, onClick: () -> Unit) {
             )
         },
         trailing = {
-            MillenniumIcon(
+            AppIcon(
                 FeatherIcons.ChevronRight,
                 null,
                 modifier = Modifier.size(16.dp)

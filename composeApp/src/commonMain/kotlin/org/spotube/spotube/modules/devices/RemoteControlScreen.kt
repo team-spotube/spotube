@@ -18,12 +18,13 @@
 package org.spotube.spotube.modules.devices
 
 
+import org.spotube.spotube.core.ui.theming.appBackground
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumCard
 import org.spotube.millennium.composables.MillenniumDropdownMenu
 import org.spotube.millennium.composables.MillenniumDropdownMenuItem
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumListTile
@@ -151,7 +152,7 @@ fun RemoteControlScreen(
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(MillenniumTheme.colors.background)
+            .appBackground()
     ) {
         val isWide = maxWidth >= WideLayoutMinWidth
 
@@ -170,7 +171,7 @@ fun RemoteControlScreen(
                             onClick = viewModel::toggleQueueVisibility,
                             style = MillenniumIconButtonStyle.Quiet
                         ) {
-                            MillenniumIcon(
+                            AppIcon(
                                 imageVector = Iconsax.IconsaxMusicFilter,
                                 contentDescription = stringResource(Res.string.queue_title),
                                 tint = if (state.isQueueVisible) {
@@ -189,7 +190,7 @@ fun RemoteControlScreen(
                             },
                             style = MillenniumIconButtonStyle.Quiet
                         ) {
-                            MillenniumIcon(
+                            AppIcon(
                                 imageVector = Iconsax.IconsaxCloseSquare,
                                 contentDescription = stringResource(Res.string.devices_disconnect)
                             )
@@ -396,7 +397,7 @@ private fun Artwork(
                 contentScale = ContentScale.Crop
             )
         } else {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = Iconsax.IconsaxMusic,
                 contentDescription = null,
                 tint = AppTheme.colors.onSurfaceVariant,
@@ -516,7 +517,7 @@ private fun PlaybackControls(
             onClick = onToggleShuffle,
             style = MillenniumIconButtonStyle.Quiet
         ) {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = Iconsax.IconsaxShuffle,
                 contentDescription = stringResource(
                     if (state.isShuffling) {
@@ -532,7 +533,7 @@ private fun PlaybackControls(
             onClick = onSkipPrevious,
             style = MillenniumIconButtonStyle.Quiet
         ) {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = Iconsax.IconsaxPrevious,
                 contentDescription = stringResource(Res.string.player_previous_content_description)
             )
@@ -541,7 +542,7 @@ private fun PlaybackControls(
             onClick = onTogglePlayPause,
             style = MillenniumIconButtonStyle.Primary
         ) {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = if (state.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                 contentDescription = stringResource(
                     if (state.isPlaying) {
@@ -558,7 +559,7 @@ private fun PlaybackControls(
             onClick = onSkipNext,
             style = MillenniumIconButtonStyle.Quiet
         ) {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = Iconsax.IconsaxNext,
                 contentDescription = stringResource(Res.string.player_next_content_description)
             )
@@ -567,7 +568,7 @@ private fun PlaybackControls(
             onClick = onCycleLoopMode,
             style = MillenniumIconButtonStyle.Quiet
         ) {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = when (state.loopMode) {
                     RemoteLoopMode.NONE -> Iconsax.IconsaxRepeateMusic
                     RemoteLoopMode.ONE -> Iconsax.IconsaxRepeateOne
@@ -602,7 +603,7 @@ private fun VolumeControl(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        MillenniumIcon(
+        AppIcon(
             imageVector = when (state.volumeLevel) {
                 RemoteVolumeLevel.MUTED -> Iconsax.IconsaxVolumeCross
                 RemoteVolumeLevel.LOW -> Iconsax.IconsaxVolumeLow
@@ -678,7 +679,7 @@ private fun StatusIcon(icon: ImageVector, isError: Boolean) {
             ),
         contentAlignment = Alignment.Center
     ) {
-        MillenniumIcon(
+        AppIcon(
             imageVector = icon,
             contentDescription = null,
             tint = if (isError) AppTheme.colors.onErrorContainer else AppTheme.colors.onSurfaceVariant,
@@ -813,7 +814,7 @@ private fun RemoteQueueItemRow(
                         onClick = { showMenu = true },
                         style = MillenniumIconButtonStyle.Quiet
                     ) {
-                        MillenniumIcon(
+                        AppIcon(
                             Iconsax.Iconsax3DotsMore,
                             contentDescription = stringResource(Res.string.devices_remote_more_options)
                         )

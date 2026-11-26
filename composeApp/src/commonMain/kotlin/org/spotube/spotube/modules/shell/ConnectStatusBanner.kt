@@ -17,6 +17,10 @@
 
 package org.spotube.spotube.modules.shell
 
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppSlots
+import org.spotube.spotube.core.ui.theming.engine.AppState
+import org.spotube.spotube.core.ui.theming.engine.ScreensSlots
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -42,7 +46,7 @@ import compose.icons.feathericons.ChevronRight
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.theme.MillenniumTheme
 import org.spotube.spotube.core.ui.theming.AppTheme
 import spotube.composeapp.generated.resources.Res
@@ -67,11 +71,12 @@ fun ConnectStatusBanner(
     val jam = state.jam
     if (remote == null && jam == null) return
 
+    val root = AppComponents.slot(ScreensSlots.ConnectBannerRoot)[AppState.Default]
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp)
+            .padding(root.padding),
+        verticalArrangement = Arrangement.spacedBy(root.spacing)
     ) {
         if (remote != null) StatusRow(remoteStatusLabel(remote), onOpenRemote)
         if (jam != null) StatusRow(jamStatusLabel(jam), onOpenJam)
@@ -80,30 +85,30 @@ fun ConnectStatusBanner(
 
 @Composable
 private fun StatusRow(label: String, onClick: () -> Unit) {
+    val row = AppComponents.slot(ScreensSlots.ConnectBannerRow)[AppState.Default]
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(AppTheme.shapes.medium)
-            .background(AppTheme.colors.primary.copy(alpha = 0.12f))
+            .clip(row.shape)
+            .background(row.background)
             .clickable(onClick = onClick)
-            .padding(horizontal = 14.dp, vertical = 10.dp),
+            .padding(row.padding),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(row.spacing)
     ) {
         LiveDot()
         Text(
             text = label,
-            style = AppTheme.typography.labelLarge,
-            color = AppTheme.colors.onSurface,
+            style = row.textStyle,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f)
         )
-        MillenniumIcon(
+        AppIcon(
             imageVector = FeatherIcons.ChevronRight,
             contentDescription = null,
-            tint = AppTheme.colors.onSurfaceVariant,
-            modifier = Modifier.size(18.dp)
+            tint = row.chevronTint,
+            modifier = Modifier.size(row.chevronSize)
         )
     }
 }
@@ -122,10 +127,11 @@ internal fun jamStatusLabel(status: JamConnectStatus): String = pluralStringReso
 /** Small "something is live" marker, ringed so it reads on any background. */
 @Composable
 internal fun LiveDot(modifier: Modifier = Modifier) {
+    val dot = AppComponents.slot(ScreensSlots.LiveDot)[AppState.Default]
     Box(
         modifier = modifier
-            .size(10.dp)
-            .background(MillenniumTheme.colors.success, CircleShape)
-            .border(2.dp, MillenniumTheme.colors.surface, CircleShape)
+            .size(dot.size)
+            .background(dot.color, CircleShape)
+            .border(dot.ringWidth, dot.ringColor, CircleShape)
     )
 }

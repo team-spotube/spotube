@@ -17,6 +17,7 @@
 
 package org.spotube.spotube.modules.plugin.components
 
+import org.spotube.spotube.core.ui.theming.appPanelBrush
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -44,9 +45,8 @@ import com.composeunstyled.Text
 import org.jetbrains.compose.resources.stringResource
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.theme.MillenniumTheme
-import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
 import org.spotube.spotube.core.ui.theming.AppTheme
 import org.spotube.spotube.modules.plugin.GitHubRepo
@@ -82,7 +82,7 @@ internal fun DiscoverPluginCard(
     Column(
         modifier = modifier
             .millenniumSurface(
-                background = millenniumPanelBrush(MillenniumTheme.colors),
+                background = appPanelBrush(),
                 shape = AppTheme.shapes.medium,
                 borderColor = MillenniumTheme.colors.border,
                 borderWidth = 1.dp,
@@ -154,7 +154,7 @@ internal fun DiscoverPluginCard(
                     .padding(horizontal = 4.dp, vertical = 2.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                MillenniumIcon(
+                AppIcon(
                     Iconsax.CarbonGithubLogo,
                     contentDescription = stringResource(Res.string.plugin_discover_repository_content_description),
                     modifier = Modifier.size(12.dp),
@@ -173,7 +173,7 @@ internal fun DiscoverPluginCard(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    MillenniumIcon(Iconsax.IconsaxAdd, contentDescription = null, modifier = Modifier.size(16.dp))
+                    AppIcon(Iconsax.IconsaxAdd, contentDescription = null, modifier = Modifier.size(16.dp))
                     Text(stringResource(Res.string.plugin_section_install))
                 }
             }

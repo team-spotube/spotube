@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okio.ByteString.Companion.toByteString
+import org.spotube.spotube.modules.library.local.encodeLocalCoverThumbnail
 
 data class PlaylistFormUiState(
     val isVisible: Boolean = false,
@@ -37,6 +38,9 @@ data class PlaylistFormUiState(
     /** Base64 of an image picked in this session; `null` keeps the playlist's current cover. */
     val pickedImageBase64: String? = null
 )
+
+/** Where a new playlist lives: through the signed-in account, or on this device. */
+enum class PlaylistFormSource { Online, Local }
 
 /**
  * Async state of [PlaylistFormSheet] (visibility, image encoding, submission), owned by the
@@ -63,7 +67,12 @@ class PlaylistFormController(
         _uiState.update { it.copy(isProcessingImage = true) }
         scope.launch {
             runCatching {
-                withContext(Dispatchers.Default) { file.readBytes().toByteString().base64() }
+                withContext(Dispatchers.Default) {
+                    val bytes = file.readBytes()
+                    // Gallery photos are multi-megapixel; shrink them once so neither the plugin
+                    // API nor the local playlist store ever sees the full-size image (#3193).
+                    (encodeLocalCoverThumbnail(bytes) ?: bytes).toByteString().base64()
+                }
             }.onSuccess { base64 ->
                 _uiState.update { it.copy(pickedImageBase64 = base64) }
             }.onFailure { e ->

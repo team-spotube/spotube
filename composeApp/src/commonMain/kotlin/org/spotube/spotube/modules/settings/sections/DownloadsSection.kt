@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import org.spotube.spotube.modules.settings.SettingsViewModel
 import org.spotube.spotube.modules.settings.UserSettings
+import org.spotube.spotube.modules.settings.DownloadFolderLocation
 import org.spotube.spotube.modules.settings.LocalMediaFoldersViewModel
 import org.spotube.spotube.modules.settings.components.LocalMediaFoldersDialogHost
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -47,7 +48,15 @@ import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.settings_download_folder_current
 import spotube.composeapp.generated.resources.settings_download_folder_default_path
+import spotube.composeapp.generated.resources.settings_download_folder_private_path
 import spotube.composeapp.generated.resources.settings_download_folder_title
+import spotube.composeapp.generated.resources.settings_download_storage_app_cache
+import spotube.composeapp.generated.resources.settings_download_storage_app_data
+import spotube.composeapp.generated.resources.settings_download_storage_current_app_cache
+import spotube.composeapp.generated.resources.settings_download_storage_current_app_data
+import spotube.composeapp.generated.resources.settings_download_storage_current_public
+import spotube.composeapp.generated.resources.settings_download_storage_public
+import spotube.composeapp.generated.resources.settings_download_storage_title
 import spotube.composeapp.generated.resources.settings_download_format_subtitle_current
 import spotube.composeapp.generated.resources.settings_download_format_title
 import spotube.composeapp.generated.resources.settings_download_quality_title
@@ -75,9 +84,41 @@ internal fun LazyListScope.downloadsSection(
     settingsSectionCard(
         items = listOf(
             {
+                SelectionSettingCard(
+                    title = stringResource(Res.string.settings_download_storage_title),
+                    subtitle = when (settings.downloadFolderLocation) {
+                        DownloadFolderLocation.PUBLIC -> stringResource(Res.string.settings_download_storage_current_public)
+                        DownloadFolderLocation.APP_DATA -> stringResource(Res.string.settings_download_storage_current_app_data)
+                        DownloadFolderLocation.APP_CACHE -> stringResource(Res.string.settings_download_storage_current_app_cache)
+                    },
+                    icon = {
+                        SettingsItemIcon(
+                            Iconsax.IconsaxDirectboxReceive,
+                            stringResource(Res.string.settings_download_storage_title)
+                        )
+                    },
+                    selectedOption = settings.downloadFolderLocation,
+                    options = DownloadFolderLocation.entries,
+                    optionLabel = { location ->
+                        when (location) {
+                            DownloadFolderLocation.PUBLIC -> stringResource(Res.string.settings_download_storage_public)
+                            DownloadFolderLocation.APP_DATA -> stringResource(Res.string.settings_download_storage_app_data)
+                            DownloadFolderLocation.APP_CACHE -> stringResource(Res.string.settings_download_storage_app_cache)
+                        }
+                    },
+                    onOptionSelected = { location ->
+                        settingsViewModel.updateSettings {
+                            copy(downloadFolderLocation = location, overloadedDownloadFolder = null)
+                        }
+                    }
+                )
+            },
+            {
                 DownloadFolderSettingCard(
                     folder = settings.overloadedDownloadFolder,
-                    defaultFolder = settingsViewModel.defaultDownloadFolder,
+                    defaultFolder = settingsViewModel.downloadFolderPath(settings),
+                    isPrivate = settings.overloadedDownloadFolder.isNullOrBlank() &&
+                        settings.downloadFolderLocation != DownloadFolderLocation.PUBLIC,
                     onFolderSelected = { folder ->
                         settingsViewModel.updateSettings {
                             copy(overloadedDownloadFolder = folder)
@@ -144,6 +185,7 @@ internal fun LazyListScope.downloadsSection(
 private fun DownloadFolderSettingCard(
     folder: String?,
     defaultFolder: String,
+    isPrivate: Boolean,
     onFolderSelected: (String?) -> Unit
 ) {
     val pickerLauncher = rememberDirectoryPickerLauncher { directory ->
@@ -159,7 +201,11 @@ private fun DownloadFolderSettingCard(
         title = stringResource(Res.string.settings_download_folder_title),
         subtitle = folder?.let {
             stringResource(Res.string.settings_download_folder_current, it)
-        } ?: stringResource(Res.string.settings_download_folder_default_path, defaultFolder),
+        } ?: if (isPrivate) {
+            stringResource(Res.string.settings_download_folder_private_path, defaultFolder)
+        } else {
+            stringResource(Res.string.settings_download_folder_default_path, defaultFolder)
+        },
         icon = {
             SettingsItemIcon(
                 Iconsax.IconsaxDirectboxReceive,

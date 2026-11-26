@@ -17,6 +17,9 @@
 
 package org.spotube.spotube.core.ui.component
 
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppState
+import org.spotube.spotube.core.ui.theming.engine.ContentSlots
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,7 +44,7 @@ import compose.icons.feathericons.LogIn
 import org.spotube.spotube.core.ui.theming.AppTheme
 import org.jetbrains.compose.resources.stringResource
 import org.spotube.millennium.composables.MillenniumButton
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import spotube.composeapp.generated.resources.*
 
 /** Friendly "sign in first" state for screens whose metadata plugin needs an account. */
@@ -51,30 +54,29 @@ fun LoginRequiredDisplay(
     onLogin: () -> Unit,
     modifier: Modifier = Modifier,
     isLoggingIn: Boolean = false) {
+    val look = AppComponents.slot(ContentSlots.LoginRequired)[AppState.Default]
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 32.dp, vertical = 24.dp),
+            .padding(look.padding),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        verticalArrangement = Arrangement.spacedBy(look.spacing)) {
         Box(
             modifier = Modifier
-                .size(88.dp)
-                .clip(CircleShape)
-                .background(AppTheme.colors.primary.copy(alpha = 0.14f)),
+                .size(look.badgeSize)
+                .clip(look.badgeShape)
+                .background(look.badgeBackground),
             contentAlignment = Alignment.Center) {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = FeatherIcons.Lock,
                 contentDescription = null,
-                modifier = Modifier.size(40.dp),
-                tint = AppTheme.colors.primary)
+                modifier = Modifier.size(look.iconSize),
+                tint = look.iconTint)
         }
 
         Text(
             text = stringResource(Res.string.login_required_title),
-            style = AppTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-            color = AppTheme.colors.onSurface,
+            style = look.titleStyle,
             textAlign = TextAlign.Center)
 
         Text(
@@ -83,19 +85,18 @@ fun LoginRequiredDisplay(
             } else {
                 stringResource(Res.string.login_required_description_plugin, pluginName)
             },
-            style = AppTheme.typography.bodyMedium,
-            color = AppTheme.colors.onSurfaceVariant,
+            style = look.descriptionStyle,
             textAlign = TextAlign.Center)
 
         MillenniumButton(
             onClick = onLogin,
             loading = isLoggingIn,
-            modifier = Modifier.height(44.dp)) {
+            modifier = Modifier.height(look.buttonHeight)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                MillenniumIcon(
+                AppIcon(
                     imageVector = FeatherIcons.LogIn,
                     contentDescription = null,
-                    modifier = Modifier.padding(end = 8.dp).size(18.dp))
+                    modifier = Modifier.padding(end = 8.dp).size(look.buttonIconSize))
                 Text(stringResource(Res.string.login_required_action))
             }
         }

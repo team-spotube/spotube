@@ -17,6 +17,7 @@
 
 package org.spotube.spotube.modules.plugin.components
 
+import org.spotube.spotube.core.ui.theming.appPanelBrush
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -51,9 +52,8 @@ import okio.Path
 import org.jetbrains.compose.resources.stringResource
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.theme.MillenniumTheme
-import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
 
 // Shared building blocks for the plugin dialogs/sheets so they all read as one family and
@@ -96,7 +96,7 @@ internal fun PluginPanel(
         modifier = modifier
             .fillMaxWidth()
             .millenniumSurface(
-                background = millenniumPanelBrush(MillenniumTheme.colors),
+                background = appPanelBrush(),
                 shape = RoundedCornerShape(14.dp),
                 borderColor = AppTheme.colors.outlineVariant,
                 borderWidth = 1.dp),
@@ -115,7 +115,7 @@ internal fun PluginIconTile(
             .clip(RoundedCornerShape(size / 3.4f))
             .background(tint.copy(alpha = 0.14f)),
         contentAlignment = Alignment.Center) {
-        MillenniumIcon(
+        AppIcon(
             imageVector = icon,
             contentDescription = null,
             modifier = Modifier.size(size * 0.5f),
@@ -140,7 +140,7 @@ internal fun PluginLogoTile(
             contentDescription = plugin.name,
             modifier = Modifier.fillMaxSize(),
             fallback = {
-                MillenniumIcon(
+                AppIcon(
                     imageVector = Iconsax.IconsaxBoxAdd,
                     contentDescription = null,
                     tint = AppTheme.colors.primary,
@@ -162,7 +162,7 @@ internal fun PluginPill(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)) {
         if (icon != null) {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = icon,
                 contentDescription = null,
                 modifier = Modifier.size(12.dp),
@@ -190,7 +190,7 @@ internal fun PluginCallout(text: String, isWarning: Boolean = false) {
             .padding(12.dp),
         verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        MillenniumIcon(
+        AppIcon(
             imageVector = Iconsax.IconsaxInformation,
             contentDescription = null,
             modifier = Modifier.size(18.dp),

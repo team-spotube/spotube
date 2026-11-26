@@ -182,13 +182,13 @@ class RealNewPipeAudioAPI : AudioAPI, KoinComponent {
         // YouTube Music often returns unrelated songs, so every step is scored against the track
         // and the next step runs until one result clears [confidentMatch].
         val plan = buildList {
-            if (isrcCode != null) add("isrc" to (isrcCode to SearchKind.Songs))
-            add("songs: title+artist" to ("${track.title} $artistText".trim() to SearchKind.Songs))
+            if (isrcCode != null) add("isrc" to (isrcCode to SearchKind.SONGS))
+            add("songs: title+artist" to ("${track.title} $artistText".trim() to SearchKind.SONGS))
             if (plainTitle.isNotEmpty() && firstArtist.isNotEmpty() && plainTitle != track.title) {
-                add("songs: plain title+first artist" to ("$plainTitle $firstArtist" to SearchKind.Songs))
+                add("songs: plain title+first artist" to ("$plainTitle $firstArtist" to SearchKind.SONGS))
             }
-            add("videos: title+artist" to ("${track.title} $artistText".trim() to SearchKind.Videos))
-            add("songs: title only" to (plainTitle.ifEmpty { track.title } to SearchKind.Songs))
+            add("videos: title+artist" to ("${track.title} $artistText".trim() to SearchKind.VIDEOS))
+            add("songs: title only" to (plainTitle.ifEmpty { track.title } to SearchKind.SONGS))
         }
 
         val sources = linkedMapOf<String, AudioSource.Basic>()

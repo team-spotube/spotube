@@ -505,7 +505,7 @@
     <string name="devices_connecting">Conectando...</string>
     <string name="devices_searching">Procurando dispositivos na rede...</string>
     <string name="devices_empty">Nenhum dispositivo encontrado</string>
-    <string name="devices_empty_hint">Verifique se o outro dispositivo está com \"Permitir controle remoto\" ativado nas configurações.</string>
+    <string name="devices_empty_hint">Verifique se o outro dispositivo está com "Permitir controle remoto" ativado nas configurações.</string>
     <string name="devices_unknown_device">Dispositivo desconhecido</string>
     <string name="devices_resolving">Resolvendo...</string>
 
@@ -540,7 +540,7 @@
 
     <!-- Remote control: connection request dialog -->
     <string name="remote_request_title">Solicitação de controle remoto</string>
-    <string name="remote_request_message">\"%1$s\" quer controlar a reprodução neste dispositivo.</string>
+    <string name="remote_request_message">"%1$s" quer controlar a reprodução neste dispositivo.</string>
     <string name="remote_request_deny">Negar</string>
     <string name="remote_request_allow">Permitir</string>
     <string name="remote_request_allow_always">Sempre permitir</string>
@@ -666,7 +666,7 @@
     <!-- Blacklist -->
     <string name="blacklist_filter_placeholder">Filtrar lista de bloqueio...</string>
     <string name="blacklist_empty">Nenhum item bloqueado</string>
-    <string name="blacklist_no_results">Nenhum item bloqueado corresponde a \'%1$s\'</string>
+    <string name="blacklist_no_results">Nenhum item bloqueado corresponde a '%1$s'</string>
     <string name="blacklist_section_tracks">Faixas</string>
     <string name="blacklist_item_track">Faixa</string>
     <string name="blacklist_add">Adicionar à lista de bloqueio</string>

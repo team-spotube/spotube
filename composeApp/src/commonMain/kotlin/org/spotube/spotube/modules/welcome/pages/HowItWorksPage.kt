@@ -1,6 +1,6 @@
 package org.spotube.spotube.modules.welcome.pages
 
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumListTile
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -88,7 +88,7 @@ private fun WelcomeGuideStep(
 ) {
     MillenniumListTile(
         leading = {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = icon,
                 contentDescription = null,
                 modifier = Modifier.size(20.dp),

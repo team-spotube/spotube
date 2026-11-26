@@ -10,7 +10,7 @@
 package org.spotube.spotube.modules.settings.sections
 
 
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import androidx.compose.foundation.lazy.LazyListScope
 
 import org.spotube.spotube.core.ui.theming.AppTheme
@@ -43,7 +43,7 @@ internal fun LazyListScope.jamSection(
                             stringResource(Res.string.settings_jam_server_title))
                     },
                     trailingContent = {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = FeatherIcons.ChevronRight,
                             contentDescription = stringResource(Res.string.settings_jam_server_title),
                             tint = AppTheme.colors.onSurfaceVariant)

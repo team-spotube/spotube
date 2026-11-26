@@ -77,6 +77,17 @@ class Database(val paths: Paths) {
         )
     }
 
+    /**
+     * User-created playlists of on-device tracks. Covers are stored as small base64 JPEGs
+     * (see [org.spotube.spotube.modules.library.local.LocalCovers]), but the store is still
+     * rebuildable only with user input, so cap it like the other caches instead of dropping it.
+     */
+    val localPlaylistsDataStore: DataStore<Preferences> by lazy {
+        PreferenceDataStoreFactory.createWithPath(
+            produceFile = { dropIfOversized("${paths.getApplicationDataDirPath()}/spotube_local_playlists.preferences_pb".toPath()) }
+        )
+    }
+
     val windowStateDataStore: DataStore<Preferences> by lazy {
         PreferenceDataStoreFactory.createWithPath(
             produceFile = { "${paths.getApplicationDataDirPath()}/spotube_window.preferences_pb".toPath() }
@@ -117,5 +128,6 @@ object DatabaseKeys {
     val AUDIO_PLAYER_QUEUE_STATE_KEY = stringPreferencesKey("audio_player_queue_state")
     val LOCAL_MEDIA_CACHE_STATE_KEY = stringPreferencesKey("local_media_cache_state")
     val LOCAL_MEDIA_LAST_SCAN_AT_KEY = longPreferencesKey("local_media_last_scan_at")
+    val LOCAL_PLAYLISTS_STATE_KEY = stringPreferencesKey("local_playlists_state")
     val WINDOW_STATE_KEY = stringPreferencesKey("window_state")
 }

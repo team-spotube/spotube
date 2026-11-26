@@ -23,6 +23,9 @@ import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumDialog
 import org.spotube.millennium.composables.MillenniumModalBottomSheet
+import org.spotube.millennium.composables.MillenniumSegmentedButton
+import org.spotube.millennium.composables.MillenniumSegmentedButtonDefaults
+import org.spotube.millennium.composables.MillenniumSegmentedButtonRow
 import org.spotube.millennium.composables.MillenniumSwitch
 import org.spotube.millennium.composables.MillenniumTextField
 import androidx.compose.foundation.layout.Arrangement
@@ -79,6 +82,11 @@ import spotube.composeapp.generated.resources.library_playlist_form_no_image
 import spotube.composeapp.generated.resources.library_playlist_form_pick_image
 import spotube.composeapp.generated.resources.library_playlist_form_public
 import spotube.composeapp.generated.resources.library_playlist_form_public_description
+import spotube.composeapp.generated.resources.library_playlist_form_source_label
+import spotube.composeapp.generated.resources.library_playlist_form_source_local
+import spotube.composeapp.generated.resources.library_playlist_form_source_local_description
+import spotube.composeapp.generated.resources.library_playlist_form_source_online
+import spotube.composeapp.generated.resources.library_playlist_form_source_online_description
 import spotube.composeapp.generated.resources.common_cancel
 import spotube.composeapp.generated.resources.common_save
 
@@ -88,7 +96,8 @@ data class PlaylistFormData(
     val isPublic: Boolean = true,
     val isCollaborating: Boolean = false,
     val imageBase64: String = "",
-    val imagePreviewUrl: String? = null
+    val imagePreviewUrl: String? = null,
+    val source: PlaylistFormSource = PlaylistFormSource.Online
 )
 
 @Composable
@@ -100,7 +109,9 @@ fun PlaylistFormSheet(
     onImagePicked: (PlatformFile) -> Unit,
     modifier: Modifier = Modifier,
     initialData: PlaylistFormData? = null,
-    isEditing: Boolean = false
+    isEditing: Boolean = false,
+    showSourceChoice: Boolean = false,
+    defaultSource: PlaylistFormSource = PlaylistFormSource.Online
 ) {
     if (!visible) return
 
@@ -113,6 +124,11 @@ fun PlaylistFormSheet(
         mutableStateOf(
             initialData?.isCollaborating ?: false
         )
+    }
+    // Transient form state, like isPublic: the create sheet defaults to the caller's suggestion
+    // and the edit sheet keeps whatever the edited playlist is.
+    var source by remember(initialData) {
+        mutableStateOf(initialData?.source ?: defaultSource)
     }
     val imageBase64 = formState.pickedImageBase64 ?: initialData?.imageBase64.orEmpty()
     val imagePreviewUrl = if (formState.pickedImageBase64 != null) null else initialData?.imagePreviewUrl
@@ -143,7 +159,8 @@ fun PlaylistFormSheet(
         isPublic = isPublic,
         isCollaborating = isCollaborating,
         imageBase64 = imageBase64,
-        imagePreviewUrl = imagePreviewUrl
+        imagePreviewUrl = imagePreviewUrl,
+        source = source
     )
 
     val handleImagePick = { imagePicker.launch() }
@@ -184,7 +201,10 @@ fun PlaylistFormSheet(
             imagePreviewUrl = imagePreviewUrl,
             isProcessingImage = formState.isProcessingImage,
             isImagePickEnabled = !formState.isSubmitting,
-            onPickImage = handleImagePick)
+            onPickImage = handleImagePick,
+            showSourceChoice = showSourceChoice,
+            source = source,
+            onSourceChange = { source = it })
     }
 }
 
@@ -200,7 +220,10 @@ private fun PlaylistFormFields(
     imagePreviewUrl: String?,
     isProcessingImage: Boolean,
     isImagePickEnabled: Boolean,
-    onPickImage: () -> Unit
+    onPickImage: () -> Unit,
+    showSourceChoice: Boolean = false,
+    source: PlaylistFormSource = PlaylistFormSource.Online,
+    onSourceChange: (PlaylistFormSource) -> Unit = {}
 ) {
     // AdaptiveDialogBottomSheet already scrolls its content; a second scroll here nests
     // scrollables and crashes with infinite height constraints.
@@ -208,6 +231,47 @@ private fun PlaylistFormFields(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+        if (showSourceChoice) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    stringResource(Res.string.library_playlist_form_source_label),
+                    style = AppTheme.typography.bodyLarge
+                )
+                MillenniumSegmentedButtonRow {
+                    PlaylistFormSource.entries.forEachIndexed { index, option ->
+                        MillenniumSegmentedButton(
+                            selected = source == option,
+                            onClick = { onSourceChange(option) },
+                            shape = MillenniumSegmentedButtonDefaults.itemShape(
+                                index, PlaylistFormSource.entries.size)
+                        ) {
+                            Text(
+                                stringResource(
+                                    when (option) {
+                                        PlaylistFormSource.Online -> Res.string.library_playlist_form_source_online
+                                        PlaylistFormSource.Local -> Res.string.library_playlist_form_source_local
+                                    }
+                                )
+                            )
+                        }
+                    }
+                }
+                Text(
+                    stringResource(
+                        when (source) {
+                            PlaylistFormSource.Online -> Res.string.library_playlist_form_source_online_description
+                            PlaylistFormSource.Local -> Res.string.library_playlist_form_source_local_description
+                        }
+                    ),
+                    style = AppTheme.typography.bodySmall,
+                    color = AppTheme.colors.onSurfaceVariant
+                )
+            }
+        }
+
         MillenniumTextField(
             state = nameState,
             label = stringResource(Res.string.library_playlist_form_name_label),
@@ -222,42 +286,45 @@ private fun PlaylistFormFields(
             placeholder = stringResource(Res.string.library_playlist_form_description_placeholder)
         )
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
-                .clickable { onIsPublicChange(!isPublic) }
-                .padding(horizontal = 4.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(stringResource(Res.string.library_playlist_form_public), style = AppTheme.typography.bodyLarge)
-                Text(
-                    stringResource(Res.string.library_playlist_form_public_description),
-                    style = AppTheme.typography.bodySmall,
-                    color = AppTheme.colors.onSurfaceVariant
-                )
+        // Public/collaborative are online-only concepts; a device-local playlist has no account behind it.
+        if (source == PlaylistFormSource.Online) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .clickable { onIsPublicChange(!isPublic) }
+                    .padding(horizontal = 4.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(stringResource(Res.string.library_playlist_form_public), style = AppTheme.typography.bodyLarge)
+                    Text(
+                        stringResource(Res.string.library_playlist_form_public_description),
+                        style = AppTheme.typography.bodySmall,
+                        color = AppTheme.colors.onSurfaceVariant
+                    )
+                }
+                MillenniumSwitch(checked = isPublic, onCheckedChange = onIsPublicChange)
             }
-            MillenniumSwitch(checked = isPublic, onCheckedChange = onIsPublicChange)
-        }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
-                .clickable { onIsCollaboratingChange(!isCollaborating) }
-                .padding(horizontal = 4.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(stringResource(Res.string.library_playlist_form_collaborative), style = AppTheme.typography.bodyLarge)
-                Text(
-                    stringResource(Res.string.library_playlist_form_collaborative_description),
-                    style = AppTheme.typography.bodySmall,
-                    color = AppTheme.colors.onSurfaceVariant
-                )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp))
+                    .clickable { onIsCollaboratingChange(!isCollaborating) }
+                    .padding(horizontal = 4.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(stringResource(Res.string.library_playlist_form_collaborative), style = AppTheme.typography.bodyLarge)
+                    Text(
+                        stringResource(Res.string.library_playlist_form_collaborative_description),
+                        style = AppTheme.typography.bodySmall,
+                        color = AppTheme.colors.onSurfaceVariant
+                    )
+                }
+                MillenniumSwitch(checked = isCollaborating, onCheckedChange = onIsCollaboratingChange)
             }
-            MillenniumSwitch(checked = isCollaborating, onCheckedChange = onIsCollaboratingChange)
         }
 
         Column(

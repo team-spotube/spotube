@@ -17,9 +17,18 @@
 
 package org.spotube.spotube.modules.library.local_tracks.media
 
+import io.github.vinceglb.filekit.PlatformFile
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.withContext
+import org.spotube.spotube.core.paths.Paths
+
 class IosLocalMediaDiscoveryService : LocalMediaDiscoveryService {
-    override suspend fun discoverFolders(roots: List<String>): List<LocalMediaFolder> {
-        return emptyList()
+    override suspend fun discoverFolders(roots: List<String>): List<LocalMediaFolder> = withContext(Dispatchers.IO) {
+        (listOf(Paths().getApplicationDataDirPath()) + roots).distinct()
+            .flatMap { scanMusicTree(PlatformFile(it)) }
+            .distinctBy { it.path }
+            .map { it.copy(documentTrail = emptyList()) }
     }
 
     override fun observeChanges(

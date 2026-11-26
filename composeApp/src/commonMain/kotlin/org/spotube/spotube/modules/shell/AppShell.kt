@@ -17,6 +17,10 @@
 
 package org.spotube.spotube.modules.shell
 
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppSlots
+import org.spotube.spotube.core.ui.theming.engine.AppState
+import org.spotube.spotube.core.ui.theming.engine.ScreensSlots
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -40,6 +44,28 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.foundation.focusable
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
+import kotlinx.coroutines.delay
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.onPreviewKeyEvent
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.isAltPressed
+import androidx.compose.ui.input.key.isCtrlPressed
+import androidx.compose.ui.input.key.isMetaPressed
+import androidx.compose.ui.input.key.isShiftPressed
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.type
+import androidx.compose.ui.platform.InterceptPlatformTextInput
+import androidx.compose.ui.platform.PlatformTextInputInterceptor
+import org.spotube.spotube.core.shortcuts.AppShortcuts
+import org.spotube.spotube.core.shortcuts.isPlainSpaceKey
+import org.spotube.spotube.core.shortcuts.isTypedSpace
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -81,9 +107,11 @@ import org.spotube.millennium.composables.MillenniumSeparator
 import org.spotube.millennium.composables.MillenniumSnackbarHost
 import org.spotube.millennium.composables.MillenniumSnackbarHostState
 import org.spotube.millennium.theme.MillenniumTheme
+import org.spotube.spotube.core.ui.theming.appBackground
 
 val LocalAppShellBottomInset = staticCompositionLocalOf { 0.dp }
 
+@OptIn(androidx.compose.ui.ExperimentalComposeUiApi::class)
 @Composable
 fun AppShell(
     navigator: Navigator,
@@ -95,6 +123,8 @@ fun AppShell(
 ) {
     val navigatorCommands: NavigationCommands = koinInject()
     val remotePlaybackController: RemotePlaybackController = koinInject()
+    val appShortcuts: AppShortcuts = koinInject()
+    val shortcutFocus = remember { FocusRequester() }
     val snackbarHostState = remember { MillenniumSnackbarHostState() }
     LaunchedEffect(remotePlaybackController) {
         remotePlaybackController.events.collect { message ->
@@ -134,7 +164,54 @@ fun AppShell(
     ConnectionRequestDialogHost()
     PlayDestinationPickerHost()
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    // Bubbling (not preview) key events, so a focused text field or button handles its own
+    // keys (e.g. typing a space) before the global shortcuts see them.
+    // Key events only reach this subtree while something inside it holds focus, so claim
+    // focus at startup (retrying until the node is attached) and reclaim it on any press
+    // when focus has been lost, without stealing it from a focused child such as a text field.
+    var shellHasFocus by remember { mutableStateOf(false) }
+    // True while any descendant text field has an active input session. Space is intercepted
+    // before focused buttons (which would consume it) only when the user isn't typing.
+    var textInputActive by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        repeat(20) {
+            if (shellHasFocus || runCatching { shortcutFocus.requestFocus() }.isSuccess) return@LaunchedEffect
+            delay(100)
+        }
+    }
+    InterceptPlatformTextInput(interceptor = PlatformTextInputInterceptor { request, next ->
+        textInputActive = true
+        try {
+            next.startInputMethod(request)
+        } finally {
+            textInputActive = false
+        }
+    }) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .onPreviewKeyEvent { event ->
+            when {
+                textInputActive -> false
+                // Desktop delivers Space as a typed-character event; others as a key-down.
+                event.isTypedSpace() -> appShortcuts.onKeyEvent(event)
+                event.isPlainSpaceKey() ->
+                    // Swallow the key-up too, so a focused button doesn't also "click".
+                    event.type == KeyEventType.KeyUp || appShortcuts.onKeyEvent(event)
+                else -> false
+            }
+        }
+        .onKeyEvent { appShortcuts.onKeyEvent(it, textInputActive) }
+        .focusRequester(shortcutFocus)
+        .onFocusChanged { shellHasFocus = it.hasFocus }
+        .focusable()
+        .pointerInput(Unit) {
+            awaitPointerEventScope {
+                while (true) {
+                    awaitPointerEvent(PointerEventPass.Initial)
+                    if (!shellHasFocus) runCatching { shortcutFocus.requestFocus() }
+                }
+            }
+        }) {
         val useSidebar = viewModel.useSidebar()
         val chromeUiState by viewModel.compactChromeUiState.collectAsState()
         val density = LocalDensity.current
@@ -153,7 +230,7 @@ fun AppShell(
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(MillenniumTheme.colors.background)
+                            .appBackground()
                             .hazeSource(state = bgHazeState) // <-- Put it here!
                     )
                     Column(modifier = Modifier.fillMaxSize()) {
@@ -225,7 +302,7 @@ fun AppShell(
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(MillenniumTheme.colors.background)
+                            .appBackground()
                     )
                     CompactPlayerOverlay(
                         navigator = navigator,
@@ -270,7 +347,7 @@ fun AppShell(
                         ) {
                             Box(
                                 modifier = Modifier.fillMaxSize()
-                                    .background(MillenniumTheme.colors.background)
+                                    .appBackground()
                             ) {
                                 LyricsScreen(
                                     modifier = Modifier.fillMaxSize(),
@@ -288,8 +365,9 @@ fun AppShell(
             hostState = snackbarHostState,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = bottomOverlayInset + 12.dp)
+                .padding(bottom = bottomOverlayInset + AppComponents.slot(ScreensSlots.AppShellRoot)[AppState.Default].snackbarOffset)
         )
+    }
     }
 }
 

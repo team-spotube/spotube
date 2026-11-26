@@ -18,8 +18,10 @@
 package org.spotube.spotube.modules.library.local_tracks.media
 
 import org.spotube.spotube.core.di.injectLogger
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
@@ -27,6 +29,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.time.Clock
@@ -95,7 +98,26 @@ class LocalMediaLibraryCoordinator(
         refreshMutex.withLock {
             logger.i { "Refreshing local media cache. reason=$reason" }
             runCatching {
-                discoveryService.discoverFolders(configuredRoots)
+                val documentRoots = withContext(Dispatchers.IO) { foldersConfig.documentRoots() }
+                val documentIds = documentRoots.mapTo(hashSetOf()) { it.first.trim() }
+                // Document trees are scanned here with their booked access; scanning them again
+                // through a plain path would index every track twice.
+                val discovered = discoveryService.discoverFolders(configuredRoots.filterNot { it in documentIds })
+                val documents = withContext(Dispatchers.IO) {
+                    documentRoots.flatMap { (id, root) ->
+                        try {
+                            scanMusicTree(root, id)
+                        } catch (e: CancellationException) {
+                            throw e
+                        } catch (e: Exception) {
+                            logger.w(e) { "Could not index a selected music folder" }
+                            emptyList()
+                        }
+                    }
+                }
+                // Prefer document-scanned folders: they carry the trail the browser needs when a
+                // provider folder is also reachable through the app-data/home scan.
+                (documents + discovered).distinctBy { it.path }
             }.onSuccess { folders ->
                 val cache = LocalMediaCache(
                     folders = folders,

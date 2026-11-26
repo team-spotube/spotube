@@ -98,7 +98,9 @@ class RemoteControlClient(httpClientFactory: HttpClientFactory) {
         _connectionState.value = ConnectionState.Connecting
         try {
             session = httpClient.webSocketSession {
-                url("ws://$host:$port/control")
+                // A bare IPv6 literal must be bracketed to form a valid authority.
+                val authority = if (host.contains(':') && !host.startsWith("[")) "[$host]" else host
+                url("ws://$authority:$port/control")
                 header("X-Device-Id", deviceId)
                 header("X-Device-Name", deviceName)
             }

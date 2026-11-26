@@ -18,10 +18,10 @@
 package org.spotube.spotube.modules.settings.sections
 
 
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.appPanelBrush
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumSeparator
 import org.spotube.millennium.theme.MillenniumTheme
-import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -34,6 +34,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import org.spotube.spotube.core.ui.theming.AppTheme
 
 import com.composeunstyled.Text
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.ui.Alignment
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -105,6 +109,26 @@ internal fun LazyListScope.settingsSectionHeader(title: StringResource) {
 }
 
 /**
+ * The small grey label above a group of cards, in a plain column (the lazy-list [settingsSectionHeader] twin), with
+ * optional [trailing] actions on the right. Same 16dp inset as every other settings header.
+ */
+@Composable
+internal fun SettingsSectionLabel(title: StringResource, modifier: Modifier = Modifier, trailing: (@Composable RowScope.() -> Unit)? = null) {
+    Row(
+        modifier = modifier.fillMaxWidth().heightIn(min = 40.dp).padding(start = 16.dp, end = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = stringResource(title),
+            style = AppTheme.typography.labelMedium,
+            color = Color.Gray,
+            modifier = Modifier.weight(1f),
+        )
+        trailing?.invoke(this)
+    }
+}
+
+/**
  * A page-level title for a settings destination (used by the large-screen sidebar
  * layout, where each section is its own page rather than one entry in a long list).
  */
@@ -131,7 +155,7 @@ internal fun SettingsItemIcon(
             .clip(RoundedCornerShape(8.dp))
             .background(tint.copy(alpha = 0.12f))) {
         Box(modifier = Modifier.padding(8.dp)) {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = imageVector,
                 contentDescription = contentDescription,
                 tint = tint)
@@ -201,7 +225,7 @@ internal fun LazyListScope.settingsSectionCard(
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp, vertical = 4.dp)
                 .millenniumSurface(
-                    background = millenniumPanelBrush(MillenniumTheme.colors),
+                    background = appPanelBrush(),
                     shape = AppTheme.shapes.medium,
                     borderColor = MillenniumTheme.colors.border,
                     borderWidth = 1.dp,

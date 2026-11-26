@@ -23,7 +23,7 @@ import org.spotube.millennium.composables.MillenniumDialogTitle
 import org.spotube.millennium.composables.MillenniumDialogClose
 import org.spotube.millennium.composables.MillenniumDialogBody
 import org.spotube.millennium.composables.MillenniumDialogFooter
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumDialog
 import org.spotube.millennium.composables.MillenniumListTile
 import org.spotube.millennium.composables.MillenniumButton
@@ -105,7 +105,7 @@ fun PlayDestinationPickerHost() {
                 onClick = controller::playLocally,
                 modifier = Modifier.fillMaxWidth(),
                 leading = {
-                    MillenniumIcon(
+                    AppIcon(
                         imageVector = Iconsax.IconsaxCd,
                         contentDescription = null,
                         tint = AppTheme.colors.primary)
@@ -127,7 +127,7 @@ fun PlayDestinationPickerHost() {
                     onClick = controller::playOnRemote,
                     modifier = Modifier.fillMaxWidth(),
                     leading = {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = Iconsax.IconsaxMirroringScreen,
                             contentDescription = null,
                             tint = AppTheme.colors.primary)

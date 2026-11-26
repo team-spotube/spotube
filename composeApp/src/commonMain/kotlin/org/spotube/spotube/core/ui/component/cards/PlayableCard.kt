@@ -18,7 +18,7 @@
 package org.spotube.spotube.core.ui.component.cards
 
 
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import com.composeunstyled.LocalTextStyle
@@ -37,7 +37,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 
-import org.spotube.spotube.core.ui.theming.AppTheme
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppSlots
+import org.spotube.spotube.core.ui.theming.engine.AppState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -78,8 +80,11 @@ fun PlayableCard(
     sharedElementKey: String? = null,
     listMode: Boolean = false,
     playLoading: Boolean = false,
-    addToQueueLoading: Boolean = false
+    addToQueueLoading: Boolean = false,
+    /** Raw artwork (e.g. embedded cover bytes) that wins over [imageURL] when not null. */
+    imageModel: Any? = null
 ) {
+    val artworkModel = imageModel ?: imageURL
     if (listMode) {
         PlayableListTile(
             title,
@@ -92,7 +97,8 @@ fun PlayableCard(
             modifier,
             sharedElementKey,
             playLoading = playLoading,
-            addToQueueLoading = addToQueueLoading
+            addToQueueLoading = addToQueueLoading,
+            imageModel = artworkModel
         )
         return
     }
@@ -100,31 +106,34 @@ fun PlayableCard(
     val sharedTransitionScope = LocalSharedTransitionScope.current
     val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
 
+    val artworkTheme = AppComponents.slot(AppSlots.MediaCardArtwork)[AppState.Default]
+    val infoTheme = AppComponents.slot(AppSlots.MediaCardInfo)[AppState.Default]
+
     MediaCardSurface(
-        modifier = modifier.width(160.dp),
+        modifier = modifier,
         onClick = onClick ?: onPlay,
         interactive = onClick != null || onPlay != null || onAddToQueue != null
     ) { highlighted ->
         Column(modifier = Modifier.fillMaxWidth()) {
             Box(modifier = Modifier.fillMaxWidth().shimmerApply()) {
                 MediaArtwork(
-                    model = imageURL,
+                    model = artworkModel,
                     title = title,
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(1f)
-                        .clip(RoundedCornerShape(8.dp))
+                        .clip(artworkTheme.shape)
                         .sharedElementOrNone(
                             key = sharedElementKey,
                             sharedTransitionScope = sharedTransitionScope,
                             animatedVisibilityScope = animatedVisibilityScope
                         ),
-                    shape = RoundedCornerShape(8.dp)
+                    shape = artworkTheme.shape
                 )
 
                 if (onPlay != null || onAddToQueue != null)
                     Box(
-                        modifier = Modifier.fillMaxWidth().aspectRatio(1f).padding(8.dp),
+                        modifier = Modifier.fillMaxWidth().aspectRatio(1f).padding(artworkTheme.actionPadding),
                         contentAlignment = Alignment.BottomEnd
                     ) {
                         this@Column.AnimatedVisibility(
@@ -143,27 +152,27 @@ fun PlayableCard(
                                     MillenniumIconButton(
                                         onClick = onAddToQueue,
                                         loading = addToQueueLoading,
-                                        modifier = Modifier.size(34.dp),
+                                        modifier = Modifier.size(artworkTheme.actionSize),
                                         style = MillenniumIconButtonStyle.Secondary
                                     ) {
-                                        MillenniumIcon(
+                                        AppIcon(
                                             imageVector = Iconsax.IconsaxAddSquare,
                                             contentDescription = stringResource(
                                                 Res.string.player_add_to_queue_content_description
                                             ),
                                         )
                                     }
-                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Spacer(modifier = Modifier.height(artworkTheme.actionSpacing))
                                 }
                                 onPlay?.let {
                                     MillenniumIconButton(
                                         onClick = onPlay,
                                         loading = playLoading,
-                                        modifier = Modifier.size(34.dp),
+                                        modifier = Modifier.size(artworkTheme.actionSize),
                                         style = MillenniumIconButtonStyle.Primary
 
                                     ) {
-                                        MillenniumIcon(
+                                        AppIcon(
                                             imageVector = if (isPlaying) {
                                                 Iconsax.IconsaxPause
                                             } else Iconsax.IconsaxPlay,
@@ -183,20 +192,19 @@ fun PlayableCard(
                     }
             }
             Column(
-                modifier = Modifier.fillMaxWidth().padding(12.dp)
+                modifier = Modifier.fillMaxWidth().padding(infoTheme.padding)
             ) {
                 TextWithShimmer(
                     text = title,
-                    style = AppTheme.typography.titleSmall,
+                    style = infoTheme.titleStyle,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(infoTheme.spacing))
                 subtitle?.let {
                     TextWithShimmer(
                         text = subtitle,
-                        style = AppTheme.typography.bodySmall,
-                        color = AppTheme.colors.onSurfaceVariant,
+                        style = infoTheme.subtitleStyle,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )

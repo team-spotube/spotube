@@ -497,7 +497,7 @@
     <string name="devices_connecting">Menghubungkan...</string>
     <string name="devices_searching">Mencari perangkat di jaringan...</string>
     <string name="devices_empty">Tidak ada perangkat ditemukan</string>
-    <string name="devices_empty_hint">Pastikan perangkat lain telah mengaktifkan \"Izinkan kontrol jarak jauh\" di pengaturan.</string>
+    <string name="devices_empty_hint">Pastikan perangkat lain telah mengaktifkan "Izinkan kontrol jarak jauh" di pengaturan.</string>
     <string name="devices_unknown_device">Perangkat Tidak Dikenal</string>
     <string name="devices_resolving">Menyelesaikan...</string>
 
@@ -530,7 +530,7 @@
 
     <!-- Remote control: connection request dialog -->
     <string name="remote_request_title">Permintaan Kontrol Jarak Jauh</string>
-    <string name="remote_request_message">\"%1$s\" ingin mengontrol pemutaran di perangkat ini.</string>
+    <string name="remote_request_message">"%1$s" ingin mengontrol pemutaran di perangkat ini.</string>
     <string name="remote_request_deny">Tolak</string>
     <string name="remote_request_allow">Izinkan</string>
     <string name="remote_request_allow_always">Selalu Izinkan</string>
@@ -656,7 +656,7 @@
     <!-- Blacklist -->
     <string name="blacklist_filter_placeholder">Filter daftar blokir...</string>
     <string name="blacklist_empty">Tidak ada item yang diblokir</string>
-    <string name="blacklist_no_results">Tidak ada item diblokir yang cocok dengan \'%1$s\'</string>
+    <string name="blacklist_no_results">Tidak ada item diblokir yang cocok dengan '%1$s'</string>
     <string name="blacklist_section_tracks">Lagu</string>
     <string name="blacklist_item_track">Lagu</string>
     <string name="blacklist_add">Tambahkan ke daftar blokir</string>

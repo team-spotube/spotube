@@ -57,6 +57,8 @@ import org.spotube.spotube.modules.update.AppUpdateService
 import org.spotube.spotube.modules.plugin.components.PluginPermissionDialog
 import org.spotube.spotube.modules.update.PluginUpdateDialog
 import org.spotube.spotube.modules.update.PluginUpdateService
+import org.spotube.spotube.modules.update.ThemeUpdateDialog
+import org.spotube.spotube.modules.update.ThemeUpdateService
 import org.spotube.spotube.modules.webview.WebViewScreen
 import org.spotube.spotube.modules.welcome.WelcomeRepository
 import org.spotube.spotube.resources.iconsax.Iconsax
@@ -158,8 +160,18 @@ fun App(
 ) {
     val settingsRepository: SettingsRepository = koinInject<SettingsRepository>()
     val userSettings by settingsRepository.userSettings.collectAsStateWithLifecycle(initialValue = UserSettings())
+    // The theme is compiled once per selection by ThemeRuntime; composition only reads the result.
+    val precompiledTheme by koinInject<org.spotube.spotube.core.ui.theming.engine.ThemeRuntime>().precompiled.collectAsStateWithLifecycle()
+    // Live player facts are only observed (and the theme only re-evaluated) when the theme actually reads them.
+    val themeContext = if (precompiledTheme.needsLiveContext) {
+        koinInject<org.spotube.spotube.core.ui.theming.engine.ThemeContextService>().context.collectAsStateWithLifecycle().value
+    } else {
+        emptyMap()
+    }
     val appUpdateService: AppUpdateService = koinInject()
     val pluginUpdateService: PluginUpdateService = koinInject()
+    val themeUpdateService: ThemeUpdateService = koinInject()
+    val availableThemeUpdate by themeUpdateService.prompt.collectAsStateWithLifecycle()
     val availableAppUpdate by appUpdateService.availableUpdate.collectAsStateWithLifecycle()
     val availablePluginUpdate by pluginUpdateService.availableUpdate.collectAsStateWithLifecycle()
     val pluginPermissionReview by pluginUpdateService.permissionReview.collectAsStateWithLifecycle()
@@ -214,7 +226,7 @@ fun App(
 
     // Below the navigation state, so switching languages keeps the current screen.
     AppLocaleProvider(userSettings.language) {
-        SpotubeTheme(settings = userSettings) {
+        SpotubeTheme(settings = userSettings, precompiled = precompiledTheme, liveContext = themeContext) {
             CompositionLocalProvider(LocalSupportPrompt provides {
                 supportDialogIsReminder = false
                 showSupportDialog = true
@@ -255,7 +267,7 @@ fun App(
                         onDismiss = appUpdateService::dismissUpdate,
                         onIgnore = appUpdateService::ignoreUpdate,
                         onUpdate = {
-                            runCatching { openUrlInBrowser("https://spotube.cc/downloads/") }
+                            runCatching { openUrlInBrowser("https://spotube.org/downloads/") }
                             appUpdateService.dismissUpdate()
                         })
                 }
@@ -265,6 +277,13 @@ fun App(
                         onDismiss = pluginUpdateService::dismissUpdate,
                         onIgnore = pluginUpdateService::ignoreUpdate,
                         onUpdate = pluginUpdateService::installUpdate)
+                }
+                availableThemeUpdate?.let { update ->
+                    ThemeUpdateDialog(
+                        update = update,
+                        onDismiss = themeUpdateService::dismissPrompt,
+                        onIgnore = themeUpdateService::ignorePrompt,
+                        onUpdate = themeUpdateService::installPrompt)
                 }
                 pluginPermissionReview?.let { review ->
                     PluginPermissionDialog(

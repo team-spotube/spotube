@@ -24,7 +24,14 @@ import org.spotube.millennium.composables.MillenniumDialogClose
 import org.spotube.millennium.composables.MillenniumDialogBody
 import org.spotube.millennium.composables.MillenniumDialogFooter
 import org.spotube.millennium.composables.MillenniumMarqueeProgress
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import compose.icons.FeatherIcons
+import compose.icons.feathericons.Copy
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumDialog
@@ -84,6 +91,7 @@ import spotube.composeapp.generated.resources.player_track_details_disc_number
 import spotube.composeapp.generated.resources.player_track_details_duration
 import spotube.composeapp.generated.resources.player_track_details_explicit
 import spotube.composeapp.generated.resources.player_track_details_external_uri
+import spotube.composeapp.generated.resources.player_track_details_copy_url
 import spotube.composeapp.generated.resources.player_track_details_id
 import spotube.composeapp.generated.resources.player_track_details_isrc
 import spotube.composeapp.generated.resources.player_track_details_loading_source
@@ -241,7 +249,7 @@ private fun TrackDetailsDialog(
                 DetailRow(stringResource(Res.string.media_artist), source.artist)
                 DetailRow(stringResource(Res.string.player_track_details_album), source.album)
                 DetailRow(stringResource(Res.string.player_track_details_confidence), "${(source.confidence * 100).toInt()}%")
-                DetailRow(stringResource(Res.string.player_track_details_external_uri), source.externalUri)
+                DetailRow(stringResource(Res.string.player_track_details_external_uri), source.externalUri, copyable = true)
             }
 
             Text(
@@ -291,7 +299,7 @@ private fun TrackDetailsDialog(
                                     },
                                     modifier = Modifier.weight(1f))
                                 if (isSelected) {
-                                    MillenniumIcon(
+                                    AppIcon(
                                         imageVector = Iconsax.IconsaxCheckCircle,
                                         contentDescription = stringResource(Res.string.player_track_details_selected_stream_content_description),
                                         tint = AppTheme.colors.primary)
@@ -341,7 +349,7 @@ private fun LocalCacheBanner(entry: CacheEntry) {
             modifier = Modifier.padding(12.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically) {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = Iconsax.IconsaxDirectboxReceive,
                 contentDescription = null,
                 tint = AppTheme.colors.onSecondaryContainer)
@@ -386,10 +394,12 @@ private fun TrackMetadataSection(track: MetadataTrack) {
 }
 
 @Composable
-private fun DetailRow(label: String, value: String?) {
+private fun DetailRow(label: String, value: String?, copyable: Boolean = false) {
     if (value.isNullOrBlank()) return
+    val clipboard = LocalClipboardManager.current
     Row(
         modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(
             label,
@@ -400,6 +410,17 @@ private fun DetailRow(label: String, value: String?) {
             value,
             modifier = Modifier.weight(0.62f),
             style = AppTheme.typography.bodySmall)
+        if (copyable) {
+            MillenniumIconButton(
+                onClick = { clipboard.setText(AnnotatedString(value)) },
+                modifier = Modifier.size(32.dp),
+                style = MillenniumIconButtonStyle.Quiet) {
+                AppIcon(
+                    imageVector = FeatherIcons.Copy,
+                    contentDescription = stringResource(Res.string.player_track_details_copy_url),
+                    modifier = Modifier.size(16.dp))
+            }
+        }
     }
 }
 

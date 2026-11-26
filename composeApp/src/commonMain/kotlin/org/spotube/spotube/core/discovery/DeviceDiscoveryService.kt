@@ -45,6 +45,22 @@ sealed interface DiscoveryState {
     data class Removed(val device: DiscoveredDevice) : DiscoveryState
 }
 
+/**
+ * Chooses the address other devices should dial. The platform's `host` is unreliable: on
+ * Android it is a reverse-DNS name of the *first* resolved address, which is frequently an
+ * IPv6 link-local address or a name a second phone can't resolve, so phone-to-phone
+ * connections on the same Wi-Fi failed while desktop (IPv4) ones worked. Prefer a routable
+ * IPv4 address, then any non-link-local address, and only then the reported host name.
+ */
+internal fun pickReachableHost(addresses: List<String>, fallbackHost: String): String {
+    val cleaned = addresses.map { it.substringBefore('%').trim() }.filter { it.isNotEmpty() }
+    fun isIpv4(a: String) = a.count { it == '.' } == 3 && a.none { it == ':' }
+    fun isLinkLocal(a: String) = a.startsWith("169.254.") || a.startsWith("fe80", ignoreCase = true)
+    return cleaned.firstOrNull { isIpv4(it) && !isLinkLocal(it) }
+        ?: cleaned.firstOrNull { !isLinkLocal(it) }
+        ?: fallbackHost
+}
+
 class DeviceDiscoveryService {
     companion object {
         const val SERVICE_TYPE = "_spotube-ctrl._tcp"
@@ -62,7 +78,7 @@ class DeviceDiscoveryService {
                 val device = DiscoveredDevice(
                     name = event.service.name,
                     type = event.service.type,
-                    host = event.service.host,
+                    host = pickReachableHost(event.service.addresses, event.service.host),
                     port = event.service.port,
                     deviceId = event.service.txt[TXT_DEVICE_ID]?.decodeToString().orEmpty())
                 DiscoveryState.Discovered(
@@ -74,7 +90,7 @@ class DeviceDiscoveryService {
                 val device = DiscoveredDevice(
                     name = event.service.name,
                     type = event.service.type,
-                    host = event.service.host,
+                    host = pickReachableHost(event.service.addresses, event.service.host),
                     port = event.service.port,
                     deviceId = event.service.txt[TXT_DEVICE_ID]?.decodeToString().orEmpty())
                 DiscoveryState.Resolved(device = device)

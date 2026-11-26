@@ -60,11 +60,21 @@ val serializersConfig = SavedStateConfiguration {
             subclass(Routes.Playlist::class, Routes.Playlist.serializer())
             subclass(Routes.Artist::class, Routes.Artist.serializer())
             subclass(Routes.Album::class, Routes.Album.serializer())
+            subclass(Routes.LocalPlaylist::class, Routes.LocalPlaylist.serializer())
+            subclass(Routes.LocalAlbum::class, Routes.LocalAlbum.serializer())
+            subclass(Routes.LocalArtist::class, Routes.LocalArtist.serializer())
             subclass(Routes.Blacklist::class, Routes.Blacklist.serializer())
             subclass(Routes.Devices::class, Routes.Devices.serializer())
             subclass(Routes.Jam::class, Routes.Jam.serializer())
             subclass(Routes.Welcome::class, Routes.Welcome.serializer())
             subclass(Routes.LocalFolder::class, Routes.LocalFolder.serializer())
+            // Every route must be listed: the back stack is saved when the activity stops (opening a file picker,
+            // switching apps), and an unregistered route crashes that save. RoutesSerializationTest guards this.
+            subclass(Routes.Lyrics::class, Routes.Lyrics.serializer())
+            subclass(Routes.SavedTracks::class, Routes.SavedTracks.serializer())
+            subclass(Routes.RemoteControl::class, Routes.RemoteControl.serializer())
+            subclass(Routes.JamSettings::class, Routes.JamSettings.serializer())
+            subclass(Routes.ThemeSettings::class, Routes.ThemeSettings.serializer())
         }
     }
 }

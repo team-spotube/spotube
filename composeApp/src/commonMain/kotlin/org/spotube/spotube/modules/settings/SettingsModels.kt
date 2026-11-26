@@ -22,10 +22,18 @@ import org.spotube.plugin_interfaces.plugin_apis.audio.AudioQuality
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.spotube.millennium.theme.MillenniumPalette
+import org.spotube.spotube.core.paths.Paths
 
 @Serializable
 enum class Theme {
     LIGHT, DARK, SYSTEM
+}
+
+@Serializable
+enum class DownloadFolderLocation {
+    PUBLIC,
+    APP_DATA,
+    APP_CACHE
 }
 
 @Serializable
@@ -40,6 +48,13 @@ data class UserSettings(
     // Appearance
     val theme: Theme = Theme.SYSTEM,
     val palette: MillenniumPalette = MillenniumPalette.Blue,
+    /**
+     * Selected theme: `builtin:millennium` (the plain Millennium look, whose accent is [palette]), `builtin:modern`, or the
+     * id of an installed theme package. Null and the older `builtin:blue/orange/lime` values mean Millennium.
+     */
+    val selectedThemeId: String? = null,
+    /** The user's values for each theme's parameters, keyed `"<themeId>.<parameter>"`; absent means the theme's default. */
+    val themeParameters: Map<String, String> = emptyMap(),
 
     // Playback
     val streamingMusicFormat: AudioFormat = defaultStreamingMusicFormat(),
@@ -65,8 +80,10 @@ data class UserSettings(
     val jamDeviceKey: String = "",
 
     // Downloads
-    val overloadedDownloadFolder: String? = null, // When null, uses default music folder
+    val overloadedDownloadFolder: String? = null, // When null, uses downloadFolderLocation
+    val downloadFolderLocation: DownloadFolderLocation = DownloadFolderLocation.PUBLIC,
     val localMediaFolders: List<String> = emptyList(),
+    val localMediaFolderBookmarks: Map<String, String> = emptyMap(),
     val downloadMusicFormat: AudioFormat = AudioFormat(
         codec = "aac",
         container = "mp4",
@@ -86,10 +103,20 @@ data class UserSettings(
     val autoCheckForUpdates: Boolean = true,
     val ignoredAppUpdateVersion: String? = null,
     val ignoredPluginUpdateVersions: Map<String, String> = emptyMap(),
+    /** Theme id -> the update version the user chose to ignore. */
+    val ignoredThemeUpdateVersions: Map<String, String> = emptyMap(),
 
     // Support
     val supportRemindersEnabled: Boolean = true,
     val lastSupportReminderEpochMs: Long = 0L)
+
+/** Resolves the selected download location, while preserving older custom-folder settings. */
+fun UserSettings.downloadFolderPath(paths: Paths): String =
+    overloadedDownloadFolder?.takeIf(String::isNotBlank) ?: when (downloadFolderLocation) {
+        DownloadFolderLocation.PUBLIC -> paths.getUserDownloadsDirPath()
+        DownloadFolderLocation.APP_DATA -> "${paths.getApplicationDataDirPath()}/downloads"
+        DownloadFolderLocation.APP_CACHE -> "${paths.getApplicationCacheDirPath()}/downloads"
+    }
 
 /** The public Group Jam room server. */
 const val DEFAULT_JAM_SERVER_URL = "https://jam.spotube.cc"

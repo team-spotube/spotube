@@ -76,7 +76,7 @@ body:
       description: Where did you install Spotube from?
       multiple: true
       options:
-        - "Website (spotube.cc)"
+        - "Website (spotube.org)"
         - "GitHub Releases (Binary)"
         - "GitHub Actions (Nightly Binary)"
         - "Play Store (Android)"

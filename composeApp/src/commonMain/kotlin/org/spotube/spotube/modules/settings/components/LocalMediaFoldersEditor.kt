@@ -3,6 +3,7 @@
  */
 package org.spotube.spotube.modules.settings.components
 
+import org.spotube.spotube.core.ui.theming.appBevelBrush
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,7 +23,6 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.spotube.spotube.modules.settings.LocalMediaFoldersViewModel
 import io.github.vinceglb.filekit.dialogs.compose.rememberDirectoryPickerLauncher
-import io.github.vinceglb.filekit.path
 import org.spotube.millennium.composables.MillenniumDialog
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,13 +46,12 @@ import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumSeparator
 import org.spotube.millennium.composables.MillenniumTooltip
 import org.spotube.millennium.theme.MillenniumTheme
-import org.spotube.millennium.theme.millenniumBevelBrush
 import org.spotube.millennium.theme.millenniumSurface
 import spotube.composeapp.generated.resources.*
 
@@ -94,7 +93,7 @@ internal fun LocalMediaFoldersEditorContent(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    MillenniumIcon(Iconsax.IconsaxAddSquare, null, modifier = Modifier.size(16.dp))
+                    AppIcon(Iconsax.IconsaxAddSquare, null, modifier = Modifier.size(16.dp))
                     Text(
                         stringResource(Res.string.settings_local_media_folders_add_action),
                         style = AppTheme.typography.labelMedium
@@ -118,7 +117,7 @@ internal fun LocalMediaFoldersEditorContent(
                     Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    MillenniumIcon(
+                    AppIcon(
                         Iconsax.IconsaxFolderOpen,
                         null,
                         modifier = Modifier.size(28.dp),
@@ -159,7 +158,7 @@ internal fun LocalMediaFoldersEditorContent(
                 verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                MillenniumIcon(
+                AppIcon(
                     Iconsax.IconsaxDirectboxReceive,
                     null,
                     modifier = Modifier.size(16.dp),
@@ -208,14 +207,14 @@ private fun LocalMediaFolderEditorRow(
     ) {
         Box(
             Modifier.size(36.dp).millenniumSurface(
-                background = millenniumBevelBrush(MillenniumTheme.colors),
+                background = appBevelBrush(),
                 shape = RoundedCornerShape(6.dp),
                 borderColor = MillenniumTheme.colors.border,
                 borderWidth = 1.dp
             ),
             contentAlignment = Alignment.Center
         ) {
-            MillenniumIcon(
+            AppIcon(
                 Iconsax.IconsaxFolderOpen,
                 null,
                 modifier = Modifier.size(20.dp),
@@ -256,7 +255,7 @@ private fun LocalMediaFolderEditorRow(
                 modifier = Modifier.size(32.dp),
                 style = MillenniumIconButtonStyle.Secondary
             ) {
-                MillenniumIcon(Iconsax.IconsaxTrash, removeLabel, modifier = Modifier.size(16.dp))
+                AppIcon(Iconsax.IconsaxTrash, removeLabel, modifier = Modifier.size(16.dp))
             }
         }
     }
@@ -268,7 +267,7 @@ private fun LocalMediaFolderEditorRow(
 fun LocalMediaFoldersDialogHost(viewModel: LocalMediaFoldersViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val pickerLauncher =
-        rememberDirectoryPickerLauncher { directory -> viewModel.addFolder(directory?.path) }
+        rememberDirectoryPickerLauncher { directory -> viewModel.addPickedFolder(directory) }
     if (state.isOpen) {
         MillenniumDialog(
             visible = true,

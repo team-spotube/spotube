@@ -61,7 +61,7 @@ import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumDropdownMenu
 import org.spotube.millennium.composables.MillenniumDropdownMenuContent
 import org.spotube.millennium.composables.MillenniumDropdownMenuItem
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.common_cancel
 import spotube.composeapp.generated.resources.plugin_action_install
@@ -161,7 +161,7 @@ fun PluginInstallDialog(
                                     selectedRelease?.tagName
                                         ?: stringResource(Res.string.plugin_install_select_release_placeholder),
                                     style = AppTheme.typography.bodyMedium)
-                                MillenniumIcon(
+                                AppIcon(
                                     imageVector = Iconsax.IconsaxArrowDown4,
                                     contentDescription = null,
                                     modifier = Modifier.size(16.dp))

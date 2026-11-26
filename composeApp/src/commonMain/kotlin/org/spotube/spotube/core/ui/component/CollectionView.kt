@@ -18,6 +18,9 @@
 package org.spotube.spotube.core.ui.component
 
 
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppState
+import org.spotube.spotube.core.ui.theming.engine.ContentSlots
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -49,7 +52,7 @@ import org.spotube.spotube.resources.iconsax.IconsaxPauseCircle
 import org.spotube.spotube.resources.iconsax.IconsaxPlayCircle2
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.jetbrains.compose.resources.stringResource
@@ -129,7 +132,7 @@ fun CollectionView(
                         onClick = onPlay,
                         loading = isPlayLoading,
                         style = MillenniumIconButtonStyle.Quiet) {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = if (isPlaying) Iconsax.IconsaxPauseCircle else Iconsax.IconsaxPlayCircle2,
                             contentDescription = if (isPlaying) stringResource(Res.string.player_pause_content_description) else stringResource(Res.string.player_play_content_description))
                     }
@@ -235,38 +238,38 @@ private fun CollapsedCollectionTitle(
     title: String,
     imageURL: String,
     imageResource: DrawableResource? = null) {
+    val look = AppComponents.slot(ContentSlots.CollectionHeader)[AppState.Default]
     Row(
         verticalAlignment = Alignment.CenterVertically) {
         Box(
             modifier = Modifier
-                .size(36.dp)
-                .clip(RoundedCornerShape(6.dp))
+                .size(look.collapsedArtworkSize)
+                .clip(look.collapsedArtworkShape)
                 .shimmerApply(),
             contentAlignment = Alignment.Center) {
             if (imageURL.isNotBlank()) {
                 AsyncImage(
                     model = imageURL,
                     contentDescription = title,
-                    modifier = Modifier.size(36.dp),
+                    modifier = Modifier.size(look.collapsedArtworkSize),
                     contentScale = ContentScale.Crop)
             } else if (imageResource != null) {
                 androidx.compose.foundation.Image(
                     painter = painterResource(imageResource),
                     contentDescription = title,
-                    modifier = Modifier.size(36.dp),
+                    modifier = Modifier.size(look.collapsedArtworkSize),
                     contentScale = ContentScale.Crop)
             } else {
                 Text(
                     text = title.take(1).ifBlank { "?" }.uppercase(),
-                    style = AppTheme.typography.labelMedium,
-                    color = AppTheme.colors.onSurfaceVariant)
+                    style = look.collapsedPlaceholderStyle)
             }
         }
         TextWithShimmer(
             text = title,
-            style = AppTheme.typography.titleSmall,
+            style = look.collapsedTitleStyle,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.padding(start = 10.dp))
+            modifier = Modifier.padding(start = look.collapsedSpacing))
     }
 }

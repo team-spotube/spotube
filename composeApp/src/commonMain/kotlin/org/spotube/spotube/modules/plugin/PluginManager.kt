@@ -57,7 +57,10 @@ import kotlinx.coroutines.withContext
 import kotlinx.io.readByteArray
 import kotlinx.serialization.json.Json
 import net.swiftzer.semver.SemVer
-import no.synth.kmpzip.okio.ZipInputStream
+import org.spotube.spotube.core.zip.UnsafeZipException
+import org.spotube.spotube.core.zip.extractZipSafely
+import org.spotube.spotube.core.zip.readZipEntryCapped
+import spotube.composeapp.generated.resources.plugin_error_unsafe_archive
 import okio.ByteString.Companion.toByteString
 import okio.FileSystem
 import okio.Path
@@ -103,9 +106,10 @@ import spotube.composeapp.generated.resources.update_action_update
 
 /**
  * 0.1.0: WebView plugins must declare `cookieDomains`, and cookie reads and scripts are limited to
- * them. Nothing else changed, so 0.0.x plugins without the WebView capability still work.
+ * them.
+ * 0.2.0: Plugins may request the host-provided NewPipe extraction API with the `newpipe` capability.
  */
-const val PLUGIN_API_VERSION = "0.1.0"
+const val PLUGIN_API_VERSION = "0.2.0"
 
 interface PluginProvider {
     val selectedMetadataPlugin: StateFlow<PluginService?>
@@ -124,6 +128,9 @@ interface AudioPluginSource {
 interface ScrobblePluginSource {
     val selectedScrobblePlugin: StateFlow<PluginService?>
 }
+
+/** plugin.json is a small manifest; anything bigger is not one. */
+private const val MAX_PLUGIN_JSON_BYTES = 1024 * 1024
 
 class PluginManager(
     val database: Database,
@@ -404,20 +411,16 @@ class PluginManager(
 
     /** Reads plugin.json straight from a plugin archive, without extracting anything else. */
     private suspend fun readPluginEntry(bytes: ByteArray): PluginEntry {
-        val pluginJson = okio.Buffer().apply { write(bytes) }.use { source ->
-            val zipIn = ZipInputStream(source)
-            var entry = zipIn.nextEntry
-            var json: String? = null
-            while (entry != null && json == null) {
-                if (!entry.isDirectory && entry.name.trimStart('/') == "plugin.json") {
-                    json = zipIn.readBytes().decodeToString()
-                }
-                entry = zipIn.nextEntry
-            }
-            json
+        val pluginJson = try {
+            readZipEntryCapped(bytes, "plugin.json", MAX_PLUGIN_JSON_BYTES)?.decodeToString()
+        } catch (e: UnsafeZipException) {
+            throw IllegalArgumentException(unsafeArchiveMessage(e))
         } ?: throw IllegalArgumentException(getString(Res.string.plugin_error_plugin_json_missing))
         return decodePluginEntry(pluginJson)
     }
+
+    private suspend fun unsafeArchiveMessage(e: UnsafeZipException): String =
+        getString(Res.string.plugin_error_unsafe_archive, e.reason.name)
 
     private suspend fun decodePluginEntry(pluginJson: String): PluginEntry = try {
         pluginJsonParser.decodeFromString<PluginEntry>(pluginJson)
@@ -433,26 +436,10 @@ class PluginManager(
                 if (FileSystem.SYSTEM.exists(tempDir)) FileSystem.SYSTEM.deleteRecursively(tempDir)
                 FileSystem.SYSTEM.createDirectories(tempDir)
 
-                val okioBuffer = okio.Buffer().apply { write(bytes) }
-                okioBuffer.use { bufferedSource ->
-                    val zipIn = ZipInputStream(bufferedSource)
-                    var entry = zipIn.nextEntry
-                    while (entry != null) {
-                        val entryPath = tempDir / entry.name.toPath()
-                        if (entry.isDirectory) {
-                            FileSystem.SYSTEM.createDirectories(entryPath)
-                        } else {
-                            entryPath.parent?.let {
-                                if (!FileSystem.SYSTEM.exists(it)) FileSystem.SYSTEM.createDirectories(
-                                    it
-                                )
-                            }
-                            FileSystem.SYSTEM.sink(entryPath).buffer().use { sink ->
-                                sink.write(zipIn.readBytes())
-                            }
-                        }
-                        entry = zipIn.nextEntry
-                    }
+                try {
+                    extractZipSafely(bytes, tempDir)
+                } catch (e: UnsafeZipException) {
+                    throw IllegalArgumentException(unsafeArchiveMessage(e))
                 }
 
                 val pluginJsonPath = tempDir / "plugin.json".toPath()
@@ -535,36 +522,10 @@ class PluginManager(
                 }
                 FileSystem.SYSTEM.createDirectories(tempDir)
 
-                val okioBuffer = okio.Buffer()
-                okioBuffer.write(bytes)
-
-                okioBuffer.use { bufferedSource ->
-                    val zipIn = ZipInputStream(bufferedSource)
-                    var entry = zipIn.nextEntry
-
-                    while (entry != null) {
-                        val entryPath = tempDir / entry.name.toPath()
-
-                        if (entry.isDirectory) {
-                            FileSystem.SYSTEM.createDirectories(entryPath)
-                        } else {
-                            entryPath.parent?.let { parent ->
-                                if (!FileSystem.SYSTEM.exists(parent)) {
-                                    FileSystem.SYSTEM.createDirectories(parent)
-                                }
-                            }
-
-                            FileSystem.SYSTEM.sink(entryPath).buffer().use { sink ->
-                                val entryBytes = zipIn.readBytes()
-                                val hash = entryBytes.toByteString().sha256().hex()
-                                logger.d { "Extracting ${entry.name} (${entryBytes.size / 1024.0} KB, SHA-256: $hash)" }
-                                sink.write(entryBytes)
-                                sink.flush()
-                            }
-                        }
-
-                        entry = zipIn.nextEntry
-                    }
+                try {
+                    extractZipSafely(bytes, tempDir) { logger.d { "Extracting ${it.path} (${it.size / 1024.0} KB, SHA-256: ${it.sha256})" } }
+                } catch (e: UnsafeZipException) {
+                    throw IllegalArgumentException(unsafeArchiveMessage(e))
                 }
 
                 val pluginJsonPath = tempDir / "plugin.json".toPath()

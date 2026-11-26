@@ -500,7 +500,7 @@
     <string name="devices_connecting">कनेक्ट हो रहा है...</string>
     <string name="devices_searching">नेटवर्क पर डिवाइस खोजे जा रहे हैं...</string>
     <string name="devices_empty">कोई डिवाइस नहीं मिला</string>
-    <string name="devices_empty_hint">पक्का करें कि दूसरे डिवाइस की सेटिंग में \"रिमोट कंट्रोल की अनुमति दें\" चालू है।</string>
+    <string name="devices_empty_hint">पक्का करें कि दूसरे डिवाइस की सेटिंग में "रिमोट कंट्रोल की अनुमति दें" चालू है।</string>
     <string name="devices_unknown_device">अज्ञात डिवाइस</string>
     <string name="devices_resolving">पता लगाया जा रहा है...</string>
 
@@ -534,7 +534,7 @@
 
     <!-- Remote control: connection request dialog -->
     <string name="remote_request_title">रिमोट कंट्रोल अनुरोध</string>
-    <string name="remote_request_message">\"%1$s\" इस डिवाइस पर प्लेबैक कंट्रोल करना चाहता है।</string>
+    <string name="remote_request_message">"%1$s" इस डिवाइस पर प्लेबैक कंट्रोल करना चाहता है।</string>
     <string name="remote_request_deny">मना करें</string>
     <string name="remote_request_allow">अनुमति दें</string>
     <string name="remote_request_allow_always">हमेशा अनुमति दें</string>
@@ -660,7 +660,7 @@
     <!-- Blacklist -->
     <string name="blacklist_filter_placeholder">ब्लैकलिस्ट फ़िल्टर करें...</string>
     <string name="blacklist_empty">ब्लैकलिस्ट में कुछ नहीं है</string>
-    <string name="blacklist_no_results">\'%1$s\' से मेल खाता कोई ब्लैकलिस्ट आइटम नहीं</string>
+    <string name="blacklist_no_results">'%1$s' से मेल खाता कोई ब्लैकलिस्ट आइटम नहीं</string>
     <string name="blacklist_section_tracks">ट्रैक</string>
     <string name="blacklist_item_track">ट्रैक</string>
     <string name="blacklist_add">ब्लैकलिस्ट में जोड़ें</string>

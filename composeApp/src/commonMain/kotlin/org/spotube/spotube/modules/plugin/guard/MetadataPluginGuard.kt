@@ -17,6 +17,7 @@
 
 package org.spotube.spotube.modules.plugin.guard
 
+import org.spotube.spotube.core.ui.theming.appBackground
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -58,7 +59,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumCard
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.theme.MillenniumTheme
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.no_metadata_plugin_action_install
@@ -97,7 +98,7 @@ fun MetadataPluginGuard(
     when (val s = state) {
         is MetadataPluginGuardState.Available ->
             if (requireLogin && authState.loginRequired) {
-                Column(Modifier.fillMaxSize().background(MillenniumTheme.colors.background)) {
+                Column(Modifier.fillMaxSize().appBackground()) {
                     if (showTopBar) ApplicationMainBar(backButton = backButton)
                     Box(
                         Modifier
@@ -116,7 +117,7 @@ fun MetadataPluginGuard(
                 content()
             }
         is MetadataPluginGuardState.Loading -> Box(
-            Modifier.fillMaxSize().background(MillenniumTheme.colors.background))
+            Modifier.fillMaxSize().appBackground())
         is MetadataPluginGuardState.Missing -> NoMetadataPluginScreen(
             hasInstalledPlugins = s.hasInstalledPlugins,
             backButton = backButton,
@@ -137,7 +138,7 @@ private fun NoMetadataPluginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MillenniumTheme.colors.background)) {
+            .appBackground()) {
         if (showTopBar) ApplicationMainBar(backButton = backButton)
 
         Box(
@@ -186,7 +187,7 @@ private fun NoMetadataPluginScreen(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        MillenniumIcon(
+                        AppIcon(
                             if (hasInstalledPlugins) Iconsax.IconsaxCheckCircle else Iconsax.IconsaxAdd,
                             contentDescription = null,
                             modifier = Modifier.size(18.dp))
@@ -203,7 +204,7 @@ private fun NoMetadataPluginScreen(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        MillenniumIcon(
+                        AppIcon(
                             Iconsax.IconsaxMusicLibrary,
                             contentDescription = null,
                             modifier = Modifier.size(18.dp))
@@ -236,7 +237,7 @@ private fun HeroBadge() {
                 .clip(RoundedCornerShape(20.dp))
                 .background(primary.copy(alpha = 0.12f)),
             contentAlignment = Alignment.Center) {
-            MillenniumIcon(
+            AppIcon(
                 Iconsax.IconsaxBoxAdd,
                 contentDescription = null,
                 modifier = Modifier.size(36.dp),

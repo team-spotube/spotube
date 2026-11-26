@@ -19,6 +19,11 @@ package org.spotube.spotube.core.ui.component
 
 
 
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppState
+import org.spotube.spotube.core.ui.theming.engine.ContentSlots
+import org.spotube.spotube.core.ui.theming.engine.TrackRowProps
+import org.spotube.spotube.core.ui.theming.appBackground
 import com.composeunstyled.currentWindowWidthBreakpoint
 import org.spotube.millennium.adaptive.WindowBreakpoints
 import androidx.compose.animation.AnimatedContent
@@ -54,7 +59,7 @@ import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.ui.state.ToggleableState
 import org.spotube.millennium.composables.MillenniumCard
 import org.spotube.millennium.composables.MillenniumCheckbox
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumListTile
@@ -63,6 +68,7 @@ import org.spotube.millennium.composables.MillenniumTextField
 import org.spotube.millennium.composables.MillenniumTriStateCheckbox
 
 import org.spotube.spotube.core.ui.theming.AppTheme
+import org.spotube.spotube.core.ui.theming.engine.ThemeItemScope
 import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -122,8 +128,6 @@ private val CompactTrackListBreakpoint = 600.dp
 private val LargeTrackListBreakpoint = 840.dp
 private const val ShimmerRowCount = 6
 
-private val TrackCardOuterPadding = 8.dp
-private val TrackCardInnerPadding = 12.dp
 private const val TrackCardTopKey = "track-card-top"
 private const val TrackCardRowKeyPrefix = "track-card-row:"
 private const val TrackCardFooterKey = "track-card-footer"
@@ -257,62 +261,70 @@ fun TrackList(
     val showIndex = widthBreakpoint isAtLeast WindowBreakpoints.Expanded
     val showAlbum = !isCompact
     val useDropdownForOptions = isDesktop && !isCompact
+    val cardLook = AppComponents.slot(ContentSlots.TrackListCard)[AppState.Default]
 
     val trackRow: @Composable (Int, MetadataTrack) -> Unit = { displayedIndex, track ->
-        TrackListRow(
-            index = displayedIndex + 1,
-            track = track,
-            showIndex = showIndex,
-            showAlbum = showAlbum,
-            useDropdownForOptions = useDropdownForOptions,
-            isCurrentTrack = track.id == currentTrackId,
-            // Only the current row depends on it, so play/pause/buffering flips don't recompose every row.
-            isCurrentTrackPlaying = isCurrentTrackPlaying && track.id == currentTrackId,
-            isSelectionMode = isSelectionMode,
-            isSelected = selectedTrackIds.contains(track.id),
-            onTrackClick = {
-                if (isSelectionMode) {
-                    selectedTrackIds =
-                        if (selectedTrackIds.contains(track.id)) {
-                            selectedTrackIds - track.id
-                        } else {
-                            selectedTrackIds + track.id
-                        }
-                } else if (isJamGuest) {
-                    onTrackOptionsAction(track, TrackOptionsAction.AddToJam)
-                } else {
-                    onTrackClick(track)
-                }
-            },
-            onLongClick = {
-                if (!useDropdownForOptions && !isSelectionMode) {
+        val isCurrent = track.id == currentTrackId
+        // Lets JSON themes style the current row (`ctx.item.current` / `ctx.item.playing`); free when unused.
+        val itemContext = remember(isCurrent, isCurrent && isCurrentTrackPlaying) {
+            mapOf("current" to isCurrent, "playing" to (isCurrent && isCurrentTrackPlaying))
+        }
+        ThemeItemScope(itemContext) {
+            TrackListRow(
+                index = displayedIndex + 1,
+                track = track,
+                showIndex = showIndex,
+                showAlbum = showAlbum,
+                useDropdownForOptions = useDropdownForOptions,
+                isCurrentTrack = track.id == currentTrackId,
+                // Only the current row depends on it, so play/pause/buffering flips don't recompose every row.
+                isCurrentTrackPlaying = isCurrentTrackPlaying && track.id == currentTrackId,
+                isSelectionMode = isSelectionMode,
+                isSelected = selectedTrackIds.contains(track.id),
+                onTrackClick = {
+                    if (isSelectionMode) {
+                        selectedTrackIds =
+                            if (selectedTrackIds.contains(track.id)) {
+                                selectedTrackIds - track.id
+                            } else {
+                                selectedTrackIds + track.id
+                            }
+                    } else if (isJamGuest) {
+                        onTrackOptionsAction(track, TrackOptionsAction.AddToJam)
+                    } else {
+                        onTrackClick(track)
+                    }
+                },
+                onLongClick = {
+                    if (!useDropdownForOptions && !isSelectionMode) {
+                        isSelectionMode = true
+                        selectedTrackIds = setOf(track.id)
+                    } else if (!useDropdownForOptions) {
+                        selectedTrackForOptions = track
+                    }
+                },
+                onSelectionToggle = { checked ->
                     isSelectionMode = true
-                    selectedTrackIds = setOf(track.id)
-                } else if (!useDropdownForOptions) {
-                    selectedTrackForOptions = track
-                }
-            },
-            onSelectionToggle = { checked ->
-                isSelectionMode = true
-                selectedTrackIds = if (checked) {
-                    selectedTrackIds + track.id
-                } else {
-                    selectedTrackIds - track.id
-                }
-            },
-            onTrackOptionsAction = { action ->
-                onTrackOptionsAction(
-                    track,
-                    action
-                )
-            },
-            trackOptionsState = trackOptionsState(track),
-            isInJam = isInJam,
-            isJamGuest = isJamGuest,
-            onShowOptionsClick = { selectedTrackForOptions = track },
-            onArtistClick = onArtistClick,
-            onAlbumClick = onAlbumClick,
-            onArtistsOverflowClick = { onArtistsOverflowClick(track) })
+                    selectedTrackIds = if (checked) {
+                        selectedTrackIds + track.id
+                    } else {
+                        selectedTrackIds - track.id
+                    }
+                },
+                onTrackOptionsAction = { action ->
+                    onTrackOptionsAction(
+                        track,
+                        action
+                    )
+                },
+                trackOptionsState = trackOptionsState(track),
+                isInJam = isInJam,
+                isJamGuest = isJamGuest,
+                onShowOptionsClick = { selectedTrackForOptions = track },
+                onArtistClick = onArtistClick,
+                onAlbumClick = onAlbumClick,
+                onArtistsOverflowClick = { onArtistsOverflowClick(track) })
+        }
     }
 
     // Shimmer, error, empty and next-page rows at the end of the card.
@@ -321,7 +333,7 @@ fun TrackList(
             repeat(ShimmerRowCount) { shimmerIndex ->
                 if (visibleTracks.isNotEmpty() || shimmerIndex > 0) {
                     MillenniumSeparator(
-                        modifier = Modifier.padding(horizontal = 8.dp))
+                        modifier = Modifier.padding(horizontal = cardLook.separatorInset))
                 }
                 ShimmerTrackListRow(
                     index = shimmerIndex + 1,
@@ -334,7 +346,7 @@ fun TrackList(
         if (error != null) {
             if (visibleTracks.isNotEmpty()) {
                 MillenniumSeparator(
-                    modifier = Modifier.padding(horizontal = 8.dp))
+                    modifier = Modifier.padding(horizontal = cardLook.separatorInset))
             }
             TrackListFeedbackRow(
                 message = error,
@@ -348,7 +360,7 @@ fun TrackList(
         if (isLoadingNextPage) {
             if (visibleTracks.isNotEmpty()) {
                 MillenniumSeparator(
-                    modifier = Modifier.padding(horizontal = 8.dp))
+                    modifier = Modifier.padding(horizontal = cardLook.separatorInset))
             }
             ShimmerTrackListRow(
                 index = visibleTracks.size + 1,
@@ -362,12 +374,12 @@ fun TrackList(
         MillenniumCard(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = TrackCardOuterPadding),
+                .padding(vertical = cardLook.outerPadding),
             contentPadding = PaddingValues(0.dp)) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = TrackCardInnerPadding, bottom = TrackCardInnerPadding)
+                    .padding(top = cardLook.innerPadding, bottom = cardLook.innerPadding)
             ) {
                 visibleTracks.forEachIndexed { displayedIndex, track ->
                     if (displayedIndex > 0) {
@@ -436,7 +448,7 @@ fun TrackList(
                             MillenniumIconButton(
                                 onClick = onClick,
                                 style = MillenniumIconButtonStyle.Quiet) {
-                                MillenniumIcon(
+                                AppIcon(
                                     imageVector = Iconsax.IconsaxSort,
                                     contentDescription = stringResource(Res.string.track_list_sort))
                             }
@@ -490,7 +502,7 @@ fun TrackList(
                             MillenniumIconButton(
                                 onClick = onClick,
                                 style = MillenniumIconButtonStyle.Quiet) {
-                                MillenniumIcon(
+                                AppIcon(
                                     imageVector = Iconsax.Iconsax3DotsMore,
                                     contentDescription = stringResource(Res.string.track_list_bulk_actions))
                             }
@@ -512,7 +524,7 @@ fun TrackList(
             MillenniumCard(
                 modifier = Modifier
                     .matchParentSize()
-                    .trackCardBounds(listState, with(density) { TrackCardOuterPadding.roundToPx() }),
+                    .trackCardBounds(listState, with(density) { cardLook.outerPadding.roundToPx() }),
                 contentPadding = PaddingValues(0.dp)) {}
             // No arrangement spacing: it would also open gaps between the card's rows. The 2.dp
             // gaps around the card are applied to the items before and after it instead.
@@ -528,7 +540,7 @@ fun TrackList(
                     item { Box(Modifier.padding(bottom = 2.dp)) { filterSortRow() } }
                 }
                 item(key = TrackCardTopKey) {
-                    Spacer(Modifier.fillMaxWidth().height(TrackCardOuterPadding + TrackCardInnerPadding))
+                    Spacer(Modifier.fillMaxWidth().height(cardLook.outerPadding + cardLook.innerPadding))
                 }
                 // Plugin ids can repeat (the same track twice in a playlist).
                 val rowKeys = uniqueLazyKeys(visibleTracks) { it.id }
@@ -544,7 +556,7 @@ fun TrackList(
                     Column(Modifier.fillMaxWidth()) { trackCardFooter() }
                 }
                 item(key = TrackCardBottomKey) {
-                    Spacer(Modifier.fillMaxWidth().height(TrackCardInnerPadding + TrackCardOuterPadding))
+                    Spacer(Modifier.fillMaxWidth().height(cardLook.innerPadding + cardLook.outerPadding))
                 }
                 if (footerContent != null) {
                     item {
@@ -633,27 +645,31 @@ private fun TrackListRow(
     val isArtworkHovered by artworkInteractionSource.collectIsHoveredAsState()
     val rowInteractionSource = remember { MutableInteractionSource() }
     val isRowHovered by rowInteractionSource.collectIsHoveredAsState()
-    val rowBackgroundColor = when {
-        isSelected -> AppTheme.colors.secondary.copy(alpha = 0.12f)
-        isCurrentTrack && isCurrentTrackPlaying -> AppTheme.colors.primaryContainer
-        isCurrentTrack -> AppTheme.colors.surfaceVariant
-        trackOptionsState.isBlacklisted -> AppTheme.colors.error.copy(alpha = 0.1f)
-        else -> Color.Transparent
-    }
+    // One precompiled lookup per row (rows sit in a ThemeItemScope, so `ctx.item.*` rules apply to it).
+    val look = AppComponents.slot(ContentSlots.TrackRow)[
+        when {
+            isSelected || isCurrentTrack -> AppState.Selected
+            trackOptionsState.isBlacklisted -> AppState.Error
+            else -> AppState.Default
+        }
+    ]
 
     MillenniumListTile(
         modifier = modifier,
         selected = isSelected || isCurrentTrack,
+        background = look.background,
+        selectedBackground = look.selectedBackground,
         onClick = onTrackClick,
         title = {
             TextWithShimmer(
                 text = track.title,
-                style = AppTheme.typography.bodyLarge,
+                style = look.titleStyle,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis)
         },
         subtitle = {
             ArtistChips(
+                look = look,
                 artists = track.artists,
                 onArtistClick = onArtistClick,
                 onArtistsOverflowClick = onArtistsOverflowClick)
@@ -661,7 +677,7 @@ private fun TrackListRow(
         leading = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                horizontalArrangement = Arrangement.spacedBy(look.leadingSpacing)) {
                 if (isSelectionMode) {
                     MillenniumCheckbox(
                         checked = isSelected,
@@ -670,7 +686,7 @@ private fun TrackListRow(
                         modifier = Modifier.shimmerApply())
                 } else if (showIndex) {
                     Box(
-                        modifier = Modifier.width(30.dp),
+                        modifier = Modifier.width(look.indexWidth),
                         contentAlignment = Alignment.Center) {
                         AnimatedContent(
                             targetState = isRowHovered,
@@ -685,9 +701,8 @@ private fun TrackListRow(
                             } else {
                                 TextWithShimmer(
                                     text = index.toString(),
-                                    style = AppTheme.typography.labelMedium,
-                                    textAlign = TextAlign.Center,
-                                    color = AppTheme.colors.onSurfaceVariant)
+                                    style = look.indexStyle,
+                                    textAlign = TextAlign.Center)
                             }
                         }
                     }
@@ -695,8 +710,8 @@ private fun TrackListRow(
 
                 Box(
                     modifier = Modifier
-                        .size(44.dp)
-                        .clip(AppTheme.shapes.small)
+                        .size(look.artworkSize)
+                        .clip(look.artworkShape)
                         .hoverable(interactionSource = artworkInteractionSource),
                     contentAlignment = Alignment.Center) {
                     val imageUrl = (track.album?.thumbnails ?: track.thumbnails)?.firstOrNull()?.url
@@ -719,13 +734,13 @@ private fun TrackListRow(
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .background(Color.Black.copy(alpha = 0.10f)),
+                                .background(look.artworkOverlay),
                             contentAlignment = Alignment.Center) {
-                            MillenniumIcon(
+                            AppIcon(
                                 imageVector = if (isCurrentTrack && isCurrentTrackPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                                 contentDescription = if (isCurrentTrack && isCurrentTrackPlaying) stringResource(Res.string.player_pause_content_description) else stringResource(Res.string.player_play_content_description),
-                                tint = Color.White,
-                                modifier = Modifier.size(18.dp).shimmerApply())
+                                tint = look.overlayIconTint,
+                                modifier = Modifier.size(look.overlayIconSize).shimmerApply())
                         }
                     }
                 }
@@ -734,21 +749,20 @@ private fun TrackListRow(
         trailing = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                horizontalArrangement = Arrangement.spacedBy(look.trailingSpacing)) {
                 if (showAlbum && track.album != null) {
                     val interactionSource = remember { MutableInteractionSource() }
                     val isHovered by interactionSource.collectIsHoveredAsState()
                     val isPressed by interactionSource.collectIsPressedAsState()
-                    val colorScheme = AppTheme.colors
+                    val underlineColor = look.albumStyle.color.takeIf { it != Color.Unspecified } ?: AppTheme.colors.primary
 
                     TextWithShimmer(
                         text = track.album!!.title,
-                        style = AppTheme.typography.bodyMedium,
-                        color = AppTheme.colors.primary,
+                        style = look.albumStyle,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
-                            .widthIn(max = 220.dp)
+                            .widthIn(max = look.albumMaxWidth)
                             .hoverable(interactionSource)
                             .clickable(
                                 indication = null,
@@ -760,7 +774,7 @@ private fun TrackListRow(
                                         onDrawWithContent {
                                             drawContent()
                                             drawLine(
-                                                color = colorScheme.primary,
+                                                color = underlineColor,
                                                 start = Offset(0f, size.height - underlineHeight),
                                                 end = Offset(size.width, size.height - underlineHeight),
                                                 strokeWidth = underlineHeight)
@@ -773,10 +787,9 @@ private fun TrackListRow(
 
                 TextWithShimmer(
                     text = track.durationMs.toDurationString(),
-                    style = AppTheme.typography.bodySmall,
+                    style = look.durationStyle,
                     textAlign = TextAlign.End,
-                    color = AppTheme.colors.onSurfaceVariant,
-                    modifier = Modifier.width(56.dp))
+                    modifier = Modifier.width(look.durationWidth))
 
                 if (useDropdownForOptions) {
                     TrackOptions(
@@ -790,7 +803,7 @@ private fun TrackListRow(
                     MillenniumIconButton(
                         onClick = onShowOptionsClick,
                         style = MillenniumIconButtonStyle.Quiet) {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = Iconsax.Iconsax3DotsMore,
                             contentDescription = stringResource(Res.string.track_options_title))
                     }
@@ -801,12 +814,13 @@ private fun TrackListRow(
 
 @Composable
 private fun ArtistChips(
+    look: TrackRowProps,
     artists: List<MetadataArtist.Basic>,
     onArtistClick: (MetadataArtist.Basic) -> Unit,
     onArtistsOverflowClick: () -> Unit) {
     val visibleArtists = artists.take(2)
     Row(
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        horizontalArrangement = Arrangement.spacedBy(look.artistSpacing),
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()) {
         visibleArtists.forEachIndexed { index, artist ->
@@ -818,8 +832,7 @@ private fun ArtistChips(
 
                 TextWithShimmer(
                     text = artist.name,
-                    style = AppTheme.typography.bodySmall,
-                    color = AppTheme.colors.primary,
+                    style = look.artistStyle,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     textDecoration = if (isHovered || isPressed) TextDecoration.Underline else null,
@@ -832,8 +845,7 @@ private fun ArtistChips(
                 if (index < visibleArtists.size - 1)
                     Text(
                         ",",
-                        color = AppTheme.colors.onSurfaceVariant,
-                        style = AppTheme.typography.bodySmall
+                        style = look.artistSeparatorStyle
                     )
             }
         }
@@ -842,8 +854,7 @@ private fun ArtistChips(
         if (remaining > 0) {
             TextWithShimmer(
                 text = stringResource(Res.string.track_list_more_artists, remaining),
-                style = AppTheme.typography.bodySmall,
-                color = AppTheme.colors.primary,
+                style = look.artistStyle,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.clickable(onClick = onArtistsOverflowClick))
@@ -921,13 +932,14 @@ private fun dummyTrackForShimmer(index: Int): MetadataTrack {
 private fun TrackListFeedbackRow(
     message: String,
     isError: Boolean = false) {
+    val look = AppComponents.slot(ContentSlots.TrackListCard)[AppState.Default]
     TextWithShimmer(
         text = message,
-        color = if (isError) AppTheme.colors.error else AppTheme.colors.onSurfaceVariant,
-        style = AppTheme.typography.bodyMedium,
+        color = if (isError) look.errorColor else Color.Unspecified,
+        style = look.feedbackStyle,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 12.dp))
+            .padding(look.feedbackPadding))
 }
 
 private fun Long.toDurationString(): String {
@@ -1017,7 +1029,7 @@ fun previewTracks(): List<MetadataTrack> {
 @Composable
 @Preview
 private fun TrackListPreview() {
-    Box(modifier = Modifier.fillMaxSize().background(AppTheme.colors.background)) {
+    Box(modifier = Modifier.fillMaxSize().appBackground()) {
         TrackList(
             tracks = previewTracks(),
             hasMore = true,

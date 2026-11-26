@@ -34,6 +34,7 @@ import org.spotube.spotube.core.remote.RemoteControlClient
 import org.spotube.spotube.core.remote.RemoteControlHandler
 import org.spotube.spotube.core.remote.RemoteControlService
 import org.spotube.spotube.core.remote.RemotePlaybackController
+import org.spotube.spotube.core.shortcuts.AppShortcuts
 import org.spotube.spotube.core.scrobble.ScrobbleManager
 import org.spotube.spotube.core.playback.CollectionPlaybackHelper
 import org.spotube.spotube.core.server.AlternativeTracksRepository
@@ -62,6 +63,11 @@ import org.spotube.spotube.modules.library.LibraryRepository
 import org.spotube.spotube.modules.library.LibraryState
 import org.spotube.spotube.modules.library.album.LibraryAlbumsViewModel
 import org.spotube.spotube.modules.library.artist.LibraryArtistsViewModel
+import org.spotube.spotube.modules.library.local.LocalMediaCollectionsRepository
+import org.spotube.spotube.modules.library.local.LocalPlaylistRepository
+import org.spotube.spotube.modules.library.local.album.LocalAlbumViewModel
+import org.spotube.spotube.modules.library.local.artist.LocalArtistViewModel
+import org.spotube.spotube.modules.library.local.playlist.LocalPlaylistViewModel
 import org.spotube.spotube.modules.library.local_tracks.LibraryLocalTracksViewModel
 import org.spotube.spotube.modules.library.local_tracks.LocalFolderViewModel
 import org.spotube.spotube.modules.library.local_tracks.media.LocalMediaCacheRepository
@@ -89,6 +95,7 @@ import org.spotube.spotube.modules.settings.SettingsRepository
 import org.spotube.spotube.modules.settings.UserSettingsStore
 import org.spotube.spotube.modules.settings.UserSettingsSource
 import org.spotube.spotube.modules.settings.SettingsViewModel
+import org.spotube.spotube.modules.settings.ThemeStoreViewModel
 import org.spotube.spotube.modules.settings.JamSettingsViewModel
 import org.spotube.spotube.modules.settings.LocalMediaFoldersViewModel
 import org.spotube.spotube.modules.shell.AppShellViewModel
@@ -137,11 +144,24 @@ val sharedModules = module {
     singleOf(::LocalMediaCacheRepository)
     singleOf(::LocalMediaFoldersConfig)
     singleOf(::LocalMediaLibraryCoordinator)
+    singleOf(::LocalMediaCollectionsRepository)
+    single { LocalPlaylistRepository(get<Database>().localPlaylistsDataStore) }
     viewModelOf(::LibraryPlaylistsViewModel)
     viewModelOf(::LibraryAlbumsViewModel)
     viewModelOf(::LibraryArtistsViewModel)
     viewModelOf(::LibraryLocalTracksViewModel)
     viewModel { (folderPath: String) -> LocalFolderViewModel(folderPath, get(), get()) }
+    viewModel { (playlistId: String) ->
+        LocalPlaylistViewModel(
+            playlistId = playlistId,
+            localPlaylistRepository = get(),
+            collectionsRepository = get(),
+            audioPlayerQueue = get(),
+            navigationCommands = get(),
+            audioPlayer = get())
+    }
+    viewModel { (albumName: String) -> LocalAlbumViewModel(albumName, get(), get(), get()) }
+    viewModel { (artistName: String) -> LocalArtistViewModel(artistName, get(), get()) }
 
     // Plugin system
     single { PublicSuffixListRepository.create(get(), get()) } withOptions { createdAtStart() }
@@ -160,11 +180,15 @@ val sharedModules = module {
     }
     viewModelOf(::SettingsViewModel) { bind<SettingsProvider>() }
     viewModelOf(::JamSettingsViewModel)
+    viewModelOf(::ThemeStoreViewModel)
     viewModel {
         val repository = get<SettingsRepository>()
-        LocalMediaFoldersViewModel(repository.userSettings) { folders ->
+        LocalMediaFoldersViewModel(repository.userSettings) { folders, bookmarks ->
             val current = repository.getCurrentSettings()
-            repository.updateSettings(current.copy(localMediaFolders = folders))
+            repository.updateSettings(current.copy(
+                localMediaFolders = folders,
+                localMediaFolderBookmarks = bookmarks.filterKeys { it in folders }
+            ))
         }
     }
 
@@ -175,6 +199,9 @@ val sharedModules = module {
     // Updates
     single { AppUpdateService(get(), get()) } withOptions { createdAtStart() }
     single { PluginUpdateService(get(), get()) } withOptions { createdAtStart() }
+    // One GitHub theme client for discovery, release lists and update checks, so they share cache and rate-limit state.
+    single { org.spotube.spotube.modules.settings.ThemeGitHubRepository(get<HttpClientFactory>().json) }
+    single { org.spotube.spotube.modules.update.ThemeUpdateService(get(), get(), get()) } withOptions { createdAtStart() }
 
     // Downloads
     singleOf(::DownloadManager)
@@ -288,6 +315,7 @@ val sharedModules = module {
         createdAtStart()
     }
     single { RemotePlaybackController(get(), get(), get(), get(), get()) }
+    single { AppShortcuts(get(), get(), get()) }
     singleOf(::JamRoomClient)
     single {
         JamRoomService(
@@ -300,6 +328,16 @@ val sharedModules = module {
     }
 
     single { DiscordRpcService(get(), get()) } withOptions { createdAtStart() }
+
+    // JSON theme engine: live player facts for `ctx.player.*`
+    single { org.spotube.spotube.core.ui.theming.engine.ThemeContextService(get()) }
+    single { org.spotube.spotube.core.ui.theming.engine.ThemeRuntime(get<SettingsRepository>(), get()) }
+    single {
+        val paths = get<org.spotube.spotube.core.paths.Paths>()
+        org.spotube.spotube.core.ui.theming.engine.ThemePackageRepository(
+            dataDir = paths.getApplicationDataDirPath(),
+            cacheDir = paths.getApplicationCacheDirPath())
+    }
 
     // Scrobbling
     single { ScrobbleManager(get(), get(), get()) } withOptions { createdAtStart() }

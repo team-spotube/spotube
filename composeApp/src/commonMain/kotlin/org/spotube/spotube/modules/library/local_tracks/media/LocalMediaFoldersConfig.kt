@@ -19,21 +19,48 @@ package org.spotube.spotube.modules.library.local_tracks.media
 
 import org.spotube.spotube.core.paths.Paths
 import org.spotube.spotube.modules.settings.SettingsRepository
+import org.spotube.spotube.modules.settings.DownloadFolderLocation
+import org.spotube.spotube.modules.settings.downloadFolderPath
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.fromBookmarkData
+import org.spotube.spotube.PlatformType
+import org.spotube.spotube.getPlatform
+import kotlin.io.encoding.Base64
 
 class LocalMediaFoldersConfig(
     private val settingsRepository: SettingsRepository,
     private val paths: Paths) {
+    internal fun documentRoots(): List<Pair<String, PlatformFile>> {
+        val settings = settingsRepository.userSettings.value
+        return settings.localMediaFolders.mapNotNull { path ->
+            val bookmark = settings.localMediaFolderBookmarks[path]
+            if (!path.startsWith("content:") && (getPlatform().type != PlatformType.IOS || bookmark == null)) {
+                return@mapNotNull null
+            }
+            runCatching {
+                path to if (bookmark == null) PlatformFile(path) else PlatformFile.fromBookmarkData(Base64.decode(bookmark))
+            }.getOrNull()
+        }
+    }
     val configuredRootsFlow: Flow<List<String>> = settingsRepository.userSettings.map { settings ->
+        val downloadRoot = when {
+            !settings.overloadedDownloadFolder.isNullOrBlank() -> settings.overloadedDownloadFolder
+            settings.downloadFolderLocation != DownloadFolderLocation.PUBLIC -> settings.downloadFolderPath(paths)
+            else -> null
+        }
         val cacheRoot = if (settings.enableMusicCaching) {
             listOf(settings.cacheFolder ?: paths.getMusicCacheDirPath())
         } else {
             emptyList()
         }
-        (listOfNotNull(settings.overloadedDownloadFolder) + settings.localMediaFolders + cacheRoot)
+        (listOfNotNull(downloadRoot) + settings.localMediaFolders + cacheRoot + listOf(
+            "${paths.getApplicationDataDirPath()}/downloads", "${paths.getApplicationCacheDirPath()}/downloads"
+        ))
             .map { it.trim() }
             .filter { it.isNotBlank() }
             .distinct()
-    }
+    }.distinctUntilChanged()
 }

@@ -17,7 +17,10 @@
 
 package org.spotube.spotube.modules.plugin.components
 
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.theme.LocalMillenniumSurfaceStyle
+import org.spotube.spotube.core.ui.theming.appRowWash
+import org.spotube.spotube.core.ui.theming.appBevelBrush
+import org.spotube.spotube.core.ui.theming.AppIcon
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.hoverable
@@ -28,8 +31,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.IntrinsicSize
-import org.spotube.millennium.theme.millenniumBevelBrush
-import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
@@ -40,7 +41,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.semantics.Role
 import org.spotube.millennium.theme.MillenniumTheme
 import org.spotube.millennium.theme.millenniumActionPointer
-import org.spotube.millennium.theme.millenniumSelectedGelBrush
 import spotube.composeapp.generated.resources.plugin_ability_audio_caption
 import spotube.composeapp.generated.resources.plugin_ability_lyrics_caption
 import spotube.composeapp.generated.resources.plugin_ability_metadata_caption
@@ -206,7 +206,7 @@ private fun DefaultAbilityPluginRow(
                                     contentDescription = plugin.name,
                                     modifier = Modifier.fillMaxSize(),
                                     fallback = {
-                                        MillenniumIcon(
+                                        AppIcon(
                                             imageVector = ability.abilityIcon(),
                                             contentDescription = null,
                                             modifier = Modifier.size(18.dp),
@@ -281,7 +281,7 @@ private fun DefaultAbilityRowContent(
         modifier = Modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
-            .then(if (wash > 0f) Modifier.background(millenniumSelectedGelBrush(colors, wash)) else Modifier)
+            .then(appRowWash(wash, pressed)?.let { Modifier.background(it) } ?: Modifier)
             .hoverable(interaction)
             .millenniumActionPointer()
             .clickable(
@@ -316,7 +316,7 @@ private fun DefaultAbilityRowContent(
             modifier = Modifier.fillMaxHeight(),
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.SpaceBetween) {
-            MillenniumIcon(
+            AppIcon(
                 imageVector = Iconsax.IconsaxArrowDown4,
                 contentDescription = null,
                 modifier = Modifier.padding(top = 4.dp).size(16.dp),
@@ -349,7 +349,7 @@ private fun SelectedPluginChip(
         modifier = modifier
             .heightIn(min = 28.dp)
             .clip(shape)
-            .background(millenniumBevelBrush(colors))
+            .background(appBevelBrush())
             .border(1.dp, colors.border, shape)
             .padding(start = if (plugin != null) 3.dp else 10.dp, end = 10.dp, top = 3.dp, bottom = 3.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -364,7 +364,7 @@ private fun SelectedPluginChip(
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     fallback = {
-                        MillenniumIcon(
+                        AppIcon(
                             imageVector = ability.abilityIcon(),
                             contentDescription = null,
                             modifier = Modifier.size(12.dp),
@@ -387,10 +387,12 @@ private fun SelectedPluginChip(
 internal fun AbilityIconTile(ability: PluginAbility, size: Dp) {
     val gradient = ability.aeroGradient()
     val shape = RoundedCornerShape(size / 3.6f)
+    // Flat themes (`tokens.surface.glow: false`) get the plain colour tile: no drop shadow, gloss or white rim.
+    val glossy = LocalMillenniumSurfaceStyle.current.glow
     Box(
         modifier = Modifier
             .size(size)
-            .shadow(2.dp, shape, ambientColor = gradient.last(), spotColor = gradient.last())
+            .then(if (glossy) Modifier.shadow(2.dp, shape, ambientColor = gradient.last(), spotColor = gradient.last()) else Modifier)
             .clip(shape)
             .drawWithCache {
                 val background = Brush.linearGradient(
@@ -403,12 +405,12 @@ internal fun AbilityIconTile(ability: PluginAbility, size: Dp) {
                     0.5f to Color.Transparent)
                 onDrawBehind {
                     drawRect(background)
-                    drawRect(gloss)
+                    if (glossy) drawRect(gloss)
                 }
             }
-            .border(1.dp, Color.White.copy(alpha = 0.4f), shape),
+            .then(if (glossy) Modifier.border(1.dp, Color.White.copy(alpha = 0.4f), shape) else Modifier),
         contentAlignment = Alignment.Center) {
-        MillenniumIcon(
+        AppIcon(
             imageVector = ability.abilityIcon(),
             contentDescription = null,
             modifier = Modifier.size(size * 0.5f),

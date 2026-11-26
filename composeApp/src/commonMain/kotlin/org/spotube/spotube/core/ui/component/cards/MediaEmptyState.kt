@@ -3,6 +3,10 @@
  */
 package org.spotube.spotube.core.ui.component.cards
 
+import org.spotube.spotube.core.ui.theming.engine.AppComponents
+import org.spotube.spotube.core.ui.theming.engine.AppSlots
+import org.spotube.spotube.core.ui.theming.engine.AppState
+import org.spotube.spotube.core.ui.theming.engine.ContentSlots
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,9 +23,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.composeunstyled.Text
 import org.spotube.spotube.core.ui.theming.AppTheme
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.theme.MillenniumTheme
-import org.spotube.millennium.theme.millenniumBevelBrush
 import org.spotube.millennium.theme.millenniumSurface
 
 @Composable
@@ -32,32 +35,32 @@ internal fun MediaEmptyState(
     description: String? = null,
     action: (@Composable () -> Unit)? = null
 ) {
-    Box(modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) {
+    val look = AppComponents.slot(ContentSlots.EmptyState)[AppState.Default]
+    Box(modifier.fillMaxSize().padding(look.padding), contentAlignment = Alignment.Center) {
         Column(
-            Modifier.widthIn(max = 360.dp), horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            Modifier.widthIn(max = look.maxWidth), horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(look.spacing)
         ) {
             Box(
-                Modifier.size(64.dp).millenniumSurface(
-                    background = millenniumBevelBrush(MillenniumTheme.colors),
-                    shape = RoundedCornerShape(14.dp),
-                    borderColor = MillenniumTheme.colors.border,
-                    borderWidth = 1.dp
+                Modifier.size(look.iconBoxSize).millenniumSurface(
+                    background = look.iconBoxBackground,
+                    shape = look.iconBoxShape,
+                    borderColor = look.iconBoxBorderColor,
+                    borderWidth = look.iconBoxBorderWidth
                 ),
                 contentAlignment = Alignment.Center
             ) {
-                MillenniumIcon(
+                AppIcon(
                     icon,
                     null,
-                    modifier = Modifier.size(30.dp),
-                    tint = AppTheme.colors.onSurfaceVariant
+                    modifier = Modifier.size(look.iconSize),
+                    tint = look.iconTint
                 )
             }
-            Text(title, style = AppTheme.typography.titleMedium, textAlign = TextAlign.Center)
+            Text(title, style = look.titleStyle, textAlign = TextAlign.Center)
             if (description != null) Text(
                 description,
-                style = AppTheme.typography.bodySmall,
-                color = AppTheme.colors.onSurfaceVariant,
+                style = look.descriptionStyle,
                 textAlign = TextAlign.Center
             )
             action?.invoke()

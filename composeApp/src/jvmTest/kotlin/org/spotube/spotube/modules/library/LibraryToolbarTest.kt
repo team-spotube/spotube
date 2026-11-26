@@ -227,4 +227,51 @@ class LibraryToolbarTest {
             }
         }
     }
+
+    @OptIn(ExperimentalComposeUiApi::class)
+    @Test
+    fun sourceFilterAlignsWithSearchOnDesktop() {
+        val output = File("build/reports/library-toolbar").apply { mkdirs() }
+        val state = LibraryToolbarUiState(
+            currentTab = LibraryTab.Playlists,
+            searchState = TextFieldState(),
+            canFilterSource = true,
+            canCreatePlaylist = true
+        )
+        ImageComposeScene(960, 88) {
+            SpotubeTheme(UserSettings(theme = Theme.DARK)) {
+                MillenniumTopAppBar(
+                    title = {},
+                    actions = {
+                        LibraryToolbarActions(
+                            state = state,
+                            expandedDesktop = true,
+                            onOpenSearch = {},
+                            onCloseSearch = {},
+                            onCreatePlaylist = {},
+                            onRefresh = {},
+                            onFilterSource = {}
+                        )
+                    }
+                )
+            }
+        }.use { scene ->
+            repeat(8) { scene.render().close() }
+            fun flatten(node: SemanticsNode): List<SemanticsNode> =
+                listOf(node) + node.children.flatMap(::flatten)
+
+            val nodes = scene.semanticsOwners.flatMap { flatten(it.unmergedRootSemanticsNode) }
+            val search = nodes.first { it.config.getOrNull(SemanticsProperties.EditableText) != null }
+            val filter = nodes.first { node ->
+                node.config.getOrNull(SemanticsProperties.Text)?.any { it.text == "All" } == true
+            }
+            assertTrue(
+                kotlin.math.abs(search.boundsInRoot.center.y - filter.boundsInRoot.center.y) <= 1f,
+                "Source filter must be vertically aligned with search"
+            )
+            scene.render().use { image ->
+                File(output, "source-filter-desktop.png").writeBytes(assertNotNull(image.encodeToData()).bytes)
+            }
+        }
+    }
 }

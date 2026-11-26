@@ -41,12 +41,13 @@ import org.spotube.spotube.modules.plugin.PluginPermissionsSummary
 import org.spotube.spotube.resources.iconsax.Iconsax
 import org.spotube.spotube.resources.iconsax.IconsaxCheckCircle
 import org.spotube.spotube.resources.iconsax.IconsaxEye
+import org.spotube.spotube.resources.iconsax.IconsaxMusicPlay
 import org.spotube.spotube.resources.iconsax.IconsaxWifiSquare
 import org.spotube.spotube.resources.iconsax.PhosphorDatabaseDuotone
 import org.spotube.spotube.resources.iconsax.User
 import okio.Path
 import org.jetbrains.compose.resources.stringResource
-import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.spotube.core.ui.theming.AppIcon
 import org.spotube.millennium.composables.MillenniumSeparator
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.common_cancel
@@ -54,6 +55,8 @@ import spotube.composeapp.generated.resources.common_close
 import spotube.composeapp.generated.resources.plugin_permissions_api_diff
 import spotube.composeapp.generated.resources.plugin_permissions_capability_network_desc
 import spotube.composeapp.generated.resources.plugin_permissions_capability_network_title
+import spotube.composeapp.generated.resources.plugin_permissions_capability_newpipe_desc
+import spotube.composeapp.generated.resources.plugin_permissions_capability_newpipe_title
 import spotube.composeapp.generated.resources.plugin_permissions_capability_storage_desc
 import spotube.composeapp.generated.resources.plugin_permissions_capability_storage_title
 import spotube.composeapp.generated.resources.plugin_permissions_capability_webview_desc
@@ -183,7 +186,7 @@ private fun InstalledComparisonPanel(
                     VersionStat(
                         label = stringResource(Res.string.plugin_permissions_installed_label),
                         value = installedPlugin.version)
-                    MillenniumIcon(
+                    AppIcon(
                         imageVector = FeatherIcons.ArrowRight,
                         contentDescription = null,
                         modifier = Modifier.size(18.dp),
@@ -237,6 +240,10 @@ private fun CapabilityRow(capability: PluginCapability, isNew: Boolean) {
             Iconsax.IconsaxEye,
             stringResource(Res.string.plugin_permissions_capability_webview_title),
             stringResource(Res.string.plugin_permissions_capability_webview_desc))
+        PluginCapability.NEWPIPE -> Triple(
+            Iconsax.IconsaxMusicPlay,
+            stringResource(Res.string.plugin_permissions_capability_newpipe_title),
+            stringResource(Res.string.plugin_permissions_capability_newpipe_desc))
     }
 
     Row(
