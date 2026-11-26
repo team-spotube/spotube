@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://docs.spotube.cc/schemas/theme/1.4.0.json",
+  "$id": "https://docs.spotube.org/schemas/theme/1.4.0.json",
   "title": "Spotube theme (theme.json)",
-  "description": "Theme format 1.4.0. Semver: a theme of the same major always loads; a newer minor loads with its newer parts ignored. Latest 1.x: https://docs.spotube.cc/schemas/theme/1.json",
+  "description": "Theme format 1.4.0. Semver: a theme of the same major always loads; a newer minor loads with its newer parts ignored. Latest 1.x: https://docs.spotube.org/schemas/theme/1.json",
   "x-schemaVersion": "1.4.0",
   "type": "object",
   "required": [
@@ -15,7 +15,7 @@
   "properties": {
     "$schema": {
       "type": "string",
-      "description": "Editor hint: https://docs.spotube.cc/schemas/theme/1.json"
+      "description": "Editor hint: https://docs.spotube.org/schemas/theme/1.json"
     },
     "schema": {
       "type": "string",

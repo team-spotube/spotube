@@ -197,14 +197,14 @@ const typeStyles = ['displaySmall', 'headlineLarge', 'headlineMedium', 'headline
 
 const schema = {
   $schema: 'https://json-schema.org/draft/2020-12/schema',
-  $id: `https://docs.spotube.cc/schemas/theme/${version}.json`,
+  $id: `https://docs.spotube.org/schemas/theme/${version}.json`,
   title: 'Spotube theme (theme.json)',
-  description: `Theme format ${version}. Semver: a theme of the same major always loads; a newer minor loads with its newer parts ignored. Latest ${major}.x: https://docs.spotube.cc/schemas/theme/${major}.json`,
+  description: `Theme format ${version}. Semver: a theme of the same major always loads; a newer minor loads with its newer parts ignored. Latest ${major}.x: https://docs.spotube.org/schemas/theme/${major}.json`,
   'x-schemaVersion': version,
   type: 'object',
   required: ['schema', 'id', 'name', 'version', 'author'],
   properties: {
-    $schema: { type: 'string', description: `Editor hint: https://docs.spotube.cc/schemas/theme/${major}.json` },
+    $schema: { type: 'string', description: `Editor hint: https://docs.spotube.org/schemas/theme/${major}.json` },
     schema: { type: 'string', pattern: '^(0|[1-9][0-9]{0,5})\\.(0|[1-9][0-9]{0,5})\\.(0|[1-9][0-9]{0,5})$', description: `The theme schema version this theme is written for (semver), for example "${version}".` },
     id: { type: 'string', pattern: '^[A-Za-z0-9._-]{1,48}$', description: 'Stable identifier; must equal the package folder name.' },
     name: { type: 'string', minLength: 1 },

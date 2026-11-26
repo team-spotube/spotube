@@ -5,7 +5,7 @@ A cross-platform extensible open-source music streaming platform.<br>
 Bring your own music metadata/playlist/audio-source with plugins created by community or by
 yourself. A small step towards the decentralized music streaming era!
 
-<a href="https://spotube.cc"><img alt="Visit the website" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/website_vector.svg"></a>
+<a href="https://spotube.org"><img alt="Visit the website" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/website_vector.svg"></a>
 <a href="https://discord.gg/uJ94vxB6vg"><img alt="Discord Server" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-plural_vector.svg"></a>
 
 <a href="https://patreon.com/krtirtho"><img alt="Support me on Patron" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/donate/patreon-singular_vector.svg"></a>
@@ -37,12 +37,12 @@ yourself. A small step towards the decentralized music streaming era!
 
 ### ⬇️ Download
 
-Download Spotube from the Official Website: https://spotube.cc
+Download Spotube from the Official Website: https://spotube.org
 
 ### 🔄 Nightly Builds
 
 Grab the latest nightly builds of
-Spotube [from the Offical Website](https://spotube.cc/downloads/nightly).
+Spotube [from the Offical Website](https://spotube.org/downloads/nightly).
 
 <details>
 <summary>
