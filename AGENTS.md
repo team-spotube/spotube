@@ -10,10 +10,17 @@
 - iOS bridge: `composeApp/src/iosMain/kotlin/org/spotube/spotube/MainViewController.kt` and `iosApp/iosApp/ContentView.swift`.
 - iOS audio: MobileVLCKit from CocoaPods (`iosApp/Podfile`), driven by `iosApp/iosApp/VlcPlayerEngine.swift` through `NativePlayerEngine` (iosMain). Run `pod install` in `iosApp/` first, then build `iosApp/iosApp.xcworkspace` (not the `.xcodeproj`, which can't build the Pods). Android Studio's iOS run config must point at the workspace too.
 
+## Car integration (Android Auto, CarPlay)
+- **Android Auto:** `PlaybackService` is a `MediaLibraryService`; the browse tree is `media/MediaBrowseHelper.kt`, the car descriptor `res/xml/automotive_app_desc.xml` (`media`) and the `com.google.android.gms.car.application` meta-data in the manifest. Voice requests ("play X", "play music") arrive as a `MediaItem` with a search query and no id and go through `MediaBrowseHelper.playFromSearch`. Test with the Desktop Head Unit; there is no automated test.
+- **CarPlay:** the scene is `iosApp/iosApp/CarPlaySceneDelegate.swift` (declared in `Info.plist`), and content comes from `carplay/CarPlayBridge.kt` in `iosMain`, so no user-facing string lives in Swift. Now Playing and the steering wheel buttons come from `IosMediaSession`, nothing CarPlay-specific. Keep the list small: a car screen offers a few big choices, not the library tree.
+- CarPlay can launch the app with **no phone window**, so `initKoin` and `NewPipe.init` must not depend on the Compose view: both go through the idempotent `AppBootstrap` (`iosMain`). Never call `initKoin()` directly on iOS.
+- The `com.apple.developer.carplay-audio` entitlement is granted per Apple developer account. Device builds only get it when `CARPLAY_ENTITLEMENTS=iosApp/iosApp.entitlements` is set in `iosApp/Configuration/Config.xcconfig`, because signing with it before the profile has it fails for everyone. Simulator builds always include it (I/O > External Displays > CarPlay).
+
 ## High-value commands
 - Use Gradle wrapper (`./gradlew` or `./gradlew.bat`) only.
 - Run desktop: `:composeApp:run`
 - Build Android debug: `:composeApp:assembleStableDebug` (or `assembleNightlyDebug`). Android has `stable`/`nightly` product flavors (nightly = beta channel: `.nightly` applicationId suffix, own icons/name in `composeApp/src/nightly/res`). Desktop icons come from `composeApp/icons/{stable,nightly}`, chosen with `-Pnightly=true`.
+- Install a signed release build on a phone: `tools/install-release-android.sh` (uses the one connected phone of any brand, or `--device SERIAL` to choose; `--dry-run` only checks). It needs `release.signing.*` in `composeApp/local.properties` and, because Gobley 0.3.7 breaks on Cargo 1.100+, a pinned Rust (`rustup override set 1.99.1`). It never uninstalls an existing copy.
 - Module checks: `:composeApp:check`, `:plugin_interfaces:check`, `:js_plugin_example:check`
 - Focused tests: `:composeApp:jvmTest`, `:composeApp:iosSimulatorArm64Test`, `:plugin_interfaces:jvmTest`, `:plugin_interfaces:jsTest`, `:js_plugin_example:jsTest`
 - No lint/typecheck/formatter tasks are configured; `:composeApp:check` is the only aggregated check.

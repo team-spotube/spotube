@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Static stand-in for the orb NowPlayingWidget.accentButton draws per track (dark Blue palette);
+     shown before the first render and in the widget picker. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <gradient
+                android:angle="270"
+                android:centerColor="#FF001638"
+                android:endColor="#FF1976B9"
+                android:startColor="#FF00204F" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="oval">
+            <gradient
+                android:centerX="0.5"
+                android:centerY="1.12"
+                android:endColor="#004AC0E6"
+                android:gradientRadius="66%p"
+                android:startColor="#744AC0E6"
+                android:type="radial" />
+            <stroke
+                android:width="1dp"
+                android:color="#99C6D4DA" />
+        </shape>
+    </item>
+</layer-list>

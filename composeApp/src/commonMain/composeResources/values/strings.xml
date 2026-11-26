@@ -1330,6 +1330,13 @@
     <!-- Android playback notification -->
     <string name="notification_playback_channel_name">Playback</string>
     <string name="notification_playback_channel_description">Media playback controls</string>
+    <string name="widget_nothing_playing">Nothing playing</string>
+    <string name="widget_open_to_play">Open Spotube to pick something</string>
+    <string name="widget_play">Play</string>
+    <string name="widget_pause">Pause</string>
+    <string name="widget_next">Next track</string>
+    <string name="widget_previous">Previous track</string>
+    <string name="widget_remote_caption">Playing on %1$s</string>
 
     <!-- Android Auto / media browser -->
     <string name="media_browser_browse">Browse</string>
