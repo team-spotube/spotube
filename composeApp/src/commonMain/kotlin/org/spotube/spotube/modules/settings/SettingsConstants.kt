@@ -301,6 +301,7 @@ enum class SupportedLanguages(
     FA("fa", "", "فارسی", isRtl = true),
     FR("fr", "", "Français"),
     HI("hi", "", "हिन्दी"),
+    HE("he", "", "עברית", isRtl = true),
     ID("id", "", "Bahasa Indonesia"),
     IT("it", "", "Italiano"),
     JA("ja", "", "日本語"),
