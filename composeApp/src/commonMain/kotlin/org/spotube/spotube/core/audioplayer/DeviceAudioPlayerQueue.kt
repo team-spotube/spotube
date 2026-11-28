@@ -57,6 +57,7 @@ class DeviceAudioPlayerQueue(
     private val entryByMediaUrl = MutableStateFlow<Map<String, QueueEntry>>(emptyMap())
     private val currentCollectionEntryState = MutableStateFlow<QueueCollectionEntry?>(null)
     private val collectionHistoryState = MutableStateFlow<List<QueueCollectionEntry>>(emptyList())
+    private val priorityQueueUrlsState = MutableStateFlow<List<String>>(emptyList())
 
     private var isRestoringPersistedState = true
 
@@ -83,6 +84,9 @@ class DeviceAudioPlayerQueue(
     override val collectionHistoryFlow: StateFlow<List<QueueCollectionEntry>> =
         collectionHistoryState.asStateFlow()
 
+    override val priorityQueueUrlsFlow: StateFlow<List<String>> =
+        priorityQueueUrlsState.asStateFlow()
+
     init {
         logger.d { "Initializing DeviceAudioPlayerQueue" }
         scope.launch {
@@ -100,8 +104,11 @@ class DeviceAudioPlayerQueue(
         }
 
         scope.launch {
-            audioPlayer.currentMediaItemFlow.collect {
+            audioPlayer.currentMediaItemFlow.collect { currentMedia ->
                 logger.d { "Current media item changed, persisting queue state" }
+                if (currentMedia != null && currentMedia.url in priorityQueueUrlsState.value) {
+                    priorityQueueUrlsState.update { it - currentMedia.url }
+                }
                 persistQueueStateIfReady()
             }
         }
@@ -142,10 +149,40 @@ class DeviceAudioPlayerQueue(
             if (mediaItems.isEmpty()) 0 else startPosition.coerceIn(0, mediaItems.lastIndex)
         logger.d { "Normalized start position: $startPosition -> $normalizedStartPosition" }
         entryByMediaUrl.value = entriesByUrl(resolved)
+        priorityQueueUrlsState.value = emptyList()
         updateCollectionContext(collectionEntry)
         audioPlayer.load(mediaItems, autoPlay, normalizedStartPosition)
         persistQueueStateIfReady()
         logger.i { "Queue loaded successfully" }
+    }
+
+    private fun currentTrackIndex(): Int {
+        val currentUrl = audioPlayer.currentMediaItemFlow.value?.url ?: return -1
+        return audioPlayer.playlistFlow.value.indexOfFirst { it.url == currentUrl }
+    }
+
+    private fun activePriorityCount(): Int {
+        val playlistUrls = audioPlayer.playlistFlow.value.mapTo(HashSet()) { it.url }
+        return priorityQueueUrlsState.value.count { it in playlistUrls }
+    }
+
+    private suspend fun insertIntoPriorityQueueEnd(mediaItem: MediaItem) {
+        val currentIndex = currentTrackIndex()
+        if (audioPlayer.playlistFlow.value.isEmpty() || currentIndex < 0) {
+            audioPlayer.addMediaItem(mediaItem)
+            priorityQueueUrlsState.update { (it - mediaItem.url) + mediaItem.url }
+            return
+        }
+
+        val priorityCount = activePriorityCount()
+        audioPlayer.insertMediaItemAtNextIndex(mediaItem)
+        if (priorityCount > 0) {
+            val targetIndex = (currentIndex + 1 + priorityCount).coerceAtMost(audioPlayer.playlistFlow.value.lastIndex)
+            if (targetIndex > currentIndex + 1) {
+                audioPlayer.moveMediaItem(currentIndex + 1, targetIndex)
+            }
+        }
+        priorityQueueUrlsState.update { (it - mediaItem.url) + mediaItem.url }
     }
 
     override suspend fun addToQueue(entry: QueueEntry) {
@@ -153,9 +190,9 @@ class DeviceAudioPlayerQueue(
             logger.w { "addToQueue: skipping entry with blank url" }
             return
         }
-        logger.d { "Adding entry to queue: ${mediaItem.title}" }
+        logger.d { "Adding entry to priority queue: ${mediaItem.title}" }
         entryByMediaUrl.update { it + (mediaItem.url to entry) }
-        audioPlayer.addMediaItem(mediaItem)
+        insertIntoPriorityQueueEnd(mediaItem)
         persistQueueStateIfReady()
         logger.d { "Entry added successfully" }
     }
@@ -181,8 +218,14 @@ class DeviceAudioPlayerQueue(
 
         updateCollectionContext(collectionEntry)
 
-        mediaItems.forEach { mediaItem ->
-            audioPlayer.addMediaItem(mediaItem)
+        if (collectionEntry != null || audioPlayer.playlistFlow.value.isEmpty() || currentTrackIndex() < 0) {
+            mediaItems.forEach { mediaItem ->
+                audioPlayer.addMediaItem(mediaItem)
+            }
+        } else {
+            mediaItems.forEach { mediaItem ->
+                insertIntoPriorityQueueEnd(mediaItem)
+            }
         }
 
         persistQueueStateIfReady()
@@ -195,7 +238,7 @@ class DeviceAudioPlayerQueue(
             return
         }
 
-        logger.i { "Adding ${entries.size} entries after current position" }
+        logger.i { "Adding ${entries.size} entries at beginning of priority queue" }
         val mediaItems = entries.mapNotNull { it.toMediaItem() }
         if (mediaItems.isEmpty()) {
             logger.w { "addAllAfterCurrent: all entries had blank urls, skipping" }
@@ -206,12 +249,48 @@ class DeviceAudioPlayerQueue(
             it + mediaItems.zip(validEntries).associate { (mediaItem, entry) -> mediaItem.url to entry }
         }
 
-        mediaItems.forEach { mediaItem ->
+        // Insert in reverse order so the entries preserve their original order right after current.
+        mediaItems.asReversed().forEach { mediaItem ->
             audioPlayer.insertMediaItemAtNextIndex(mediaItem)
+        }
+        val insertedUrls = mediaItems.map { it.url }
+        priorityQueueUrlsState.update { existing ->
+            insertedUrls + existing.filterNot { it in insertedUrls }
         }
 
         persistQueueStateIfReady()
-        logger.d { "All entries added after current successfully" }
+        logger.d { "All entries added at beginning of priority queue successfully" }
+    }
+
+    override suspend fun moveToPriorityQueue(entry: QueueEntry) {
+        val mediaItem = entry.toMediaItem() ?: return
+        val playlist = audioPlayer.playlistFlow.value
+        val existingIndex = playlist.indexOfFirst { it.url == mediaItem.url }
+        val currentIndex = currentTrackIndex()
+        if (existingIndex < 0 || currentIndex < 0 || existingIndex == currentIndex) return
+
+        entryByMediaUrl.update { it + (mediaItem.url to entry) }
+        val priorityCount = activePriorityCount()
+        val rawTarget = (currentIndex + 1 + priorityCount).coerceAtMost(playlist.lastIndex)
+        val moveTarget = if (existingIndex < rawTarget) rawTarget - 1 else rawTarget
+        if (existingIndex != moveTarget) {
+            audioPlayer.moveMediaItem(existingIndex, moveTarget)
+        }
+        priorityQueueUrlsState.update { (it - mediaItem.url) + mediaItem.url }
+        persistQueueStateIfReady()
+    }
+
+    override suspend fun clearPriorityQueue() {
+        val urls = priorityQueueUrlsState.value.toList()
+        if (urls.isEmpty()) return
+        urls.forEach { url ->
+            val mediaItem = audioPlayer.playlistFlow.value.firstOrNull { it.url == url }
+            if (mediaItem != null) {
+                audioPlayer.removeMediaItem(mediaItem)
+            }
+        }
+        priorityQueueUrlsState.value = emptyList()
+        persistQueueStateIfReady()
     }
 
     override suspend fun removeFromQueue(entry: QueueEntry) {
@@ -228,6 +307,7 @@ class DeviceAudioPlayerQueue(
         logger.d { "Removing media item from queue: ${mediaItem.title}" }
         audioPlayer.removeMediaItem(mediaItem)
         entryByMediaUrl.update { it - mediaUrl }
+        priorityQueueUrlsState.update { it - mediaUrl }
         persistQueueStateIfReady()
         logger.d { "Media item removed successfully" }
     }
@@ -285,6 +365,7 @@ class DeviceAudioPlayerQueue(
     override suspend fun clear() {
         logger.i { "Clearing queue and collection history" }
         entryByMediaUrl.value = emptyMap()
+        priorityQueueUrlsState.value = emptyList()
         currentCollectionEntryState.value = null
         collectionHistoryState.value = emptyList()
         audioPlayer.load(emptyList(), autoPlay = false, startPosition = 0)
